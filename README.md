@@ -157,6 +157,8 @@ jester config init --preset node
 jester config init --preset python
 jester config init --preset security
 jester config presets
+jester config validate
+jester config validate --json
 jester plan "I will deploy-prod now" --config .\jester.config.json
 jester command "git reset --hard" --no-config
 ```

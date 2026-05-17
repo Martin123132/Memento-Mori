@@ -13,6 +13,13 @@ export interface LoadedConfig {
   config: UserJesterConfig;
 }
 
+export interface ConfigValidationResult {
+  ok: boolean;
+  path?: string;
+  config?: UserJesterConfig;
+  issues: string[];
+}
+
 const severitySchema = z.union([
   z.literal(1),
   z.literal(2),
@@ -56,20 +63,47 @@ export async function loadConfig(options: {
   }
 
   const raw = await readFile(configPath, "utf8");
-  const parsed = JSON.parse(raw) as unknown;
-  const result = configSchema.safeParse(parsed);
+  const result = parseConfig(raw);
 
-  if (!result.success) {
-    const details = result.error.issues
-      .map((issue) => `${issue.path.join(".") || "config"}: ${issue.message}`)
-      .join("; ");
-    throw new Error(`Invalid jester config at ${configPath}: ${details}`);
+  if (!result.ok || !result.config) {
+    throw new Error(`Invalid jester config at ${configPath}: ${result.issues.join("; ")}`);
   }
 
   return {
     path: configPath,
-    config: result.data
+    config: result.config
   };
+}
+
+export async function validateConfig(options: {
+  cwd?: string;
+  configPath?: string;
+  search?: boolean;
+} = {}): Promise<ConfigValidationResult> {
+  const cwd = options.cwd ?? process.cwd();
+  const search = options.search ?? true;
+  const configPath = options.configPath ? resolve(cwd, options.configPath) : search ? await findConfigPath(cwd) : undefined;
+
+  if (!configPath) {
+    return {
+      ok: false,
+      issues: ["No config file found. Expected jester.config.json or .jester.json."]
+    };
+  }
+
+  try {
+    const raw = await readFile(configPath, "utf8");
+    return {
+      path: configPath,
+      ...parseConfig(raw)
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      path: configPath,
+      issues: [error instanceof Error ? error.message : String(error)]
+    };
+  }
 }
 
 export async function findConfigPath(cwd: string = process.cwd()): Promise<string | undefined> {
@@ -143,6 +177,34 @@ export function userConfigForPreset(preset: ConfigPreset): UserJesterConfig {
   }
 
   return mergeConfigs(defaultUserConfig(), presetConfig(preset));
+}
+
+function parseConfig(raw: string): Omit<ConfigValidationResult, "path"> {
+  let parsed: unknown;
+
+  try {
+    parsed = JSON.parse(raw);
+  } catch (error) {
+    return {
+      ok: false,
+      issues: [error instanceof Error ? error.message : String(error)]
+    };
+  }
+
+  const result = configSchema.safeParse(parsed);
+
+  if (!result.success) {
+    return {
+      ok: false,
+      issues: result.error.issues.map((issue) => `${issue.path.join(".") || "config"}: ${issue.message}`)
+    };
+  }
+
+  return {
+    ok: true,
+    config: result.data,
+    issues: []
+  };
 }
 
 function presetConfig(preset: Exclude<ConfigPreset, "default">): UserJesterConfig {

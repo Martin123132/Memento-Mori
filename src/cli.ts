@@ -3,7 +3,7 @@ import { access, readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { stdin as input, stdout as output } from "node:process";
 import { fileURLToPath } from "node:url";
-import { configPresetNames, defaultUserConfig, loadConfig, writeDefaultConfig, type ConfigPreset } from "./config.js";
+import { configPresetNames, defaultUserConfig, loadConfig, validateConfig, writeDefaultConfig, type ConfigPreset } from "./config.js";
 import { review, reviewCommand } from "./core.js";
 import { formatReview } from "./format.js";
 import {
@@ -545,7 +545,25 @@ async function handleConfigCommand(argv: string[]): Promise<string> {
     return `${label}\n${JSON.stringify({ ...defaultUserConfig(), ...loaded.config }, null, 2)}\n`;
   }
 
-  throw new Error('Unknown config command. Use "jester config init", "jester config show", or "jester config presets".');
+  if (subcommand === "validate") {
+    const result = await validateConfig({
+      configPath: options.configPath,
+      search: !options.noConfig
+    });
+
+    if (options.json) {
+      return `${JSON.stringify(result, null, 2)}\n`;
+    }
+
+    if (result.ok) {
+      return `Config valid: ${result.path}\n`;
+    }
+
+    process.exitCode = 1;
+    return `Config invalid${result.path ? `: ${result.path}` : ""}\n${result.issues.map((issue) => `- ${issue}`).join("\n")}\n`;
+  }
+
+  throw new Error('Unknown config command. Use "jester config init", "jester config show", "jester config validate", or "jester config presets".');
 }
 
 async function handleInstallHook(argv: string[]) {
@@ -715,6 +733,7 @@ Usage:
   jester config init
   jester config init --preset security
   jester config show
+  jester config validate
   jester config presets
   jester install-hook pre-commit
   jester install-hook pre-push --fail-on caution

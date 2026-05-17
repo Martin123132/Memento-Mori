@@ -3,7 +3,7 @@ import { mkdtemp, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
-import { loadConfig, userConfigForPreset, writeDefaultConfig } from "./config.js";
+import { loadConfig, userConfigForPreset, validateConfig, writeDefaultConfig } from "./config.js";
 
 test("loads jester.config.json from the working tree", async () => {
   const cwd = await mkdtemp(join(tmpdir(), "jester-config-"));
@@ -43,4 +43,33 @@ test("writes preset config", async () => {
 
   assert.equal(loaded.config.riskTolerance, "low");
   assert.ok(loaded.config.customRules?.some((rule) => rule.id === "insecure-tls-disabled"));
+});
+
+test("validates a good config", async () => {
+  const cwd = await mkdtemp(join(tmpdir(), "jester-config-"));
+  await writeDefaultConfig({ cwd, preset: "node" });
+
+  const result = await validateConfig({ cwd });
+
+  assert.equal(result.ok, true);
+  assert.deepEqual(result.issues, []);
+});
+
+test("reports invalid config issues", async () => {
+  const cwd = await mkdtemp(join(tmpdir(), "jester-config-"));
+  await writeFile(join(cwd, "jester.config.json"), JSON.stringify({
+    tone: "too_spicy",
+    customRules: [
+      {
+        id: "",
+        pattern: ""
+      }
+    ]
+  }), "utf8");
+
+  const result = await validateConfig({ cwd });
+
+  assert.equal(result.ok, false);
+  assert.ok(result.issues.some((issue) => issue.includes("tone")));
+  assert.ok(result.issues.some((issue) => issue.includes("customRules.0.id")));
 });

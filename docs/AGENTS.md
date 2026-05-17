@@ -107,6 +107,13 @@ jester config init --preset python
 jester config init --preset security
 ```
 
+Validate config before asking agents or hooks to use it:
+
+```powershell
+jester config validate
+jester config validate --json
+```
+
 Agents do not need to pass the config manually. The MCP server searches upward from the current working directory for:
 
 - `jester.config.json`

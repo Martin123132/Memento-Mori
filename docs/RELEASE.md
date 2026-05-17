@@ -50,6 +50,7 @@ npx -y memento-mori-jester@latest doctor
 npx -y memento-mori-jester@latest command "git reset --hard"
 npx -y memento-mori-jester@latest init
 npx -y memento-mori-jester@latest config init
+npx -y memento-mori-jester@latest config init --preset security --path jester-security.config.json
 ```
 
 If this machine is not logged in to npm yet:

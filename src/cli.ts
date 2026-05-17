@@ -3,7 +3,7 @@ import { access, readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { stdin as input, stdout as output } from "node:process";
 import { fileURLToPath } from "node:url";
-import { defaultUserConfig, loadConfig, writeDefaultConfig } from "./config.js";
+import { configPresetNames, defaultUserConfig, loadConfig, writeDefaultConfig, type ConfigPreset } from "./config.js";
 import { review, reviewCommand } from "./core.js";
 import { formatReview } from "./format.js";
 import {
@@ -53,6 +53,7 @@ type ConfigCommandOptions = {
   path?: string;
   configPath?: string;
   noConfig: boolean;
+  preset: ConfigPreset;
 };
 
 type HookCommandOptions = {
@@ -226,7 +227,8 @@ function parseConfigCommandOptions(argv: string[]): ConfigCommandOptions {
   const options: ConfigCommandOptions = {
     json: false,
     force: false,
-    noConfig: false
+    noConfig: false,
+    preset: "default"
   };
 
   for (let index = 0; index < argv.length; index += 1) {
@@ -245,6 +247,9 @@ function parseConfigCommandOptions(argv: string[]): ConfigCommandOptions {
       index += 1;
     } else if (arg === "--no-config") {
       options.noConfig = true;
+    } else if (arg === "--preset") {
+      options.preset = parseConfigPreset(requireValue(arg, next));
+      index += 1;
     }
   }
 
@@ -339,7 +344,7 @@ function collectPositional(argv: string[]): string[] {
 }
 
 function optionHasValue(arg: string): boolean {
-  return ["--kind", "--tone", "--intensity", "--risk", "--fail-on", "--subject", "--context", "--file", "--config", "--path"].includes(arg);
+  return ["--kind", "--tone", "--intensity", "--risk", "--fail-on", "--subject", "--context", "--file", "--config", "--path", "--preset"].includes(arg);
 }
 
 function isKnownOption(arg: string): boolean {
@@ -388,6 +393,14 @@ function parseFailOn(value: string): HookFailOn {
   }
 
   throw new Error('Unknown fail threshold. Use "caution" or "block".');
+}
+
+function parseConfigPreset(value: string): ConfigPreset {
+  if (configPresetNames.includes(value as ConfigPreset)) {
+    return value as ConfigPreset;
+  }
+
+  throw new Error(`Unknown config preset "${value}". Use one of: ${configPresetNames.join(", ")}`);
 }
 
 function parseSetupMode(value: string): SetupMode {
@@ -508,9 +521,14 @@ async function handleConfigCommand(argv: string[]): Promise<string> {
   if (subcommand === "init") {
     const path = await writeDefaultConfig({
       path: options.path,
-      force: options.force
+      force: options.force,
+      preset: options.preset
     });
     return `Wrote ${path}\n`;
+  }
+
+  if (subcommand === "presets") {
+    return `${configPresetNames.join("\n")}\n`;
   }
 
   if (subcommand === "show") {
@@ -527,7 +545,7 @@ async function handleConfigCommand(argv: string[]): Promise<string> {
     return `${label}\n${JSON.stringify({ ...defaultUserConfig(), ...loaded.config }, null, 2)}\n`;
   }
 
-  throw new Error('Unknown config command. Use "jester config init" or "jester config show".');
+  throw new Error('Unknown config command. Use "jester config init", "jester config show", or "jester config presets".');
 }
 
 async function handleInstallHook(argv: string[]) {
@@ -695,7 +713,9 @@ Usage:
   jester init
   jester doctor
   jester config init
+  jester config init --preset security
   jester config show
+  jester config presets
   jester install-hook pre-commit
   jester install-hook pre-push --fail-on caution
   jester hook-status
@@ -713,6 +733,7 @@ Options:
   --file <path>
   --config <path>                     Use a specific jester config file
   --no-config                         Ignore jester.config.json discovery
+  --preset <default|node|python|security>
   --json
 
 Setup options:

@@ -3,7 +3,7 @@ import { mkdtemp, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
-import { loadConfig, writeDefaultConfig } from "./config.js";
+import { loadConfig, userConfigForPreset, writeDefaultConfig } from "./config.js";
 
 test("loads jester.config.json from the working tree", async () => {
   const cwd = await mkdtemp(join(tmpdir(), "jester-config-"));
@@ -25,4 +25,22 @@ test("writes a default config without overwriting by default", async () => {
 
   await assert.rejects(() => writeDefaultConfig({ cwd }));
   assert.match(path, /jester\.config\.json$/);
+});
+
+test("builds node preset on top of default config", () => {
+  const config = userConfigForPreset("node");
+
+  assert.ok(config.blockedCommands?.includes("git reset --hard"));
+  assert.ok(config.blockedCommands?.includes("npm unpublish"));
+  assert.ok(config.customRules?.some((rule) => rule.id === "node-install-script-change"));
+});
+
+test("writes preset config", async () => {
+  const cwd = await mkdtemp(join(tmpdir(), "jester-config-"));
+  await writeDefaultConfig({ cwd, preset: "security" });
+
+  const loaded = await loadConfig({ cwd });
+
+  assert.equal(loaded.config.riskTolerance, "low");
+  assert.ok(loaded.config.customRules?.some((rule) => rule.id === "insecure-tls-disabled"));
 });

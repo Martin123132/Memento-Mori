@@ -99,6 +99,14 @@ Create a project config:
 jester config init
 ```
 
+Use a preset for common stacks:
+
+```powershell
+jester config init --preset node
+jester config init --preset python
+jester config init --preset security
+```
+
 Agents do not need to pass the config manually. The MCP server searches upward from the current working directory for:
 
 - `jester.config.json`

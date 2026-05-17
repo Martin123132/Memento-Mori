@@ -153,9 +153,19 @@ Useful config commands:
 jester config show
 jester config show --json
 jester config init --force
+jester config init --preset node
+jester config init --preset python
+jester config init --preset security
+jester config presets
 jester plan "I will deploy-prod now" --config .\jester.config.json
 jester command "git reset --hard" --no-config
 ```
+
+Presets layer extra rules on top of the default config:
+
+- `node`: npm lifecycle scripts, publish/unpublish, package metadata.
+- `python`: dependency files, migrations, pickle, eval/exec.
+- `security`: lower risk tolerance, TLS/CORS checks, token/permission-sensitive areas.
 
 ## Git Hooks
 

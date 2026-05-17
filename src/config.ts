@@ -4,6 +4,9 @@ import { z } from "zod";
 import { reviewKinds, tones, type UserJesterConfig } from "./types.js";
 
 export const configFileNames = ["jester.config.json", ".jester.json"] as const;
+export const configPresetNames = ["default", "node", "python", "security"] as const;
+
+export type ConfigPreset = (typeof configPresetNames)[number];
 
 export interface LoadedConfig {
   path?: string;
@@ -93,12 +96,13 @@ export async function writeDefaultConfig(options: {
   cwd?: string;
   path?: string;
   force?: boolean;
+  preset?: ConfigPreset;
 } = {}): Promise<string> {
   const cwd = options.cwd ?? process.cwd();
   const configPath = resolve(cwd, options.path ?? "jester.config.json");
   const flag = options.force ? "w" : "wx";
 
-  await writeFile(configPath, `${JSON.stringify(defaultUserConfig(), null, 2)}\n`, { encoding: "utf8", flag });
+  await writeFile(configPath, `${JSON.stringify(userConfigForPreset(options.preset ?? "default"), null, 2)}\n`, { encoding: "utf8", flag });
   return configPath;
 }
 
@@ -131,6 +135,147 @@ export function defaultUserConfig(): UserJesterConfig {
       }
     ]
   };
+}
+
+export function userConfigForPreset(preset: ConfigPreset): UserJesterConfig {
+  if (preset === "default") {
+    return defaultUserConfig();
+  }
+
+  return mergeConfigs(defaultUserConfig(), presetConfig(preset));
+}
+
+function presetConfig(preset: Exclude<ConfigPreset, "default">): UserJesterConfig {
+  if (preset === "node") {
+    return {
+      sensitiveDomains: [
+        "package-lock.json",
+        "npm publish",
+        "postinstall",
+        "preinstall",
+        "node_modules"
+      ],
+      blockedCommands: [
+        "npm publish --force",
+        "npm unpublish"
+      ],
+      customRules: [
+        {
+          id: "node-install-script-change",
+          pattern: "\"(?:preinstall|install|postinstall)\"\\s*:",
+          severity: 4,
+          title: "Package install script touched",
+          detail: "Install scripts run on user machines and deserve extra scrutiny.",
+          suggestedCheck: "Verify the script is necessary, safe, and covered by release notes.",
+          kinds: ["diff", "plan"]
+        },
+        {
+          id: "node-env-production-change",
+          pattern: "NODE_ENV\\s*=\\s*production",
+          severity: 3,
+          title: "Node production mode touched",
+          detail: "Production-mode changes can alter build or runtime behavior.",
+          suggestedCheck: "Run the production build or a representative smoke test.",
+          kinds: ["command", "plan", "diff"]
+        }
+      ]
+    };
+  }
+
+  if (preset === "python") {
+    return {
+      sensitiveDomains: [
+        "requirements.txt",
+        "pyproject.toml",
+        "setup.py",
+        "migrations",
+        "venv"
+      ],
+      blockedCommands: [
+        "pip install --break-system-packages",
+        "python setup.py upload"
+      ],
+      customRules: [
+        {
+          id: "python-pickle-load",
+          pattern: "\\bpickle\\.loads?\\b",
+          severity: 4,
+          title: "Pickle deserialization touched",
+          detail: "Pickle deserialization can execute code when fed untrusted data.",
+          suggestedCheck: "Confirm the input is trusted or use a safer serialization format.",
+          kinds: ["diff", "plan"]
+        },
+        {
+          id: "python-eval-exec",
+          pattern: "\\b(eval|exec)\\s*\\(",
+          severity: 4,
+          title: "Dynamic Python execution",
+          detail: "eval/exec changes deserve strong justification and tests.",
+          suggestedCheck: "Replace with structured parsing or constrain the input surface.",
+          kinds: ["diff", "plan"]
+        }
+      ]
+    };
+  }
+
+  return {
+    riskTolerance: "low",
+    hookFailOn: "caution",
+    sensitiveDomains: [
+      "secrets",
+      "token",
+      "private key",
+      "permissions",
+      "crypto",
+      "cors",
+      "csrf",
+      "xss",
+      "sql injection"
+    ],
+    blockedCommands: [
+      "chmod -R 777",
+      "curl | sh",
+      "wget | sh"
+    ],
+    customRules: [
+      {
+        id: "insecure-tls-disabled",
+        pattern: "(rejectUnauthorized\\s*:\\s*false|NODE_TLS_REJECT_UNAUTHORIZED\\s*=\\s*0|verify\\s*=\\s*False)",
+        severity: 5,
+        title: "TLS verification disabled",
+        detail: "Disabling TLS verification can expose users or infrastructure to interception.",
+        suggestedCheck: "Use a trusted certificate path or environment-specific test fixture instead.",
+        kinds: ["command", "plan", "diff"]
+      },
+      {
+        id: "broad-cors",
+        pattern: "(Access-Control-Allow-Origin\\s*[:=]\\s*[\"']?\\*|origin\\s*:\\s*[\"']?\\*)",
+        severity: 4,
+        title: "Broad CORS policy",
+        detail: "Wildcard origins can widen the attack surface.",
+        suggestedCheck: "Restrict origins to the expected domains and add a security note.",
+        kinds: ["diff", "plan"]
+      }
+    ]
+  };
+}
+
+function mergeConfigs(base: UserJesterConfig, extra: UserJesterConfig): UserJesterConfig {
+  return {
+    ...base,
+    ...extra,
+    blockedCommands: mergeStringArrays(base.blockedCommands, extra.blockedCommands),
+    sensitiveDomains: mergeStringArrays(base.sensitiveDomains, extra.sensitiveDomains),
+    customRules: [
+      ...(base.customRules ?? []),
+      ...(extra.customRules ?? [])
+    ]
+  };
+}
+
+function mergeStringArrays(left: string[] | undefined, right: string[] | undefined): string[] | undefined {
+  const merged = [...new Set([...(left ?? []), ...(right ?? [])])];
+  return merged.length > 0 ? merged : undefined;
 }
 
 async function fileExists(path: string): Promise<boolean> {

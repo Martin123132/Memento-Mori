@@ -14,9 +14,9 @@
   "main": "./dist/core.js",
   "types": "./dist/core.d.ts",
   "bin": {
-    "jester": "./dist/cli.js",
-    "memento-mori-jester": "./dist/cli.js",
-    "memento-mori-jester-mcp": "./dist/server.js"
+    "jester": "dist/cli.js",
+    "memento-mori-jester": "dist/cli.js",
+    "memento-mori-jester-mcp": "dist/server.js"
   },
   "exports": {
     ".": {

@@ -52,6 +52,15 @@ npx -y memento-mori-jester@latest init
 npx -y memento-mori-jester@latest config init
 ```
 
+If this machine is not logged in to npm yet:
+
+```powershell
+npm login
+npm whoami
+```
+
+Then run the publish commands again.
+
 ## 5. MCP Copy-Paste
 
 The lowest-friction config uses `npx`:

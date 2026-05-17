@@ -63,10 +63,10 @@ jester plan "I will just refactor auth and ship it"
 jester command "git reset --hard"
 git diff | jester diff --fail-on block
 jester final --file .\final-answer.txt --tone professional
-  jester doctor
-  jester config init
-  jester install-hook pre-commit
-  jester mcp-config --mode npx
+jester doctor
+jester config init
+jester install-hook pre-commit
+jester mcp-config --mode npx
 ```
 
 The package-name binary works too:
@@ -205,6 +205,11 @@ Suggested agent instruction:
 ```text
 Before risky commands, final answers, commits, or large edits, call the Memento Mori Jester. Treat BLOCK as requiring a changed plan, and CAUTION as requiring at least one concrete verification step.
 ```
+
+More setup examples:
+
+- [Agent Setup](docs/AGENTS.md)
+- [GitHub Actions](docs/GITHUB_ACTIONS.md)
 
 ## Installer Scripts
 

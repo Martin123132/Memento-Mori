@@ -1,5 +1,28 @@
 {
   "tone": "court_jester",
   "intensity": 3,
-  "riskTolerance": "medium"
+  "riskTolerance": "medium",
+  "hookFailOn": "block",
+  "blockedCommands": [
+    "git reset --hard",
+    "git clean -fd"
+  ],
+  "sensitiveDomains": [
+    "auth",
+    "billing",
+    "payments",
+    "production",
+    "customer data"
+  ],
+  "customRules": [
+    {
+      "id": "no-force-push-main",
+      "pattern": "git\\s+push\\s+--force(?:-with-lease)?\\s+origin\\s+main",
+      "severity": 5,
+      "title": "Force-push to main",
+      "detail": "This project treats force-pushing main as a stop-and-think event.",
+      "suggestedCheck": "Create a branch or use --force-with-lease only after confirming the protected branch policy.",
+      "kinds": ["command", "plan"]
+    }
+  ]
 }

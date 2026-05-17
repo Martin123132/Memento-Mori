@@ -6,6 +6,7 @@ import {
   type ReviewResult,
   type RiskTolerance,
   type Tone,
+  type UserJesterConfig,
   tones
 } from "./types.js";
 
@@ -204,16 +205,17 @@ export function reviewFinalAnswer(answer: string, options: Partial<ReviewInput> 
 }
 
 export function review(input: ReviewInput): ReviewResult {
-  const tone = normalizeTone(input.tone);
-  const intensity = clampIntensity(input.intensity ?? defaultConfig.intensity);
-  const riskTolerance = input.riskTolerance ?? defaultConfig.riskTolerance;
+  const tone = normalizeTone(input.tone ?? input.config?.tone);
+  const intensity = clampIntensity(input.intensity ?? input.config?.intensity ?? defaultConfig.intensity);
+  const riskTolerance = input.riskTolerance ?? input.config?.riskTolerance ?? defaultConfig.riskTolerance;
   const subject = input.subject?.trim() || defaultSubject(input.kind);
   const combined = [input.subject, input.context, input.content].filter(Boolean).join("\n\n");
 
   const issues = dedupeIssues([
     ...findPatternIssues(combined, input.kind, universalRules),
     ...findKindIssues(combined, input.kind),
-    ...findStructuralIssues(input.kind, input.content)
+    ...findStructuralIssues(input.kind, input.content),
+    ...findConfigIssues(combined, input.kind, input.config)
   ]);
 
   const riskScore = scoreIssues(issues, riskTolerance);
@@ -250,6 +252,99 @@ function findKindIssues(text: string, kind: ReviewKind): Issue[] {
   }
 
   return [];
+}
+
+function findConfigIssues(text: string, kind: ReviewKind, config: UserJesterConfig | undefined): Issue[] {
+  if (!config) {
+    return [];
+  }
+
+  return [
+    ...findBlockedCommandIssues(text, kind, config.blockedCommands),
+    ...findSensitiveDomainIssues(text, config.sensitiveDomains),
+    ...findCustomRuleIssues(text, kind, config)
+  ];
+}
+
+function findBlockedCommandIssues(text: string, kind: ReviewKind, blockedCommands: string[] | undefined): Issue[] {
+  if (!blockedCommands || blockedCommands.length === 0) {
+    return [];
+  }
+
+  return blockedCommands.flatMap((command) => {
+    const cleaned = command.trim();
+    if (!cleaned || !literalIncludes(text, cleaned)) {
+      return [];
+    }
+
+    return [
+      {
+        id: `blocked-command-${slugify(cleaned)}`,
+        severity: 5,
+        title: "Project-blocked command",
+        detail: "This command is listed in the project's jester config as blocked.",
+        suggestedCheck: kind === "command"
+          ? "Use a safer command or get explicit project approval before running it."
+          : "Change the plan so it avoids this blocked command.",
+        evidence: cleanEvidence(cleaned)
+      } satisfies Issue
+    ];
+  });
+}
+
+function findSensitiveDomainIssues(text: string, sensitiveDomains: string[] | undefined): Issue[] {
+  if (!sensitiveDomains || sensitiveDomains.length === 0) {
+    return [];
+  }
+
+  return sensitiveDomains.flatMap((domain) => {
+    const cleaned = domain.trim();
+    if (!cleaned || !literalIncludes(text, cleaned)) {
+      return [];
+    }
+
+    return [
+      {
+        id: `configured-sensitive-domain-${slugify(cleaned)}`,
+        severity: 3,
+        title: "Project-sensitive domain touched",
+        detail: "This domain is listed in the project's jester config as sensitive.",
+        suggestedCheck: "Add a targeted test, manual verification note, or rollback plan for this project-sensitive area.",
+        evidence: cleanEvidence(cleaned)
+      } satisfies Issue
+    ];
+  });
+}
+
+function findCustomRuleIssues(text: string, kind: ReviewKind, config: UserJesterConfig): Issue[] {
+  return (config.customRules ?? []).flatMap((rule) => {
+    if (rule.kinds && !rule.kinds.includes(kind)) {
+      return [];
+    }
+
+    let pattern: RegExp;
+    try {
+      pattern = new RegExp(rule.pattern, rule.flags ?? "i");
+    } catch {
+      return [];
+    }
+
+    const match = pattern.exec(text);
+    if (!match) {
+      return [];
+    }
+
+    return [
+      {
+        id: `custom-${rule.id}`,
+        severity: rule.severity ?? 3,
+        title: rule.title ?? "Custom project rule matched",
+        detail: rule.detail ?? "A custom rule from the project's jester config matched this content.",
+        suggestedCheck: rule.suggestedCheck ?? "Review the matched project rule and add an explicit verification step.",
+        evidence: cleanEvidence(match[0])
+      } satisfies Issue
+    ];
+  });
 }
 
 function findStructuralIssues(kind: ReviewKind, content: string): Issue[] {
@@ -382,6 +477,14 @@ function defaultSubject(kind: ReviewKind): string {
 
 function cleanEvidence(evidence: string): string {
   return evidence.replace(/\s+/g, " ").trim().slice(0, 180);
+}
+
+function literalIncludes(text: string, needle: string): boolean {
+  return text.toLocaleLowerCase().includes(needle.toLocaleLowerCase());
+}
+
+function slugify(value: string): string {
+  return value.toLocaleLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60) || "rule";
 }
 
 function renderJab(input: { tone: Tone; intensity: number; verdict: string; kind: ReviewKind; text: string }): string {

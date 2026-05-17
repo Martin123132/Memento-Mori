@@ -15,10 +15,33 @@ export type Verdict = "pass" | "caution" | "block";
 
 export type RiskTolerance = "low" | "medium" | "high";
 
+export type HookFailOn = "caution" | "block";
+
 export interface JesterConfig {
   tone: Tone;
   intensity: number;
   riskTolerance: RiskTolerance;
+}
+
+export interface CustomRuleConfig {
+  id: string;
+  pattern: string;
+  severity?: Issue["severity"];
+  title?: string;
+  detail?: string;
+  suggestedCheck?: string;
+  kinds?: ReviewKind[];
+  flags?: string;
+}
+
+export interface UserJesterConfig {
+  tone?: Tone;
+  intensity?: number;
+  riskTolerance?: RiskTolerance;
+  blockedCommands?: string[];
+  sensitiveDomains?: string[];
+  customRules?: CustomRuleConfig[];
+  hookFailOn?: HookFailOn;
 }
 
 export interface ReviewInput {
@@ -29,6 +52,7 @@ export interface ReviewInput {
   tone?: Tone;
   intensity?: number;
   riskTolerance?: RiskTolerance;
+  config?: UserJesterConfig;
 }
 
 export interface Issue {

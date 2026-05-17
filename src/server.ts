@@ -2,6 +2,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
+import { loadConfig } from "./config.js";
 import { reviewCommand, reviewDiff, reviewFinalAnswer, reviewPlan } from "./core.js";
 import { formatReview } from "./format.js";
 import { tones } from "./types.js";
@@ -11,7 +12,9 @@ const sharedShape = {
   context: z.string().optional(),
   tone: toneSchema,
   intensity: z.number().int().min(1).max(5).optional(),
-  riskTolerance: z.enum(["low", "medium", "high"]).optional()
+  riskTolerance: z.enum(["low", "medium", "high"]).optional(),
+  configPath: z.string().optional(),
+  noConfig: z.boolean().optional()
 };
 
 const server = new McpServer({
@@ -30,8 +33,9 @@ server.registerTool(
       ...sharedShape
     }
   },
-  async ({ plan, subject, context, tone, intensity, riskTolerance }) => {
-    const result = reviewPlan(plan, { subject, context, tone, intensity, riskTolerance });
+  async ({ plan, subject, context, tone, intensity, riskTolerance, configPath, noConfig }) => {
+    const { config } = await loadConfig({ configPath, search: !noConfig });
+    const result = reviewPlan(plan, { subject, context, tone, intensity, riskTolerance, config });
     return toolResult(result);
   }
 );
@@ -47,8 +51,9 @@ server.registerTool(
       ...sharedShape
     }
   },
-  async ({ command, subject, context, tone, intensity, riskTolerance }) => {
-    const result = reviewCommand(command, { subject, context, tone, intensity, riskTolerance });
+  async ({ command, subject, context, tone, intensity, riskTolerance, configPath, noConfig }) => {
+    const { config } = await loadConfig({ configPath, search: !noConfig });
+    const result = reviewCommand(command, { subject, context, tone, intensity, riskTolerance, config });
     return toolResult(result);
   }
 );
@@ -64,8 +69,9 @@ server.registerTool(
       ...sharedShape
     }
   },
-  async ({ diff, subject, context, tone, intensity, riskTolerance }) => {
-    const result = reviewDiff(diff, { subject, context, tone, intensity, riskTolerance });
+  async ({ diff, subject, context, tone, intensity, riskTolerance, configPath, noConfig }) => {
+    const { config } = await loadConfig({ configPath, search: !noConfig });
+    const result = reviewDiff(diff, { subject, context, tone, intensity, riskTolerance, config });
     return toolResult(result);
   }
 );
@@ -81,8 +87,9 @@ server.registerTool(
       ...sharedShape
     }
   },
-  async ({ answer, subject, context, tone, intensity, riskTolerance }) => {
-    const result = reviewFinalAnswer(answer, { subject, context, tone, intensity, riskTolerance });
+  async ({ answer, subject, context, tone, intensity, riskTolerance, configPath, noConfig }) => {
+    const { config } = await loadConfig({ configPath, search: !noConfig });
+    const result = reviewFinalAnswer(answer, { subject, context, tone, intensity, riskTolerance, config });
     return toolResult(result);
   }
 );

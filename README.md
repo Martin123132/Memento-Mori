@@ -63,8 +63,10 @@ jester plan "I will just refactor auth and ship it"
 jester command "git reset --hard"
 git diff | jester diff --fail-on block
 jester final --file .\final-answer.txt --tone professional
-jester doctor
-jester mcp-config --mode npx
+  jester doctor
+  jester config init
+  jester install-hook pre-commit
+  jester mcp-config --mode npx
 ```
 
 The package-name binary works too:
@@ -85,6 +87,84 @@ Risk tolerance:
 - `low`
 - `medium`
 - `high`
+
+## Project Config
+
+Create a config file in your repo:
+
+```powershell
+jester config init
+```
+
+The CLI and MCP server automatically search upward for `jester.config.json` or `.jester.json`.
+
+Example:
+
+```json
+{
+  "tone": "court_jester",
+  "intensity": 3,
+  "riskTolerance": "medium",
+  "hookFailOn": "block",
+  "blockedCommands": [
+    "git reset --hard",
+    "git clean -fd"
+  ],
+  "sensitiveDomains": [
+    "auth",
+    "billing",
+    "payments",
+    "production",
+    "customer data"
+  ],
+  "customRules": [
+    {
+      "id": "no-force-push-main",
+      "pattern": "git\\s+push\\s+--force(?:-with-lease)?\\s+origin\\s+main",
+      "severity": 5,
+      "title": "Force-push to main",
+      "detail": "This project treats force-pushing main as a stop-and-think event.",
+      "suggestedCheck": "Create a branch or use --force-with-lease only after confirming the protected branch policy.",
+      "kinds": ["command", "plan"]
+    }
+  ]
+}
+```
+
+Useful config commands:
+
+```powershell
+jester config show
+jester config show --json
+jester config init --force
+jester plan "I will deploy-prod now" --config .\jester.config.json
+jester command "git reset --hard" --no-config
+```
+
+## Git Hooks
+
+Install a pre-commit hook that reviews staged changes:
+
+```powershell
+jester install-hook pre-commit
+```
+
+Install a pre-push hook that reviews unpushed changes:
+
+```powershell
+jester install-hook pre-push
+```
+
+Hook commands:
+
+```powershell
+jester hook-status
+jester install-hook pre-commit --fail-on caution
+jester install-hook pre-commit --mode local --force
+jester uninstall-hook pre-commit
+```
+
+Hooks refuse to overwrite or remove non-jester hooks unless you pass `--force`.
 
 ## MCP Server
 
@@ -163,6 +243,7 @@ Both scripts check Node 20+, run a smoke `doctor`, and print MCP config.
 - Agent overconfidence in plans: "just", "obvious", "probably", "should work", and plans with no verification step.
 - Diffs with removed tests, type suppressions, debug logs, temporary markers, sensitive domains, and large deletions.
 - Final answers with "done/fixed/works" claims that do not mention evidence.
+- Project-specific commands, domains, and regex rules from `jester.config.json`.
 
 ## Publishing
 

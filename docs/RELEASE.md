@@ -49,6 +49,7 @@ The package publishes these bins:
 npx -y memento-mori-jester@latest doctor
 npx -y memento-mori-jester@latest command "git reset --hard"
 npx -y memento-mori-jester@latest init
+npx -y memento-mori-jester@latest config init
 ```
 
 ## 5. MCP Copy-Paste
@@ -92,3 +93,15 @@ https://github.com/Martin123132/Memento-Mori
 ```
 
 If the repo moves, update `repository`, `homepage`, and `bugs` in `package.json`, plus the raw installer URLs in `README.md`.
+
+## 7. Post-Release Workflow Check
+
+In a throwaway git repo:
+
+```powershell
+npx -y memento-mori-jester@latest config init
+npx -y memento-mori-jester@latest install-hook pre-commit
+npx -y memento-mori-jester@latest hook-status
+```
+
+Then stage a risky diff and confirm the hook blocks or cautions according to `hookFailOn`.

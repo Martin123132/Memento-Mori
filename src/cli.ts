@@ -3,9 +3,20 @@ import { access, readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { stdin as input, stdout as output } from "node:process";
 import { fileURLToPath } from "node:url";
+import { defaultUserConfig, loadConfig, writeDefaultConfig } from "./config.js";
 import { review, reviewCommand } from "./core.js";
 import { formatReview } from "./format.js";
-import { type ReviewInput, type ReviewKind, reviewKinds, type RiskTolerance, type Tone, tones } from "./types.js";
+import {
+  hookNames,
+  hookStatus,
+  installHook,
+  isHookName,
+  shellCommandPrefixForLocalCli,
+  shellQuote,
+  uninstallHook,
+  type HookName
+} from "./hooks.js";
+import { type HookFailOn, type ReviewInput, type ReviewKind, reviewKinds, type RiskTolerance, type Tone, tones } from "./types.js";
 
 const packageSpecDefault = "memento-mori-jester@latest";
 
@@ -19,6 +30,8 @@ type CliOptions = {
   subject?: string;
   context?: string;
   file?: string;
+  configPath?: string;
+  noConfig: boolean;
 };
 
 type SetupMode = "npx" | "global" | "local";
@@ -32,6 +45,23 @@ type SetupOptions = {
   intensity: number;
   riskTolerance: RiskTolerance;
   json: boolean;
+};
+
+type ConfigCommandOptions = {
+  json: boolean;
+  force: boolean;
+  path?: string;
+  configPath?: string;
+  noConfig: boolean;
+};
+
+type HookCommandOptions = {
+  hook: HookName;
+  setup: SetupOptions;
+  failOn?: HookFailOn;
+  force: boolean;
+  configPath?: string;
+  noConfig: boolean;
 };
 
 const args = process.argv.slice(2);
@@ -64,13 +94,35 @@ async function main(argv: string[]): Promise<void> {
     return;
   }
 
+  if (argv[0] === "config") {
+    output.write(await handleConfigCommand(argv.slice(1)));
+    return;
+  }
+
   if (argv[0] === "doctor") {
-    const setupOptions = parseSetupOptions(argv.slice(1));
-    const result = await renderDoctor(setupOptions.json);
+    const doctorOptions = parseConfigCommandOptions(argv.slice(1));
+    const result = await renderDoctor(doctorOptions);
     output.write(result.text);
     if (!result.ok) {
       process.exitCode = 1;
     }
+    return;
+  }
+
+  if (argv[0] === "install-hook") {
+    const result = await handleInstallHook(argv.slice(1));
+    output.write(`${result.message}\n`);
+    return;
+  }
+
+  if (argv[0] === "uninstall-hook") {
+    const result = await handleUninstallHook(argv.slice(1));
+    output.write(`${result.message}\n`);
+    return;
+  }
+
+  if (argv[0] === "hook-status") {
+    output.write(await renderHookStatus());
     return;
   }
 
@@ -83,6 +135,11 @@ async function main(argv: string[]): Promise<void> {
     throw new Error("Nothing to review. Pass text, use --file, or pipe content on stdin.");
   }
 
+  const loadedConfig = await loadConfig({
+    configPath: options.configPath,
+    search: !options.noConfig
+  });
+
   const inputForReview: ReviewInput = {
     kind,
     content,
@@ -90,7 +147,8 @@ async function main(argv: string[]): Promise<void> {
     context: options.context,
     tone: options.tone,
     intensity: options.intensity,
-    riskTolerance: options.riskTolerance
+    riskTolerance: options.riskTolerance,
+    config: loadedConfig.config
   };
   const result = review(inputForReview);
 
@@ -121,7 +179,7 @@ function resolveKind(command: string, optionKind?: ReviewKind): ReviewKind {
 }
 
 function parseOptions(argv: string[]): CliOptions {
-  const options: CliOptions = { json: false };
+  const options: CliOptions = { json: false, noConfig: false };
 
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index];
@@ -153,6 +211,40 @@ function parseOptions(argv: string[]): CliOptions {
     } else if (arg === "--file") {
       options.file = requireValue(arg, next);
       index += 1;
+    } else if (arg === "--config") {
+      options.configPath = requireValue(arg, next);
+      index += 1;
+    } else if (arg === "--no-config") {
+      options.noConfig = true;
+    }
+  }
+
+  return options;
+}
+
+function parseConfigCommandOptions(argv: string[]): ConfigCommandOptions {
+  const options: ConfigCommandOptions = {
+    json: false,
+    force: false,
+    noConfig: false
+  };
+
+  for (let index = 0; index < argv.length; index += 1) {
+    const arg = argv[index];
+    const next = argv[index + 1];
+
+    if (arg === "--json") {
+      options.json = true;
+    } else if (arg === "--force") {
+      options.force = true;
+    } else if (arg === "--path") {
+      options.path = requireValue(arg, next);
+      index += 1;
+    } else if (arg === "--config") {
+      options.configPath = requireValue(arg, next);
+      index += 1;
+    } else if (arg === "--no-config") {
+      options.noConfig = true;
     }
   }
 
@@ -247,11 +339,11 @@ function collectPositional(argv: string[]): string[] {
 }
 
 function optionHasValue(arg: string): boolean {
-  return ["--kind", "--tone", "--intensity", "--risk", "--fail-on", "--subject", "--context", "--file"].includes(arg);
+  return ["--kind", "--tone", "--intensity", "--risk", "--fail-on", "--subject", "--context", "--file", "--config", "--path"].includes(arg);
 }
 
 function isKnownOption(arg: string): boolean {
-  return optionHasValue(arg) || ["--json"].includes(arg);
+  return optionHasValue(arg) || ["--json", "--no-config", "--force"].includes(arg);
 }
 
 function readStdin(): Promise<string> {
@@ -290,7 +382,7 @@ function parseRisk(value: string): RiskTolerance {
   throw new Error('Unknown risk tolerance. Use "low", "medium", or "high".');
 }
 
-function parseFailOn(value: string): "caution" | "block" {
+function parseFailOn(value: string): HookFailOn {
   if (value === "caution" || value === "block") {
     return value;
   }
@@ -391,6 +483,8 @@ Suggested agent instruction:
 
 Useful next checks:
   ${cliCommand} doctor
+  ${cliCommand} config init
+  ${cliCommand} install-hook pre-commit
   ${cliCommand} plan "I will just refactor auth and ship it"
 `;
 }
@@ -407,7 +501,135 @@ function renderCliCommand(options: SetupOptions): string {
   return `npx -y ${options.packageSpec}`;
 }
 
-async function renderDoctor(json: boolean): Promise<{ ok: boolean; text: string }> {
+async function handleConfigCommand(argv: string[]): Promise<string> {
+  const [subcommand = "show"] = argv;
+  const options = parseConfigCommandOptions(argv.slice(1));
+
+  if (subcommand === "init") {
+    const path = await writeDefaultConfig({
+      path: options.path,
+      force: options.force
+    });
+    return `Wrote ${path}\n`;
+  }
+
+  if (subcommand === "show") {
+    const loaded = await loadConfig({
+      configPath: options.configPath,
+      search: !options.noConfig
+    });
+
+    if (options.json) {
+      return `${JSON.stringify(loaded, null, 2)}\n`;
+    }
+
+    const label = loaded.path ? `Loaded ${loaded.path}` : "No config file found; using built-in defaults.";
+    return `${label}\n${JSON.stringify({ ...defaultUserConfig(), ...loaded.config }, null, 2)}\n`;
+  }
+
+  throw new Error('Unknown config command. Use "jester config init" or "jester config show".');
+}
+
+async function handleInstallHook(argv: string[]) {
+  const options = await parseHookCommandOptions(argv);
+  const loaded = await loadConfig({
+    configPath: options.configPath,
+    search: !options.noConfig
+  });
+  const failOn = options.failOn ?? loaded.config.hookFailOn ?? "block";
+
+  return installHook({
+    hook: options.hook,
+    commandPrefix: hookCommandPrefix(options.setup),
+    failOn,
+    force: options.force
+  });
+}
+
+async function handleUninstallHook(argv: string[]) {
+  const options = await parseHookCommandOptions(argv);
+  return uninstallHook(options.hook, { force: options.force });
+}
+
+async function parseHookCommandOptions(argv: string[]): Promise<HookCommandOptions> {
+  const setup = parseSetupOptions(argv);
+  let hook: HookName | undefined;
+  let failOn: HookFailOn | undefined;
+  let force = false;
+  let configPath: string | undefined;
+  let noConfig = false;
+
+  for (let index = 0; index < argv.length; index += 1) {
+    const arg = argv[index];
+    const next = argv[index + 1];
+
+    if (isHookName(arg)) {
+      hook = arg;
+    } else if (arg === "--fail-on") {
+      failOn = parseFailOn(requireValue(arg, next));
+      index += 1;
+    } else if (arg === "--force") {
+      force = true;
+    } else if (arg === "--config") {
+      configPath = requireValue(arg, next);
+      index += 1;
+    } else if (arg === "--no-config") {
+      noConfig = true;
+    }
+  }
+
+  if (!hook) {
+    throw new Error(`Missing hook name. Use one of: ${hookNames.join(", ")}`);
+  }
+
+  return {
+    hook,
+    setup,
+    failOn,
+    force,
+    configPath,
+    noConfig
+  };
+}
+
+async function renderHookStatus(): Promise<string> {
+  const statuses = await hookStatus();
+  return `${statuses.map((status) => `${status.hook}: ${status.message} (${status.path})`).join("\n")}\n`;
+}
+
+function hookCommandPrefix(options: SetupOptions): string {
+  if (options.mode === "local") {
+    return shellCommandPrefixForLocalCli(cliPath());
+  }
+
+  if (options.mode === "global") {
+    return "jester";
+  }
+
+  return `npx -y ${shellQuote(options.packageSpec)}`;
+}
+
+async function renderDoctor(options: ConfigCommandOptions): Promise<{ ok: boolean; text: string }> {
+  let configCheck: { name: string; ok: boolean; detail: string };
+
+  try {
+    const loaded = await loadConfig({
+      configPath: options.configPath,
+      search: !options.noConfig
+    });
+    configCheck = {
+      name: "config",
+      ok: true,
+      detail: loaded.path ? `Loaded ${loaded.path}.` : "No config file found; using built-in defaults."
+    };
+  } catch (error) {
+    configCheck = {
+      name: "config",
+      ok: false,
+      detail: error instanceof Error ? error.message : String(error)
+    };
+  }
+
   const checks = [
     {
       name: "node-version",
@@ -423,11 +645,12 @@ async function renderDoctor(json: boolean): Promise<{ ok: boolean; text: string 
       name: "review-engine",
       ok: reviewCommand("git reset --hard").verdict === "block",
       detail: "Dangerous git command is blocked."
-    }
+    },
+    configCheck
   ];
   const ok = checks.every((check) => check.ok);
 
-  if (json) {
+  if (options.json) {
     return {
       ok,
       text: `${JSON.stringify({ ok, checks }, null, 2)}\n`
@@ -471,6 +694,11 @@ Usage:
   jester final --file final-answer.txt --tone professional
   jester init
   jester doctor
+  jester config init
+  jester config show
+  jester install-hook pre-commit
+  jester install-hook pre-push --fail-on caution
+  jester hook-status
   jester mcp-config --mode npx
   jester mcp-server
 
@@ -483,11 +711,17 @@ Options:
   --subject <text>
   --context <text>
   --file <path>
+  --config <path>                     Use a specific jester config file
+  --no-config                         Ignore jester.config.json discovery
   --json
 
 Setup options:
   --mode <npx|global|local>            MCP command style; default is npx
   --agent <generic|claude|codex>       Label the generated setup guidance
   --package <npm-or-git-spec>          Package spec used by npx mode
+
+Hook options:
+  --fail-on <caution|block>            Hook failure threshold; defaults to config hookFailOn or block
+  --force                              Replace an existing hook
 `;
 }

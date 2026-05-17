@@ -51,20 +51,36 @@ A dazzling command, if the desired outcome is court-sponsored regret.
 For a copy-pasteable MCP config and suggested agent instruction:
 
 ```powershell
-npx -y github:Martin123132/Memento-Mori init
+npx -y github:Martin123132/Memento-Mori init --package github:Martin123132/Memento-Mori
+```
+
+For a starter kit that writes project files:
+
+```powershell
+npx -y github:Martin123132/Memento-Mori bootstrap --preset node --package github:Martin123132/Memento-Mori
 ```
 
 After npm publish:
 
 ```powershell
 npx -y memento-mori-jester@latest init
+npx -y memento-mori-jester@latest bootstrap --preset node
 ```
 
 For this local checkout before npm publish:
 
 ```powershell
 node .\dist\cli.js init --mode local
+node .\dist\cli.js bootstrap --mode local --preset node
 ```
+
+`bootstrap` writes:
+
+- `jester.config.json`
+- `memento-mori.mcp.json`
+- `MEMENTO_MORI.md`
+
+It keeps existing files by default. Use `--force` to overwrite them, and `--hook pre-commit` or `--hook pre-push` to install managed git hooks at the same time.
 
 Modes:
 
@@ -80,6 +96,7 @@ jester command "git reset --hard"
 git diff | jester diff --fail-on block
 jester final --file .\final-answer.txt --tone professional
 jester doctor
+jester bootstrap --preset node
 jester config init
 jester install-hook pre-commit
 jester mcp-config --mode npx

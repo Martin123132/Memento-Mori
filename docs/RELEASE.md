@@ -49,6 +49,7 @@ The package publishes these bins:
 npx -y memento-mori-jester@latest doctor
 npx -y memento-mori-jester@latest command "git reset --hard"
 npx -y memento-mori-jester@latest init
+npx -y memento-mori-jester@latest bootstrap --preset node
 npx -y memento-mori-jester@latest config init
 npx -y memento-mori-jester@latest config init --preset security --path jester-security.config.json
 npx -y memento-mori-jester@latest config validate --config jester-security.config.json

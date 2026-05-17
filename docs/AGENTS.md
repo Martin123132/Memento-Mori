@@ -52,6 +52,29 @@ node .\dist\cli.js mcp-config --mode local
 Before risky commands, final answers, commits, or large edits, call the Memento Mori Jester. Treat BLOCK as requiring a changed plan, and CAUTION as requiring at least one concrete verification step.
 ```
 
+## Project Bootstrap
+
+Use `bootstrap` inside a repo when you want the project files created for you:
+
+```powershell
+jester bootstrap --preset node
+```
+
+Before npm publish, the GitHub `npx` path should keep using the GitHub package spec in generated MCP config:
+
+```powershell
+npx -y github:Martin123132/Memento-Mori bootstrap --preset node --package github:Martin123132/Memento-Mori
+```
+
+It writes `jester.config.json`, `memento-mori.mcp.json`, and `MEMENTO_MORI.md`. Existing files are kept unless `--force` is passed.
+
+To add managed git hooks during bootstrap:
+
+```powershell
+jester bootstrap --preset node --hook pre-commit
+jester bootstrap --preset security --hook pre-commit --hook pre-push
+```
+
 ## Codex
 
 Use:

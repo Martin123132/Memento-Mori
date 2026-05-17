@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-import { access, readFile } from "node:fs/promises";
-import { dirname, join } from "node:path";
+import { access, mkdir, readFile, writeFile } from "node:fs/promises";
+import { dirname, join, resolve } from "node:path";
 import { stdin as input, stdout as output } from "node:process";
 import { fileURLToPath } from "node:url";
-import { configPresetNames, defaultUserConfig, loadConfig, validateConfig, writeDefaultConfig, type ConfigPreset } from "./config.js";
+import { configPresetNames, defaultUserConfig, findConfigPath, loadConfig, validateConfig, writeDefaultConfig, type ConfigPreset } from "./config.js";
 import { review, reviewCommand } from "./core.js";
 import { formatReview } from "./format.js";
 import {
@@ -65,6 +65,18 @@ type HookCommandOptions = {
   noConfig: boolean;
 };
 
+type BootstrapOptions = SetupOptions & {
+  preset: ConfigPreset;
+  force: boolean;
+  hooks: HookName[];
+};
+
+type BootstrapFileResult = {
+  path: string;
+  changed: boolean;
+  message: string;
+};
+
 const args = process.argv.slice(2);
 
 main(args).catch((error: unknown) => {
@@ -92,6 +104,11 @@ async function main(argv: string[]): Promise<void> {
   if (argv[0] === "init") {
     const setupOptions = parseSetupOptions(argv.slice(1));
     output.write(renderInit(setupOptions));
+    return;
+  }
+
+  if (argv[0] === "bootstrap") {
+    output.write(await handleBootstrap(argv.slice(1)));
     return;
   }
 
@@ -566,6 +583,71 @@ async function handleConfigCommand(argv: string[]): Promise<string> {
   throw new Error('Unknown config command. Use "jester config init", "jester config show", "jester config validate", or "jester config presets".');
 }
 
+async function handleBootstrap(argv: string[]): Promise<string> {
+  const options = parseBootstrapOptions(argv);
+  const configFile = await ensureBootstrapConfig(options);
+  const mcpFile = await writeStarterFile({
+    relativePath: "memento-mori.mcp.json",
+    content: `${JSON.stringify(mcpConfigSnippet(options), null, 2)}\n`,
+    force: options.force
+  });
+  const instructionsFile = await writeStarterFile({
+    relativePath: "MEMENTO_MORI.md",
+    content: renderBootstrapInstructions(options),
+    force: options.force
+  });
+  const loaded = await loadConfig({ configPath: configFile.path, search: false });
+  const failOn = loaded.config.hookFailOn ?? "block";
+  const hooks = [];
+
+  for (const hook of options.hooks) {
+    hooks.push(await installHook({
+      hook,
+      commandPrefix: hookCommandPrefix(options),
+      failOn,
+      force: options.force
+    }));
+  }
+
+  const result = {
+    ok: true,
+    mode: options.mode,
+    agent: options.agent,
+    preset: options.preset,
+    files: [configFile, mcpFile, instructionsFile],
+    hooks,
+    nextSteps: [
+      `${renderCliCommand(options)} doctor`,
+      `${renderCliCommand(options)} config validate`,
+      "Add memento-mori.mcp.json to your MCP client, or copy the command and args from it."
+    ]
+  };
+
+  if (options.json) {
+    return `${JSON.stringify(result, null, 2)}\n`;
+  }
+
+  const lines = [
+    "Memento Mori Jester bootstrap",
+    "",
+    "Files:",
+    ...result.files.map((file) => `  ${file.changed ? "wrote" : "kept"} ${file.path}`),
+    ""
+  ];
+
+  if (hooks.length > 0) {
+    lines.push("Hooks:", ...hooks.map((hook) => `  ${hook.message}`), "");
+  }
+
+  lines.push(
+    "Next:",
+    ...result.nextSteps.map((step) => `  ${step}`),
+    ""
+  );
+
+  return lines.join("\n");
+}
+
 async function handleInstallHook(argv: string[]) {
   const options = await parseHookCommandOptions(argv);
   const loaded = await loadConfig({
@@ -625,6 +707,39 @@ async function parseHookCommandOptions(argv: string[]): Promise<HookCommandOptio
     force,
     configPath,
     noConfig
+  };
+}
+
+function parseBootstrapOptions(argv: string[]): BootstrapOptions {
+  const setup = parseSetupOptions(argv);
+  let preset: ConfigPreset = "default";
+  let force = false;
+  const hooks: HookName[] = [];
+
+  for (let index = 0; index < argv.length; index += 1) {
+    const arg = argv[index];
+    const next = argv[index + 1];
+
+    if (arg === "--preset") {
+      preset = parseConfigPreset(requireValue(arg, next));
+      index += 1;
+    } else if (arg === "--force") {
+      force = true;
+    } else if (arg === "--hook") {
+      const hook = requireValue(arg, next);
+      if (!isHookName(hook)) {
+        throw new Error(`Unknown hook "${hook}". Use one of: ${hookNames.join(", ")}`);
+      }
+      hooks.push(hook);
+      index += 1;
+    }
+  }
+
+  return {
+    ...setup,
+    preset,
+    force,
+    hooks: [...new Set(hooks)]
   };
 }
 
@@ -707,6 +822,82 @@ async function renderDoctor(options: ConfigCommandOptions): Promise<{ ok: boolea
   return { ok, text: lines.join("\n") };
 }
 
+async function ensureBootstrapConfig(options: BootstrapOptions): Promise<BootstrapFileResult> {
+  const existing = await findConfigPath();
+
+  if (existing && !options.force) {
+    return {
+      path: existing,
+      changed: false,
+      message: "Kept existing config file."
+    };
+  }
+
+  const path = await writeDefaultConfig({ force: options.force, preset: options.preset });
+  return {
+    path,
+    changed: true,
+    message: "Wrote project config."
+  };
+}
+
+async function writeStarterFile(options: {
+  relativePath: string;
+  content: string;
+  force: boolean;
+}): Promise<BootstrapFileResult> {
+  const path = resolve(process.cwd(), options.relativePath);
+  const exists = await fileExists(path);
+
+  if (exists && !options.force) {
+    return {
+      path,
+      changed: false,
+      message: `Kept existing ${options.relativePath}.`
+    };
+  }
+
+  await mkdir(dirname(path), { recursive: true });
+  await writeFile(path, options.content, "utf8");
+
+  return {
+    path,
+    changed: true,
+    message: `Wrote ${options.relativePath}.`
+  };
+}
+
+function renderBootstrapInstructions(options: SetupOptions): string {
+  const cliCommand = renderCliCommand(options);
+
+  return `# Memento Mori Jester
+
+## Agent Instruction
+
+Before risky commands, final answers, commits, or large edits, call the Memento Mori Jester. Treat BLOCK as requiring a changed plan, and CAUTION as requiring at least one concrete verification step.
+
+## MCP
+
+Use \`memento-mori.mcp.json\` with an MCP client, or copy the command and args from it into the client's config.
+
+## Local Checks
+
+\`\`\`powershell
+${cliCommand} doctor
+${cliCommand} config validate
+${cliCommand} command "git reset --hard"
+git diff | ${cliCommand} diff --fail-on block
+\`\`\`
+
+## Git Hooks
+
+\`\`\`powershell
+${cliCommand} install-hook pre-commit
+${cliCommand} install-hook pre-push --fail-on caution
+\`\`\`
+`;
+}
+
 function nodeMajorVersion(): number {
   return Number.parseInt(process.versions.node.split(".")[0] ?? "0", 10);
 }
@@ -729,6 +920,7 @@ Usage:
   git diff | jester diff --fail-on block
   jester final --file final-answer.txt --tone professional
   jester init
+  jester bootstrap --preset node
   jester doctor
   jester config init
   jester config init --preset security
@@ -759,9 +951,10 @@ Setup options:
   --mode <npx|global|local>            MCP command style; default is npx
   --agent <generic|claude|codex>       Label the generated setup guidance
   --package <npm-or-git-spec>          Package spec used by npx mode
+  --hook <pre-commit|pre-push>         Install a hook during bootstrap; repeatable
 
 Hook options:
   --fail-on <caution|block>            Hook failure threshold; defaults to config hookFailOn or block
-  --force                              Replace an existing hook
+  --force                              Replace existing hooks or bootstrap files
 `;
 }

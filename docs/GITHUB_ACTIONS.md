@@ -2,6 +2,36 @@
 
 Use Memento Mori Jester in CI to review diffs before they merge.
 
+## Composite Action
+
+This repo can be used directly as a GitHub Action:
+
+```yaml
+name: Jester Review
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  jester:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Review diff
+        uses: Martin123132/Memento-Mori@main
+        with:
+          fail-on: block
+          subject: pull request diff
+```
+
+For pinned releases, replace `@main` with a tag such as `@v0.1.0`.
+
 ## Pull Request Diff Review
 
 Create `.github/workflows/jester.yml`:

@@ -1,0 +1,62 @@
+name: Memento Mori Jester
+description: Review a GitHub Actions diff with the Memento Mori Jester.
+
+inputs:
+  fail-on:
+    description: Verdict threshold that fails the workflow.
+    required: false
+    default: block
+  subject:
+    description: Human-readable subject passed to the review.
+    required: false
+    default: GitHub Actions diff
+  config:
+    description: Optional path to a jester config file.
+    required: false
+    default: ""
+  no-config:
+    description: Ignore discovered jester.config.json files.
+    required: false
+    default: "false"
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+
+    - name: Build Jester
+      shell: bash
+      run: |
+        cd "$GITHUB_ACTION_PATH"
+        npm ci
+        npm run build
+
+    - name: Review Diff
+      shell: bash
+      env:
+        FAIL_ON: ${{ inputs.fail-on }}
+        SUBJECT: ${{ inputs.subject }}
+        CONFIG: ${{ inputs.config }}
+        NO_CONFIG: ${{ inputs.no-config }}
+      run: |
+        set -euo pipefail
+
+        args=(diff --fail-on "$FAIL_ON" --subject "$SUBJECT")
+        if [ -n "$CONFIG" ]; then
+          args+=(--config "$CONFIG")
+        fi
+        if [ "$NO_CONFIG" = "true" ]; then
+          args+=(--no-config)
+        fi
+
+        if [ -n "${GITHUB_BASE_REF:-}" ]; then
+          git fetch origin "$GITHUB_BASE_REF" --depth=1
+          git diff --binary --no-ext-diff "origin/$GITHUB_BASE_REF...HEAD" \
+            | node "$GITHUB_ACTION_PATH/dist/cli.js" "${args[@]}"
+        else
+          git diff --binary --no-ext-diff HEAD~1..HEAD \
+            | node "$GITHUB_ACTION_PATH/dist/cli.js" "${args[@]}"
+        fi

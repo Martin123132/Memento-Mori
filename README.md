@@ -1,12 +1,22 @@
 # Memento Mori Jester
 
+[![CI](https://github.com/Martin123132/Memento-Mori/actions/workflows/ci.yml/badge.svg)](https://github.com/Martin123132/Memento-Mori/actions/workflows/ci.yml)
+[![npm version](https://img.shields.io/npm/v/memento-mori-jester.svg)](https://www.npmjs.com/package/memento-mori-jester)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 A local court-jester sidecar for AI coding agents. It reviews plans, shell commands, diffs, and final answers for overconfidence, missing verification, and obvious footguns.
 
 It roasts the reasoning, not the human.
 
 ## Try It
 
-Once published to npm:
+Run directly from GitHub now:
+
+```powershell
+npx -y github:Martin123132/Memento-Mori command "git reset --hard"
+```
+
+After npm publish:
 
 ```powershell
 npx -y memento-mori-jester@latest command "git reset --hard"
@@ -39,6 +49,12 @@ A dazzling command, if the desired outcome is court-sponsored regret.
 ## Setup Wizard
 
 For a copy-pasteable MCP config and suggested agent instruction:
+
+```powershell
+npx -y github:Martin123132/Memento-Mori init
+```
+
+After npm publish:
 
 ```powershell
 npx -y memento-mori-jester@latest init

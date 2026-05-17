@@ -37,7 +37,7 @@
     "build": "tsc -p tsconfig.json",
     "start": "node dist/server.js",
     "start:mcp": "node dist/server.js",
-    "test": "npm run build && node --test \"dist/**/*.test.js\"",
+    "test": "npm run build && node scripts/run-tests.mjs",
     "doctor": "node dist/cli.js doctor",
     "pack:dry": "npm pack --dry-run",
     "prepare": "npm run build",

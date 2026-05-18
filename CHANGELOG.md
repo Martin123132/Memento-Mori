@@ -4,6 +4,8 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.11
+
 - Added `jester github-action` for generating a ready-to-copy SARIF code-scanning workflow.
 
 ## 0.1.10

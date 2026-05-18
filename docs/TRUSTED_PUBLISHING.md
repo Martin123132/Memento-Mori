@@ -23,14 +23,12 @@ The workflow file must exist in `.github/workflows/`, which this repo now has.
 
 After the npm trusted publisher is configured:
 
-Pushing a new `v*` tag will publish to npm automatically.
-
-You can also publish manually:
-
 1. Open the GitHub repo.
 2. Go to `Actions`.
 3. Open `npm Publish`.
 4. Click `Run workflow`.
+
+The workflow is manual for now so tag pushes do not fail before npm trusted publishing is connected. After the npm package accepts the workflow as a trusted publisher, the workflow can be changed to run automatically on `v*` tags.
 
 The workflow installs dependencies, runs tests, and publishes the current package version to npm.
 

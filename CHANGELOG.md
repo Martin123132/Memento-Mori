@@ -4,6 +4,9 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+- Added `jester rules` and `jester rule <id>` for inspecting active built-in, structural, and project-config checks.
+- Added the generated SARIF workflow to this repo for dogfooding.
+
 ## 0.1.11
 
 - Added `jester github-action` for generating a ready-to-copy SARIF code-scanning workflow.

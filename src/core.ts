@@ -7,6 +7,7 @@ import {
   type RiskTolerance,
   type Tone,
   type UserJesterConfig,
+  reviewKinds,
   tones
 } from "./types.js";
 
@@ -14,6 +15,22 @@ export const defaultConfig: JesterConfig = {
   tone: "court_jester",
   intensity: 3,
   riskTolerance: "medium"
+};
+
+type RuleSource = "built-in" | "structural" | "project-config";
+
+export type RuleCatalogEntry = {
+  id: string;
+  severity: Issue["severity"];
+  title: string;
+  detail: string;
+  suggestedCheck: string;
+  kinds: ReviewKind[];
+  source: RuleSource;
+  matcher: "regex" | "heuristic" | "literal";
+  pattern?: string;
+  flags?: string;
+  value?: string;
 };
 
 type PatternRule = {
@@ -215,6 +232,63 @@ const diffRules: PatternRule[] = [
   }
 ];
 
+const structuralRules: RuleCatalogEntry[] = [
+  {
+    id: "missing-verification-step",
+    severity: 2,
+    title: "No verification step",
+    detail: "The plan changes behavior but does not say how the result will be checked.",
+    suggestedCheck: "Add the cheapest meaningful validation step before calling the work complete.",
+    kinds: ["plan"],
+    source: "structural",
+    matcher: "heuristic"
+  },
+  {
+    id: "large-removal",
+    severity: 2,
+    title: "Large removal with little replacement",
+    detail: "A large deletion may be correct, but it deserves a second look for lost behavior.",
+    suggestedCheck: "Review the deleted surface area and run tests that cover the removed code paths.",
+    kinds: ["diff"],
+    source: "structural",
+    matcher: "heuristic"
+  },
+  {
+    id: "wildcard-file-operation",
+    severity: 2,
+    title: "Wildcard file operation",
+    detail: "Wildcard moves or copies can quietly grab more than intended.",
+    suggestedCheck: "List the matched files first and confirm the destination before running the command.",
+    kinds: ["command"],
+    source: "structural",
+    matcher: "heuristic"
+  }
+];
+
+export function listRules(options: {
+  kind?: ReviewKind;
+  config?: UserJesterConfig;
+} = {}): RuleCatalogEntry[] {
+  const builtInRules = [
+    ...universalRules,
+    ...planRules,
+    ...finalRules,
+    ...diffRules
+  ].map((rule) => catalogEntryFromPatternRule(rule));
+  const rules = [
+    ...builtInRules,
+    ...structuralRules,
+    ...projectConfigRules(options.config)
+  ];
+
+  return rules
+    .filter((rule) => !options.kind || rule.kinds.includes(options.kind))
+    .sort((left, right) => {
+      const sourceOrder = sourceRank(left.source) - sourceRank(right.source);
+      return sourceOrder || right.severity - left.severity || left.id.localeCompare(right.id);
+    });
+}
+
 export function reviewPlan(plan: string, options: Partial<ReviewInput> = {}): ReviewResult {
   return review({ ...options, kind: "plan", content: plan });
 }
@@ -382,13 +456,7 @@ function findStructuralIssues(kind: ReviewKind, content: string): Issue[] {
     const mentionsVerification = /\b(test|verify|check|build|run|dry-run|snapshot|screenshot|backup|rollback)\b/i.test(content);
 
     if (soundsLikeImplementation && !mentionsVerification) {
-      issues.push({
-        id: "missing-verification-step",
-        severity: 2,
-        title: "No verification step",
-        detail: "The plan changes behavior but does not say how the result will be checked.",
-        suggestedCheck: "Add the cheapest meaningful validation step before calling the work complete."
-      });
+      issues.push(issueFromCatalogEntry(structuralRule("missing-verification-step")));
     }
   }
 
@@ -397,26 +465,14 @@ function findStructuralIssues(kind: ReviewKind, content: string): Issue[] {
     const addedLines = content.split(/\r?\n/).filter((line) => line.startsWith("+") && !line.startsWith("+++")).length;
 
     if (removedLines > 80 && addedLines < removedLines / 3) {
-      issues.push({
-        id: "large-removal",
-        severity: 2,
-        title: "Large removal with little replacement",
-        detail: "A large deletion may be correct, but it deserves a second look for lost behavior.",
-        suggestedCheck: "Review the deleted surface area and run tests that cover the removed code paths."
-      });
+      issues.push(issueFromCatalogEntry(structuralRule("large-removal")));
     }
   }
 
   if (kind === "command") {
     const hasWildcardMove = /\b(mv|move|Move-Item|Copy-Item|cp)\b[\s\S]*\*/i.test(content);
     if (hasWildcardMove) {
-      issues.push({
-        id: "wildcard-file-operation",
-        severity: 2,
-        title: "Wildcard file operation",
-        detail: "Wildcard moves or copies can quietly grab more than intended.",
-        suggestedCheck: "List the matched files first and confirm the destination before running the command."
-      });
+      issues.push(issueFromCatalogEntry(structuralRule("wildcard-file-operation")));
     }
   }
 
@@ -445,6 +501,119 @@ function findPatternIssues(text: string, kind: ReviewKind, rules: PatternRule[])
       }
     ];
   });
+}
+
+function catalogEntryFromPatternRule(rule: PatternRule): RuleCatalogEntry {
+  return {
+    id: rule.id,
+    severity: rule.severity,
+    title: rule.title,
+    detail: rule.detail,
+    suggestedCheck: rule.suggestedCheck,
+    kinds: rule.kinds ?? [...reviewKinds],
+    source: "built-in",
+    matcher: "regex",
+    pattern: rule.pattern.source,
+    flags: rule.pattern.flags || undefined
+  };
+}
+
+function projectConfigRules(config: UserJesterConfig | undefined): RuleCatalogEntry[] {
+  if (!config) {
+    return [];
+  }
+
+  const blockedCommandRules = (config.blockedCommands ?? []).flatMap((command) => {
+    const cleaned = command.trim();
+    if (!cleaned) {
+      return [];
+    }
+
+    return [
+      {
+        id: `blocked-command-${slugify(cleaned)}`,
+        severity: 5,
+        title: "Project-blocked command",
+        detail: "This command is listed in the project's jester config as blocked.",
+        suggestedCheck: "Use a safer command or get explicit project approval before running it.",
+        kinds: [...reviewKinds],
+        source: "project-config",
+        matcher: "literal",
+        value: cleaned
+      } satisfies RuleCatalogEntry
+    ];
+  });
+
+  const sensitiveDomainRules = (config.sensitiveDomains ?? []).flatMap((domain) => {
+    const cleaned = domain.trim();
+    if (!cleaned) {
+      return [];
+    }
+
+    return [
+      {
+        id: `configured-sensitive-domain-${slugify(cleaned)}`,
+        severity: 3,
+        title: "Project-sensitive domain touched",
+        detail: "This domain is listed in the project's jester config as sensitive.",
+        suggestedCheck: "Add a targeted test, manual verification note, or rollback plan for this project-sensitive area.",
+        kinds: [...reviewKinds],
+        source: "project-config",
+        matcher: "literal",
+        value: cleaned
+      } satisfies RuleCatalogEntry
+    ];
+  });
+
+  const customRules = (config.customRules ?? []).map((rule) => ({
+    id: `custom-${rule.id}`,
+    severity: rule.severity ?? 3,
+    title: rule.title ?? "Custom project rule matched",
+    detail: rule.detail ?? "A custom rule from the project's jester config matched this content.",
+    suggestedCheck: rule.suggestedCheck ?? "Review the matched project rule and add an explicit verification step.",
+    kinds: rule.kinds ?? [...reviewKinds],
+    source: "project-config",
+    matcher: "regex",
+    pattern: rule.pattern,
+    flags: rule.flags ?? "i"
+  } satisfies RuleCatalogEntry));
+
+  return [
+    ...blockedCommandRules,
+    ...sensitiveDomainRules,
+    ...customRules
+  ];
+}
+
+function structuralRule(id: string): RuleCatalogEntry {
+  const rule = structuralRules.find((entry) => entry.id === id);
+  if (!rule) {
+    throw new Error(`Unknown structural rule "${id}".`);
+  }
+
+  return rule;
+}
+
+function issueFromCatalogEntry(rule: RuleCatalogEntry): Issue {
+  return {
+    id: rule.id,
+    severity: rule.severity,
+    title: rule.title,
+    detail: rule.detail,
+    suggestedCheck: rule.suggestedCheck
+  };
+}
+
+function sourceRank(source: RuleSource): number {
+  if (source === "built-in") {
+    return 0;
+  }
+
+  if (source === "structural") {
+    return 1;
+  }
+
+  return 2;
 }
 
 function scoreIssues(issues: Issue[], riskTolerance: RiskTolerance): number {

@@ -26,6 +26,7 @@ jester explain command "git reset --hard"
 git diff | jester diff --fail-on block
 git diff | jester diff --sarif > jester.sarif
 jester examples
+jester rules --kind diff
 jester github-action --write
 ```
 
@@ -56,6 +57,19 @@ jester github-action --write --path .github/workflows/jester.yml
 ```
 
 Use `--fail-on caution`, `--subject`, or `--ref` to tune the generated workflow.
+
+## Rules
+
+List the checks the Jester can apply:
+
+```powershell
+jester rules
+jester rules --kind command
+jester rules --kind diff --json
+jester rule destructive-git-history
+```
+
+`rules` includes built-in regex checks, structural heuristics, and any active `jester.config.json` rules. Use `--no-config` to see only the built-in catalog, or `--config <path>` to inspect a specific project config.
 
 ## Explain
 

@@ -52,6 +52,7 @@ A dazzling command, if the desired outcome is court-sponsored regret.
 | Final answers | `jester final --file final.txt` | done/fixed claims without evidence |
 | Explanations | `jester explain command "git reset --hard"` | plain-language teaching notes for verdicts |
 | Examples | `jester examples` | copy-paste commands and links for new users |
+| Rules | `jester rules --kind diff` | visible rule catalog for built-in and project checks |
 | GitHub Actions | `jester github-action --write` | SARIF workflow for code scanning |
 | Agents | `jester mcp-config --mode npx` | MCP tools for Codex, Claude Code, and other clients |
 
@@ -120,6 +121,8 @@ jester final --file .\final-answer.txt --tone professional
 jester explain command "git reset --hard"
 jester doctor
 jester examples
+jester rules
+jester rule destructive-git-history
 jester github-action --write
 jester bootstrap --preset node
 jester config init
@@ -213,6 +216,15 @@ Structured output. SARIF is available in `v0.1.10` and later:
 jester command "git reset --hard" --json
 jester command "git reset --hard" --sarif
 git diff | jester diff --sarif > jester.sarif
+```
+
+Rule transparency:
+
+```powershell
+jester rules
+jester rules --kind diff
+jester rules --json
+jester rule destructive-git-history
 ```
 
 Presets layer extra rules on top of the default config:

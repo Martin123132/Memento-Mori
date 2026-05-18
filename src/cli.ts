@@ -16,7 +16,7 @@ import {
   type ConfigPreset,
   type PolicyLevel
 } from "./config.js";
-import { review, reviewCommand } from "./core.js";
+import { listRules, review, reviewCommand, type RuleCatalogEntry } from "./core.js";
 import { formatReview } from "./format.js";
 import {
   hookNames,
@@ -75,6 +75,14 @@ type PolicyCommandOptions = {
   force: boolean;
   path?: string;
   level: PolicyLevel;
+};
+
+type RulesCommandOptions = {
+  json: boolean;
+  kind?: ReviewKind;
+  id?: string;
+  configPath?: string;
+  noConfig: boolean;
 };
 
 type HookCommandOptions = {
@@ -148,6 +156,11 @@ async function main(argv: string[]): Promise<void> {
   if (argv[0] === "examples") {
     const setupOptions = parseSetupOptions(argv.slice(1));
     output.write(renderExamples(setupOptions));
+    return;
+  }
+
+  if (argv[0] === "rules" || argv[0] === "rule") {
+    output.write(await handleRulesCommand(argv[0], argv.slice(1)));
     return;
   }
 
@@ -357,6 +370,41 @@ function parsePolicyCommandOptions(argv: string[]): PolicyCommandOptions {
     } else if (!arg.startsWith("--") && isPolicyLevel(arg)) {
       options.level = arg;
     }
+  }
+
+  return options;
+}
+
+function parseRulesCommandOptions(command: "rules" | "rule", argv: string[]): RulesCommandOptions {
+  const options: RulesCommandOptions = {
+    json: false,
+    noConfig: false
+  };
+
+  for (let index = 0; index < argv.length; index += 1) {
+    const arg = argv[index];
+    const next = argv[index + 1];
+
+    if (arg === "--json") {
+      options.json = true;
+    } else if (arg === "--kind") {
+      options.kind = parseKind(requireValue(arg, next));
+      index += 1;
+    } else if (arg === "--id") {
+      options.id = requireValue(arg, next);
+      index += 1;
+    } else if (arg === "--config") {
+      options.configPath = requireValue(arg, next);
+      index += 1;
+    } else if (arg === "--no-config") {
+      options.noConfig = true;
+    } else if (!arg.startsWith("--") && !options.id) {
+      options.id = arg;
+    }
+  }
+
+  if (command === "rule" && !options.id) {
+    throw new Error('Missing rule id. Use "jester rule <id>" or "jester rules --id <id>".');
   }
 
   return options;
@@ -675,6 +723,7 @@ function renderExamples(options: SetupOptions): string {
       `git diff | ${cliCommand} diff --fail-on block`,
       `${cliCommand} final "Implemented the fix, but tests not run."`,
       `${cliCommand} explain command "git reset --hard"`,
+      `${cliCommand} rules --kind command`,
       `${cliCommand} github-action`
     ],
     setup: [
@@ -714,6 +763,96 @@ Example files:
 Docs:
 ${examples.docs.map((doc) => `  ${doc}`).join("\n")}
 `;
+}
+
+async function handleRulesCommand(command: "rules" | "rule", argv: string[]): Promise<string> {
+  const options = parseRulesCommandOptions(command, argv);
+  const loadedConfig = await loadConfig({
+    configPath: options.configPath,
+    search: !options.noConfig
+  });
+  const rules = listRules({
+    kind: options.kind,
+    config: loadedConfig.config
+  });
+  const matchedRules = options.id ? rules.filter((rule) => rule.id === options.id) : rules;
+
+  if (options.id && matchedRules.length === 0) {
+    throw new Error(`No rule found for "${options.id}". Run "jester rules" to list rule ids.`);
+  }
+
+  const result = {
+    configPath: loadedConfig.path,
+    kind: options.kind,
+    id: options.id,
+    count: matchedRules.length,
+    rules: matchedRules
+  };
+
+  if (options.json) {
+    return `${JSON.stringify(result, null, 2)}\n`;
+  }
+
+  return renderRules(result);
+}
+
+function renderRules(result: {
+  configPath?: string;
+  kind?: ReviewKind;
+  id?: string;
+  count: number;
+  rules: RuleCatalogEntry[];
+}): string {
+  const lines = [
+    result.id ? `Memento Mori Jester rule: ${result.id}` : "Memento Mori Jester rules",
+    "",
+    result.configPath ? `Project config: ${result.configPath}` : "Project config: none loaded",
+    `Kind: ${result.kind ?? "all"}`,
+    `Rules: ${result.count}`,
+    ""
+  ];
+
+  if (result.rules.length === 0) {
+    lines.push("No rules matched.", "");
+    return lines.join("\n");
+  }
+
+  const groups: Array<{ source: RuleCatalogEntry["source"]; label: string }> = [
+    { source: "built-in", label: "Built-in checks" },
+    { source: "structural", label: "Structural checks" },
+    { source: "project-config", label: "Project config checks" }
+  ];
+  const showMatcher = Boolean(result.id);
+
+  for (const group of groups) {
+    const rules = result.rules.filter((rule) => rule.source === group.source);
+    if (rules.length === 0) {
+      continue;
+    }
+
+    lines.push(group.label);
+    for (const rule of rules) {
+      lines.push(
+        `- ${rule.id} [S${rule.severity}] ${rule.kinds.join(", ")}`,
+        `  ${rule.title}`,
+        `  ${rule.detail}`,
+        `  Check: ${rule.suggestedCheck}`
+      );
+
+      if (showMatcher) {
+        if (rule.pattern) {
+          lines.push(`  Pattern: /${rule.pattern}/${rule.flags ?? ""}`);
+        } else if (rule.value) {
+          lines.push(`  Value: ${rule.value}`);
+        } else {
+          lines.push(`  Matcher: ${rule.matcher}`);
+        }
+      }
+    }
+    lines.push("");
+  }
+
+  return lines.join("\n");
 }
 
 async function handleGithubAction(argv: string[]): Promise<string> {
@@ -1314,6 +1453,9 @@ Usage:
   jester explain command "git reset --hard"
   jester init
   jester examples
+  jester rules
+  jester rules --kind diff
+  jester rule destructive-git-history
   jester github-action
   jester github-action --write
   jester bootstrap --preset node
@@ -1349,6 +1491,10 @@ Options:
   --level <team|strict>
   --sarif                             Output SARIF 2.1.0 for CI/code scanning
   --json
+
+Rules options:
+  --kind <plan|command|diff|final>     Filter visible rules by review kind
+  --id <rule-id>                       Show a single rule
 
 GitHub Action options:
   --write                             Write .github/workflows/memento-mori.yml

@@ -82,6 +82,70 @@ test("examples prints copy-paste onboarding commands", async () => {
   assert.match(stdout, /bootstrap --preset node/);
   assert.match(stdout, /examples\/codex/);
   assert.match(stdout, /github-action/);
+  assert.match(stdout, /rules --kind command/);
+});
+
+test("rules lists built-in and structural checks", async () => {
+  const { stdout } = await execFileAsync(process.execPath, [
+    cliPath,
+    "rules",
+    "--kind",
+    "plan",
+    "--no-config"
+  ]);
+
+  assert.match(stdout, /Memento Mori Jester rules/);
+  assert.match(stdout, /Built-in checks/);
+  assert.match(stdout, /destructive-git-history/);
+  assert.match(stdout, /Structural checks/);
+  assert.match(stdout, /missing-verification-step/);
+});
+
+test("rules supports json output and project config rules", async () => {
+  const cwd = await mkdtemp(join(tmpdir(), "jester-rules-"));
+  await writeFile(join(cwd, "jester.config.json"), `${JSON.stringify({
+    blockedCommands: ["deploy-prod"],
+    sensitiveDomains: ["billing"],
+    customRules: [
+      {
+        id: "must-mention-rollback",
+        pattern: "rollback",
+        severity: 3,
+        title: "Rollback mentioned",
+        kinds: ["plan"]
+      }
+    ]
+  }, null, 2)}\n`, "utf8");
+
+  const { stdout } = await execFileAsync(process.execPath, [
+    cliPath,
+    "rules",
+    "--kind",
+    "plan",
+    "--json"
+  ], { cwd });
+  const result = JSON.parse(stdout) as {
+    configPath?: string;
+    rules: Array<{ id: string; source: string; kinds: string[] }>;
+  };
+
+  assert.match(result.configPath ?? "", /jester\.config\.json$/);
+  assert.ok(result.rules.some((rule) => rule.id === "blocked-command-deploy-prod" && rule.source === "project-config"));
+  assert.ok(result.rules.some((rule) => rule.id === "configured-sensitive-domain-billing" && rule.source === "project-config"));
+  assert.ok(result.rules.some((rule) => rule.id === "custom-must-mention-rollback" && rule.kinds.includes("plan")));
+});
+
+test("rule shows one rule with matcher detail", async () => {
+  const { stdout } = await execFileAsync(process.execPath, [
+    cliPath,
+    "rule",
+    "destructive-git-history",
+    "--no-config"
+  ]);
+
+  assert.match(stdout, /Memento Mori Jester rule: destructive-git-history/);
+  assert.match(stdout, /Pattern:/);
+  assert.doesNotMatch(stdout, /pipe-to-shell/);
 });
 
 test("github-action prints a SARIF code scanning workflow", async () => {

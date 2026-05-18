@@ -18,6 +18,8 @@ npx -y memento-mori-jester@latest github-action --write
 
 The generated workflow reviews pull request diffs, writes `jester.sarif`, and uploads it with `github/codeql-action/upload-sarif@v3`.
 
+This repository dogfoods that generated workflow in [.github/workflows/memento-mori.yml](../.github/workflows/memento-mori.yml).
+
 ## Composite Action
 
 This repo can be used directly as a GitHub Action:

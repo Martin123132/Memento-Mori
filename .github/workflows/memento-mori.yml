@@ -1,0 +1,35 @@
+name: Memento Mori Jester
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: read
+  security-events: write
+
+jobs:
+  jester:
+    name: Jester SARIF review
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Review diff as SARIF
+        uses: Martin123132/Memento-Mori@main
+        with:
+          format: sarif
+          output-file: jester.sarif
+          fail-on: block
+          subject: 'pull request diff'
+
+      - name: Upload Jester SARIF
+        if: always() && hashFiles('jester.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: jester.sarif

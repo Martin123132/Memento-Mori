@@ -4,6 +4,8 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.13
+
 - Added `disabledRules` config support for disabling noisy checks by rule id.
 
 ## 0.1.12

@@ -4,9 +4,10 @@
 
 ```powershell
 npx -y memento-mori-jester@latest init --agent claude
+npx -y memento-mori-jester@latest mcp-config --agent claude --mode npx
 ```
 
-Copy the generated command and args into Claude Code's MCP configuration.
+Copy the generated Claude Code config, or the command and args, into Claude Code's MCP configuration.
 
 The default server command is:
 

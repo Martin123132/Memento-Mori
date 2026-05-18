@@ -22,19 +22,32 @@ After that, use `jester` directly:
 ```powershell
 jester command "Remove-Item .\dist -Recurse -Force"
 jester final --file .\final-answer.txt --tone professional
+jester explain command "git reset --hard"
 git diff | jester diff --fail-on block
 jester examples
 ```
 
 ## Examples
 
-Print a compact list of copy-paste commands and setup links. This command is available in local checkouts now and will be available through `npx` after the next npm release:
+Print a compact list of copy-paste commands and setup links:
 
 ```powershell
 jester examples
 jester examples --agent codex --mode npx
 jester examples --json
 ```
+
+## Explain
+
+Turn a review verdict into a short teaching note:
+
+```powershell
+jester explain command "git reset --hard"
+jester explain plan "I will just refactor auth and ship it"
+jester explain final --file .\final-answer.txt --json
+```
+
+`explain` accepts the same review options as `plan`, `command`, `diff`, and `final`.
 
 ## Bootstrap A Repo
 
@@ -54,6 +67,7 @@ Use `--json` when another tool needs to parse the result:
 
 ```powershell
 jester command "git reset --hard" --json
+jester explain command "git reset --hard" --json
 jester config validate --json
 jester bootstrap --preset node --json
 ```

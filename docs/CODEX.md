@@ -4,6 +4,7 @@
 
 ```powershell
 npx -y memento-mori-jester@latest init --agent codex
+npx -y memento-mori-jester@latest mcp-config --agent codex --mode npx
 ```
 
 Copy the generated `mcpServers` block into your Codex MCP configuration.

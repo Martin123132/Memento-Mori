@@ -75,6 +75,7 @@ Use:
 
 ```powershell
 npx -y memento-mori-jester@latest init --agent codex
+npx -y memento-mori-jester@latest mcp-config --agent codex --mode npx
 ```
 
 Then paste the generated `mcpServers` block wherever your Codex MCP configuration is kept. For local development:
@@ -89,9 +90,10 @@ Use:
 
 ```powershell
 npx -y memento-mori-jester@latest init --agent claude
+npx -y memento-mori-jester@latest mcp-config --agent claude --mode npx
 ```
 
-Then paste the generated `mcpServers` block into Claude Code's MCP configuration. If Claude Code asks for a command and args separately, keep the generated values exactly.
+Then paste the generated Claude Code config into Claude Code's MCP configuration. If Claude Code asks for a command and args separately, keep the generated values exactly.
 
 ## Generic MCP Clients
 

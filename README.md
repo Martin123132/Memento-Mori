@@ -44,6 +44,7 @@ A dazzling command, if the desired outcome is court-sponsored regret.
 | Commands | `jester command "git reset --hard"` | destructive shell commands and broad file operations |
 | Diffs | `git diff \| jester diff --fail-on block` | removed tests, install scripts, env/config risks |
 | Final answers | `jester final --file final.txt` | done/fixed claims without evidence |
+| Explanations | `jester explain command "git reset --hard"` | plain-language teaching notes for verdicts |
 | Examples | `jester examples` | copy-paste commands and links for new users |
 | Agents | `jester mcp-config --mode npx` | MCP tools for Codex, Claude Code, and other clients |
 
@@ -108,12 +109,14 @@ jester plan "I will just refactor auth and ship it"
 jester command "git reset --hard"
 git diff | jester diff --fail-on block
 jester final --file .\final-answer.txt --tone professional
+jester explain command "git reset --hard"
 jester doctor
 jester examples
 jester bootstrap --preset node
 jester config init
 jester install-hook pre-commit
 jester mcp-config --mode npx
+jester mcp-config --agent claude --mode npx
 ```
 
 The package-name binary works too:
@@ -238,6 +241,8 @@ Generate config:
 
 ```powershell
 jester mcp-config --mode npx
+jester mcp-config --agent codex --mode npx
+jester mcp-config --agent claude --mode npx
 jester mcp-config --mode global
 jester mcp-config --mode local
 ```

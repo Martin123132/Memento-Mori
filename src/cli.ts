@@ -16,7 +16,7 @@ import {
   uninstallHook,
   type HookName
 } from "./hooks.js";
-import { type HookFailOn, type ReviewInput, type ReviewKind, reviewKinds, type RiskTolerance, type Tone, tones } from "./types.js";
+import { type HookFailOn, type ReviewInput, type ReviewKind, type ReviewResult, reviewKinds, type RiskTolerance, type Tone, tones } from "./types.js";
 
 const packageSpecDefault = "memento-mori-jester@latest";
 
@@ -115,6 +115,11 @@ async function main(argv: string[]): Promise<void> {
   if (argv[0] === "examples") {
     const setupOptions = parseSetupOptions(argv.slice(1));
     output.write(renderExamples(setupOptions));
+    return;
+  }
+
+  if (argv[0] === "explain") {
+    output.write(await handleExplain(argv.slice(1)));
     return;
   }
 
@@ -459,11 +464,17 @@ function requireValue(flag: string, value: string | undefined): string {
 }
 
 function mcpConfigSnippet(options: SetupOptions): Record<string, unknown> {
+  const spec = mcpCommandSpec(options);
+
+  if (options.agent === "claude") {
+    return {
+      "memento-mori-jester": spec
+    };
+  }
+
   return {
     mcpServers: {
-      "memento-mori-jester": {
-        ...mcpCommandSpec(options)
-      }
+      "memento-mori-jester": spec
     }
   };
 }
@@ -533,11 +544,12 @@ function renderExamples(options: SetupOptions): string {
       `${cliCommand} command "git reset --hard"`,
       `${cliCommand} plan "I will just refactor auth and ship it"`,
       `git diff | ${cliCommand} diff --fail-on block`,
-      `${cliCommand} final "Implemented the fix, but tests not run."`
+      `${cliCommand} final "Implemented the fix, but tests not run."`,
+      `${cliCommand} explain command "git reset --hard"`
     ],
     setup: [
       `${cliCommand} init --agent ${options.agent} --mode ${options.mode}`,
-      `${cliCommand} mcp-config --mode ${options.mode}`,
+      `${cliCommand} mcp-config --agent ${options.agent} --mode ${options.mode}`,
       `${cliCommand} bootstrap --preset node`,
       `${cliCommand} bootstrap --preset node --hook pre-commit`
     ],
@@ -570,6 +582,77 @@ Example files:
 Docs:
 ${examples.docs.map((doc) => `  ${doc}`).join("\n")}
 `;
+}
+
+async function handleExplain(argv: string[]): Promise<string> {
+  const { command, rest } = splitCommand(argv);
+  const options = parseOptions(rest);
+  const kind = resolveKind(command, options.kind);
+  const content = await resolveContent(options, rest);
+
+  if (!content.trim()) {
+    throw new Error("Nothing to explain. Pass text, use --file, or pipe content on stdin.");
+  }
+
+  const loadedConfig = await loadConfig({
+    configPath: options.configPath,
+    search: !options.noConfig
+  });
+  const inputForReview: ReviewInput = {
+    kind,
+    content,
+    subject: options.subject,
+    context: options.context,
+    tone: options.tone,
+    intensity: options.intensity,
+    riskTolerance: options.riskTolerance,
+    config: loadedConfig.config
+  };
+  const result = review(inputForReview);
+  const explanation = renderExplanation(result);
+
+  if (options.json) {
+    return `${JSON.stringify({ review: result, explanation }, null, 2)}\n`;
+  }
+
+  return `${explanation}\n`;
+}
+
+function renderExplanation(result: ReviewResult): string {
+  const verdictLine: Record<ReviewResult["verdict"], string> = {
+    pass: "No obvious concern was found. This is permission to proceed carefully, not proof that nothing can go wrong.",
+    caution: "There is enough risk here to slow down and add evidence before proceeding.",
+    block: "This should change before it is run, shipped, or claimed as done."
+  };
+  const lines = [
+    `Jester explanation: ${result.verdict.toUpperCase()} (${result.riskScore}/100)`,
+    "",
+    `What this means: ${verdictLine[result.verdict]}`
+  ];
+
+  if (result.issues.length > 0) {
+    lines.push(
+      "",
+      "Why:",
+      ...result.issues.slice(0, 4).map((issue) => `- [S${issue.severity}] ${issue.title}: ${issue.detail}`)
+    );
+  } else {
+    lines.push("", "Why:", "- No matching risky pattern or structural warning fired.");
+  }
+
+  const nextChecks = result.suggestedChecks.length > 0
+    ? result.suggestedChecks
+    : ["Run the smallest meaningful check for the work before calling it finished."];
+
+  lines.push(
+    "",
+    "Do next:",
+    ...nextChecks.slice(0, 4).map((check) => `- ${check}`),
+    "",
+    result.memento
+  );
+
+  return lines.join("\n");
 }
 
 function renderCliCommand(options: SetupOptions): string {
@@ -972,6 +1055,7 @@ Usage:
   jester command "Remove-Item .\\\\dist -Recurse -Force"
   git diff | jester diff --fail-on block
   jester final --file final-answer.txt --tone professional
+  jester explain command "git reset --hard"
   jester init
   jester examples
   jester bootstrap --preset node
@@ -984,7 +1068,8 @@ Usage:
   jester install-hook pre-commit
   jester install-hook pre-push --fail-on caution
   jester hook-status
-  jester mcp-config --mode npx
+  jester mcp-config --agent codex --mode npx
+  jester mcp-config --agent claude --mode npx
   jester mcp-server
 
 Options:

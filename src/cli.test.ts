@@ -82,3 +82,53 @@ test("examples prints copy-paste onboarding commands", async () => {
   assert.match(stdout, /bootstrap --preset node/);
   assert.match(stdout, /examples\/codex/);
 });
+
+test("explain turns a verdict into a teaching note", async () => {
+  const { stdout } = await execFileAsync(process.execPath, [
+    cliPath,
+    "explain",
+    "command",
+    "git reset --hard"
+  ]);
+
+  assert.match(stdout, /Jester explanation: BLOCK/);
+  assert.match(stdout, /What this means:/);
+  assert.match(stdout, /Destructive git operation/);
+  assert.match(stdout, /Do next:/);
+});
+
+test("explain supports json output", async () => {
+  const { stdout } = await execFileAsync(process.execPath, [
+    cliPath,
+    "explain",
+    "final",
+    "--json",
+    "Implemented the fix, but tests not run."
+  ]);
+  const result = JSON.parse(stdout) as {
+    review: { verdict: string };
+    explanation: string;
+  };
+
+  assert.equal(result.review.verdict, "caution");
+  assert.match(result.explanation, /Jester explanation: CAUTION/);
+});
+
+test("mcp-config can render Claude Code shape", async () => {
+  const { stdout } = await execFileAsync(process.execPath, [
+    cliPath,
+    "mcp-config",
+    "--agent",
+    "claude",
+    "--mode",
+    "npx"
+  ]);
+  const config = JSON.parse(stdout) as {
+    "memento-mori-jester": { command: string; args: string[] };
+    mcpServers?: unknown;
+  };
+
+  assert.equal(config["memento-mori-jester"].command, "npx");
+  assert.ok(config["memento-mori-jester"].args.includes("memento-mori-jester@latest"));
+  assert.equal(config.mcpServers, undefined);
+});

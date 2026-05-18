@@ -66,3 +66,19 @@ test("bootstrap can install a git hook", async () => {
 
   assert.match(hook, /memento-mori-jester managed hook/);
 });
+
+test("examples prints copy-paste onboarding commands", async () => {
+  const { stdout } = await execFileAsync(process.execPath, [
+    cliPath,
+    "examples",
+    "--mode",
+    "local",
+    "--agent",
+    "codex"
+  ]);
+
+  assert.match(stdout, /Memento Mori Jester examples/);
+  assert.match(stdout, /command "git reset --hard"/);
+  assert.match(stdout, /bootstrap --preset node/);
+  assert.match(stdout, /examples\/codex/);
+});

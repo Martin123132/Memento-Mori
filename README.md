@@ -44,6 +44,7 @@ A dazzling command, if the desired outcome is court-sponsored regret.
 | Commands | `jester command "git reset --hard"` | destructive shell commands and broad file operations |
 | Diffs | `git diff \| jester diff --fail-on block` | removed tests, install scripts, env/config risks |
 | Final answers | `jester final --file final.txt` | done/fixed claims without evidence |
+| Examples | `jester examples` | copy-paste commands and links for new users |
 | Agents | `jester mcp-config --mode npx` | MCP tools for Codex, Claude Code, and other clients |
 
 ## Try It Locally
@@ -108,6 +109,7 @@ jester command "git reset --hard"
 git diff | jester diff --fail-on block
 jester final --file .\final-answer.txt --tone professional
 jester doctor
+jester examples
 jester bootstrap --preset node
 jester config init
 jester install-hook pre-commit

@@ -4,6 +4,7 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+- Added `jester examples` for copy-paste onboarding commands and example links.
 - Polished the README homepage around the shortest npm path.
 - Added MCP tool input/output reference docs.
 - Added a fuller demo transcript.

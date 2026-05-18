@@ -23,6 +23,17 @@ After that, use `jester` directly:
 jester command "Remove-Item .\dist -Recurse -Force"
 jester final --file .\final-answer.txt --tone professional
 git diff | jester diff --fail-on block
+jester examples
+```
+
+## Examples
+
+Print a compact list of copy-paste commands and setup links. This command is available in local checkouts now and will be available through `npx` after the next npm release:
+
+```powershell
+jester examples
+jester examples --agent codex --mode npx
+jester examples --json
 ```
 
 ## Bootstrap A Repo

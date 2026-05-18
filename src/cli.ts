@@ -112,6 +112,12 @@ async function main(argv: string[]): Promise<void> {
     return;
   }
 
+  if (argv[0] === "examples") {
+    const setupOptions = parseSetupOptions(argv.slice(1));
+    output.write(renderExamples(setupOptions));
+    return;
+  }
+
   if (argv[0] === "config") {
     output.write(await handleConfigCommand(argv.slice(1)));
     return;
@@ -519,6 +525,53 @@ Useful next checks:
 `;
 }
 
+function renderExamples(options: SetupOptions): string {
+  const cliCommand = renderCliCommand(options);
+  const examples = {
+    quickChecks: [
+      `${cliCommand} doctor`,
+      `${cliCommand} command "git reset --hard"`,
+      `${cliCommand} plan "I will just refactor auth and ship it"`,
+      `git diff | ${cliCommand} diff --fail-on block`,
+      `${cliCommand} final "Implemented the fix, but tests not run."`
+    ],
+    setup: [
+      `${cliCommand} init --agent ${options.agent} --mode ${options.mode}`,
+      `${cliCommand} mcp-config --mode ${options.mode}`,
+      `${cliCommand} bootstrap --preset node`,
+      `${cliCommand} bootstrap --preset node --hook pre-commit`
+    ],
+    docs: [
+      "https://github.com/Martin123132/Memento-Mori/blob/main/docs/GETTING_STARTED.md",
+      "https://github.com/Martin123132/Memento-Mori/blob/main/docs/CLI.md",
+      "https://github.com/Martin123132/Memento-Mori/blob/main/docs/MCP_TOOLS.md",
+      "https://github.com/Martin123132/Memento-Mori/tree/main/examples"
+    ]
+  };
+
+  if (options.json) {
+    return `${JSON.stringify({ mode: options.mode, agent: options.agent, examples }, null, 2)}\n`;
+  }
+
+  return `Memento Mori Jester examples
+
+Quick checks:
+${examples.quickChecks.map((command) => `  ${command}`).join("\n")}
+
+Setup:
+${examples.setup.map((command) => `  ${command}`).join("\n")}
+
+Example files:
+  Codex: https://github.com/Martin123132/Memento-Mori/tree/main/examples/codex
+  Claude Code: https://github.com/Martin123132/Memento-Mori/tree/main/examples/claude-code
+  Generic MCP: https://github.com/Martin123132/Memento-Mori/tree/main/examples/generic-mcp
+  Git hooks only: https://github.com/Martin123132/Memento-Mori/tree/main/examples/git-hooks-only
+
+Docs:
+${examples.docs.map((doc) => `  ${doc}`).join("\n")}
+`;
+}
+
 function renderCliCommand(options: SetupOptions): string {
   if (options.mode === "global") {
     return "jester";
@@ -920,6 +973,7 @@ Usage:
   git diff | jester diff --fail-on block
   jester final --file final-answer.txt --tone professional
   jester init
+  jester examples
   jester bootstrap --preset node
   jester doctor
   jester config init

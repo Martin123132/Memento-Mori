@@ -28,6 +28,7 @@ export type RuleCatalogEntry = {
   kinds: ReviewKind[];
   source: RuleSource;
   matcher: "regex" | "heuristic" | "literal";
+  enabled: boolean;
   pattern?: string;
   flags?: string;
   value?: string;
@@ -241,7 +242,8 @@ const structuralRules: RuleCatalogEntry[] = [
     suggestedCheck: "Add the cheapest meaningful validation step before calling the work complete.",
     kinds: ["plan"],
     source: "structural",
-    matcher: "heuristic"
+    matcher: "heuristic",
+    enabled: true
   },
   {
     id: "large-removal",
@@ -251,7 +253,8 @@ const structuralRules: RuleCatalogEntry[] = [
     suggestedCheck: "Review the deleted surface area and run tests that cover the removed code paths.",
     kinds: ["diff"],
     source: "structural",
-    matcher: "heuristic"
+    matcher: "heuristic",
+    enabled: true
   },
   {
     id: "wildcard-file-operation",
@@ -261,7 +264,8 @@ const structuralRules: RuleCatalogEntry[] = [
     suggestedCheck: "List the matched files first and confirm the destination before running the command.",
     kinds: ["command"],
     source: "structural",
-    matcher: "heuristic"
+    matcher: "heuristic",
+    enabled: true
   }
 ];
 
@@ -275,11 +279,11 @@ export function listRules(options: {
     ...finalRules,
     ...diffRules
   ].map((rule) => catalogEntryFromPatternRule(rule));
-  const rules = [
+  const rules = markDisabledRules([
     ...builtInRules,
     ...structuralRules,
     ...projectConfigRules(options.config)
-  ];
+  ], options.config?.disabledRules);
 
   return rules
     .filter((rule) => !options.kind || rule.kinds.includes(options.kind))
@@ -312,12 +316,12 @@ export function review(input: ReviewInput): ReviewResult {
   const subject = input.subject?.trim() || defaultSubject(input.kind);
   const combined = [input.subject, input.context, input.content].filter(Boolean).join("\n\n");
 
-  const issues = dedupeIssues([
+  const issues = filterDisabledIssues(dedupeIssues([
     ...findPatternIssues(combined, input.kind, universalRules),
     ...findKindIssues(combined, input.kind),
     ...findStructuralIssues(input.kind, input.content),
     ...findConfigIssues(combined, input.kind, input.config)
-  ]);
+  ]), input.config?.disabledRules);
 
   const riskScore = scoreIssues(issues, riskTolerance);
   const verdict = riskScore >= 72 || issues.some((issue) => issue.severity === 5) ? "block" : riskScore >= 18 ? "caution" : "pass";
@@ -513,6 +517,7 @@ function catalogEntryFromPatternRule(rule: PatternRule): RuleCatalogEntry {
     kinds: rule.kinds ?? [...reviewKinds],
     source: "built-in",
     matcher: "regex",
+    enabled: true,
     pattern: rule.pattern.source,
     flags: rule.pattern.flags || undefined
   };
@@ -539,6 +544,7 @@ function projectConfigRules(config: UserJesterConfig | undefined): RuleCatalogEn
         kinds: [...reviewKinds],
         source: "project-config",
         matcher: "literal",
+        enabled: true,
         value: cleaned
       } satisfies RuleCatalogEntry
     ];
@@ -560,6 +566,7 @@ function projectConfigRules(config: UserJesterConfig | undefined): RuleCatalogEn
         kinds: [...reviewKinds],
         source: "project-config",
         matcher: "literal",
+        enabled: true,
         value: cleaned
       } satisfies RuleCatalogEntry
     ];
@@ -574,6 +581,7 @@ function projectConfigRules(config: UserJesterConfig | undefined): RuleCatalogEn
     kinds: rule.kinds ?? [...reviewKinds],
     source: "project-config",
     matcher: "regex",
+    enabled: true,
     pattern: rule.pattern,
     flags: rule.flags ?? "i"
   } satisfies RuleCatalogEntry));
@@ -602,6 +610,31 @@ function issueFromCatalogEntry(rule: RuleCatalogEntry): Issue {
     detail: rule.detail,
     suggestedCheck: rule.suggestedCheck
   };
+}
+
+function markDisabledRules(rules: RuleCatalogEntry[], disabledRules: string[] | undefined): RuleCatalogEntry[] {
+  return rules.map((rule) => ({
+    ...rule,
+    enabled: !isRuleDisabled(rule.id, disabledRules)
+  }));
+}
+
+function filterDisabledIssues(issues: Issue[], disabledRules: string[] | undefined): Issue[] {
+  if (!disabledRules || disabledRules.length === 0) {
+    return issues;
+  }
+
+  return issues.filter((issue) => !isRuleDisabled(issue.id, disabledRules));
+}
+
+function isRuleDisabled(id: string, disabledRules: string[] | undefined): boolean {
+  if (!disabledRules || disabledRules.length === 0) {
+    return false;
+  }
+
+  const normalized = new Set(disabledRules.map((rule) => rule.trim().toLocaleLowerCase()).filter(Boolean));
+  const candidate = id.toLocaleLowerCase();
+  return normalized.has(candidate) || (candidate.startsWith("custom-") && normalized.has(candidate.slice("custom-".length)));
 }
 
 function sourceRank(source: RuleSource): number {

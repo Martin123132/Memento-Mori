@@ -169,6 +169,7 @@ Example:
   "intensity": 3,
   "riskTolerance": "medium",
   "hookFailOn": "block",
+  "disabledRules": [],
   "blockedCommands": [
     "git reset --hard",
     "git clean -fd"
@@ -225,6 +226,14 @@ jester rules
 jester rules --kind diff
 jester rules --json
 jester rule destructive-git-history
+```
+
+Disable a noisy rule by adding its id to `disabledRules` in `jester.config.json`:
+
+```json
+{
+  "disabledRules": ["console-log"]
+}
 ```
 
 Presets layer extra rules on top of the default config:

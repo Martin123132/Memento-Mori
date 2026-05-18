@@ -40,6 +40,7 @@ export interface UserJesterConfig {
   riskTolerance?: RiskTolerance;
   blockedCommands?: string[];
   sensitiveDomains?: string[];
+  disabledRules?: string[];
   customRules?: CustomRuleConfig[];
   hookFailOn?: HookFailOn;
 }

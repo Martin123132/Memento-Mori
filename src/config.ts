@@ -47,6 +47,7 @@ const configSchema = z.object({
   riskTolerance: z.enum(["low", "medium", "high"]).optional(),
   blockedCommands: z.array(z.string().min(1)).optional(),
   sensitiveDomains: z.array(z.string().min(1)).optional(),
+  disabledRules: z.array(z.string().min(1)).optional(),
   customRules: z.array(customRuleSchema).optional(),
   hookFailOn: z.enum(["caution", "block"]).optional()
 }).passthrough();
@@ -162,6 +163,7 @@ export function defaultUserConfig(): UserJesterConfig {
     intensity: 3,
     riskTolerance: "medium",
     hookFailOn: "block",
+    disabledRules: [],
     blockedCommands: [
       "git reset --hard",
       "git clean -fd"
@@ -423,6 +425,7 @@ function mergeConfigs(base: UserJesterConfig, extra: UserJesterConfig): UserJest
     ...extra,
     blockedCommands: mergeStringArrays(base.blockedCommands, extra.blockedCommands),
     sensitiveDomains: mergeStringArrays(base.sensitiveDomains, extra.sensitiveDomains),
+    disabledRules: mergeStringArrays(base.disabledRules, extra.disabledRules),
     customRules: [
       ...(base.customRules ?? []),
       ...(extra.customRules ?? [])
@@ -432,7 +435,7 @@ function mergeConfigs(base: UserJesterConfig, extra: UserJesterConfig): UserJest
 
 function mergeStringArrays(left: string[] | undefined, right: string[] | undefined): string[] | undefined {
   const merged = [...new Set([...(left ?? []), ...(right ?? [])])];
-  return merged.length > 0 ? merged : undefined;
+  return merged.length > 0 ? merged : left || right ? [] : undefined;
 }
 
 async function fileExists(path: string): Promise<boolean> {

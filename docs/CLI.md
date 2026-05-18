@@ -71,6 +71,16 @@ jester rule destructive-git-history
 
 `rules` includes built-in regex checks, structural heuristics, and any active `jester.config.json` rules. Use `--no-config` to see only the built-in catalog, or `--config <path>` to inspect a specific project config.
 
+If a rule is too noisy for a repo, add its id to `disabledRules` in `jester.config.json`:
+
+```json
+{
+  "disabledRules": ["console-log"]
+}
+```
+
+Disabled rules still appear in `jester rules` as `[disabled]`, but they no longer affect review verdicts.
+
 ## Explain
 
 Turn a review verdict into a short teaching note:

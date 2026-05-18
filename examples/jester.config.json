@@ -3,6 +3,7 @@
   "intensity": 3,
   "riskTolerance": "medium",
   "hookFailOn": "block",
+  "disabledRules": [],
   "blockedCommands": [
     "git reset --hard",
     "git clean -fd"

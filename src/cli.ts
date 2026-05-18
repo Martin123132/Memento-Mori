@@ -809,6 +809,7 @@ function renderRules(result: {
     result.configPath ? `Project config: ${result.configPath}` : "Project config: none loaded",
     `Kind: ${result.kind ?? "all"}`,
     `Rules: ${result.count}`,
+    `Enabled: ${result.rules.filter((rule) => rule.enabled).length}`,
     ""
   ];
 
@@ -833,7 +834,7 @@ function renderRules(result: {
     lines.push(group.label);
     for (const rule of rules) {
       lines.push(
-        `- ${rule.id} [S${rule.severity}] ${rule.kinds.join(", ")}`,
+        `- ${rule.id} [S${rule.severity}] ${rule.kinds.join(", ")}${rule.enabled ? "" : " [disabled]"}`,
         `  ${rule.title}`,
         `  ${rule.detail}`,
         `  Check: ${rule.suggestedCheck}`

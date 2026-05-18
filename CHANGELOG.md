@@ -4,6 +4,8 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+- Added `disabledRules` config support for disabling noisy checks by rule id.
+
 ## 0.1.12
 
 - Added `jester rules` and `jester rule <id>` for inspecting active built-in, structural, and project-config checks.

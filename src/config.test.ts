@@ -9,13 +9,15 @@ test("loads jester.config.json from the working tree", async () => {
   const cwd = await mkdtemp(join(tmpdir(), "jester-config-"));
   await writeFile(join(cwd, "jester.config.json"), JSON.stringify({
     tone: "professional",
-    blockedCommands: ["deploy-prod"]
+    blockedCommands: ["deploy-prod"],
+    disabledRules: ["risky-domain"]
   }), "utf8");
 
   const loaded = await loadConfig({ cwd });
 
   assert.equal(loaded.config.tone, "professional");
   assert.deepEqual(loaded.config.blockedCommands, ["deploy-prod"]);
+  assert.deepEqual(loaded.config.disabledRules, ["risky-domain"]);
   assert.match(loaded.path ?? "", /jester\.config\.json$/);
 });
 
@@ -32,6 +34,7 @@ test("builds node preset on top of default config", () => {
 
   assert.ok(config.blockedCommands?.includes("git reset --hard"));
   assert.ok(config.blockedCommands?.includes("npm unpublish"));
+  assert.deepEqual(config.disabledRules, []);
   assert.ok(config.customRules?.some((rule) => rule.id === "node-install-script-change"));
 });
 

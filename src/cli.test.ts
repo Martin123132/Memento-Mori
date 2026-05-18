@@ -106,6 +106,7 @@ test("rules supports json output and project config rules", async () => {
   await writeFile(join(cwd, "jester.config.json"), `${JSON.stringify({
     blockedCommands: ["deploy-prod"],
     sensitiveDomains: ["billing"],
+    disabledRules: ["custom-must-mention-rollback"],
     customRules: [
       {
         id: "must-mention-rollback",
@@ -126,24 +127,28 @@ test("rules supports json output and project config rules", async () => {
   ], { cwd });
   const result = JSON.parse(stdout) as {
     configPath?: string;
-    rules: Array<{ id: string; source: string; kinds: string[] }>;
+    rules: Array<{ id: string; source: string; kinds: string[]; enabled: boolean }>;
   };
 
   assert.match(result.configPath ?? "", /jester\.config\.json$/);
   assert.ok(result.rules.some((rule) => rule.id === "blocked-command-deploy-prod" && rule.source === "project-config"));
   assert.ok(result.rules.some((rule) => rule.id === "configured-sensitive-domain-billing" && rule.source === "project-config"));
-  assert.ok(result.rules.some((rule) => rule.id === "custom-must-mention-rollback" && rule.kinds.includes("plan")));
+  assert.ok(result.rules.some((rule) => rule.id === "custom-must-mention-rollback" && rule.kinds.includes("plan") && !rule.enabled));
 });
 
 test("rule shows one rule with matcher detail", async () => {
+  const cwd = await mkdtemp(join(tmpdir(), "jester-rule-"));
+  await writeFile(join(cwd, "jester.config.json"), `${JSON.stringify({
+    disabledRules: ["destructive-git-history"]
+  }, null, 2)}\n`, "utf8");
   const { stdout } = await execFileAsync(process.execPath, [
     cliPath,
     "rule",
-    "destructive-git-history",
-    "--no-config"
-  ]);
+    "destructive-git-history"
+  ], { cwd });
 
   assert.match(stdout, /Memento Mori Jester rule: destructive-git-history/);
+  assert.match(stdout, /\[disabled\]/);
   assert.match(stdout, /Pattern:/);
   assert.doesNotMatch(stdout, /pipe-to-shell/);
 });

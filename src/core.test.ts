@@ -69,6 +69,17 @@ test("blocks commands listed in project config", () => {
   assert.ok(result.issues.some((issue) => issue.id === "blocked-command-deploy-prod"));
 });
 
+test("disabled rules do not affect review verdicts", () => {
+  const result = reviewCommand("git reset --hard", {
+    config: {
+      disabledRules: ["destructive-git-history"]
+    }
+  });
+
+  assert.equal(result.verdict, "pass");
+  assert.ok(!result.issues.some((issue) => issue.id === "destructive-git-history"));
+});
+
 test("applies custom project rules", () => {
   const result = reviewPlan("I will update the payroll exporter.", {
     config: {
@@ -88,4 +99,26 @@ test("applies custom project rules", () => {
 
   assert.equal(result.verdict, "caution");
   assert.ok(result.issues.some((issue) => issue.id === "custom-payroll-needs-review"));
+});
+
+test("custom rules can be disabled by raw or generated id", () => {
+  const result = reviewPlan("I will update the payroll exporter.", {
+    config: {
+      disabledRules: ["payroll-needs-review"],
+      customRules: [
+        {
+          id: "payroll-needs-review",
+          pattern: "payroll",
+          severity: 4,
+          title: "Payroll touched",
+          detail: "Payroll changes need a second set of eyes.",
+          suggestedCheck: "Get review from the payroll owner.",
+          kinds: ["plan"]
+        }
+      ]
+    }
+  });
+
+  assert.equal(result.verdict, "pass");
+  assert.ok(!result.issues.some((issue) => issue.id === "custom-payroll-needs-review"));
 });

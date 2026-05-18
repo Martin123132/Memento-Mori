@@ -81,6 +81,50 @@ test("examples prints copy-paste onboarding commands", async () => {
   assert.match(stdout, /command "git reset --hard"/);
   assert.match(stdout, /bootstrap --preset node/);
   assert.match(stdout, /examples\/codex/);
+  assert.match(stdout, /github-action/);
+});
+
+test("github-action prints a SARIF code scanning workflow", async () => {
+  const { stdout } = await execFileAsync(process.execPath, [
+    cliPath,
+    "github-action",
+    "--fail-on",
+    "caution",
+    "--subject",
+    "AI agent diff",
+    "--ref",
+    "v0.1.10"
+  ]);
+
+  assert.match(stdout, /name: Memento Mori Jester/);
+  assert.match(stdout, /format: sarif/);
+  assert.match(stdout, /output-file: jester\.sarif/);
+  assert.match(stdout, /fail-on: caution/);
+  assert.match(stdout, /subject: 'AI agent diff'/);
+  assert.match(stdout, /Martin123132\/Memento-Mori@v0\.1\.10/);
+  assert.match(stdout, /github\/codeql-action\/upload-sarif@v3/);
+});
+
+test("github-action can write a workflow file", async () => {
+  const cwd = await mkdtemp(join(tmpdir(), "jester-github-action-"));
+  const { stdout } = await execFileAsync(process.execPath, [
+    cliPath,
+    "github-action",
+    "--write",
+    "--json"
+  ], { cwd });
+  const result = JSON.parse(stdout) as {
+    ok: boolean;
+    changed: boolean;
+    path: string;
+  };
+  const workflow = await readFile(join(cwd, ".github", "workflows", "memento-mori.yml"), "utf8");
+
+  assert.equal(result.ok, true);
+  assert.equal(result.changed, true);
+  assert.match(result.path, /memento-mori\.yml$/);
+  assert.match(workflow, /Jester SARIF review/);
+  assert.match(workflow, /security-events: write/);
 });
 
 test("explain turns a verdict into a teaching note", async () => {

@@ -29,6 +29,12 @@ That writes:
 - `memento-mori.mcp.json`
 - `MEMENTO_MORI.md`
 
+Add it to GitHub code scanning:
+
+```powershell
+npx -y memento-mori-jester@latest github-action --write
+```
+
 Expected vibe:
 
 ```text
@@ -46,6 +52,7 @@ A dazzling command, if the desired outcome is court-sponsored regret.
 | Final answers | `jester final --file final.txt` | done/fixed claims without evidence |
 | Explanations | `jester explain command "git reset --hard"` | plain-language teaching notes for verdicts |
 | Examples | `jester examples` | copy-paste commands and links for new users |
+| GitHub Actions | `jester github-action --write` | SARIF workflow for code scanning |
 | Agents | `jester mcp-config --mode npx` | MCP tools for Codex, Claude Code, and other clients |
 
 ## Try It Locally
@@ -113,6 +120,7 @@ jester final --file .\final-answer.txt --tone professional
 jester explain command "git reset --hard"
 jester doctor
 jester examples
+jester github-action --write
 jester bootstrap --preset node
 jester config init
 jester policy init --level team

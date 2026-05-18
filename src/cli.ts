@@ -98,6 +98,18 @@ type BootstrapFileResult = {
   message: string;
 };
 
+type GithubActionOptions = {
+  json: boolean;
+  write: boolean;
+  force: boolean;
+  path: string;
+  failOn: HookFailOn;
+  subject: string;
+  actionRef: string;
+};
+
+const githubActionWorkflowPathDefault = ".github/workflows/memento-mori.yml";
+
 const args = process.argv.slice(2);
 
 main(args).catch((error: unknown) => {
@@ -136,6 +148,11 @@ async function main(argv: string[]): Promise<void> {
   if (argv[0] === "examples") {
     const setupOptions = parseSetupOptions(argv.slice(1));
     output.write(renderExamples(setupOptions));
+    return;
+  }
+
+  if (argv[0] === "github-action") {
+    output.write(await handleGithubAction(argv.slice(1)));
     return;
   }
 
@@ -339,6 +356,45 @@ function parsePolicyCommandOptions(argv: string[]): PolicyCommandOptions {
       index += 1;
     } else if (!arg.startsWith("--") && isPolicyLevel(arg)) {
       options.level = arg;
+    }
+  }
+
+  return options;
+}
+
+function parseGithubActionOptions(argv: string[]): GithubActionOptions {
+  const options: GithubActionOptions = {
+    json: false,
+    write: false,
+    force: false,
+    path: githubActionWorkflowPathDefault,
+    failOn: "block",
+    subject: "pull request diff",
+    actionRef: "main"
+  };
+
+  for (let index = 0; index < argv.length; index += 1) {
+    const arg = argv[index];
+    const next = argv[index + 1];
+
+    if (arg === "--json") {
+      options.json = true;
+    } else if (arg === "--write") {
+      options.write = true;
+    } else if (arg === "--force") {
+      options.force = true;
+    } else if (arg === "--path") {
+      options.path = requireValue(arg, next);
+      index += 1;
+    } else if (arg === "--fail-on") {
+      options.failOn = parseFailOn(requireValue(arg, next));
+      index += 1;
+    } else if (arg === "--subject") {
+      options.subject = requireValue(arg, next);
+      index += 1;
+    } else if (arg === "--ref" || arg === "--action-ref") {
+      options.actionRef = requireValue(arg, next);
+      index += 1;
     }
   }
 
@@ -618,13 +674,15 @@ function renderExamples(options: SetupOptions): string {
       `${cliCommand} plan "I will just refactor auth and ship it"`,
       `git diff | ${cliCommand} diff --fail-on block`,
       `${cliCommand} final "Implemented the fix, but tests not run."`,
-      `${cliCommand} explain command "git reset --hard"`
+      `${cliCommand} explain command "git reset --hard"`,
+      `${cliCommand} github-action`
     ],
     setup: [
       `${cliCommand} init --agent ${options.agent} --mode ${options.mode}`,
       `${cliCommand} mcp-config --agent ${options.agent} --mode ${options.mode}`,
       `${cliCommand} bootstrap --preset node`,
-      `${cliCommand} bootstrap --preset node --hook pre-commit`
+      `${cliCommand} bootstrap --preset node --hook pre-commit`,
+      `${cliCommand} github-action --write`
     ],
     docs: [
       "https://github.com/Martin123132/Memento-Mori/blob/main/docs/GETTING_STARTED.md",
@@ -651,10 +709,92 @@ Example files:
   Claude Code: https://github.com/Martin123132/Memento-Mori/tree/main/examples/claude-code
   Generic MCP: https://github.com/Martin123132/Memento-Mori/tree/main/examples/generic-mcp
   Git hooks only: https://github.com/Martin123132/Memento-Mori/tree/main/examples/git-hooks-only
+  GitHub code scanning: https://github.com/Martin123132/Memento-Mori/blob/main/examples/github-code-scanning.yml
 
 Docs:
 ${examples.docs.map((doc) => `  ${doc}`).join("\n")}
 `;
+}
+
+async function handleGithubAction(argv: string[]): Promise<string> {
+  const options = parseGithubActionOptions(argv);
+  const workflow = renderGithubActionWorkflow(options);
+
+  if (!options.write) {
+    if (options.json) {
+      return `${JSON.stringify({ path: options.path, workflow }, null, 2)}\n`;
+    }
+
+    return workflow;
+  }
+
+  const path = resolve(process.cwd(), options.path);
+  const exists = await fileExists(path);
+  let changed = false;
+
+  if (!exists || options.force) {
+    await mkdir(dirname(path), { recursive: true });
+    await writeFile(path, workflow, "utf8");
+    changed = true;
+  }
+
+  const result = {
+    ok: true,
+    path,
+    changed,
+    message: changed
+      ? `Wrote ${path}`
+      : `Kept existing ${path}. Use --force to overwrite.`
+  };
+
+  if (options.json) {
+    return `${JSON.stringify(result, null, 2)}\n`;
+  }
+
+  return `${result.message}\n`;
+}
+
+function renderGithubActionWorkflow(options: GithubActionOptions): string {
+  return `name: Memento Mori Jester
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: read
+  security-events: write
+
+jobs:
+  jester:
+    name: Jester SARIF review
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Review diff as SARIF
+        uses: Martin123132/Memento-Mori@${options.actionRef}
+        with:
+          format: sarif
+          output-file: jester.sarif
+          fail-on: ${options.failOn}
+          subject: ${yamlSingleQuote(options.subject)}
+
+      - name: Upload Jester SARIF
+        if: always() && hashFiles('jester.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: jester.sarif
+`;
+}
+
+function yamlSingleQuote(value: string): string {
+  return `'${value.replace(/'/g, "''")}'`;
 }
 
 async function handleExplain(argv: string[]): Promise<string> {
@@ -1174,6 +1314,8 @@ Usage:
   jester explain command "git reset --hard"
   jester init
   jester examples
+  jester github-action
+  jester github-action --write
   jester bootstrap --preset node
   jester doctor
   jester config init
@@ -1207,6 +1349,11 @@ Options:
   --level <team|strict>
   --sarif                             Output SARIF 2.1.0 for CI/code scanning
   --json
+
+GitHub Action options:
+  --write                             Write .github/workflows/memento-mori.yml
+  --path <path>                       Workflow path when using --write
+  --ref <git-ref>                     Action ref for Martin123132/Memento-Mori; default is main
 
 Setup options:
   --mode <npx|global|local>            MCP command style; default is npx

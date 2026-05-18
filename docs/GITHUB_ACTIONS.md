@@ -2,6 +2,22 @@
 
 Use Memento Mori Jester in CI to review diffs before they merge.
 
+## Generate A Workflow
+
+Print a ready-to-copy workflow with SARIF upload:
+
+```powershell
+npx -y memento-mori-jester@latest github-action
+```
+
+Or write it directly into a repo:
+
+```powershell
+npx -y memento-mori-jester@latest github-action --write
+```
+
+The generated workflow reviews pull request diffs, writes `jester.sarif`, and uploads it with `github/codeql-action/upload-sarif@v3`.
+
 ## Composite Action
 
 This repo can be used directly as a GitHub Action:
@@ -136,4 +152,4 @@ The composite action can also write SARIF to a file:
     fail-on: block
 ```
 
-Upload that file with GitHub's code scanning upload action if the repository has code scanning enabled.
+Upload that file with GitHub's code scanning upload action if the repository has code scanning enabled. See [examples/github-code-scanning.yml](../examples/github-code-scanning.yml) for the complete workflow.

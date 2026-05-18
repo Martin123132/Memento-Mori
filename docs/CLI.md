@@ -26,6 +26,7 @@ jester explain command "git reset --hard"
 git diff | jester diff --fail-on block
 git diff | jester diff --sarif > jester.sarif
 jester examples
+jester github-action --write
 ```
 
 ## Examples
@@ -37,6 +38,24 @@ jester examples
 jester examples --agent codex --mode npx
 jester examples --json
 ```
+
+## GitHub Action Generator
+
+Print a copy-paste workflow that reviews pull request diffs as SARIF and uploads the result to GitHub code scanning:
+
+```powershell
+jester github-action
+```
+
+Write it into the standard workflow location:
+
+```powershell
+jester github-action --write
+jester github-action --write --force
+jester github-action --write --path .github/workflows/jester.yml
+```
+
+Use `--fail-on caution`, `--subject`, or `--ref` to tune the generated workflow.
 
 ## Explain
 

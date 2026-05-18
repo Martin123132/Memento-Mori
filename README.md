@@ -253,6 +253,8 @@ More setup examples:
 - [Agent Setup](docs/AGENTS.md)
 - [GitHub Actions](docs/GITHUB_ACTIONS.md)
 - [Demo Script](docs/DEMO.md)
+- [Examples](examples)
+- [Changelog](CHANGELOG.md)
 - [Roadmap](ROADMAP.md)
 - [Trusted npm Publishing](docs/TRUSTED_PUBLISHING.md)
 
@@ -291,8 +293,8 @@ Both scripts check Node 20+, run a smoke `doctor`, and print MCP config.
 
 - Destructive commands such as recursive forced deletes, risky git cleanup, pipe-to-shell installs, broad database deletion, and over-broad permissions.
 - Agent overconfidence in plans: "just", "obvious", "probably", "should work", and plans with no verification step.
-- Diffs with removed tests, type suppressions, debug logs, temporary markers, sensitive domains, and large deletions.
-- Final answers with "done/fixed/works" claims that do not mention evidence.
+- Diffs with removed tests, type suppressions, debug logs, unfinished marker comments, sensitive env/config changes, npm install scripts, sensitive domains, and large deletions.
+- Final answers with "done/fixed/works" claims that do not mention evidence, or that admit tests were not run.
 - Project-specific commands, domains, and regex rules from `jester.config.json`.
 
 ## Publishing

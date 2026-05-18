@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { reviewCommand, reviewFinalAnswer, reviewPlan } from "./core.js";
+import { reviewCommand, reviewDiff, reviewFinalAnswer, reviewPlan } from "./core.js";
 
 test("blocks recursive force deletion", () => {
   const result = reviewCommand("Remove-Item .\\build -Recurse -Force");
@@ -22,6 +22,40 @@ test("does not complain about completion claim when evidence is present", () => 
 
   assert.notEqual(result.verdict, "block");
   assert.ok(!result.issues.some((issue) => issue.id === "done-without-evidence"));
+});
+
+test("warns when final answer admits tests were not run", () => {
+  const result = reviewFinalAnswer("Implemented the fix, but tests not run.");
+
+  assert.equal(result.verdict, "caution");
+  assert.ok(result.issues.some((issue) => issue.id === "untested-final"));
+});
+
+test("warns on package install scripts in diffs", () => {
+  const result = reviewDiff(`diff --git a/package.json b/package.json
+--- a/package.json
++++ b/package.json
+@@ -4,6 +4,7 @@
+   "scripts": {
++    "postinstall": "node scripts/setup.js",
+     "test": "node --test"
+   }
+`);
+
+  assert.equal(result.verdict, "caution");
+  assert.ok(result.issues.some((issue) => issue.id === "package-install-script"));
+});
+
+test("warns on sensitive environment changes in diffs", () => {
+  const result = reviewDiff(`diff --git a/.env.example b/.env.example
+--- a/.env.example
++++ b/.env.example
+@@ -1 +1,2 @@
++DATABASE_URL=postgres://example
+`);
+
+  assert.equal(result.verdict, "caution");
+  assert.ok(result.issues.some((issue) => issue.id === "sensitive-env-change"));
 });
 
 test("blocks commands listed in project config", () => {

@@ -5,7 +5,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 ## Near Term
 
 - Trusted npm publishing from GitHub Actions, so releases do not require browser approval every time.
-- Better copy-paste setup examples for Codex, Claude Code, and generic MCP clients.
+- More copy-paste setup examples for agent clients beyond Codex and Claude Code.
 - More config presets for common stacks and risk profiles.
 - Clearer GitHub Releases with human-readable notes for each tag.
 - A short demo recording or GIF for the README.

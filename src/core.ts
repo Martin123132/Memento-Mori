@@ -139,6 +139,15 @@ const finalRules: PatternRule[] = [
     kinds: ["final"]
   },
   {
+    id: "untested-final",
+    severity: 3,
+    title: "Final answer says tests were not run",
+    detail: "Saying the work is done while also saying it was not tested needs a clear limitation, not a victory lap.",
+    suggestedCheck: "State what remains unverified and the exact command or manual check someone should run next.",
+    pattern: /\b(did not run tests|didn't run tests|tests not run|not run tests|couldn't run tests|could not run tests|unable to run tests|not tested)\b/i,
+    kinds: ["final"]
+  },
+  {
     id: "handwave-final",
     severity: 2,
     title: "Hand-wavy final claim",
@@ -184,6 +193,24 @@ const diffRules: PatternRule[] = [
     detail: "Debug logs have a habit of becoming accidental telemetry.",
     suggestedCheck: "Remove it or route it through the project's logging/debug facility.",
     pattern: /^\+.*\bconsole\.(log|debug|trace)\s*\(/im,
+    kinds: ["diff"]
+  },
+  {
+    id: "package-install-script",
+    severity: 4,
+    title: "Package install script added",
+    detail: "npm install lifecycle scripts run on user machines and deserve extra scrutiny.",
+    suggestedCheck: "Confirm the script is necessary, safe, documented, and covered by release notes.",
+    pattern: /^\+\s*"(preinstall|install|postinstall|prepare)"\s*:/im,
+    kinds: ["diff"]
+  },
+  {
+    id: "sensitive-env-change",
+    severity: 4,
+    title: "Sensitive environment setting changed",
+    detail: "Environment and secret-like settings can silently alter build, runtime, or security behavior.",
+    suggestedCheck: "Verify the environment target, keep secrets out of source, and run a representative smoke test.",
+    pattern: /(^diff --git\s+.*(?:\.env|\.npmrc|\.pypirc|secrets?|credentials?|config\/).*|^\+\s*[A-Z0-9_]*(SECRET|TOKEN|KEY|PASSWORD|DATABASE_URL|NODE_ENV|TLS|CORS|AUTH)[A-Z0-9_]*\s*=)/im,
     kinds: ["diff"]
   }
 ];

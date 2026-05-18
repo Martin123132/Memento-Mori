@@ -66,4 +66,6 @@ npx -y memento-mori-jester@latest bootstrap --preset node
 
 Then tell them to open `MEMENTO_MORI.md`.
 
+For copy-paste agent and hook examples, see [examples](../examples).
+
 For where this is going next, see [ROADMAP.md](../ROADMAP.md).

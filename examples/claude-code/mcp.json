@@ -1,0 +1,10 @@
+{
+  "memento-mori-jester": {
+    "command": "npx",
+    "args": [
+      "-y",
+      "memento-mori-jester@latest",
+      "mcp-server"
+    ]
+  }
+}

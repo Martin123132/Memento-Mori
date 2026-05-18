@@ -1,6 +1,6 @@
 {
   "name": "memento-mori-jester",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "A local court-jester sidecar for AI coding agents: review plans, commands, diffs, and final claims before they get too pleased with themselves.",
   "type": "module",
   "repository": {
@@ -30,8 +30,10 @@
     "docs",
     "examples",
     "scripts",
+    "CHANGELOG.md",
     "LICENSE",
-    "README.md"
+    "README.md",
+    "ROADMAP.md"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",

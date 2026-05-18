@@ -19,9 +19,13 @@ Find the trusted publishing settings and add:
 
 The workflow file must exist in `.github/workflows/`, which this repo now has.
 
-## Manual Publish From GitHub
+## Publish From GitHub
 
 After the npm trusted publisher is configured:
+
+Pushing a new `v*` tag will publish to npm automatically.
+
+You can also publish manually:
 
 1. Open the GitHub repo.
 2. Go to `Actions`.

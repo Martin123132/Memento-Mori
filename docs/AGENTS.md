@@ -137,3 +137,5 @@ Agents do not need to pass the config manually. The MCP server searches upward f
 - `.jester.json`
 
 If an agent invokes tools outside the project directory, pass `configPath` to the MCP tool.
+
+For exact tool inputs and outputs, see [MCP_TOOLS.md](MCP_TOOLS.md).

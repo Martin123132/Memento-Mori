@@ -4,23 +4,49 @@
 [![npm version](https://img.shields.io/npm/v/memento-mori-jester.svg)](https://www.npmjs.com/package/memento-mori-jester)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-A local court-jester sidecar for AI coding agents. It reviews plans, shell commands, diffs, and final answers for overconfidence, missing verification, and obvious footguns.
+A local court-jester sidecar for AI coding agents. It reviews plans, shell commands, diffs, and final answers before they get too pleased with themselves.
 
 It roasts the reasoning, not the human.
 
-## Try It
+## Start Here
 
-Run the published package:
+No install needed:
 
 ```powershell
+npx -y memento-mori-jester@latest doctor
 npx -y memento-mori-jester@latest command "git reset --hard"
 ```
 
-Start a project with config, MCP JSON, and agent instructions:
+Add it to a project:
 
 ```powershell
 npx -y memento-mori-jester@latest bootstrap --preset node
 ```
+
+That writes:
+
+- `jester.config.json`
+- `memento-mori.mcp.json`
+- `MEMENTO_MORI.md`
+
+Expected vibe:
+
+```text
+Jester verdict: BLOCK (100/100)
+A dazzling command, if the desired outcome is court-sponsored regret.
+```
+
+## What It Does
+
+| Surface | Example | What it catches |
+| --- | --- | --- |
+| Plans | `jester plan "I will just refactor auth and ship it"` | overconfidence, missing verification, risky domains |
+| Commands | `jester command "git reset --hard"` | destructive shell commands and broad file operations |
+| Diffs | `git diff \| jester diff --fail-on block` | removed tests, install scripts, env/config risks |
+| Final answers | `jester final --file final.txt` | done/fixed claims without evidence |
+| Agents | `jester mcp-config --mode npx` | MCP tools for Codex, Claude Code, and other clients |
+
+## Try It Locally
 
 Installed globally:
 
@@ -36,14 +62,7 @@ git clone https://github.com/Martin123132/Memento-Mori.git
 cd Memento-Mori
 npm.cmd install
 npm.cmd run build
-node .\dist\cli.js command "git reset --hard"
-```
-
-Expected vibe:
-
-```text
-Jester verdict: BLOCK (100/100)
-A dazzling command, if the desired outcome is court-sponsored regret.
+node .\dist\cli.js doctor
 ```
 
 ## Setup Wizard
@@ -251,6 +270,7 @@ More setup examples:
 - [Codex Setup](docs/CODEX.md)
 - [Claude Code Setup](docs/CLAUDE_CODE.md)
 - [Agent Setup](docs/AGENTS.md)
+- [MCP Tool Reference](docs/MCP_TOOLS.md)
 - [GitHub Actions](docs/GITHUB_ACTIONS.md)
 - [Demo Script](docs/DEMO.md)
 - [Examples](examples)

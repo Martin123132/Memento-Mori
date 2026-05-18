@@ -2,6 +2,12 @@
 
 All notable changes to Memento Mori Jester are tracked here.
 
+## Unreleased
+
+- Polished the README homepage around the shortest npm path.
+- Added MCP tool input/output reference docs.
+- Added a fuller demo transcript.
+
 ## 0.1.6
 
 - Added copy-paste examples for Codex, Claude Code, generic MCP clients, and git-hook-only use.

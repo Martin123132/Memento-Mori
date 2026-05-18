@@ -4,6 +4,8 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.10
+
 - Added SARIF output for CLI reviews and GitHub Action runs.
 
 ## 0.1.9

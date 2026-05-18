@@ -117,7 +117,7 @@ Use `--json` if another CI step will parse the result.
 
 ## SARIF Output
 
-Available on `main` now and in the next npm release, the CLI can write SARIF 2.1.0:
+Available in `v0.1.10` and later, the CLI can write SARIF 2.1.0:
 
 ```yaml
 - run: |

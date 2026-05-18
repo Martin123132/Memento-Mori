@@ -199,7 +199,7 @@ jester plan "I will deploy-prod now" --config .\jester.config.json
 jester command "git reset --hard" --no-config
 ```
 
-Structured output. SARIF is available on `main` now and in the next npm release:
+Structured output. SARIF is available in `v0.1.10` and later:
 
 ```powershell
 jester command "git reset --hard" --json
@@ -213,7 +213,7 @@ Presets layer extra rules on top of the default config:
 - `python`: dependency files, migrations, pickle, eval/exec.
 - `security`: lower risk tolerance, TLS/CORS checks, token/permission-sensitive areas.
 
-Policy templates are stricter project configs for teams. They are available on `main` now and in the next npm release:
+Policy templates are stricter project configs for teams. They are available in `v0.1.9` and later:
 
 ```powershell
 jester policy init --level team

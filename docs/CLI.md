@@ -64,7 +64,7 @@ Presets:
 
 ## Policy Init
 
-Available on `main` now and in the next npm release, `policy init` writes stricter project defaults for teams:
+Available in `v0.1.9` and later, `policy init` writes stricter project defaults for teams:
 
 ```powershell
 jester policy init --level team
@@ -90,7 +90,7 @@ jester config validate --json
 jester bootstrap --preset node --json
 ```
 
-Available on `main` now and in the next npm release, use `--sarif` when CI or code-scanning tooling needs SARIF 2.1.0:
+Available in `v0.1.10` and later, use `--sarif` when CI or code-scanning tooling needs SARIF 2.1.0:
 
 ```powershell
 jester command "git reset --hard" --sarif

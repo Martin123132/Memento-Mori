@@ -28,6 +28,7 @@ npx -y memento-mori-jester@latest doctor
 npx -y memento-mori-jester@latest examples
 npx -y memento-mori-jester@latest explain command "git reset --hard"
 npx -y memento-mori-jester@latest command "git reset --hard"
+npx -y memento-mori-jester@latest command "git reset --hard" --sarif
 npx -y memento-mori-jester@latest init
 npx -y memento-mori-jester@latest mcp-config --agent claude --mode npx
 npx -y memento-mori-jester@latest policy levels

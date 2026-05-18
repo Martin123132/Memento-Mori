@@ -4,6 +4,8 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.15
+
 - Added practical rule guidance to `jester rule <id>` and `jester rules --json`.
 
 ## 0.1.14

@@ -30,6 +30,8 @@ npx -y memento-mori-jester@latest explain command "git reset --hard"
 npx -y memento-mori-jester@latest command "git reset --hard"
 npx -y memento-mori-jester@latest init
 npx -y memento-mori-jester@latest mcp-config --agent claude --mode npx
+npx -y memento-mori-jester@latest policy levels
+npx -y memento-mori-jester@latest policy show --level strict
 npx -y memento-mori-jester@latest bootstrap --preset node
 npx -y memento-mori-jester@latest config init
 npx -y memento-mori-jester@latest config init --preset security --path jester-security.config.json

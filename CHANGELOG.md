@@ -4,6 +4,8 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.9
+
 - Added `jester policy init` for stricter team and strict project policies.
 
 ## 0.1.8

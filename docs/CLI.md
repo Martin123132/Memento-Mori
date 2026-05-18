@@ -61,6 +61,22 @@ Presets:
 - `python`: Python dependency and dynamic execution rules.
 - `security`: stricter TLS, CORS, secrets, and permission checks.
 
+## Policy Init
+
+Available on `main` now and in the next npm release, `policy init` writes stricter project defaults for teams:
+
+```powershell
+jester policy init --level team
+jester policy init --level strict
+jester policy show --level strict
+jester policy levels
+```
+
+Levels:
+
+- `team`: lower risk tolerance, caution-level hook failures, production/deploy rules.
+- `strict`: team policy plus stronger secret, destructive infra, and rollback expectations.
+
 ## JSON Output
 
 Use `--json` when another tool needs to parse the result:
@@ -68,6 +84,7 @@ Use `--json` when another tool needs to parse the result:
 ```powershell
 jester command "git reset --hard" --json
 jester explain command "git reset --hard" --json
+jester policy init --level strict --json
 jester config validate --json
 jester bootstrap --preset node --json
 ```

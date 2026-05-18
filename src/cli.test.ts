@@ -132,3 +132,36 @@ test("mcp-config can render Claude Code shape", async () => {
   assert.ok(config["memento-mori-jester"].args.includes("memento-mori-jester@latest"));
   assert.equal(config.mcpServers, undefined);
 });
+
+test("policy init writes stricter project config", async () => {
+  const cwd = await mkdtemp(join(tmpdir(), "jester-policy-"));
+  const { stdout } = await execFileAsync(process.execPath, [
+    cliPath,
+    "policy",
+    "init",
+    "--level",
+    "strict",
+    "--json"
+  ], { cwd });
+  const result = JSON.parse(stdout) as {
+    ok: boolean;
+    level: string;
+    path: string;
+  };
+  const config = await readFile(join(cwd, "jester.config.json"), "utf8");
+
+  assert.equal(result.ok, true);
+  assert.equal(result.level, "strict");
+  assert.match(result.path, /jester\.config\.json$/);
+  assert.match(config, /policy-secret-added/);
+  assert.match(config, /docker system prune -a/);
+});
+
+test("policy commands list and show levels", async () => {
+  const levels = await execFileAsync(process.execPath, [cliPath, "policy", "levels"]);
+  const shown = await execFileAsync(process.execPath, [cliPath, "policy", "show", "team"]);
+
+  assert.match(levels.stdout, /team/);
+  assert.match(levels.stdout, /strict/);
+  assert.match(shown.stdout, /policy-production-deploy/);
+});

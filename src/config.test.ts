@@ -3,7 +3,7 @@ import { mkdtemp, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
-import { loadConfig, userConfigForPreset, validateConfig, writeDefaultConfig } from "./config.js";
+import { loadConfig, userConfigForPolicy, userConfigForPreset, validateConfig, writeDefaultConfig, writePolicyConfig } from "./config.js";
 
 test("loads jester.config.json from the working tree", async () => {
   const cwd = await mkdtemp(join(tmpdir(), "jester-config-"));
@@ -43,6 +43,26 @@ test("writes preset config", async () => {
 
   assert.equal(loaded.config.riskTolerance, "low");
   assert.ok(loaded.config.customRules?.some((rule) => rule.id === "insecure-tls-disabled"));
+});
+
+test("builds strict policy on top of security defaults", () => {
+  const config = userConfigForPolicy("strict");
+
+  assert.equal(config.riskTolerance, "low");
+  assert.equal(config.hookFailOn, "caution");
+  assert.ok(config.blockedCommands?.includes("docker system prune -a"));
+  assert.ok(config.customRules?.some((rule) => rule.id === "policy-secret-added"));
+  assert.ok(config.customRules?.some((rule) => rule.id === "insecure-tls-disabled"));
+});
+
+test("writes policy config", async () => {
+  const cwd = await mkdtemp(join(tmpdir(), "jester-policy-"));
+  await writePolicyConfig({ cwd, level: "team" });
+
+  const loaded = await loadConfig({ cwd });
+
+  assert.equal(loaded.config.hookFailOn, "caution");
+  assert.ok(loaded.config.customRules?.some((rule) => rule.id === "policy-production-deploy"));
 });
 
 test("validates a good config", async () => {

@@ -12,7 +12,6 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Product Ideas
 
-- `jester policy init` for stricter team defaults.
 - A small web/demo page that lets people paste a command or diff and see the verdict.
 - Optional SARIF output for code-scanning-style integrations.
 

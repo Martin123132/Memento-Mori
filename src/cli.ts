@@ -3,7 +3,19 @@ import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import { stdin as input, stdout as output } from "node:process";
 import { fileURLToPath } from "node:url";
-import { configPresetNames, defaultUserConfig, findConfigPath, loadConfig, validateConfig, writeDefaultConfig, type ConfigPreset } from "./config.js";
+import {
+  configPresetNames,
+  defaultUserConfig,
+  findConfigPath,
+  loadConfig,
+  policyLevelNames,
+  userConfigForPolicy,
+  validateConfig,
+  writeDefaultConfig,
+  writePolicyConfig,
+  type ConfigPreset,
+  type PolicyLevel
+} from "./config.js";
 import { review, reviewCommand } from "./core.js";
 import { formatReview } from "./format.js";
 import {
@@ -54,6 +66,13 @@ type ConfigCommandOptions = {
   configPath?: string;
   noConfig: boolean;
   preset: ConfigPreset;
+};
+
+type PolicyCommandOptions = {
+  json: boolean;
+  force: boolean;
+  path?: string;
+  level: PolicyLevel;
 };
 
 type HookCommandOptions = {
@@ -125,6 +144,11 @@ async function main(argv: string[]): Promise<void> {
 
   if (argv[0] === "config") {
     output.write(await handleConfigCommand(argv.slice(1)));
+    return;
+  }
+
+  if (argv[0] === "policy") {
+    output.write(await handlePolicyCommand(argv.slice(1)));
     return;
   }
 
@@ -284,6 +308,35 @@ function parseConfigCommandOptions(argv: string[]): ConfigCommandOptions {
   return options;
 }
 
+function parsePolicyCommandOptions(argv: string[]): PolicyCommandOptions {
+  const options: PolicyCommandOptions = {
+    json: false,
+    force: false,
+    level: "team"
+  };
+
+  for (let index = 0; index < argv.length; index += 1) {
+    const arg = argv[index];
+    const next = argv[index + 1];
+
+    if (arg === "--json") {
+      options.json = true;
+    } else if (arg === "--force") {
+      options.force = true;
+    } else if (arg === "--path") {
+      options.path = requireValue(arg, next);
+      index += 1;
+    } else if (arg === "--level") {
+      options.level = parsePolicyLevel(requireValue(arg, next));
+      index += 1;
+    } else if (!arg.startsWith("--") && isPolicyLevel(arg)) {
+      options.level = arg;
+    }
+  }
+
+  return options;
+}
+
 function parseSetupOptions(argv: string[]): SetupOptions {
   const options: SetupOptions = {
     mode: "npx",
@@ -372,7 +425,7 @@ function collectPositional(argv: string[]): string[] {
 }
 
 function optionHasValue(arg: string): boolean {
-  return ["--kind", "--tone", "--intensity", "--risk", "--fail-on", "--subject", "--context", "--file", "--config", "--path", "--preset"].includes(arg);
+  return ["--kind", "--tone", "--intensity", "--risk", "--fail-on", "--subject", "--context", "--file", "--config", "--path", "--preset", "--level"].includes(arg);
 }
 
 function isKnownOption(arg: string): boolean {
@@ -429,6 +482,18 @@ function parseConfigPreset(value: string): ConfigPreset {
   }
 
   throw new Error(`Unknown config preset "${value}". Use one of: ${configPresetNames.join(", ")}`);
+}
+
+function parsePolicyLevel(value: string): PolicyLevel {
+  if (isPolicyLevel(value)) {
+    return value;
+  }
+
+  throw new Error(`Unknown policy level "${value}". Use one of: ${policyLevelNames.join(", ")}`);
+}
+
+function isPolicyLevel(value: string): value is PolicyLevel {
+  return policyLevelNames.includes(value as PolicyLevel);
 }
 
 function parseSetupMode(value: string): SetupMode {
@@ -717,6 +782,45 @@ async function handleConfigCommand(argv: string[]): Promise<string> {
   }
 
   throw new Error('Unknown config command. Use "jester config init", "jester config show", "jester config validate", or "jester config presets".');
+}
+
+async function handlePolicyCommand(argv: string[]): Promise<string> {
+  const [subcommand = "show"] = argv;
+  const options = parsePolicyCommandOptions(argv.slice(1));
+
+  if (subcommand === "init") {
+    const path = await writePolicyConfig({
+      path: options.path,
+      force: options.force,
+      level: options.level
+    });
+    const result = {
+      ok: true,
+      level: options.level,
+      path,
+      nextSteps: [
+        "jester config validate",
+        "jester hook-status",
+        "jester install-hook pre-commit --fail-on caution"
+      ]
+    };
+
+    if (options.json) {
+      return `${JSON.stringify(result, null, 2)}\n`;
+    }
+
+    return `Wrote ${path} (${options.level} policy)\nNext:\n  ${result.nextSteps.join("\n  ")}\n`;
+  }
+
+  if (subcommand === "levels") {
+    return `${policyLevelNames.join("\n")}\n`;
+  }
+
+  if (subcommand === "show") {
+    return `${JSON.stringify(userConfigForPolicy(options.level), null, 2)}\n`;
+  }
+
+  throw new Error('Unknown policy command. Use "jester policy init", "jester policy show", or "jester policy levels".');
 }
 
 async function handleBootstrap(argv: string[]): Promise<string> {
@@ -1065,6 +1169,10 @@ Usage:
   jester config show
   jester config validate
   jester config presets
+  jester policy init --level team
+  jester policy init --level strict
+  jester policy show --level strict
+  jester policy levels
   jester install-hook pre-commit
   jester install-hook pre-push --fail-on caution
   jester hook-status
@@ -1084,6 +1192,7 @@ Options:
   --config <path>                     Use a specific jester config file
   --no-config                         Ignore jester.config.json discovery
   --preset <default|node|python|security>
+  --level <team|strict>
   --json
 
 Setup options:

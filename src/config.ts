@@ -5,8 +5,10 @@ import { reviewKinds, tones, type UserJesterConfig } from "./types.js";
 
 export const configFileNames = ["jester.config.json", ".jester.json"] as const;
 export const configPresetNames = ["default", "node", "python", "security"] as const;
+export const policyLevelNames = ["team", "strict"] as const;
 
 export type ConfigPreset = (typeof configPresetNames)[number];
+export type PolicyLevel = (typeof policyLevelNames)[number];
 
 export interface LoadedConfig {
   path?: string;
@@ -140,6 +142,20 @@ export async function writeDefaultConfig(options: {
   return configPath;
 }
 
+export async function writePolicyConfig(options: {
+  cwd?: string;
+  path?: string;
+  force?: boolean;
+  level?: PolicyLevel;
+} = {}): Promise<string> {
+  const cwd = options.cwd ?? process.cwd();
+  const configPath = resolve(cwd, options.path ?? "jester.config.json");
+  const flag = options.force ? "w" : "wx";
+
+  await writeFile(configPath, `${JSON.stringify(userConfigForPolicy(options.level ?? "team"), null, 2)}\n`, { encoding: "utf8", flag });
+  return configPath;
+}
+
 export function defaultUserConfig(): UserJesterConfig {
   return {
     tone: "court_jester",
@@ -177,6 +193,85 @@ export function userConfigForPreset(preset: ConfigPreset): UserJesterConfig {
   }
 
   return mergeConfigs(defaultUserConfig(), presetConfig(preset));
+}
+
+export function userConfigForPolicy(level: PolicyLevel): UserJesterConfig {
+  const teamPolicy = mergeConfigs(userConfigForPreset("security"), {
+    riskTolerance: "low",
+    hookFailOn: "caution",
+    sensitiveDomains: [
+      "release",
+      "deploy",
+      "infrastructure",
+      "permissions",
+      "secrets",
+      "customer data",
+      "migration"
+    ],
+    blockedCommands: [
+      "git push --force origin main",
+      "git push --force origin master",
+      "npm unpublish",
+      "npm publish --force",
+      "terraform destroy"
+    ],
+    customRules: [
+      {
+        id: "policy-main-force-push",
+        pattern: "git\\s+push\\s+--force(?:-with-lease)?\\s+(origin\\s+)?(main|master)",
+        severity: 5,
+        title: "Force-push to the main branch",
+        detail: "Team policy treats force-pushing the default branch as a stop-and-escalate action.",
+        suggestedCheck: "Use a branch or get explicit maintainer approval before rewriting shared history.",
+        kinds: ["command", "plan"]
+      },
+      {
+        id: "policy-production-deploy",
+        pattern: "\\b(deploy-prod|production\\s+deploy|kubectl\\s+apply|terraform\\s+apply)\\b",
+        severity: 4,
+        title: "Production or infrastructure deploy",
+        detail: "Production and infrastructure changes need evidence, rollback thinking, and the right target.",
+        suggestedCheck: "Confirm environment, validation command, and rollback path before proceeding.",
+        kinds: ["command", "plan", "final"]
+      }
+    ]
+  });
+
+  if (level === "team") {
+    return teamPolicy;
+  }
+
+  return mergeConfigs(teamPolicy, {
+    intensity: 4,
+    blockedCommands: [
+      "git reset --hard",
+      "git clean -fdx",
+      "docker system prune -a",
+      "kubectl delete",
+      "terraform destroy"
+    ],
+    customRules: [
+      {
+        id: "policy-secret-added",
+        pattern: "^\\+.*\\b(SECRET|TOKEN|PASSWORD|API_KEY|PRIVATE_KEY)\\b",
+        flags: "im",
+        severity: 5,
+        title: "Secret-like value added",
+        detail: "Strict policy blocks added secret-looking material in diffs.",
+        suggestedCheck: "Remove the secret, rotate it if exposed, and use a secret store or environment variable.",
+        kinds: ["diff"]
+      },
+      {
+        id: "policy-release-without-rollback",
+        pattern: "\\b(release|publish|deploy)\\b",
+        severity: 3,
+        title: "Release/deploy needs rollback evidence",
+        detail: "Strict policy expects release and deploy work to name verification and rollback steps.",
+        suggestedCheck: "Include the exact smoke test, target environment, and rollback plan.",
+        kinds: ["plan", "final"]
+      }
+    ]
+  });
 }
 
 function parseConfig(raw: string): Omit<ConfigValidationResult, "path"> {

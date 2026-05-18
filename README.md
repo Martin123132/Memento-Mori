@@ -114,6 +114,7 @@ jester doctor
 jester examples
 jester bootstrap --preset node
 jester config init
+jester policy init --level team
 jester install-hook pre-commit
 jester mcp-config --mode npx
 jester mcp-config --agent claude --mode npx
@@ -202,6 +203,14 @@ Presets layer extra rules on top of the default config:
 - `node`: npm lifecycle scripts, publish/unpublish, package metadata.
 - `python`: dependency files, migrations, pickle, eval/exec.
 - `security`: lower risk tolerance, TLS/CORS checks, token/permission-sensitive areas.
+
+Policy templates are stricter project configs for teams. They are available on `main` now and in the next npm release:
+
+```powershell
+jester policy init --level team
+jester policy init --level strict
+jester policy show --level strict
+```
 
 ## Git Hooks
 

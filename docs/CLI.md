@@ -81,6 +81,16 @@ If a rule is too noisy for a repo, add its id to `disabledRules` in `jester.conf
 
 Disabled rules still appear in `jester rules` as `[disabled]`, but they no longer affect review verdicts.
 
+The CLI can edit `disabledRules` for you:
+
+```powershell
+jester config disable-rule console-log
+jester config enable-rule console-log
+jester config disable-rule destructive-git-history --json
+```
+
+If no config exists, `disable-rule` creates a minimal `jester.config.json` with only `disabledRules`.
+
 ## Explain
 
 Turn a review verdict into a short teaching note:

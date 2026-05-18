@@ -68,6 +68,7 @@ type ConfigCommandOptions = {
   configPath?: string;
   noConfig: boolean;
   preset: ConfigPreset;
+  ruleId?: string;
 };
 
 type PolicyCommandOptions = {
@@ -340,6 +341,8 @@ function parseConfigCommandOptions(argv: string[]): ConfigCommandOptions {
     } else if (arg === "--preset") {
       options.preset = parseConfigPreset(requireValue(arg, next));
       index += 1;
+    } else if (!arg.startsWith("--") && !options.ruleId) {
+      options.ruleId = arg;
     }
   }
 
@@ -1041,6 +1044,10 @@ async function handleConfigCommand(argv: string[]): Promise<string> {
     return `${configPresetNames.join("\n")}\n`;
   }
 
+  if (subcommand === "disable-rule" || subcommand === "enable-rule") {
+    return handleConfigRuleToggle(subcommand, options);
+  }
+
   if (subcommand === "show") {
     const loaded = await loadConfig({
       configPath: options.configPath,
@@ -1073,7 +1080,68 @@ async function handleConfigCommand(argv: string[]): Promise<string> {
     return `Config invalid${result.path ? `: ${result.path}` : ""}\n${result.issues.map((issue) => `- ${issue}`).join("\n")}\n`;
   }
 
-  throw new Error('Unknown config command. Use "jester config init", "jester config show", "jester config validate", or "jester config presets".');
+  throw new Error('Unknown config command. Use "jester config init", "jester config show", "jester config validate", "jester config presets", "jester config disable-rule <id>", or "jester config enable-rule <id>".');
+}
+
+async function handleConfigRuleToggle(subcommand: "disable-rule" | "enable-rule", options: ConfigCommandOptions): Promise<string> {
+  const ruleId = options.ruleId?.trim();
+  if (!ruleId) {
+    throw new Error(`Missing rule id. Use "jester config ${subcommand} <rule-id>".`);
+  }
+
+  const configPath = options.path ?? options.configPath ?? await findConfigPath() ?? "jester.config.json";
+  const resolvedConfigPath = resolve(process.cwd(), configPath);
+  const existing = await fileExists(resolvedConfigPath);
+  const config = existing
+    ? (await loadConfig({ configPath: resolvedConfigPath, search: false })).config
+    : { disabledRules: [] };
+  const disabledRules = config.disabledRules ?? [];
+  const normalizedRuleId = ruleId.toLocaleLowerCase();
+  const hasRule = disabledRules.some((id) => id.toLocaleLowerCase() === normalizedRuleId);
+  let changed = false;
+
+  if (subcommand === "disable-rule") {
+    if (!hasRule) {
+      config.disabledRules = [...disabledRules, ruleId];
+      changed = true;
+    } else {
+      config.disabledRules = disabledRules;
+    }
+  } else {
+    const nextDisabledRules = disabledRules.filter((id) => id.toLocaleLowerCase() !== normalizedRuleId);
+    config.disabledRules = nextDisabledRules;
+    changed = nextDisabledRules.length !== disabledRules.length;
+  }
+
+  if (!existing || changed) {
+    await mkdir(dirname(resolvedConfigPath), { recursive: true });
+    await writeFile(resolvedConfigPath, `${JSON.stringify(config, null, 2)}\n`, "utf8");
+  }
+
+  const action = subcommand === "disable-rule" ? "Disabled" : "Enabled";
+  const already = subcommand === "disable-rule" ? "already disabled" : "not disabled";
+  const result = {
+    ok: true,
+    action: subcommand,
+    ruleId,
+    path: resolvedConfigPath,
+    changed: !existing || changed,
+    disabledRules: config.disabledRules ?? [],
+    nextSteps: [
+      `jester rule ${ruleId}`,
+      "jester config validate"
+    ]
+  };
+
+  if (options.json) {
+    return `${JSON.stringify(result, null, 2)}\n`;
+  }
+
+  const message = result.changed
+    ? `${action} ${ruleId} in ${resolvedConfigPath}`
+    : `${ruleId} was ${already} in ${resolvedConfigPath}`;
+
+  return `${message}\nNext:\n  ${result.nextSteps.join("\n  ")}\n`;
 }
 
 async function handlePolicyCommand(argv: string[]): Promise<string> {
@@ -1466,6 +1534,8 @@ Usage:
   jester config show
   jester config validate
   jester config presets
+  jester config disable-rule console-log
+  jester config enable-rule console-log
   jester policy init --level team
   jester policy init --level strict
   jester policy show --level strict

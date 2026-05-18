@@ -136,6 +136,72 @@ test("rules supports json output and project config rules", async () => {
   assert.ok(result.rules.some((rule) => rule.id === "custom-must-mention-rollback" && rule.kinds.includes("plan") && !rule.enabled));
 });
 
+test("config can disable and enable rules", async () => {
+  const cwd = await mkdtemp(join(tmpdir(), "jester-config-rules-"));
+  const disabled = await execFileAsync(process.execPath, [
+    cliPath,
+    "config",
+    "disable-rule",
+    "destructive-git-history",
+    "--json"
+  ], { cwd });
+  const disabledResult = JSON.parse(disabled.stdout) as {
+    changed: boolean;
+    disabledRules: string[];
+  };
+
+  assert.equal(disabledResult.changed, true);
+  assert.deepEqual(disabledResult.disabledRules, ["destructive-git-history"]);
+
+  await execFileAsync(process.execPath, [
+    cliPath,
+    "config",
+    "disable-rule",
+    "destructive-git-history",
+    "--json"
+  ], { cwd });
+  const configAfterSecondDisable = JSON.parse(await readFile(join(cwd, "jester.config.json"), "utf8")) as {
+    disabledRules: string[];
+  };
+
+  assert.deepEqual(configAfterSecondDisable.disabledRules, ["destructive-git-history"]);
+
+  const disabledReview = await execFileAsync(process.execPath, [
+    cliPath,
+    "command",
+    "git reset --hard",
+    "--json"
+  ], { cwd });
+  const disabledReviewResult = JSON.parse(disabledReview.stdout) as { verdict: string };
+
+  assert.equal(disabledReviewResult.verdict, "pass");
+
+  const enabled = await execFileAsync(process.execPath, [
+    cliPath,
+    "config",
+    "enable-rule",
+    "destructive-git-history",
+    "--json"
+  ], { cwd });
+  const enabledResult = JSON.parse(enabled.stdout) as {
+    changed: boolean;
+    disabledRules: string[];
+  };
+
+  assert.equal(enabledResult.changed, true);
+  assert.deepEqual(enabledResult.disabledRules, []);
+
+  const enabledReview = await execFileAsync(process.execPath, [
+    cliPath,
+    "command",
+    "git reset --hard",
+    "--json"
+  ], { cwd });
+  const enabledReviewResult = JSON.parse(enabledReview.stdout) as { verdict: string };
+
+  assert.equal(enabledReviewResult.verdict, "block");
+});
+
 test("rule shows one rule with matcher detail", async () => {
   const cwd = await mkdtemp(join(tmpdir(), "jester-rule-"));
   await writeFile(join(cwd, "jester.config.json"), `${JSON.stringify({

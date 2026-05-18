@@ -236,6 +236,15 @@ Disable a noisy rule by adding its id to `disabledRules` in `jester.config.json`
 }
 ```
 
+Or let the CLI edit the config:
+
+```powershell
+jester config disable-rule console-log
+jester config enable-rule console-log
+```
+
+If no config exists yet, `disable-rule` creates a minimal `jester.config.json`.
+
 Presets layer extra rules on top of the default config:
 
 - `node`: npm lifecycle scripts, publish/unpublish, package metadata.

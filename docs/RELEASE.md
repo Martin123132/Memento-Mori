@@ -25,6 +25,7 @@ The package publishes these bins:
 
 ```powershell
 npx -y memento-mori-jester@latest doctor
+npx -y memento-mori-jester@latest examples
 npx -y memento-mori-jester@latest command "git reset --hard"
 npx -y memento-mori-jester@latest init
 npx -y memento-mori-jester@latest bootstrap --preset node

@@ -4,6 +4,8 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.8
+
 - Added `jester explain` for short teaching notes based on review verdicts.
 - Added agent-specific `mcp-config --agent claude` output for Claude Code config shape.
 

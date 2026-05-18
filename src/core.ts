@@ -19,12 +19,20 @@ export const defaultConfig: JesterConfig = {
 
 type RuleSource = "built-in" | "structural" | "project-config";
 
+export type RuleGuidance = {
+  why: string;
+  falsePositive: string;
+  saferAlternative: string;
+  tuning: string;
+};
+
 export type RuleCatalogEntry = {
   id: string;
   severity: Issue["severity"];
   title: string;
   detail: string;
   suggestedCheck: string;
+  guidance: RuleGuidance;
   kinds: ReviewKind[];
   source: RuleSource;
   matcher: "regex" | "heuristic" | "literal";
@@ -240,6 +248,7 @@ const structuralRules: RuleCatalogEntry[] = [
     title: "No verification step",
     detail: "The plan changes behavior but does not say how the result will be checked.",
     suggestedCheck: "Add the cheapest meaningful validation step before calling the work complete.",
+    guidance: structuralGuidance("missing-verification-step"),
     kinds: ["plan"],
     source: "structural",
     matcher: "heuristic",
@@ -251,6 +260,7 @@ const structuralRules: RuleCatalogEntry[] = [
     title: "Large removal with little replacement",
     detail: "A large deletion may be correct, but it deserves a second look for lost behavior.",
     suggestedCheck: "Review the deleted surface area and run tests that cover the removed code paths.",
+    guidance: structuralGuidance("large-removal"),
     kinds: ["diff"],
     source: "structural",
     matcher: "heuristic",
@@ -262,6 +272,7 @@ const structuralRules: RuleCatalogEntry[] = [
     title: "Wildcard file operation",
     detail: "Wildcard moves or copies can quietly grab more than intended.",
     suggestedCheck: "List the matched files first and confirm the destination before running the command.",
+    guidance: structuralGuidance("wildcard-file-operation"),
     kinds: ["command"],
     source: "structural",
     matcher: "heuristic",
@@ -514,6 +525,7 @@ function catalogEntryFromPatternRule(rule: PatternRule): RuleCatalogEntry {
     title: rule.title,
     detail: rule.detail,
     suggestedCheck: rule.suggestedCheck,
+    guidance: guidanceForRule(rule.id, "built-in"),
     kinds: rule.kinds ?? [...reviewKinds],
     source: "built-in",
     matcher: "regex",
@@ -541,6 +553,7 @@ function projectConfigRules(config: UserJesterConfig | undefined): RuleCatalogEn
         title: "Project-blocked command",
         detail: "This command is listed in the project's jester config as blocked.",
         suggestedCheck: "Use a safer command or get explicit project approval before running it.",
+        guidance: projectConfigGuidance("blocked command"),
         kinds: [...reviewKinds],
         source: "project-config",
         matcher: "literal",
@@ -563,6 +576,7 @@ function projectConfigRules(config: UserJesterConfig | undefined): RuleCatalogEn
         title: "Project-sensitive domain touched",
         detail: "This domain is listed in the project's jester config as sensitive.",
         suggestedCheck: "Add a targeted test, manual verification note, or rollback plan for this project-sensitive area.",
+        guidance: projectConfigGuidance("sensitive domain"),
         kinds: [...reviewKinds],
         source: "project-config",
         matcher: "literal",
@@ -578,6 +592,7 @@ function projectConfigRules(config: UserJesterConfig | undefined): RuleCatalogEn
     title: rule.title ?? "Custom project rule matched",
     detail: rule.detail ?? "A custom rule from the project's jester config matched this content.",
     suggestedCheck: rule.suggestedCheck ?? "Review the matched project rule and add an explicit verification step.",
+    guidance: projectConfigGuidance("custom rule"),
     kinds: rule.kinds ?? [...reviewKinds],
     source: "project-config",
     matcher: "regex",
@@ -611,6 +626,205 @@ function issueFromCatalogEntry(rule: RuleCatalogEntry): Issue {
     suggestedCheck: rule.suggestedCheck
   };
 }
+
+function guidanceForRule(id: string, source: RuleSource): RuleGuidance {
+  const guidance = builtInGuidance[id];
+  if (guidance) {
+    return guidance;
+  }
+
+  if (source === "structural") {
+    return {
+      why: "This heuristic catches shape-level risk that is not tied to one exact token.",
+      falsePositive: "It may be noisy when the surrounding plan or diff contains verification that the heuristic cannot infer.",
+      saferAlternative: "Add an explicit validation step or narrow the operation so the risk is easier to inspect.",
+      tuning: `Disable with \`jester config disable-rule ${id}\` only after the team agrees this heuristic is too noisy for the repo.`
+    };
+  }
+
+  return projectConfigGuidance("project rule");
+}
+
+function structuralGuidance(id: string): RuleGuidance {
+  if (id === "missing-verification-step") {
+    return {
+      why: "Plans that change behavior need a stated way to know whether the change worked.",
+      falsePositive: "It may be noisy for tiny mechanical edits or when verification is obvious from surrounding context.",
+      saferAlternative: "Add the cheapest meaningful check before calling the work complete.",
+      tuning: "Disable with `jester config disable-rule missing-verification-step` if another planning template already requires checks."
+    };
+  }
+
+  if (id === "large-removal") {
+    return {
+      why: "Large deletions can accidentally remove behavior, docs, tests, or integration paths.",
+      falsePositive: "It may be safe for generated files, vendored assets, or deliberate dead-code removal.",
+      saferAlternative: "Review the removed surface area and run tests that cover the deleted code paths.",
+      tuning: "Disable with `jester config disable-rule large-removal` if large generated-file churn is common."
+    };
+  }
+
+  if (id === "wildcard-file-operation") {
+    return {
+      why: "Wildcard moves and copies can include more files than intended.",
+      falsePositive: "It may be acceptable after listing the matched files or inside a controlled script.",
+      saferAlternative: "List matches first and use explicit paths where possible.",
+      tuning: "Disable with `jester config disable-rule wildcard-file-operation` if wildcard operations are routine and scripted."
+    };
+  }
+
+  return guidanceForRule(id, "structural");
+}
+
+function projectConfigGuidance(label: string): RuleGuidance {
+  return {
+    why: `This ${label} comes from the local project config, so it reflects repository-specific risk rather than a built-in Jester default.`,
+    falsePositive: "It may be noisy when the project rule is intentionally broad or the matched text is only documentation/example material.",
+    saferAlternative: "Follow the project-specific suggested check or narrow the configured pattern/value.",
+    tuning: "Edit `jester.config.json`, or use `jester config disable-rule <id>` if the rule should be muted for this repo."
+  };
+}
+
+const builtInGuidance: Record<string, RuleGuidance> = {
+  "destructive-git-history": {
+    why: "Git reset, clean, and checkout operations can discard work before anyone gets a second look.",
+    falsePositive: "It may be acceptable in a clean throwaway checkout, generated workspace, or scripted cleanup after `git status` confirms nothing valuable is present.",
+    saferAlternative: "Inspect `git status`, stash or back up local work, and target the narrowest path or branch possible.",
+    tuning: "Keep this enabled by default; disable with `jester config disable-rule destructive-git-history` only in repos where destructive cleanup is routine and guarded elsewhere."
+  },
+  "recursive-force-delete": {
+    why: "Recursive forced deletion turns a wrong path or glob into immediate data loss.",
+    falsePositive: "It may be acceptable for deleting known build output, cache folders, or temporary directories inside a confirmed workspace.",
+    saferAlternative: "Resolve the absolute target first, list what will be deleted, then delete only the intended path.",
+    tuning: "Prefer narrowing the command. Disable with `jester config disable-rule recursive-force-delete` only for repos with safe cleanup wrappers."
+  },
+  "pipe-to-shell": {
+    why: "Piping downloaded content into a shell executes code before it can be inspected or pinned.",
+    falsePositive: "It may be acceptable in a disposable environment using an official installer, but it still deserves source and version checks.",
+    saferAlternative: "Download the script, inspect it, pin the URL/version/checksum, then run the reviewed file.",
+    tuning: "Keep this enabled for most repos. Disable with `jester config disable-rule pipe-to-shell` only if another supply-chain control covers it."
+  },
+  "database-destruction": {
+    why: "Drop, truncate, and broad delete operations can permanently remove data, especially against the wrong environment.",
+    falsePositive: "It may be expected in migrations, test fixtures, or local reset scripts that clearly target disposable data.",
+    saferAlternative: "Confirm the environment, take or verify a backup, dry-run where possible, and document rollback.",
+    tuning: "Disable with `jester config disable-rule database-destruction` only for repos where destructive database text appears frequently in safe fixtures."
+  },
+  "secret-material": {
+    why: "Secrets in prompts, diffs, or logs can leak credentials into places that are hard to fully clean up.",
+    falsePositive: "It may flag placeholder names, documented environment variable keys, or fake examples.",
+    saferAlternative: "Use placeholder values, secret stores, or environment references, and rotate anything real that was exposed.",
+    tuning: "Prefer replacing real-looking examples with placeholders. Disable with `jester config disable-rule secret-material` only if false positives dominate."
+  },
+  "privileged-command": {
+    why: "Elevated commands increase blast radius and can hide permission or ownership problems.",
+    falsePositive: "It may be appropriate for package managers, service setup, or system-level development tasks.",
+    saferAlternative: "Use the narrowest command and target, and explain why elevation is required.",
+    tuning: "Disable with `jester config disable-rule privileged-command` for repos where elevated local setup is normal and documented."
+  },
+  "risky-domain": {
+    why: "Auth, billing, production, migrations, and similar domains have outsized user or business impact.",
+    falsePositive: "It can be noisy in docs, release notes, or rule text that merely mentions a sensitive word.",
+    saferAlternative: "Add targeted tests, a manual verification note, or a rollback path for the sensitive area.",
+    tuning: "Disable with `jester config disable-rule risky-domain`, or tune `sensitiveDomains` for project-specific wording."
+  },
+  "chmod-777": {
+    why: "Recursive world-writable permissions can create security holes and mask ownership issues.",
+    falsePositive: "It may be acceptable in isolated containers or short-lived local sandboxes.",
+    saferAlternative: "Set the narrowest owner, group, and mode on the specific path that needs access.",
+    tuning: "Disable with `jester config disable-rule chmod-777` only for sandbox-heavy repos with separate permission controls."
+  },
+  "confidence-theater": {
+    why: "Words like just, simple, and obvious often hide assumptions that need testing.",
+    falsePositive: "It may be harmless in casual planning language when the plan already includes concrete verification.",
+    saferAlternative: "Name the assumption and the quickest check that would prove or falsify it.",
+    tuning: "Disable with `jester config disable-rule confidence-theater` if the team finds style warnings too chatty."
+  },
+  "vibes-based-plan": {
+    why: "Uncertain wording without a check can turn guesses into implementation decisions.",
+    falsePositive: "It may be fine during early brainstorming or when uncertainty is immediately paired with a test.",
+    saferAlternative: "Add a concrete check such as a test command, fixture, screenshot, log, or dry run.",
+    tuning: "Disable with `jester config disable-rule vibes-based-plan` for planning-heavy repos where this is too noisy."
+  },
+  "skip-tests": {
+    why: "Skipping validation is sometimes necessary, but it should be an explicit tradeoff.",
+    falsePositive: "It may be acceptable when tests are unavailable and the response clearly names replacement checks.",
+    saferAlternative: "Say why tests cannot run and what cheaper verification will be used instead.",
+    tuning: "Disable with `jester config disable-rule skip-tests` only if another process enforces verification notes."
+  },
+  "done-without-evidence": {
+    why: "Completion claims are risky when they do not include evidence that anything was checked.",
+    falsePositive: "It may be noisy for tiny docs-only changes or when evidence is recorded elsewhere.",
+    saferAlternative: "Mention the exact test, build, smoke check, screenshot, or limitation.",
+    tuning: "Disable with `jester config disable-rule done-without-evidence` if final-answer evidence is handled by another template."
+  },
+  "untested-final": {
+    why: "A final answer that admits tests were not run should make the remaining uncertainty obvious.",
+    falsePositive: "It may be acceptable when the answer clearly says what was not verified and why.",
+    saferAlternative: "State the exact unverified area and the command or manual check someone should run next.",
+    tuning: "Disable with `jester config disable-rule untested-final` only if the team prefers softer final-answer checks."
+  },
+  "handwave-final": {
+    why: "Broad phrases like looks good or everything works can sound more certain than the evidence supports.",
+    falsePositive: "It may be fine when paired with specific verification output nearby.",
+    saferAlternative: "Replace broad confidence with a concrete result or known limitation.",
+    tuning: "Disable with `jester config disable-rule handwave-final` if tone/style checks are unwanted."
+  },
+  "test-removal": {
+    why: "Removing tests can silently reduce coverage for behavior that still matters.",
+    falsePositive: "It may be correct when tests are obsolete, duplicated, or replaced elsewhere in the same change.",
+    saferAlternative: "Explain why the removed tests are safe to delete or add replacement coverage.",
+    tuning: "Disable with `jester config disable-rule test-removal` only in repos where test generation creates frequent harmless removals."
+  },
+  "ts-ignore": {
+    why: "Type suppressions can hide contract mismatches that later become runtime bugs.",
+    falsePositive: "It may be acceptable for narrow third-party typing gaps or temporary migration boundaries.",
+    saferAlternative: "Prefer a typed wrapper, narrower assertion, or comment that explains why the suppression is safe.",
+    tuning: "Disable with `jester config disable-rule ts-ignore` if the repo already tracks suppressions separately."
+  },
+  "temporary-marker": {
+    why: "Temporary markers have a habit of shipping unless they are tracked or resolved.",
+    falsePositive: "It may be fine for intentional TODOs that link to an issue or visible follow-up.",
+    saferAlternative: "Finish the work or attach the marker to a tracked task.",
+    tuning: "Disable with `jester config disable-rule temporary-marker` if TODO policy lives elsewhere."
+  },
+  "console-log": {
+    why: "Debug logs can leak noisy output, sensitive values, or accidental telemetry.",
+    falsePositive: "It may be acceptable in scripts, CLIs, examples, or deliberate diagnostic logging.",
+    saferAlternative: "Use the project's logging/debug facility or remove the log before release.",
+    tuning: "Disable with `jester config disable-rule console-log` if console output is normal for this repo."
+  },
+  "package-install-script": {
+    why: "Install lifecycle scripts run on user machines and are a common supply-chain risk point.",
+    falsePositive: "It may be valid for packages that genuinely need build or setup hooks.",
+    saferAlternative: "Document why the script is necessary, keep it minimal, and mention it in release notes.",
+    tuning: "Disable with `jester config disable-rule package-install-script` only if install scripts are already reviewed elsewhere."
+  },
+  "sensitive-env-change": {
+    why: "Environment and secret-like changes can silently alter runtime, build, or security behavior.",
+    falsePositive: "It may flag harmless examples, placeholder env files, or documentation-only changes.",
+    saferAlternative: "Keep secrets out of source, confirm target environment, and run a representative smoke test.",
+    tuning: "Disable with `jester config disable-rule sensitive-env-change` if env-example churn is frequent and separately reviewed."
+  },
+  "missing-verification-step": {
+    why: "Plans that change behavior need a stated way to know whether the change worked.",
+    falsePositive: "It may be noisy for tiny mechanical edits or when verification is obvious from surrounding context.",
+    saferAlternative: "Add the cheapest meaningful check before calling the work complete.",
+    tuning: "Disable with `jester config disable-rule missing-verification-step` if another planning template already requires checks."
+  },
+  "large-removal": {
+    why: "Large deletions can accidentally remove behavior, docs, tests, or integration paths.",
+    falsePositive: "It may be safe for generated files, vendored assets, or deliberate dead-code removal.",
+    saferAlternative: "Review the removed surface area and run tests that cover the deleted code paths.",
+    tuning: "Disable with `jester config disable-rule large-removal` if large generated-file churn is common."
+  },
+  "wildcard-file-operation": {
+    why: "Wildcard moves and copies can include more files than intended.",
+    falsePositive: "It may be acceptable after listing the matched files or inside a controlled script.",
+    saferAlternative: "List matches first and use explicit paths where possible.",
+    tuning: "Disable with `jester config disable-rule wildcard-file-operation` if wildcard operations are routine and scripted."
+  }
+};
 
 function markDisabledRules(rules: RuleCatalogEntry[], disabledRules: string[] | undefined): RuleCatalogEntry[] {
   return rules.map((rule) => ({

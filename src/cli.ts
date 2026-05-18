@@ -851,6 +851,13 @@ function renderRules(result: {
         } else {
           lines.push(`  Matcher: ${rule.matcher}`);
         }
+
+        lines.push(
+          `  Why: ${rule.guidance.why}`,
+          `  False positives: ${rule.guidance.falsePositive}`,
+          `  Safer move: ${rule.guidance.saferAlternative}`,
+          `  Tune: ${rule.guidance.tuning}`
+        );
       }
     }
     lines.push("");

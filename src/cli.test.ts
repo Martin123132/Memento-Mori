@@ -127,13 +127,53 @@ test("rules supports json output and project config rules", async () => {
   ], { cwd });
   const result = JSON.parse(stdout) as {
     configPath?: string;
-    rules: Array<{ id: string; source: string; kinds: string[]; enabled: boolean }>;
+    rules: Array<{
+      id: string;
+      source: string;
+      kinds: string[];
+      enabled: boolean;
+      guidance: {
+        why: string;
+        falsePositive: string;
+        saferAlternative: string;
+        tuning: string;
+      };
+    }>;
   };
 
   assert.match(result.configPath ?? "", /jester\.config\.json$/);
-  assert.ok(result.rules.some((rule) => rule.id === "blocked-command-deploy-prod" && rule.source === "project-config"));
+  assert.ok(result.rules.some((rule) => rule.id === "blocked-command-deploy-prod" && rule.source === "project-config" && /project config/i.test(rule.guidance.why)));
   assert.ok(result.rules.some((rule) => rule.id === "configured-sensitive-domain-billing" && rule.source === "project-config"));
-  assert.ok(result.rules.some((rule) => rule.id === "custom-must-mention-rollback" && rule.kinds.includes("plan") && !rule.enabled));
+  assert.ok(result.rules.some((rule) => rule.id === "custom-must-mention-rollback" && rule.kinds.includes("plan") && !rule.enabled && /custom rule/i.test(rule.guidance.why)));
+});
+
+test("rules json includes guidance for built-in rules", async () => {
+  const { stdout } = await execFileAsync(process.execPath, [
+    cliPath,
+    "rules",
+    "--kind",
+    "command",
+    "--json",
+    "--no-config"
+  ]);
+  const result = JSON.parse(stdout) as {
+    rules: Array<{
+      id: string;
+      guidance: {
+        why: string;
+        falsePositive: string;
+        saferAlternative: string;
+        tuning: string;
+      };
+    }>;
+  };
+  const destructiveGitRule = result.rules.find((rule) => rule.id === "destructive-git-history");
+
+  assert.ok(destructiveGitRule);
+  assert.match(destructiveGitRule.guidance.why, /discard work/);
+  assert.match(destructiveGitRule.guidance.falsePositive, /throwaway checkout/);
+  assert.match(destructiveGitRule.guidance.saferAlternative, /git status/);
+  assert.match(destructiveGitRule.guidance.tuning, /disable-rule destructive-git-history/);
 });
 
 test("config can disable and enable rules", async () => {
@@ -216,6 +256,10 @@ test("rule shows one rule with matcher detail", async () => {
   assert.match(stdout, /Memento Mori Jester rule: destructive-git-history/);
   assert.match(stdout, /\[disabled\]/);
   assert.match(stdout, /Pattern:/);
+  assert.match(stdout, /Why: .*discard work/);
+  assert.match(stdout, /False positives: .*throwaway checkout/);
+  assert.match(stdout, /Safer move: .*git status/);
+  assert.match(stdout, /Tune: .*disable-rule destructive-git-history/);
   assert.doesNotMatch(stdout, /pipe-to-shell/);
 });
 

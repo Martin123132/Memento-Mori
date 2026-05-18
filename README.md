@@ -228,6 +228,8 @@ jester rules --json
 jester rule destructive-git-history
 ```
 
+`jester rule <id>` explains why a rule exists, when it may be noisy, what safer move to make, and how to tune it.
+
 Disable a noisy rule by adding its id to `disabledRules` in `jester.config.json`:
 
 ```json

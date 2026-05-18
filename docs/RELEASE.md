@@ -1,34 +1,8 @@
 # Release Guide
 
-This project is ready to become a one-command package.
+This project is published as a one-command package on npm.
 
-## 1. Create The Repo
-
-Suggested repo name:
-
-```text
-Memento-Mori
-```
-
-After creating it:
-
-```powershell
-git remote add origin https://github.com/Martin123132/Memento-Mori.git
-git branch -M main
-git push -u origin main
-```
-
-## 2. Confirm Package Name
-
-The name was available on 2026-05-17:
-
-```powershell
-npm view memento-mori-jester version
-```
-
-An npm 404 means the name is still unclaimed.
-
-## 3. Publish To npm
+## 1. Publish To npm
 
 ```powershell
 npm login
@@ -37,13 +11,15 @@ npm run pack:dry
 npm publish
 ```
 
+If npm asks for browser authentication, approve it in the browser window that opens.
+
 The package publishes these bins:
 
 - `jester`: human CLI
 - `memento-mori-jester`: human CLI, useful for `npx`
 - `memento-mori-jester-mcp`: MCP stdio server
 
-## 4. Smoke Test Published Package
+## 2. Smoke Test Published Package
 
 ```powershell
 npx -y memento-mori-jester@latest doctor
@@ -64,7 +40,7 @@ npm whoami
 
 Then run the publish commands again.
 
-## 5. MCP Copy-Paste
+## 3. MCP Copy-Paste
 
 The lowest-friction config uses `npx`:
 
@@ -96,7 +72,7 @@ For users who install globally:
 }
 ```
 
-## 6. Repository Metadata
+## 4. Repository Metadata
 
 The package is configured for:
 
@@ -106,7 +82,7 @@ https://github.com/Martin123132/Memento-Mori
 
 If the repo moves, update `repository`, `homepage`, and `bugs` in `package.json`, plus the raw installer URLs in `README.md`.
 
-## 7. Post-Release Workflow Check
+## 5. Post-Release Workflow Check
 
 In a throwaway git repo:
 

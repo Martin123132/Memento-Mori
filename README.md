@@ -10,16 +10,16 @@ It roasts the reasoning, not the human.
 
 ## Try It
 
-Run directly from GitHub now:
-
-```powershell
-npx -y github:Martin123132/Memento-Mori command "git reset --hard"
-```
-
-After npm publish:
+Run the published package:
 
 ```powershell
 npx -y memento-mori-jester@latest command "git reset --hard"
+```
+
+Start a project with config, MCP JSON, and agent instructions:
+
+```powershell
+npx -y memento-mori-jester@latest bootstrap --preset node
 ```
 
 Installed globally:
@@ -51,23 +51,16 @@ A dazzling command, if the desired outcome is court-sponsored regret.
 For a copy-pasteable MCP config and suggested agent instruction:
 
 ```powershell
-npx -y github:Martin123132/Memento-Mori init --package github:Martin123132/Memento-Mori
+npx -y memento-mori-jester@latest init
 ```
 
 For a starter kit that writes project files:
 
 ```powershell
-npx -y github:Martin123132/Memento-Mori bootstrap --preset node --package github:Martin123132/Memento-Mori
-```
-
-After npm publish:
-
-```powershell
-npx -y memento-mori-jester@latest init
 npx -y memento-mori-jester@latest bootstrap --preset node
 ```
 
-For this local checkout before npm publish:
+For this local checkout:
 
 ```powershell
 node .\dist\cli.js init --mode local
@@ -253,8 +246,13 @@ Before risky commands, final answers, commits, or large edits, call the Memento 
 
 More setup examples:
 
+- [Getting Started](docs/GETTING_STARTED.md)
+- [CLI Setup](docs/CLI.md)
+- [Codex Setup](docs/CODEX.md)
+- [Claude Code Setup](docs/CLAUDE_CODE.md)
 - [Agent Setup](docs/AGENTS.md)
 - [GitHub Actions](docs/GITHUB_ACTIONS.md)
+- [Demo Script](docs/DEMO.md)
 
 ## Installer Scripts
 
@@ -296,8 +294,6 @@ Both scripts check Node 20+, run a smoke `doctor`, and print MCP config.
 - Project-specific commands, domains, and regex rules from `jester.config.json`.
 
 ## Publishing
-
-The npm package name `memento-mori-jester` was available when checked on 2026-05-17.
 
 Release checklist:
 

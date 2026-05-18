@@ -8,7 +8,7 @@ Memento Mori Jester is an MCP stdio server plus a normal CLI. The safest pattern
 
 ## Quick MCP Config
 
-After npm publish, use the `npx` config:
+Use the published package with `npx`:
 
 ```json
 {
@@ -57,13 +57,7 @@ Before risky commands, final answers, commits, or large edits, call the Memento 
 Use `bootstrap` inside a repo when you want the project files created for you:
 
 ```powershell
-jester bootstrap --preset node
-```
-
-Before npm publish, the GitHub `npx` path should keep using the GitHub package spec in generated MCP config:
-
-```powershell
-npx -y github:Martin123132/Memento-Mori bootstrap --preset node --package github:Martin123132/Memento-Mori
+npx -y memento-mori-jester@latest bootstrap --preset node
 ```
 
 It writes `jester.config.json`, `memento-mori.mcp.json`, and `MEMENTO_MORI.md`. Existing files are kept unless `--force` is passed.
@@ -80,10 +74,10 @@ jester bootstrap --preset security --hook pre-commit --hook pre-push
 Use:
 
 ```powershell
-jester init --agent codex
+npx -y memento-mori-jester@latest init --agent codex
 ```
 
-Then paste the generated `mcpServers` block wherever your Codex MCP configuration is kept. For local development before npm publish:
+Then paste the generated `mcpServers` block wherever your Codex MCP configuration is kept. For local development:
 
 ```powershell
 node .\dist\cli.js init --mode local --agent codex
@@ -94,7 +88,7 @@ node .\dist\cli.js init --mode local --agent codex
 Use:
 
 ```powershell
-jester init --agent claude
+npx -y memento-mori-jester@latest init --agent claude
 ```
 
 Then paste the generated `mcpServers` block into Claude Code's MCP configuration. If Claude Code asks for a command and args separately, keep the generated values exactly.
@@ -104,7 +98,7 @@ Then paste the generated `mcpServers` block into Claude Code's MCP configuration
 Use:
 
 ```powershell
-jester mcp-config --mode npx
+npx -y memento-mori-jester@latest mcp-config --mode npx
 ```
 
 If the client does not support `npx`, install globally:

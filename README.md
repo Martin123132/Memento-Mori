@@ -108,6 +108,7 @@ Modes:
 jester plan "I will just refactor auth and ship it"
 jester command "git reset --hard"
 git diff | jester diff --fail-on block
+git diff | jester diff --sarif > jester.sarif
 jester final --file .\final-answer.txt --tone professional
 jester explain command "git reset --hard"
 jester doctor
@@ -196,6 +197,14 @@ jester config validate
 jester config validate --json
 jester plan "I will deploy-prod now" --config .\jester.config.json
 jester command "git reset --hard" --no-config
+```
+
+Structured output. SARIF is available on `main` now and in the next npm release:
+
+```powershell
+jester command "git reset --hard" --json
+jester command "git reset --hard" --sarif
+git diff | jester diff --sarif > jester.sarif
 ```
 
 Presets layer extra rules on top of the default config:

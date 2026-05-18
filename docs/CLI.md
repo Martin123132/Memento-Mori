@@ -24,6 +24,7 @@ jester command "Remove-Item .\dist -Recurse -Force"
 jester final --file .\final-answer.txt --tone professional
 jester explain command "git reset --hard"
 git diff | jester diff --fail-on block
+git diff | jester diff --sarif > jester.sarif
 jester examples
 ```
 
@@ -79,7 +80,7 @@ Levels:
 
 ## JSON Output
 
-Use `--json` when another tool needs to parse the result:
+Use `--json` when another tool needs the review result:
 
 ```powershell
 jester command "git reset --hard" --json
@@ -87,4 +88,12 @@ jester explain command "git reset --hard" --json
 jester policy init --level strict --json
 jester config validate --json
 jester bootstrap --preset node --json
+```
+
+Available on `main` now and in the next npm release, use `--sarif` when CI or code-scanning tooling needs SARIF 2.1.0:
+
+```powershell
+jester command "git reset --hard" --sarif
+git diff | jester diff --sarif > jester.sarif
+git diff | jester diff --sarif --fail-on block > jester.sarif
 ```

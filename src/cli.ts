@@ -28,6 +28,7 @@ import {
   uninstallHook,
   type HookName
 } from "./hooks.js";
+import { formatSarif } from "./sarif.js";
 import { type HookFailOn, type ReviewInput, type ReviewKind, type ReviewResult, reviewKinds, type RiskTolerance, type Tone, tones } from "./types.js";
 
 const packageSpecDefault = "memento-mori-jester@latest";
@@ -44,6 +45,7 @@ type CliOptions = {
   file?: string;
   configPath?: string;
   noConfig: boolean;
+  sarif: boolean;
 };
 
 type SetupMode = "npx" | "global" | "local";
@@ -205,7 +207,11 @@ async function main(argv: string[]): Promise<void> {
   };
   const result = review(inputForReview);
 
-  output.write(options.json ? `${JSON.stringify(result, null, 2)}\n` : `${formatReview(result)}\n`);
+  if (options.sarif) {
+    output.write(formatSarif(result, { content }));
+  } else {
+    output.write(options.json ? `${JSON.stringify(result, null, 2)}\n` : `${formatReview(result)}\n`);
+  }
 
   if (options.failOn === "block" && result.verdict === "block") {
     process.exitCode = 2;
@@ -232,7 +238,7 @@ function resolveKind(command: string, optionKind?: ReviewKind): ReviewKind {
 }
 
 function parseOptions(argv: string[]): CliOptions {
-  const options: CliOptions = { json: false, noConfig: false };
+  const options: CliOptions = { json: false, noConfig: false, sarif: false };
 
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index];
@@ -240,6 +246,8 @@ function parseOptions(argv: string[]): CliOptions {
 
     if (arg === "--json") {
       options.json = true;
+    } else if (arg === "--sarif") {
+      options.sarif = true;
     } else if (arg === "--kind") {
       options.kind = parseKind(requireValue(arg, next));
       index += 1;
@@ -429,7 +437,7 @@ function optionHasValue(arg: string): boolean {
 }
 
 function isKnownOption(arg: string): boolean {
-  return optionHasValue(arg) || ["--json", "--no-config", "--force"].includes(arg);
+  return optionHasValue(arg) || ["--json", "--sarif", "--no-config", "--force"].includes(arg);
 }
 
 function readStdin(): Promise<string> {
@@ -675,6 +683,10 @@ async function handleExplain(argv: string[]): Promise<string> {
   };
   const result = review(inputForReview);
   const explanation = renderExplanation(result);
+
+  if (options.sarif) {
+    throw new Error('Use "--json" for structured explain output. "--sarif" is for plan, command, diff, and final reviews.');
+  }
 
   if (options.json) {
     return `${JSON.stringify({ review: result, explanation }, null, 2)}\n`;
@@ -1193,6 +1205,7 @@ Options:
   --no-config                         Ignore jester.config.json discovery
   --preset <default|node|python|security>
   --level <team|strict>
+  --sarif                             Output SARIF 2.1.0 for CI/code scanning
   --json
 
 Setup options:

@@ -18,6 +18,14 @@ inputs:
     description: Ignore discovered jester.config.json files.
     required: false
     default: "false"
+  format:
+    description: Output format for the review. Use text or sarif.
+    required: false
+    default: text
+  output-file:
+    description: Optional file path to write review output, useful for SARIF upload steps.
+    required: false
+    default: ""
 
 runs:
   using: composite
@@ -41,6 +49,8 @@ runs:
         SUBJECT: ${{ inputs.subject }}
         CONFIG: ${{ inputs.config }}
         NO_CONFIG: ${{ inputs.no-config }}
+        FORMAT: ${{ inputs.format }}
+        OUTPUT_FILE: ${{ inputs.output-file }}
       run: |
         set -euo pipefail
 
@@ -51,12 +61,26 @@ runs:
         if [ "$NO_CONFIG" = "true" ]; then
           args+=(--no-config)
         fi
+        if [ "$FORMAT" = "sarif" ]; then
+          args+=(--sarif)
+        elif [ "$FORMAT" != "text" ]; then
+          echo "Unknown format: $FORMAT. Use text or sarif." >&2
+          exit 1
+        fi
+
+        run_review() {
+          if [ -n "$OUTPUT_FILE" ]; then
+            node "$GITHUB_ACTION_PATH/dist/cli.js" "${args[@]}" > "$OUTPUT_FILE"
+          else
+            node "$GITHUB_ACTION_PATH/dist/cli.js" "${args[@]}"
+          fi
+        }
 
         if [ -n "${GITHUB_BASE_REF:-}" ]; then
           git fetch origin "$GITHUB_BASE_REF" --depth=1
           git diff --binary --no-ext-diff "origin/$GITHUB_BASE_REF...HEAD" \
-            | node "$GITHUB_ACTION_PATH/dist/cli.js" "${args[@]}"
+            | run_review
         else
           git diff --binary --no-ext-diff HEAD~1..HEAD \
-            | node "$GITHUB_ACTION_PATH/dist/cli.js" "${args[@]}"
+            | run_review
         fi

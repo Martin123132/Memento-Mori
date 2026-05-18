@@ -114,3 +114,26 @@ Use `--fail-on caution` if you want warnings to fail CI too:
 ```
 
 Use `--json` if another CI step will parse the result.
+
+## SARIF Output
+
+Available on `main` now and in the next npm release, the CLI can write SARIF 2.1.0:
+
+```yaml
+- run: |
+    git diff --binary --no-ext-diff "origin/${{ github.base_ref }}...HEAD" \
+      | npx -y memento-mori-jester@latest diff --sarif > jester.sarif
+```
+
+The composite action can also write SARIF to a file:
+
+```yaml
+- name: Review diff as SARIF
+  uses: Martin123132/Memento-Mori@main
+  with:
+    format: sarif
+    output-file: jester.sarif
+    fail-on: block
+```
+
+Upload that file with GitHub's code scanning upload action if the repository has code scanning enabled.

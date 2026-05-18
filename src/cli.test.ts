@@ -165,3 +165,43 @@ test("policy commands list and show levels", async () => {
   assert.match(levels.stdout, /strict/);
   assert.match(shown.stdout, /policy-production-deploy/);
 });
+
+test("sarif output renders review issues", async () => {
+  const { stdout } = await execFileAsync(process.execPath, [
+    cliPath,
+    "command",
+    "git reset --hard",
+    "--sarif"
+  ]);
+  const sarif = JSON.parse(stdout) as {
+    version: string;
+    runs: Array<{
+      tool: { driver: { rules: Array<{ id: string }> } };
+      results: Array<{ ruleId: string; level: string }>;
+    }>;
+  };
+
+  assert.equal(sarif.version, "2.1.0");
+  assert.equal(sarif.runs[0]?.results[0]?.ruleId, "destructive-git-history");
+  assert.equal(sarif.runs[0]?.results[0]?.level, "error");
+  assert.ok(sarif.runs[0]?.tool.driver.rules.some((rule) => rule.id === "destructive-git-history"));
+});
+
+test("sarif output still honors fail-on exit codes", async () => {
+  await assert.rejects(
+    () => execFileAsync(process.execPath, [
+      cliPath,
+      "command",
+      "git reset --hard",
+      "--sarif",
+      "--fail-on",
+      "block"
+    ]),
+    (error: unknown) => {
+      const failed = error as { code?: number; stdout?: string };
+      assert.equal(failed.code, 2);
+      assert.match(failed.stdout ?? "", /destructive-git-history/);
+      return true;
+    }
+  );
+});

@@ -65,3 +65,5 @@ npx -y memento-mori-jester@latest bootstrap --preset node
 ```
 
 Then tell them to open `MEMENTO_MORI.md`.
+
+For where this is going next, see [ROADMAP.md](../ROADMAP.md).

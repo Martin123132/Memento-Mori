@@ -253,6 +253,8 @@ More setup examples:
 - [Agent Setup](docs/AGENTS.md)
 - [GitHub Actions](docs/GITHUB_ACTIONS.md)
 - [Demo Script](docs/DEMO.md)
+- [Roadmap](ROADMAP.md)
+- [Trusted npm Publishing](docs/TRUSTED_PUBLISHING.md)
 
 ## Installer Scripts
 

@@ -13,6 +13,8 @@ npm publish
 
 If npm asks for browser authentication, approve it in the browser window that opens.
 
+For the less painful route, configure trusted publishing once using [TRUSTED_PUBLISHING.md](TRUSTED_PUBLISHING.md), then run the `npm Publish` workflow in GitHub Actions.
+
 The package publishes these bins:
 
 - `jester`: human CLI
@@ -93,3 +95,7 @@ npx -y memento-mori-jester@latest hook-status
 ```
 
 Then stage a risky diff and confirm the hook blocks or cautions according to `hookFailOn`.
+
+## 6. GitHub Release
+
+Pushing a `v*` tag now creates a GitHub Release automatically. If `docs/RELEASE_NOTES_<tag>.md` exists, those notes are used; otherwise GitHub-generated notes are used.

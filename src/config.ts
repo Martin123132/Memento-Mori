@@ -4,7 +4,7 @@ import { z } from "zod";
 import { reviewKinds, tones, type UserJesterConfig } from "./types.js";
 
 export const configFileNames = ["jester.config.json", ".jester.json"] as const;
-export const configPresetNames = ["default", "node", "python", "security"] as const;
+export const configPresetNames = ["default", "node", "python", "web", "infra", "security"] as const;
 export const policyLevelNames = ["team", "strict"] as const;
 
 export type ConfigPreset = (typeof configPresetNames)[number];
@@ -372,6 +372,122 @@ function presetConfig(preset: Exclude<ConfigPreset, "default">): UserJesterConfi
           detail: "eval/exec changes deserve strong justification and tests.",
           suggestedCheck: "Replace with structured parsing or constrain the input surface.",
           kinds: ["diff", "plan"]
+        }
+      ]
+    };
+  }
+
+  if (preset === "web") {
+    return {
+      sensitiveDomains: [
+        "browser storage",
+        "client secret",
+        "redirect",
+        "returnUrl",
+        "dangerouslySetInnerHTML",
+        "innerHTML",
+        "cookies",
+        "session"
+      ],
+      customRules: [
+        {
+          id: "web-public-secret-name",
+          pattern: "\\b(?:NEXT_PUBLIC|VITE|PUBLIC)_[A-Z0-9_]*(?:SECRET|TOKEN|KEY|PASSWORD)[A-Z0-9_]*\\b",
+          severity: 5,
+          title: "Client-exposed secret-like variable",
+          detail: "Public frontend environment variables are bundled for the browser, so secret-like names need a second look.",
+          suggestedCheck: "Keep secrets server-side and expose only non-sensitive public config to the browser.",
+          kinds: ["diff", "plan", "command"]
+        },
+        {
+          id: "web-unsafe-html-injection",
+          pattern: "\\bdangerouslySetInnerHTML\\b|\\binnerHTML\\s*=",
+          severity: 4,
+          title: "Unsafe HTML injection surface",
+          detail: "Direct HTML injection can turn untrusted content into script execution.",
+          suggestedCheck: "Use safe rendering, sanitize trusted HTML at the boundary, and add an XSS-focused test.",
+          kinds: ["diff", "plan"]
+        },
+        {
+          id: "web-storage-sensitive-value",
+          pattern: "\\b(localStorage|sessionStorage)\\s*\\.\\s*setItem\\s*\\([^\\n]*(token|password|secret|api[_-]?key)",
+          flags: "i",
+          severity: 4,
+          title: "Sensitive value stored in browser storage",
+          detail: "Tokens and passwords in localStorage or sessionStorage are exposed to any injected script.",
+          suggestedCheck: "Prefer httpOnly cookies or a short-lived server-backed session, and document the threat tradeoff.",
+          kinds: ["diff", "plan"]
+        },
+        {
+          id: "web-open-redirect-shape",
+          pattern: "\\b(redirect|returnUrl|next|location\\.href)\\b[^\\n]*(req\\.query|searchParams|URLSearchParams|window\\.location)",
+          severity: 3,
+          title: "Open redirect-shaped change",
+          detail: "Redirects built from request or URL parameters can send users to attacker-controlled destinations.",
+          suggestedCheck: "Allowlist internal paths or trusted origins before redirecting.",
+          kinds: ["diff", "plan"]
+        }
+      ]
+    };
+  }
+
+  if (preset === "infra") {
+    return {
+      riskTolerance: "low",
+      hookFailOn: "caution",
+      sensitiveDomains: [
+        "terraform",
+        "pulumi",
+        "kubernetes",
+        "helm",
+        "iam",
+        "security group",
+        "public bucket",
+        "production",
+        "infrastructure"
+      ],
+      blockedCommands: [
+        "terraform destroy",
+        "kubectl delete",
+        "helm uninstall",
+        "docker system prune -a"
+      ],
+      customRules: [
+        {
+          id: "infra-production-change",
+          pattern: "\\b(terraform|pulumi|kubectl|helm)\\b[^\\n]*(apply|destroy|delete|replace|up|uninstall|upgrade)",
+          severity: 5,
+          title: "Production-impacting infra command",
+          detail: "Infrastructure commands can change live systems, delete resources, or alter deployment state.",
+          suggestedCheck: "Confirm the target environment, review the plan/diff, and name the rollback path.",
+          kinds: ["command", "plan"]
+        },
+        {
+          id: "infra-iam-wildcard-permission",
+          pattern: "\\b(iam|policy|permission|role)\\b[\\s\\S]{0,160}(\"Action\"\\s*:\\s*\"\\*\"|\"Resource\"\\s*:\\s*\"\\*\"|\\*)",
+          severity: 4,
+          title: "IAM permission widening",
+          detail: "Wildcard IAM actions or resources can grant more access than intended.",
+          suggestedCheck: "Narrow actions and resources, then get a security review for broad permissions.",
+          kinds: ["diff", "plan"]
+        },
+        {
+          id: "infra-public-exposure",
+          pattern: "\\b(0\\.0\\.0\\.0/0|public-read|public_access_block\\s*=\\s*false|block_public_acls\\s*=\\s*false|allow\\s+all)\\b",
+          severity: 4,
+          title: "Public cloud exposure",
+          detail: "Public networking or storage settings can expose infrastructure or data.",
+          suggestedCheck: "Restrict the source, bucket, or network rule and document the intended exposure.",
+          kinds: ["diff", "plan"]
+        },
+        {
+          id: "infra-state-or-secret-change",
+          pattern: "\\b(tfstate|kubeconfig|\\.pem|private[_-]?key|client[_-]?secret|AWS[_-]?SECRET[_-]?ACCESS[_-]?KEY)\\b",
+          severity: 5,
+          title: "Infrastructure state or secret material touched",
+          detail: "State files, kubeconfigs, private keys, and cloud secrets should not drift into source or logs.",
+          suggestedCheck: "Remove secret/state material, rotate exposed credentials, and use the team's secret store.",
+          kinds: ["diff", "plan", "command"]
         }
       ]
     };

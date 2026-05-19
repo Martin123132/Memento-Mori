@@ -1537,6 +1537,8 @@ Usage:
   jester bootstrap --preset node
   jester doctor
   jester config init
+  jester config init --preset web
+  jester config init --preset infra
   jester config init --preset security
   jester config show
   jester config validate
@@ -1565,7 +1567,7 @@ Options:
   --file <path>
   --config <path>                     Use a specific jester config file
   --no-config                         Ignore jester.config.json discovery
-  --preset <default|node|python|security>
+  --preset <default|node|python|web|infra|security>
   --level <team|strict>
   --sarif                             Output SARIF 2.1.0 for CI/code scanning
   --json

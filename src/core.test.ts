@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { userConfigForPreset } from "./config.js";
 import { reviewCommand, reviewDiff, reviewFinalAnswer, reviewPlan } from "./core.js";
 
 test("blocks recursive force deletion", () => {
@@ -67,6 +68,29 @@ test("blocks commands listed in project config", () => {
 
   assert.equal(result.verdict, "block");
   assert.ok(result.issues.some((issue) => issue.id === "blocked-command-deploy-prod"));
+});
+
+test("web preset flags sensitive browser storage", () => {
+  const result = reviewDiff(`diff --git a/app.ts b/app.ts
+--- a/app.ts
++++ b/app.ts
+@@ -1 +1,2 @@
++localStorage.setItem("token", sessionToken);
+`, {
+    config: userConfigForPreset("web")
+  });
+
+  assert.equal(result.verdict, "block");
+  assert.ok(result.issues.some((issue) => issue.id === "custom-web-storage-sensitive-value"));
+});
+
+test("infra preset blocks destructive infra commands", () => {
+  const result = reviewCommand("terraform destroy", {
+    config: userConfigForPreset("infra")
+  });
+
+  assert.equal(result.verdict, "block");
+  assert.ok(result.issues.some((issue) => issue.id === "blocked-command-terraform-destroy"));
 });
 
 test("disabled rules do not affect review verdicts", () => {

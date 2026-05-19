@@ -356,6 +356,42 @@ test("mcp-config can render Claude Code shape", async () => {
   assert.equal(config.mcpServers, undefined);
 });
 
+test("config presets includes web and infra", async () => {
+  const { stdout } = await execFileAsync(process.execPath, [cliPath, "config", "presets"]);
+
+  assert.match(stdout, /^web$/m);
+  assert.match(stdout, /^infra$/m);
+});
+
+test("config init can write web and infra presets", async () => {
+  const cwd = await mkdtemp(join(tmpdir(), "jester-preset-config-"));
+
+  await execFileAsync(process.execPath, [
+    cliPath,
+    "config",
+    "init",
+    "--preset",
+    "web",
+    "--path",
+    "jester-web.config.json"
+  ], { cwd });
+  await execFileAsync(process.execPath, [
+    cliPath,
+    "config",
+    "init",
+    "--preset",
+    "infra",
+    "--path",
+    "jester-infra.config.json"
+  ], { cwd });
+
+  const web = await readFile(join(cwd, "jester-web.config.json"), "utf8");
+  const infra = await readFile(join(cwd, "jester-infra.config.json"), "utf8");
+
+  assert.match(web, /web-public-secret-name/);
+  assert.match(infra, /terraform destroy/);
+});
+
 test("policy init writes stricter project config", async () => {
   const cwd = await mkdtemp(join(tmpdir(), "jester-policy-"));
   const { stdout } = await execFileAsync(process.execPath, [

@@ -4,6 +4,11 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.17
+
+- Added `web` and `infra` config presets for frontend/browser and deployment/infrastructure repos.
+- Documented the new presets in CLI, agent, getting-started, and README guidance.
+
 ## 0.1.16
 
 - Automated trusted npm publishing on `v*` tag pushes while keeping manual workflow dispatch as a fallback.

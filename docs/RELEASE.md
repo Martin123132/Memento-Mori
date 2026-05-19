@@ -51,6 +51,10 @@ npx.cmd -y memento-mori-jester@latest bootstrap --preset node
 npx.cmd -y memento-mori-jester@latest config init
 npx.cmd -y memento-mori-jester@latest config disable-rule console-log --json
 npx.cmd -y memento-mori-jester@latest config enable-rule console-log --json
+npx.cmd -y memento-mori-jester@latest config init --preset web --path jester-web.config.json
+npx.cmd -y memento-mori-jester@latest config validate --config jester-web.config.json
+npx.cmd -y memento-mori-jester@latest config init --preset infra --path jester-infra.config.json
+npx.cmd -y memento-mori-jester@latest config validate --config jester-infra.config.json
 npx.cmd -y memento-mori-jester@latest config init --preset security --path jester-security.config.json
 npx.cmd -y memento-mori-jester@latest config validate --config jester-security.config.json
 ```

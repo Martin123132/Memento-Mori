@@ -115,6 +115,8 @@ Presets:
 
 - `node`: npm/package rules.
 - `python`: Python dependency and dynamic execution rules.
+- `web`: browser storage, client-exposed config, unsafe HTML, and redirect rules.
+- `infra`: deployment, cloud, container, IAM, and public exposure rules.
 - `security`: stricter TLS, CORS, secrets, and permission checks.
 
 ## Policy Init

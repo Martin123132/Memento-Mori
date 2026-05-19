@@ -123,6 +123,8 @@ Use a preset for common stacks:
 ```powershell
 jester config init --preset node
 jester config init --preset python
+jester config init --preset web
+jester config init --preset infra
 jester config init --preset security
 ```
 

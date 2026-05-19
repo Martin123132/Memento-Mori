@@ -4,6 +4,11 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.16
+
+- Automated trusted npm publishing on `v*` tag pushes while keeping manual workflow dispatch as a fallback.
+- Updated release documentation now that trusted publishing is proven.
+
 ## 0.1.15
 
 - Added practical rule guidance to `jester rule <id>` and `jester rules --json`.

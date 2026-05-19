@@ -387,11 +387,14 @@ Both scripts check Node 20+, run a smoke `doctor`, and print MCP config.
 Release checklist:
 
 ```powershell
-npm login
-npm test
-npm run pack:dry
-npm publish
+npm.cmd test
+npm.cmd run pack:dry
+git tag -a v0.1.x -m "Memento Mori Jester v0.1.x"
+git push origin main
+git push origin v0.1.x
 ```
+
+Pushing a `v*` tag creates the GitHub Release and publishes the matching package version to npm through trusted publishing.
 
 GitHub: <https://github.com/Martin123132/Memento-Mori>
 

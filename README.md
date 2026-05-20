@@ -8,6 +8,12 @@ A local court-jester sidecar for AI coding agents. It reviews plans, shell comma
 
 It roasts the reasoning, not the human.
 
+## Demo
+
+[![Memento Mori Jester terminal demo](docs/demo-terminal.svg)](docs/DEMO.md)
+
+See the full [demo transcript](docs/DEMO.md).
+
 ## Start Here
 
 No install needed:

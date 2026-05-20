@@ -5,12 +5,15 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 ## Near Term
 
 - More config presets for common stacks and risk profiles.
-- A short demo recording or GIF for the README.
 - Better rule explanations and fewer false-positive cautions as real usage accumulates.
+
+## Recently Shipped
+
+- README demo snapshot generated as a small deterministic SVG.
 
 ## Product Ideas
 
-- A small web/demo page that lets people paste a command or diff and see the verdict.
+- A local paste-in playground that lets people try a command, plan, final answer, or diff and see the verdict.
 
 ## Quality And Safety
 

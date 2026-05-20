@@ -1,6 +1,6 @@
 # Demo Transcript
 
-This is a short script for showing what Memento Mori Jester does.
+This is a short script for showing what Memento Mori Jester does. The README image is generated from the same product story by `scripts/render-demo-svg.mjs`.
 
 ## 1. Health Check
 
@@ -55,24 +55,45 @@ npx -y memento-mori-jester@latest plan "I will just refactor auth and ship it"
 Typical output:
 
 ```text
-Jester verdict: CAUTION
+Jester verdict: CAUTION (40/100)
 
 Concerns:
-- Confidence theater
-- No verification step
-- High-risk domain touched
+- [S2] Confidence theater: Words like simple, obvious, or definitely often hide unpriced complexity.
+- [S2] No verification step: The plan changes behavior but does not say how the result will be checked.
+- [S3] High-risk domain touched: Auth, billing, production, migrations, or security-sensitive areas deserve extra evidence.
 ```
 
-The exact wording varies by tone, but the point should be clear: add evidence before marching onward.
+The exact jab varies by tone, but the point should be clear: add evidence before marching onward.
 
-## 4. Bootstrap A Project
+## 4. Preset Preview
+
+Command:
+
+```powershell
+npx -y memento-mori-jester@latest config presets
+```
+
+Output:
+
+```text
+default
+node
+python
+web
+infra
+security
+```
+
+Use `web` for frontend/browser apps, `infra` for deployment or cloud infrastructure repos, and `security` for a stricter general policy.
+
+## 5. Bootstrap A Project
 
 Command:
 
 ```powershell
 mkdir jester-demo
 cd jester-demo
-npx -y memento-mori-jester@latest bootstrap --preset node
+npx -y memento-mori-jester@latest bootstrap --preset web
 ```
 
 Typical output:
@@ -89,26 +110,6 @@ Next:
   npx -y memento-mori-jester@latest doctor
   npx -y memento-mori-jester@latest config validate
   Add memento-mori.mcp.json to your MCP client, or copy the command and args from it.
-```
-
-## 5. Final Answer Check
-
-Command:
-
-```powershell
-npx -y memento-mori-jester@latest final "Implemented the fix, but tests not run."
-```
-
-Typical output:
-
-```text
-Jester verdict: CAUTION
-
-Concerns:
-- [S3] Final answer says tests were not run
-
-Suggested checks:
-- State what remains unverified and the exact command or manual check someone should run next.
 ```
 
 ## 6. MCP Setup Preview

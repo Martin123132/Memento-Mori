@@ -4,6 +4,11 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.18
+
+- Added a generated README terminal demo snapshot and regeneration/check scripts.
+- Refreshed the demo transcript around current presets and MCP setup.
+
 ## 0.1.17
 
 - Added `web` and `infra` config presets for frontend/browser and deployment/infrastructure repos.

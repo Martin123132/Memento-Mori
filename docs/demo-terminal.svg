@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="794" viewBox="0 0 1120 794" role="img" aria-labelledby="title desc">
+  <title id="title">Memento Mori Jester terminal demo</title>
+  <desc id="desc">A terminal-style demo showing doctor, command review, plan review, config presets, and MCP setup.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#111827"/>
+      <stop offset="62%" stop-color="#172033"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <filter id="shadow" x="-4%" y="-4%" width="108%" height="108%">
+      <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#020617" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+  <rect width="100%" height="100%" fill="#e5e7eb"/>
+  <rect x="18" y="18" width="1084" height="758" rx="18" fill="url(#bg)" filter="url(#shadow)"/>
+  <rect x="18" y="18" width="1084" height="54" rx="18" fill="#0b1120"/>
+  <rect x="18" y="54" width="1084" height="18" fill="#0b1120"/>
+  <circle cx="48" cy="45" r="7" fill="#ff5f57"/>
+  <circle cx="72" cy="45" r="7" fill="#febc2e"/>
+  <circle cx="96" cy="45" r="7" fill="#28c840"/>
+  <text x="132" y="50" style="fill:#94a3b8;font:600 14px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">memento-mori-jester@latest</text>
+  <g style="font:15px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+  <text x="34" y="88" style="fill:#f8fafc;font-weight:700">$ npx -y memento-mori-jester@latest doctor</text>
+  <text x="34" y="112" style="fill:#94a3b8">Memento Mori Jester doctor</text>
+  <text x="34" y="136" style="fill:#86efac">PASS node-version: Node 24; required &gt;=20.</text>
+  <text x="34" y="160" style="fill:#86efac">PASS review-engine: Dangerous git command is blocked.</text>
+  <text x="34" y="184" style="fill:#dbeafe">The fool is fit for court.</text>
+  <text x="34" y="208" style="fill:#dbeafe"></text>
+  <text x="34" y="232" style="fill:#f8fafc;font-weight:700">$ npx -y memento-mori-jester@latest command &quot;git reset --hard&quot;</text>
+  <text x="34" y="256" style="fill:#ff6b6b;font-weight:700">Jester verdict: BLOCK (100/100)</text>
+  <text x="34" y="280" style="fill:#dbeafe">[S5] Destructive git operation: can discard local work.</text>
+  <text x="34" y="304" style="fill:#fef3c7">Check: inspect git status, then stash or back up first.</text>
+  <text x="34" y="328" style="fill:#dbeafe"></text>
+  <text x="34" y="352" style="fill:#f8fafc;font-weight:700">$ npx -y memento-mori-jester@latest plan &quot;I will just refactor auth and ship it&quot;</text>
+  <text x="34" y="376" style="fill:#facc15;font-weight:700">Jester verdict: CAUTION (40/100)</text>
+  <text x="34" y="400" style="fill:#dbeafe">[S2] Confidence theater: &quot;just&quot; is doing too much work.</text>
+  <text x="34" y="424" style="fill:#dbeafe">[S2] No verification step: name the check before the crown goes on.</text>
+  <text x="34" y="448" style="fill:#dbeafe"></text>
+  <text x="34" y="472" style="fill:#f8fafc;font-weight:700">$ npx -y memento-mori-jester@latest config presets</text>
+  <text x="34" y="496" style="fill:#7dd3fc">default   node   python   web   infra   security</text>
+  <text x="34" y="520" style="fill:#dbeafe"></text>
+  <text x="34" y="544" style="fill:#f8fafc;font-weight:700">$ npx -y memento-mori-jester@latest mcp-config --mode npx</text>
+  <text x="34" y="568" style="fill:#c4b5fd">{</text>
+  <text x="34" y="592" style="fill:#c4b5fd">  &quot;mcpServers&quot;: {</text>
+  <text x="34" y="616" style="fill:#c4b5fd">    &quot;memento-mori-jester&quot;: {</text>
+  <text x="34" y="640" style="fill:#c4b5fd">      &quot;command&quot;: &quot;npx&quot;,</text>
+  <text x="34" y="664" style="fill:#c4b5fd">      &quot;args&quot;: [&quot;-y&quot;, &quot;memento-mori-jester@latest&quot;, &quot;mcp-server&quot;]</text>
+  <text x="34" y="688" style="fill:#c4b5fd">    }</text>
+  <text x="34" y="712" style="fill:#c4b5fd">  }</text>
+  <text x="34" y="736" style="fill:#c4b5fd">}</text>
+  </g>
+</svg>

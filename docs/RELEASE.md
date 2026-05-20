@@ -59,6 +59,8 @@ npx.cmd -y memento-mori-jester@latest config init --preset web --path jester-web
 npx.cmd -y memento-mori-jester@latest config validate --config jester-web.config.json
 npx.cmd -y memento-mori-jester@latest config init --preset infra --path jester-infra.config.json
 npx.cmd -y memento-mori-jester@latest config validate --config jester-infra.config.json
+npx.cmd -y memento-mori-jester@latest config init --preset ai --path jester-ai.config.json
+npx.cmd -y memento-mori-jester@latest config validate --config jester-ai.config.json
 npx.cmd -y memento-mori-jester@latest config init --preset security --path jester-security.config.json
 npx.cmd -y memento-mori-jester@latest config validate --config jester-security.config.json
 ```

@@ -128,6 +128,7 @@ jester config init --preset node
 jester config init --preset python
 jester config init --preset web
 jester config init --preset infra
+jester config init --preset ai
 jester config init --preset security
 ```
 

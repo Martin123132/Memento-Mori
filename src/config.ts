@@ -4,7 +4,7 @@ import { z } from "zod";
 import { reviewKinds, tones, type UserJesterConfig } from "./types.js";
 
 export const configFileNames = ["jester.config.json", ".jester.json"] as const;
-export const configPresetNames = ["default", "node", "python", "web", "infra", "security"] as const;
+export const configPresetNames = ["default", "node", "python", "web", "infra", "ai", "security"] as const;
 export const policyLevelNames = ["team", "strict"] as const;
 
 export type ConfigPreset = (typeof configPresetNames)[number];
@@ -488,6 +488,71 @@ function presetConfig(preset: Exclude<ConfigPreset, "default">): UserJesterConfi
           detail: "State files, kubeconfigs, private keys, and cloud secrets should not drift into source or logs.",
           suggestedCheck: "Remove secret/state material, rotate exposed credentials, and use the team's secret store.",
           kinds: ["diff", "plan", "command"]
+        }
+      ]
+    };
+  }
+
+  if (preset === "ai") {
+    return {
+      sensitiveDomains: [
+        "system prompt",
+        "developer message",
+        "tool call",
+        "function call",
+        "mcp",
+        "agent",
+        "eval",
+        "retrieval",
+        "vector store",
+        "user prompt",
+        "transcript"
+      ],
+      customRules: [
+        {
+          id: "ai-public-provider-key",
+          pattern: "\\b(?:NEXT_PUBLIC|VITE|PUBLIC)_[A-Z0-9_]*(?:OPENAI|ANTHROPIC|GEMINI|GOOGLE|MISTRAL|COHERE|TOGETHER|PERPLEXITY)[A-Z0-9_]*(?:API[_-]?KEY|TOKEN|SECRET)[A-Z0-9_]*\\b|\\b(?:NEXT_PUBLIC|VITE|PUBLIC)_[A-Z0-9_]*(?:API[_-]?KEY|TOKEN|SECRET)[A-Z0-9_]*\\b",
+          severity: 5,
+          title: "Client-exposed AI provider key",
+          detail: "Public frontend variables are bundled for the browser, so AI provider keys or tokens must not use public prefixes.",
+          suggestedCheck: "Keep provider credentials server-side and expose only non-sensitive model or feature config to the client.",
+          kinds: ["diff", "plan", "command"]
+        },
+        {
+          id: "ai-prompt-injection-shape",
+          pattern: "\\b(ignore\\s+(?:all\\s+)?(?:previous|prior|above)\\s+instructions|jailbreak|prompt\\s+injection|system\\s+prompt|developer\\s+message)\\b",
+          severity: 4,
+          title: "Prompt-injection shaped change",
+          detail: "System/developer prompts and jailbreak-like instructions can alter model behavior in surprising ways.",
+          suggestedCheck: "Add prompt-injection tests or eval cases, and keep untrusted user content outside privileged instructions.",
+          kinds: ["diff", "plan"]
+        },
+        {
+          id: "ai-user-controlled-tool-dispatch",
+          pattern: "\\b(callTool|tool_choice|function_call|tools?\\s*\\[|agent\\s+tool|mcp\\s+tool)\\b[\\s\\S]{0,160}\\b(req\\.(?:body|query)|searchParams|URLSearchParams|userPrompt|user\\s+input|message\\.content|input\\.text)\\b|\\b(req\\.(?:body|query)|searchParams|URLSearchParams|userPrompt|user\\s+input|message\\.content|input\\.text)\\b[\\s\\S]{0,160}\\b(callTool|tool_choice|function_call|tools?\\s*\\[|agent\\s+tool|mcp\\s+tool)\\b",
+          severity: 4,
+          title: "User-controlled tool dispatch",
+          detail: "Tool or function dispatch influenced directly by user-controlled text can turn prompts into actions.",
+          suggestedCheck: "Use an explicit allowlist, validate tool names and arguments, and test denied tool calls.",
+          kinds: ["diff", "plan"]
+        },
+        {
+          id: "ai-evals-skipped",
+          pattern: "\\b(skip|disable|remove|delete|without)\\b[^\\n]{0,80}\\b(evals?|evaluations?|model\\s+checks?|safety\\s+checks?|red[- ]?team)\\b|\\b(evals?|evaluations?|model\\s+checks?|safety\\s+checks?|red[- ]?team)\\b[^\\n]{0,80}\\b(skip|disabled?|removed?|deleted?|without)\\b",
+          severity: 3,
+          title: "AI eval or safety check skipped",
+          detail: "Model behavior changes need regression checks because small prompt or tool changes can alter many outputs.",
+          suggestedCheck: "Run or update representative evals, or document the replacement manual review.",
+          kinds: ["diff", "plan", "final"]
+        },
+        {
+          id: "ai-model-output-execution",
+          pattern: "\\b(eval|exec|spawn|execFile|child_process|shell)\\b[\\s\\S]{0,160}\\b(modelOutput|llmOutput|completion|assistantMessage|message\\.content|response\\.output_text|generatedText)\\b|\\b(modelOutput|llmOutput|completion|assistantMessage|message\\.content|response\\.output_text|generatedText)\\b[\\s\\S]{0,160}\\b(eval|exec|spawn|execFile|child_process|shell)\\b",
+          severity: 5,
+          title: "Model output execution",
+          detail: "Executing model-generated text as code or shell input can turn prompt injection into code execution.",
+          suggestedCheck: "Treat model output as data, parse it into a constrained schema, and require explicit allowlisted actions.",
+          kinds: ["diff", "plan"]
         }
       ]
     };

@@ -4,6 +4,11 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.23
+
+- Added the `ai` config preset for LLM apps, MCP servers, agent tools, prompt injection, evals, and model-output execution risks.
+- Documented `ai` anywhere preset choices are listed.
+
 ## 0.1.22
 
 - Suppressed broad `risky-domain` and project sensitive-domain noise for docs-only diffs.

@@ -40,7 +40,7 @@ Run this from the folder of the project you want protected:
 npx -y memento-mori-jester@latest bootstrap --preset node
 ```
 
-Use `--preset web` for frontend/browser apps, `--preset infra` for deployment or cloud infrastructure repos, or `--preset security` for a stricter general policy.
+Use `--preset ai` for LLM, MCP, and agent apps, `--preset web` for frontend/browser apps, `--preset infra` for deployment or cloud infrastructure repos, or `--preset security` for a stricter general policy.
 
 That creates:
 

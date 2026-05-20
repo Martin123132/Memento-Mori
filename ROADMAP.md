@@ -9,6 +9,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Recently Shipped
 
+- AI app preset for LLM apps, MCP servers, agent tools, prompt-injection checks, eval coverage, and model-output execution risks.
 - Docs-only diff noise tuning for harmless auth, security, and production wording in documentation changes.
 - Guided first-run flow combining preset selection, agent setup, playground smoke checks, and optional git hooks.
 - Agent setup chooser for Codex, Claude Code, and generic MCP clients.
@@ -17,7 +18,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Product Ideas
 
-- More stack presets or false-positive tuning from real usage.
+- Backend API preset or more false-positive tuning from real usage.
 
 ## Quality And Safety
 

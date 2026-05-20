@@ -132,6 +132,21 @@ test("start supports preset agent and hook options", async () => {
   assert.match(stdout, /bootstrap --preset web --hook pre-commit/);
 });
 
+test("start supports the ai preset", async () => {
+  const { stdout } = await execFileAsync(process.execPath, [
+    cliPath,
+    "start",
+    "--preset",
+    "ai",
+    "--agent",
+    "codex"
+  ]);
+
+  assert.match(stdout, /Preset: ai/);
+  assert.match(stdout, /setup --agent codex/);
+  assert.match(stdout, /bootstrap --preset ai/);
+});
+
 test("start json returns stable steps", async () => {
   const { stdout } = await execFileAsync(process.execPath, [
     cliPath,
@@ -491,6 +506,7 @@ test("config presets includes web and infra", async () => {
 
   assert.match(stdout, /^web$/m);
   assert.match(stdout, /^infra$/m);
+  assert.match(stdout, /^ai$/m);
 });
 
 test("config init can write web and infra presets", async () => {
@@ -514,12 +530,23 @@ test("config init can write web and infra presets", async () => {
     "--path",
     "jester-infra.config.json"
   ], { cwd });
+  await execFileAsync(process.execPath, [
+    cliPath,
+    "config",
+    "init",
+    "--preset",
+    "ai",
+    "--path",
+    "jester-ai.config.json"
+  ], { cwd });
 
   const web = await readFile(join(cwd, "jester-web.config.json"), "utf8");
   const infra = await readFile(join(cwd, "jester-infra.config.json"), "utf8");
+  const ai = await readFile(join(cwd, "jester-ai.config.json"), "utf8");
 
   assert.match(web, /web-public-secret-name/);
   assert.match(infra, /terraform destroy/);
+  assert.match(ai, /ai-public-provider-key/);
 });
 
 test("policy init writes stricter project config", async () => {

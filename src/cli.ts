@@ -1960,6 +1960,7 @@ Usage:
   jester config init
   jester config init --preset web
   jester config init --preset infra
+  jester config init --preset ai
   jester config init --preset security
   jester config show
   jester config validate
@@ -1989,7 +1990,7 @@ Options:
   --config <path>                     Use a specific jester config file
   --no-config                         Ignore jester.config.json discovery
   --port <number>                     Playground port; default is 4818
-  --preset <default|node|python|web|infra|security>
+  --preset <${configPresetNames.join("|")}>
   --level <team|strict>
   --sarif                             Output SARIF 2.1.0 for CI/code scanning
   --json

@@ -228,6 +228,7 @@ jester config init --preset node
 jester config init --preset python
 jester config init --preset web
 jester config init --preset infra
+jester config init --preset ai
 jester config init --preset security
 jester config presets
 jester config validate
@@ -278,6 +279,7 @@ Presets layer extra rules on top of the default config:
 - `python`: dependency files, migrations, pickle, eval/exec.
 - `web`: browser storage, client-exposed config, unsafe HTML, redirect risks.
 - `infra`: Terraform, Kubernetes, Helm, IAM, and public exposure risks.
+- `ai`: LLM apps, MCP servers, agent tools, prompt injection, evals, and model-output execution.
 - `security`: lower risk tolerance, TLS/CORS checks, token/permission-sensitive areas.
 
 Policy templates are stricter project configs for teams. They are available in `v0.1.9` and later:

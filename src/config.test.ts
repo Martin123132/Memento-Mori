@@ -59,6 +59,18 @@ test("builds infra preset with cautious hooks", () => {
   assert.ok(config.customRules?.some((rule) => rule.id === "infra-public-exposure"));
 });
 
+test("builds ai preset on top of default config", () => {
+  const config = userConfigForPreset("ai");
+
+  assert.equal(config.riskTolerance, "medium");
+  assert.equal(config.hookFailOn, "block");
+  assert.ok(config.blockedCommands?.includes("git reset --hard"));
+  assert.ok(config.sensitiveDomains?.includes("system prompt"));
+  assert.ok(config.sensitiveDomains?.includes("mcp"));
+  assert.ok(config.customRules?.some((rule) => rule.id === "ai-public-provider-key"));
+  assert.ok(config.customRules?.some((rule) => rule.id === "ai-model-output-execution"));
+});
+
 test("writes preset config", async () => {
   const cwd = await mkdtemp(join(tmpdir(), "jester-config-"));
   await writeDefaultConfig({ cwd, preset: "security" });
@@ -72,17 +84,22 @@ test("writes preset config", async () => {
 test("writes web and infra preset configs", async () => {
   const webCwd = await mkdtemp(join(tmpdir(), "jester-web-config-"));
   const infraCwd = await mkdtemp(join(tmpdir(), "jester-infra-config-"));
+  const aiCwd = await mkdtemp(join(tmpdir(), "jester-ai-config-"));
 
   await writeDefaultConfig({ cwd: webCwd, preset: "web" });
   await writeDefaultConfig({ cwd: infraCwd, preset: "infra" });
+  await writeDefaultConfig({ cwd: aiCwd, preset: "ai" });
 
   const web = await validateConfig({ cwd: webCwd });
   const infra = await validateConfig({ cwd: infraCwd });
+  const ai = await validateConfig({ cwd: aiCwd });
 
   assert.equal(web.ok, true);
   assert.ok(web.config?.customRules?.some((rule) => rule.id === "web-unsafe-html-injection"));
   assert.equal(infra.ok, true);
   assert.ok(infra.config?.blockedCommands?.includes("kubectl delete"));
+  assert.equal(ai.ok, true);
+  assert.ok(ai.config?.customRules?.some((rule) => rule.id === "ai-prompt-injection-shape"));
 });
 
 test("builds strict policy on top of security defaults", () => {

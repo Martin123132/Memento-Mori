@@ -62,6 +62,18 @@ type SetupOptions = {
   json: boolean;
 };
 
+type AgentSetupOptions = SetupOptions & {
+  all: boolean;
+};
+
+type AgentSetupProfile = {
+  agent: AgentTarget;
+  label: string;
+  instructionFile: string;
+  configTarget: string;
+  docsPath: string;
+};
+
 type ConfigCommandOptions = {
   json: boolean;
   force: boolean;
@@ -125,6 +137,32 @@ type PlaygroundCommandOptions = {
   noConfig: boolean;
 };
 
+const agentSetupProfiles: Record<AgentTarget, AgentSetupProfile> = {
+  codex: {
+    agent: "codex",
+    label: "Codex",
+    instructionFile: "AGENTS.md",
+    configTarget: "Codex MCP config",
+    docsPath: "docs/CODEX.md"
+  },
+  claude: {
+    agent: "claude",
+    label: "Claude Code",
+    instructionFile: "CLAUDE.md",
+    configTarget: "Claude Code MCP config",
+    docsPath: "docs/CLAUDE_CODE.md"
+  },
+  generic: {
+    agent: "generic",
+    label: "Generic MCP client",
+    instructionFile: "agent instructions",
+    configTarget: "standard mcpServers config",
+    docsPath: "docs/AGENTS.md"
+  }
+};
+
+const agentInstruction = "Before risky commands, final answers, commits, or large edits, call the Memento Mori Jester. Treat BLOCK as requiring a changed plan, and CAUTION as requiring at least one concrete verification step.";
+
 const githubActionWorkflowPathDefault = ".github/workflows/memento-mori.yml";
 
 const args = process.argv.slice(2);
@@ -148,6 +186,12 @@ async function main(argv: string[]): Promise<void> {
   if (argv[0] === "mcp-config") {
     const setupOptions = parseSetupOptions(argv.slice(1));
     output.write(`${JSON.stringify(mcpConfigSnippet(setupOptions), null, 2)}\n`);
+    return;
+  }
+
+  if (argv[0] === "setup") {
+    const setupOptions = parseAgentSetupOptions(argv.slice(1));
+    output.write(renderAgentSetup(setupOptions));
     return;
   }
 
@@ -539,6 +583,17 @@ function parseSetupOptions(argv: string[]): SetupOptions {
   return options;
 }
 
+function parseAgentSetupOptions(argv: string[]): AgentSetupOptions {
+  const setup = parseSetupOptions(argv);
+  const requestedAgent = argv.some((arg, index) => arg === "--agent" || (index > 0 && argv[index - 1] === "--agent") || isAgent(arg));
+  const all = argv.includes("--all") || !requestedAgent;
+
+  return {
+    ...setup,
+    all
+  };
+}
+
 async function resolveContent(options: CliOptions, argv: string[]): Promise<string> {
   if (options.file) {
     return readFile(options.file, "utf8");
@@ -738,6 +793,95 @@ function cliPath(): string {
   return fileURLToPath(import.meta.url);
 }
 
+function renderAgentSetup(options: AgentSetupOptions): string {
+  const agents: AgentTarget[] = options.all ? ["codex", "claude", "generic"] : [options.agent];
+  const setups = agents.map((agent) => agentSetupDetails({ ...options, agent }));
+
+  if (options.json) {
+    return `${JSON.stringify({
+      mode: options.mode,
+      packageSpec: options.packageSpec,
+      agents: setups
+    }, null, 2)}\n`;
+  }
+
+  const header = [
+    "Memento Mori Jester agent setup",
+    "",
+    options.all
+      ? "Choose the section for your agent, then paste the matching config and instruction."
+      : `Use this for ${setups[0]?.label}.`,
+    ""
+  ];
+  const chooser = options.all
+    ? [
+        "Chooser:",
+        `  ${renderCliCommand(options)} setup --agent codex --mode ${options.mode}`,
+        `  ${renderCliCommand(options)} setup --agent claude --mode ${options.mode}`,
+        `  ${renderCliCommand(options)} setup --agent generic --mode ${options.mode}`,
+        ""
+      ]
+    : [];
+
+  return [
+    ...header,
+    ...chooser,
+    ...setups.flatMap((setup) => renderAgentSetupSection(setup))
+  ].join("\n");
+}
+
+function agentSetupDetails(options: SetupOptions): {
+  agent: AgentTarget;
+  label: string;
+  mode: SetupMode;
+  configTarget: string;
+  instructionFile: string;
+  instruction: string;
+  mcpConfig: Record<string, unknown>;
+  commands: string[];
+  docsPath: string;
+} {
+  const profile = agentSetupProfiles[options.agent];
+  const cliCommand = renderCliCommand(options);
+
+  return {
+    agent: profile.agent,
+    label: profile.label,
+    mode: options.mode,
+    configTarget: profile.configTarget,
+    instructionFile: profile.instructionFile,
+    instruction: agentInstruction,
+    mcpConfig: mcpConfigSnippet(options),
+    commands: [
+      `${cliCommand} doctor`,
+      `${cliCommand} playground`,
+      `${cliCommand} command "git reset --hard"`,
+      `${cliCommand} bootstrap --preset node`
+    ],
+    docsPath: profile.docsPath
+  };
+}
+
+function renderAgentSetupSection(setup: ReturnType<typeof agentSetupDetails>): string[] {
+  return [
+    `${setup.label}`,
+    `Config target: ${setup.configTarget}`,
+    `Instruction target: ${setup.instructionFile}`,
+    "",
+    "MCP config:",
+    JSON.stringify(setup.mcpConfig, null, 2),
+    "",
+    "Instruction:",
+    setup.instruction,
+    "",
+    "Smoke checks:",
+    ...setup.commands.map((command) => `  ${command}`),
+    "",
+    `Docs: ${setup.docsPath}`,
+    ""
+  ];
+}
+
 function renderInit(options: SetupOptions): string {
   const cliCommand = renderCliCommand(options);
   const config = JSON.stringify(mcpConfigSnippet(options), null, 2);
@@ -756,7 +900,7 @@ ${config}
 ${agentLine}
 
 Suggested agent instruction:
-  Before risky commands, final answers, commits, or large edits, call the Memento Mori Jester. Treat BLOCK as requiring a changed plan, and CAUTION as requiring at least one concrete verification step.
+  ${agentInstruction}
 
 Useful next checks:
   ${cliCommand} doctor
@@ -782,6 +926,8 @@ function renderExamples(options: SetupOptions): string {
       `${cliCommand} github-action`
     ],
     setup: [
+      `${cliCommand} setup`,
+      `${cliCommand} setup --agent ${options.agent} --mode ${options.mode}`,
       `${cliCommand} init --agent ${options.agent} --mode ${options.mode}`,
       `${cliCommand} mcp-config --agent ${options.agent} --mode ${options.mode}`,
       `${cliCommand} bootstrap --preset node`,
@@ -1622,6 +1768,9 @@ Usage:
   jester final --file final-answer.txt --tone professional
   jester explain command "git reset --hard"
   jester init
+  jester setup
+  jester setup --agent codex
+  jester setup --agent claude
   jester examples
   jester rules
   jester rules --kind diff
@@ -1680,6 +1829,7 @@ GitHub Action options:
 Setup options:
   --mode <npx|global|local>            MCP command style; default is npx
   --agent <generic|claude|codex>       Label the generated setup guidance
+  --all                                Show setup guidance for every supported agent
   --package <npm-or-git-spec>          Package spec used by npx mode
   --hook <pre-commit|pre-push>         Install a hook during bootstrap; repeatable
 

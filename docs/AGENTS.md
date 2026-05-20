@@ -74,6 +74,7 @@ jester bootstrap --preset security --hook pre-commit --hook pre-push
 Use:
 
 ```powershell
+npx -y memento-mori-jester@latest setup --agent codex
 npx -y memento-mori-jester@latest init --agent codex
 npx -y memento-mori-jester@latest mcp-config --agent codex --mode npx
 ```
@@ -89,6 +90,7 @@ node .\dist\cli.js init --mode local --agent codex
 Use:
 
 ```powershell
+npx -y memento-mori-jester@latest setup --agent claude
 npx -y memento-mori-jester@latest init --agent claude
 npx -y memento-mori-jester@latest mcp-config --agent claude --mode npx
 ```
@@ -100,6 +102,7 @@ Then paste the generated Claude Code config into Claude Code's MCP configuration
 Use:
 
 ```powershell
+npx -y memento-mori-jester@latest setup --agent generic
 npx -y memento-mori-jester@latest mcp-config --mode npx
 ```
 

@@ -9,6 +9,7 @@ npx -y memento-mori-jester@latest doctor
 npx -y memento-mori-jester@latest command "git reset --hard"
 npx -y memento-mori-jester@latest plan "I will just refactor auth and ship it"
 npx -y memento-mori-jester@latest playground
+npx -y memento-mori-jester@latest setup
 ```
 
 ## Install Globally
@@ -28,6 +29,7 @@ git diff | jester diff --fail-on block
 git diff | jester diff --sarif > jester.sarif
 jester examples
 jester playground
+jester setup --agent codex
 jester rules --kind diff
 jester github-action --write
 ```
@@ -42,6 +44,21 @@ jester playground --port 4919
 ```
 
 The playground listens on `127.0.0.1`, loads the same project config as the CLI, and reviews commands, plans, diffs, and final answers through the same rule engine.
+
+## Agent Setup
+
+Print exact setup snippets for supported agent clients:
+
+```powershell
+jester setup
+jester setup --agent codex
+jester setup --agent claude
+jester setup --agent generic
+jester setup --agent codex --mode local
+jester setup --json
+```
+
+`setup` prints the MCP config shape, the instruction file to update, the agent instruction text, smoke checks, and a docs link. Codex and generic clients use the standard `mcpServers` shape. Claude Code uses its top-level server config shape.
 
 ## Examples
 

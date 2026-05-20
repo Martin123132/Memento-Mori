@@ -4,6 +4,11 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.20
+
+- Added `jester setup`, an agent setup chooser for Codex, Claude Code, and generic MCP clients.
+- Added setup JSON output, smoke-check commands, and docs pointers for each supported agent.
+
 ## 0.1.19
 
 - Added `jester playground`, a local-only browser playground for command, plan, diff, and final-answer reviews.

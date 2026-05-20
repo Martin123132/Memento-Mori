@@ -154,3 +154,29 @@ Output:
   }
 }
 ```
+
+## 8. Agent Setup Chooser
+
+Command:
+
+```powershell
+npx -y memento-mori-jester@latest setup --agent codex
+```
+
+Typical output includes:
+
+```text
+Codex
+Config target: Codex MCP config
+Instruction target: AGENTS.md
+
+MCP config:
+{
+  "mcpServers": {
+    "memento-mori-jester": {
+      "command": "npx",
+      "args": ["-y", "memento-mori-jester@latest", "mcp-server"]
+    }
+  }
+}
+```

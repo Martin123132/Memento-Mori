@@ -3,11 +3,12 @@
 ## Generate The Config
 
 ```powershell
+npx -y memento-mori-jester@latest setup --agent codex
 npx -y memento-mori-jester@latest init --agent codex
 npx -y memento-mori-jester@latest mcp-config --agent codex --mode npx
 ```
 
-Copy the generated `mcpServers` block into your Codex MCP configuration.
+`setup --agent codex` prints the `mcpServers` block, the suggested `AGENTS.md` instruction, smoke checks, and the docs pointer in one place. Copy the generated `mcpServers` block into your Codex MCP configuration.
 
 ## Project Starter Kit
 
@@ -31,4 +32,5 @@ Before risky commands, final answers, commits, or large edits, call the Memento 
 npm.cmd install
 npm.cmd run build
 node .\dist\cli.js init --mode local --agent codex
+node .\dist\cli.js setup --mode local --agent codex
 ```

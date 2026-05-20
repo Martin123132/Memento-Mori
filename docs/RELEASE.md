@@ -44,6 +44,8 @@ npx.cmd -y memento-mori-jester@latest explain command "git reset --hard"
 npx.cmd -y memento-mori-jester@latest command "git reset --hard"
 npx.cmd -y memento-mori-jester@latest command "git reset --hard" --sarif
 npx.cmd -y memento-mori-jester@latest init
+npx.cmd -y memento-mori-jester@latest setup
+npx.cmd -y memento-mori-jester@latest setup --agent claude --json
 npx.cmd -y memento-mori-jester@latest mcp-config --agent claude --mode npx
 npx.cmd -y memento-mori-jester@latest policy levels
 npx.cmd -y memento-mori-jester@latest policy show --level strict

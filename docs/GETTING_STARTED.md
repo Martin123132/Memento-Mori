@@ -58,6 +58,12 @@ npx -y memento-mori-jester@latest bootstrap --preset node --hook pre-commit --ho
 
 ## 5. Agent Instruction
 
+For exact Codex, Claude Code, or generic MCP snippets:
+
+```powershell
+npx -y memento-mori-jester@latest setup
+```
+
 Put this in your agent rules or custom instructions:
 
 ```text

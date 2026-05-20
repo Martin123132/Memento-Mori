@@ -93,6 +93,7 @@ test("help includes the local playground command", async () => {
   ]);
 
   assert.match(stdout, /jester playground/);
+  assert.match(stdout, /jester setup --agent codex/);
   assert.match(stdout, /--port <number>/);
 });
 
@@ -365,6 +366,54 @@ test("mcp-config can render Claude Code shape", async () => {
   assert.equal(config["memento-mori-jester"].command, "npx");
   assert.ok(config["memento-mori-jester"].args.includes("memento-mori-jester@latest"));
   assert.equal(config.mcpServers, undefined);
+});
+
+test("setup chooser lists supported agents", async () => {
+  const { stdout } = await execFileAsync(process.execPath, [
+    cliPath,
+    "setup",
+    "--mode",
+    "npx"
+  ]);
+
+  assert.match(stdout, /Memento Mori Jester agent setup/);
+  assert.match(stdout, /Codex/);
+  assert.match(stdout, /Claude Code/);
+  assert.match(stdout, /Generic MCP client/);
+  assert.match(stdout, /AGENTS\.md/);
+  assert.match(stdout, /CLAUDE\.md/);
+  assert.match(stdout, /mcpServers/);
+});
+
+test("setup json can render exact Claude Code setup", async () => {
+  const { stdout } = await execFileAsync(process.execPath, [
+    cliPath,
+    "setup",
+    "--agent",
+    "claude",
+    "--mode",
+    "npx",
+    "--json"
+  ]);
+  const result = JSON.parse(stdout) as {
+    agents: Array<{
+      agent: string;
+      instructionFile: string;
+      mcpConfig: {
+        "memento-mori-jester": { command: string; args: string[] };
+        mcpServers?: unknown;
+      };
+      commands: string[];
+    }>;
+  };
+
+  assert.equal(result.agents.length, 1);
+  assert.equal(result.agents[0]?.agent, "claude");
+  assert.equal(result.agents[0]?.instructionFile, "CLAUDE.md");
+  assert.equal(result.agents[0]?.mcpConfig["memento-mori-jester"].command, "npx");
+  assert.ok(result.agents[0]?.mcpConfig["memento-mori-jester"].args.includes("memento-mori-jester@latest"));
+  assert.equal(result.agents[0]?.mcpConfig.mcpServers, undefined);
+  assert.ok(result.agents[0]?.commands.some((command) => command.includes("playground")));
 });
 
 test("config presets includes web and infra", async () => {

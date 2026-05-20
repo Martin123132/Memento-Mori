@@ -3,11 +3,12 @@
 ## Generate The Config
 
 ```powershell
+npx -y memento-mori-jester@latest setup --agent claude
 npx -y memento-mori-jester@latest init --agent claude
 npx -y memento-mori-jester@latest mcp-config --agent claude --mode npx
 ```
 
-Copy the generated Claude Code config, or the command and args, into Claude Code's MCP configuration.
+`setup --agent claude` prints the Claude Code config shape, the suggested `CLAUDE.md` instruction, smoke checks, and the docs pointer in one place. Copy the generated Claude Code config, or the command and args, into Claude Code's MCP configuration.
 
 The default server command is:
 

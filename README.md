@@ -62,7 +62,7 @@ A dazzling command, if the desired outcome is court-sponsored regret.
 | Examples | `jester examples` | copy-paste commands and links for new users |
 | Rules | `jester rules --kind diff` | visible rule catalog for built-in and project checks |
 | GitHub Actions | `jester github-action --write` | SARIF workflow for code scanning |
-| Agents | `jester mcp-config --mode npx` | MCP tools for Codex, Claude Code, and other clients |
+| Agents | `jester setup --agent codex` | exact MCP snippets and agent instructions for Codex, Claude Code, and generic clients |
 
 ## Try It Locally
 
@@ -84,6 +84,14 @@ node .\dist\cli.js doctor
 ```
 
 ## Setup Wizard
+
+For exact Codex, Claude Code, and generic MCP setup snippets:
+
+```powershell
+npx -y memento-mori-jester@latest setup
+npx -y memento-mori-jester@latest setup --agent codex
+npx -y memento-mori-jester@latest setup --agent claude
+```
 
 For a copy-pasteable MCP config and suggested agent instruction:
 
@@ -129,6 +137,8 @@ jester final --file .\final-answer.txt --tone professional
 jester explain command "git reset --hard"
 jester doctor
 jester playground
+jester setup
+jester setup --agent codex
 jester examples
 jester rules
 jester rule destructive-git-history

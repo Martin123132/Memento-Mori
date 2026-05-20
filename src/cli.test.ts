@@ -92,9 +92,79 @@ test("help includes the local playground command", async () => {
     "--help"
   ]);
 
+  assert.match(stdout, /jester start/);
   assert.match(stdout, /jester playground/);
   assert.match(stdout, /jester setup --agent codex/);
   assert.match(stdout, /--port <number>/);
+});
+
+test("start prints the guided first-run checklist", async () => {
+  const { stdout } = await execFileAsync(process.execPath, [
+    cliPath,
+    "start"
+  ]);
+
+  assert.match(stdout, /Memento Mori Jester start/);
+  assert.match(stdout, /npx -y memento-mori-jester@latest doctor/);
+  assert.match(stdout, /npx -y memento-mori-jester@latest playground/);
+  assert.match(stdout, /npx -y memento-mori-jester@latest setup/);
+  assert.match(stdout, /npx -y memento-mori-jester@latest bootstrap --preset node/);
+  assert.match(stdout, /npx -y memento-mori-jester@latest config validate/);
+  assert.match(stdout, /npx -y memento-mori-jester@latest command "git reset --hard"/);
+});
+
+test("start supports preset agent and hook options", async () => {
+  const { stdout } = await execFileAsync(process.execPath, [
+    cliPath,
+    "start",
+    "--preset",
+    "web",
+    "--agent",
+    "codex",
+    "--hook",
+    "pre-commit"
+  ]);
+
+  assert.match(stdout, /Preset: web/);
+  assert.match(stdout, /Agent: codex/);
+  assert.match(stdout, /Hooks: pre-commit/);
+  assert.match(stdout, /setup --agent codex/);
+  assert.match(stdout, /bootstrap --preset web --hook pre-commit/);
+});
+
+test("start json returns stable steps", async () => {
+  const { stdout } = await execFileAsync(process.execPath, [
+    cliPath,
+    "start",
+    "--json"
+  ]);
+  const result = JSON.parse(stdout) as {
+    mode: string;
+    preset: string;
+    agent: string | null;
+    hooks: string[];
+    steps: Array<{
+      id: string;
+      title: string;
+      command: string;
+      description: string;
+    }>;
+  };
+
+  assert.equal(result.mode, "npx");
+  assert.equal(result.preset, "node");
+  assert.equal(result.agent, null);
+  assert.deepEqual(result.hooks, []);
+  assert.deepEqual(result.steps.map((step) => step.id), [
+    "doctor",
+    "playground",
+    "agent-setup",
+    "bootstrap",
+    "validate",
+    "sample-review"
+  ]);
+  assert.ok(result.steps.every((step) => step.title && step.command && step.description));
+  assert.match(result.steps.find((step) => step.id === "agent-setup")?.command ?? "", /setup$/);
 });
 
 test("rules lists built-in and structural checks", async () => {

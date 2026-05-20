@@ -114,6 +114,22 @@ type BootstrapOptions = SetupOptions & {
   hooks: HookName[];
 };
 
+type StartOptions = {
+  mode: SetupMode;
+  packageSpec: string;
+  preset: ConfigPreset;
+  agent?: AgentTarget;
+  hooks: HookName[];
+  json: boolean;
+};
+
+type StartStep = {
+  id: "doctor" | "playground" | "agent-setup" | "bootstrap" | "validate" | "sample-review";
+  title: string;
+  command: string;
+  description: string;
+};
+
 type BootstrapFileResult = {
   path: string;
   changed: boolean;
@@ -186,6 +202,12 @@ async function main(argv: string[]): Promise<void> {
   if (argv[0] === "mcp-config") {
     const setupOptions = parseSetupOptions(argv.slice(1));
     output.write(`${JSON.stringify(mcpConfigSnippet(setupOptions), null, 2)}\n`);
+    return;
+  }
+
+  if (argv[0] === "start") {
+    const startOptions = parseStartOptions(argv.slice(1));
+    output.write(renderStart(startOptions));
     return;
   }
 
@@ -536,6 +558,60 @@ function parsePlaygroundOptions(argv: string[]): PlaygroundCommandOptions {
   return options;
 }
 
+function parseStartOptions(argv: string[]): StartOptions {
+  let mode: SetupMode = "npx";
+  let packageSpec = packageSpecDefault;
+  let preset: ConfigPreset = "node";
+  let agent: AgentTarget | undefined;
+  const hooks: HookName[] = [];
+  let json = false;
+
+  for (let index = 0; index < argv.length; index += 1) {
+    const arg = argv[index];
+    const next = argv[index + 1];
+
+    if (arg === "--json") {
+      json = true;
+    } else if (arg === "--mode") {
+      mode = parseSetupMode(requireValue(arg, next));
+      index += 1;
+    } else if (arg === "--package") {
+      packageSpec = requireValue(arg, next);
+      index += 1;
+    } else if (arg === "--preset") {
+      preset = parseConfigPreset(requireValue(arg, next));
+      index += 1;
+    } else if (arg === "--agent") {
+      agent = parseAgent(requireValue(arg, next));
+      index += 1;
+    } else if (arg === "--hook") {
+      const hook = requireValue(arg, next);
+      if (!isHookName(hook)) {
+        throw new Error(`Unknown hook "${hook}". Use one of: ${hookNames.join(", ")}`);
+      }
+      hooks.push(hook);
+      index += 1;
+    } else if (!arg.startsWith("--")) {
+      if (isSetupMode(arg)) {
+        mode = arg;
+      } else if (isAgent(arg)) {
+        agent = arg;
+      } else if (configPresetNames.includes(arg as ConfigPreset)) {
+        preset = arg as ConfigPreset;
+      }
+    }
+  }
+
+  return {
+    mode,
+    packageSpec,
+    preset,
+    agent,
+    hooks: [...new Set(hooks)],
+    json
+  };
+}
+
 function parseSetupOptions(argv: string[]): SetupOptions {
   const options: SetupOptions = {
     mode: "npx",
@@ -791,6 +867,106 @@ function serverPath(): string {
 
 function cliPath(): string {
   return fileURLToPath(import.meta.url);
+}
+
+function renderStart(options: StartOptions): string {
+  const steps = startSteps(options);
+  const result = {
+    mode: options.mode,
+    preset: options.preset,
+    agent: options.agent ?? null,
+    hooks: options.hooks,
+    steps
+  };
+
+  if (options.json) {
+    return `${JSON.stringify(result, null, 2)}\n`;
+  }
+
+  const lines = [
+    "Memento Mori Jester start",
+    "",
+    `Mode: ${options.mode}`,
+    `Preset: ${options.preset}`,
+    `Agent: ${options.agent ?? "choose later"}`,
+    `Hooks: ${options.hooks.length > 0 ? options.hooks.join(", ") : "none"}`,
+    "",
+    "Run these in order:"
+  ];
+
+  steps.forEach((step, index) => {
+    lines.push(
+      "",
+      `${index + 1}. ${step.title}`,
+      `   ${step.description}`,
+      `   ${step.command}`
+    );
+  });
+
+  lines.push("");
+  return `${lines.join("\n")}\n`;
+}
+
+function startSteps(options: StartOptions): StartStep[] {
+  const cliCommand = renderCliCommand(startSetupOptions(options.agent ?? "generic", options));
+  const modeFlag = options.mode === "npx" ? "" : ` --mode ${options.mode}`;
+  const agentSetupCommand = options.agent
+    ? `${cliCommand} setup --agent ${options.agent}${modeFlag}`
+    : `${cliCommand} setup${modeFlag}`;
+  const hookFlags = options.hooks.map((hook) => ` --hook ${hook}`).join("");
+
+  return [
+    {
+      id: "doctor",
+      title: "Check the package",
+      command: `${cliCommand} doctor`,
+      description: "Confirm Node, the MCP server file, the review engine, and config loading are healthy."
+    },
+    {
+      id: "playground",
+      title: "Try the local playground",
+      command: `${cliCommand} playground`,
+      description: "Open a local paste-in UI for commands, plans, diffs, and final answers."
+    },
+    {
+      id: "agent-setup",
+      title: "Print agent setup",
+      command: agentSetupCommand,
+      description: options.agent
+        ? `Print exact MCP config and instruction text for ${agentSetupProfiles[options.agent].label}.`
+        : "Choose Codex, Claude Code, or generic MCP setup snippets."
+    },
+    {
+      id: "bootstrap",
+      title: "Write starter files",
+      command: `${cliCommand} bootstrap${modeFlag} --preset ${options.preset}${hookFlags}`,
+      description: "Create project config, MCP starter config, agent instruction notes, and any requested git hooks."
+    },
+    {
+      id: "validate",
+      title: "Validate config",
+      command: `${cliCommand} config validate`,
+      description: "Check the written project config before asking agents or hooks to rely on it."
+    },
+    {
+      id: "sample-review",
+      title: "Run a sample block",
+      command: `${cliCommand} command "git reset --hard"`,
+      description: "Confirm destructive git commands are reviewed as text and blocked."
+    }
+  ];
+}
+
+function startSetupOptions(agent: AgentTarget, options: StartOptions): SetupOptions {
+  return {
+    mode: options.mode,
+    agent,
+    packageSpec: options.packageSpec,
+    tone: "court_jester",
+    intensity: 3,
+    riskTolerance: "medium",
+    json: false
+  };
 }
 
 function renderAgentSetup(options: AgentSetupOptions): string {
@@ -1767,6 +1943,7 @@ Usage:
   git diff | jester diff --fail-on block
   jester final --file final-answer.txt --tone professional
   jester explain command "git reset --hard"
+  jester start
   jester init
   jester setup
   jester setup --agent codex

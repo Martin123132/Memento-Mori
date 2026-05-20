@@ -4,6 +4,11 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.21
+
+- Added `jester start`, a read-only first-run checklist for health checks, playground, agent setup, bootstrap, config validation, and sample review.
+- Added JSON output for guided onboarding steps.
+
 ## 0.1.20
 
 - Added `jester setup`, an agent setup chooser for Codex, Claude Code, and generic MCP clients.

@@ -4,6 +4,14 @@ This is the shortest path for a normal project.
 
 ## 1. Check It Runs
 
+For a guided checklist:
+
+```powershell
+npx -y memento-mori-jester@latest start
+```
+
+Or run the first check directly:
+
 ```powershell
 npx -y memento-mori-jester@latest doctor
 ```

@@ -9,13 +9,14 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Recently Shipped
 
+- Guided first-run flow combining preset selection, agent setup, playground smoke checks, and optional git hooks.
 - Agent setup chooser for Codex, Claude Code, and generic MCP clients.
 - Local paste-in playground for commands, plans, diffs, and final answers.
 - README demo snapshot generated as a small deterministic SVG.
 
 ## Product Ideas
 
-- A guided first-run flow that combines preset selection, agent setup, playground smoke checks, and optional git hooks.
+- More stack presets or false-positive tuning from real usage.
 
 ## Quality And Safety
 

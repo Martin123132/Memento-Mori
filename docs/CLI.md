@@ -5,6 +5,7 @@ Use the CLI when you want quick checks without wiring an agent yet.
 ## Run Without Installing
 
 ```powershell
+npx -y memento-mori-jester@latest start
 npx -y memento-mori-jester@latest doctor
 npx -y memento-mori-jester@latest command "git reset --hard"
 npx -y memento-mori-jester@latest plan "I will just refactor auth and ship it"
@@ -22,6 +23,7 @@ jester doctor
 After that, use `jester` directly:
 
 ```powershell
+jester start
 jester command "Remove-Item .\dist -Recurse -Force"
 jester final --file .\final-answer.txt --tone professional
 jester explain command "git reset --hard"
@@ -44,6 +46,19 @@ jester playground --port 4919
 ```
 
 The playground listens on `127.0.0.1`, loads the same project config as the CLI, and reviews commands, plans, diffs, and final answers through the same rule engine.
+
+## Start
+
+Print a read-only first-run checklist:
+
+```powershell
+jester start
+jester start --preset web --agent codex
+jester start --preset infra --agent claude --hook pre-commit
+jester start --json
+```
+
+`start` does not write files or install hooks. It prints the commands for `doctor`, `playground`, agent setup, `bootstrap`, config validation, and a sample destructive-command review.
 
 ## Agent Setup
 

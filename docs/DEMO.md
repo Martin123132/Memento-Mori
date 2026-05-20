@@ -180,3 +180,30 @@ MCP config:
   }
 }
 ```
+
+## 9. Guided First Run
+
+Command:
+
+```powershell
+npx -y memento-mori-jester@latest start --preset web --agent codex --hook pre-commit
+```
+
+Typical output includes:
+
+```text
+Memento Mori Jester start
+
+Mode: npx
+Preset: web
+Agent: codex
+Hooks: pre-commit
+
+Run these in order:
+
+1. Check the package
+   npx -y memento-mori-jester@latest doctor
+
+4. Write starter files
+   npx -y memento-mori-jester@latest bootstrap --preset web --hook pre-commit
+```

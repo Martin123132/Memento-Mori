@@ -43,6 +43,8 @@ npx.cmd -y memento-mori-jester@latest github-action
 npx.cmd -y memento-mori-jester@latest explain command "git reset --hard"
 npx.cmd -y memento-mori-jester@latest command "git reset --hard"
 npx.cmd -y memento-mori-jester@latest command "git reset --hard" --sarif
+npx.cmd -y memento-mori-jester@latest start
+npx.cmd -y memento-mori-jester@latest start --preset web --agent codex --hook pre-commit
 npx.cmd -y memento-mori-jester@latest init
 npx.cmd -y memento-mori-jester@latest setup
 npx.cmd -y memento-mori-jester@latest setup --agent claude --json

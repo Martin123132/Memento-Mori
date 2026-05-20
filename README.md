@@ -19,6 +19,7 @@ See the full [demo transcript](docs/DEMO.md).
 No install needed:
 
 ```powershell
+npx -y memento-mori-jester@latest start
 npx -y memento-mori-jester@latest doctor
 npx -y memento-mori-jester@latest command "git reset --hard"
 npx -y memento-mori-jester@latest playground
@@ -58,6 +59,7 @@ A dazzling command, if the desired outcome is court-sponsored regret.
 | Diffs | `git diff \| jester diff --fail-on block` | removed tests, install scripts, env/config risks |
 | Final answers | `jester final --file final.txt` | done/fixed claims without evidence |
 | Explanations | `jester explain command "git reset --hard"` | plain-language teaching notes for verdicts |
+| Start | `jester start` | guided first-run checklist for setup, bootstrap, validation, and smoke checks |
 | Playground | `jester playground` | local paste-in checks for commands, plans, diffs, and final answers |
 | Examples | `jester examples` | copy-paste commands and links for new users |
 | Rules | `jester rules --kind diff` | visible rule catalog for built-in and project checks |
@@ -88,6 +90,7 @@ node .\dist\cli.js doctor
 For exact Codex, Claude Code, and generic MCP setup snippets:
 
 ```powershell
+npx -y memento-mori-jester@latest start
 npx -y memento-mori-jester@latest setup
 npx -y memento-mori-jester@latest setup --agent codex
 npx -y memento-mori-jester@latest setup --agent claude
@@ -135,6 +138,7 @@ git diff | jester diff --fail-on block
 git diff | jester diff --sarif > jester.sarif
 jester final --file .\final-answer.txt --tone professional
 jester explain command "git reset --hard"
+jester start
 jester doctor
 jester playground
 jester setup

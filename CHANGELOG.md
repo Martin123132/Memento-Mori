@@ -4,6 +4,11 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.19
+
+- Added `jester playground`, a local-only browser playground for command, plan, diff, and final-answer reviews.
+- Added playground API coverage and documentation for the local paste-in workflow.
+
 ## 0.1.18
 
 - Added a generated README terminal demo snapshot and regeneration/check scripts.

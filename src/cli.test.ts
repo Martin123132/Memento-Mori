@@ -80,9 +80,20 @@ test("examples prints copy-paste onboarding commands", async () => {
   assert.match(stdout, /Memento Mori Jester examples/);
   assert.match(stdout, /command "git reset --hard"/);
   assert.match(stdout, /bootstrap --preset node/);
+  assert.match(stdout, /playground/);
   assert.match(stdout, /examples\/codex/);
   assert.match(stdout, /github-action/);
   assert.match(stdout, /rules --kind command/);
+});
+
+test("help includes the local playground command", async () => {
+  const { stdout } = await execFileAsync(process.execPath, [
+    cliPath,
+    "--help"
+  ]);
+
+  assert.match(stdout, /jester playground/);
+  assert.match(stdout, /--port <number>/);
 });
 
 test("rules lists built-in and structural checks", async () => {

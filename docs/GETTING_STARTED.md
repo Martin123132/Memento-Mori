@@ -18,6 +18,12 @@ npx -y memento-mori-jester@latest command "git reset --hard"
 
 That should return `BLOCK`. Nothing dangerous is run; the command is only reviewed as text.
 
+For the local browser version:
+
+```powershell
+npx -y memento-mori-jester@latest playground
+```
+
 ## 3. Add It To A Project
 
 Run this from the folder of the project you want protected:

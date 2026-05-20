@@ -21,6 +21,7 @@ No install needed:
 ```powershell
 npx -y memento-mori-jester@latest doctor
 npx -y memento-mori-jester@latest command "git reset --hard"
+npx -y memento-mori-jester@latest playground
 ```
 
 Add it to a project:
@@ -57,6 +58,7 @@ A dazzling command, if the desired outcome is court-sponsored regret.
 | Diffs | `git diff \| jester diff --fail-on block` | removed tests, install scripts, env/config risks |
 | Final answers | `jester final --file final.txt` | done/fixed claims without evidence |
 | Explanations | `jester explain command "git reset --hard"` | plain-language teaching notes for verdicts |
+| Playground | `jester playground` | local paste-in checks for commands, plans, diffs, and final answers |
 | Examples | `jester examples` | copy-paste commands and links for new users |
 | Rules | `jester rules --kind diff` | visible rule catalog for built-in and project checks |
 | GitHub Actions | `jester github-action --write` | SARIF workflow for code scanning |
@@ -126,6 +128,7 @@ git diff | jester diff --sarif > jester.sarif
 jester final --file .\final-answer.txt --tone professional
 jester explain command "git reset --hard"
 jester doctor
+jester playground
 jester examples
 jester rules
 jester rule destructive-git-history

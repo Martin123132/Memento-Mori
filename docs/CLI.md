@@ -8,6 +8,7 @@ Use the CLI when you want quick checks without wiring an agent yet.
 npx -y memento-mori-jester@latest doctor
 npx -y memento-mori-jester@latest command "git reset --hard"
 npx -y memento-mori-jester@latest plan "I will just refactor auth and ship it"
+npx -y memento-mori-jester@latest playground
 ```
 
 ## Install Globally
@@ -26,9 +27,21 @@ jester explain command "git reset --hard"
 git diff | jester diff --fail-on block
 git diff | jester diff --sarif > jester.sarif
 jester examples
+jester playground
 jester rules --kind diff
 jester github-action --write
 ```
+
+## Playground
+
+Start a local-only paste-in playground:
+
+```powershell
+jester playground
+jester playground --port 4919
+```
+
+The playground listens on `127.0.0.1`, loads the same project config as the CLI, and reviews commands, plans, diffs, and final answers through the same rule engine.
 
 ## Examples
 

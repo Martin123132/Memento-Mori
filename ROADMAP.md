@@ -9,11 +9,12 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Recently Shipped
 
+- Local paste-in playground for commands, plans, diffs, and final answers.
 - README demo snapshot generated as a small deterministic SVG.
 
 ## Product Ideas
 
-- A local paste-in playground that lets people try a command, plan, final answer, or diff and see the verdict.
+- An agent setup chooser that prints the exact MCP/config snippets for Codex, Claude Code, and other clients.
 
 ## Quality And Safety
 

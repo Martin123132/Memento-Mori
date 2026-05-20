@@ -28,6 +28,7 @@ import {
   uninstallHook,
   type HookName
 } from "./hooks.js";
+import { playgroundHost, playgroundPortDefault, startPlaygroundServer } from "./playground.js";
 import { formatSarif } from "./sarif.js";
 import { type HookFailOn, type ReviewInput, type ReviewKind, type ReviewResult, reviewKinds, type RiskTolerance, type Tone, tones } from "./types.js";
 
@@ -117,6 +118,13 @@ type GithubActionOptions = {
   actionRef: string;
 };
 
+type PlaygroundCommandOptions = {
+  json: boolean;
+  port: number;
+  configPath?: string;
+  noConfig: boolean;
+};
+
 const githubActionWorkflowPathDefault = ".github/workflows/memento-mori.yml";
 
 const args = process.argv.slice(2);
@@ -192,6 +200,11 @@ async function main(argv: string[]): Promise<void> {
     if (!result.ok) {
       process.exitCode = 1;
     }
+    return;
+  }
+
+  if (argv[0] === "playground") {
+    await handlePlayground(argv.slice(1));
     return;
   }
 
@@ -452,6 +465,33 @@ function parseGithubActionOptions(argv: string[]): GithubActionOptions {
   return options;
 }
 
+function parsePlaygroundOptions(argv: string[]): PlaygroundCommandOptions {
+  const options: PlaygroundCommandOptions = {
+    json: false,
+    port: playgroundPortDefault,
+    noConfig: false
+  };
+
+  for (let index = 0; index < argv.length; index += 1) {
+    const arg = argv[index];
+    const next = argv[index + 1];
+
+    if (arg === "--json") {
+      options.json = true;
+    } else if (arg === "--port") {
+      options.port = parsePort(requireValue(arg, next));
+      index += 1;
+    } else if (arg === "--config") {
+      options.configPath = requireValue(arg, next);
+      index += 1;
+    } else if (arg === "--no-config") {
+      options.noConfig = true;
+    }
+  }
+
+  return options;
+}
+
 function parseSetupOptions(argv: string[]): SetupOptions {
   const options: SetupOptions = {
     mode: "npx",
@@ -540,7 +580,7 @@ function collectPositional(argv: string[]): string[] {
 }
 
 function optionHasValue(arg: string): boolean {
-  return ["--kind", "--tone", "--intensity", "--risk", "--fail-on", "--subject", "--context", "--file", "--config", "--path", "--preset", "--level"].includes(arg);
+  return ["--kind", "--tone", "--intensity", "--risk", "--fail-on", "--subject", "--context", "--file", "--config", "--path", "--preset", "--level", "--port"].includes(arg);
 }
 
 function isKnownOption(arg: string): boolean {
@@ -589,6 +629,16 @@ function parseFailOn(value: string): HookFailOn {
   }
 
   throw new Error('Unknown fail threshold. Use "caution" or "block".');
+}
+
+function parsePort(value: string): number {
+  const port = Number.parseInt(value, 10);
+
+  if (Number.isInteger(port) && port >= 0 && port <= 65535) {
+    return port;
+  }
+
+  throw new Error("Unknown playground port. Use a number from 0 to 65535.");
 }
 
 function parseConfigPreset(value: string): ConfigPreset {
@@ -710,6 +760,7 @@ Suggested agent instruction:
 
 Useful next checks:
   ${cliCommand} doctor
+  ${cliCommand} playground
   ${cliCommand} config init
   ${cliCommand} install-hook pre-commit
   ${cliCommand} plan "I will just refactor auth and ship it"
@@ -726,6 +777,7 @@ function renderExamples(options: SetupOptions): string {
       `git diff | ${cliCommand} diff --fail-on block`,
       `${cliCommand} final "Implemented the fix, but tests not run."`,
       `${cliCommand} explain command "git reset --hard"`,
+      `${cliCommand} playground`,
       `${cliCommand} rules --kind command`,
       `${cliCommand} github-action`
     ],
@@ -1355,6 +1407,48 @@ async function renderHookStatus(): Promise<string> {
   return `${statuses.map((status) => `${status.hook}: ${status.message} (${status.path})`).join("\n")}\n`;
 }
 
+async function handlePlayground(argv: string[]): Promise<void> {
+  const options = parsePlaygroundOptions(argv);
+  const loadedConfig = await loadConfig({
+    configPath: options.configPath,
+    search: !options.noConfig
+  });
+  const started = await startPlaygroundServer({
+    port: options.port,
+    config: loadedConfig.config
+  });
+
+  const details = {
+    ok: true,
+    url: started.url,
+    host: playgroundHost,
+    port: started.port,
+    configPath: loadedConfig.path ?? null
+  };
+
+  if (options.json) {
+    output.write(`${JSON.stringify(details, null, 2)}\n`);
+  } else {
+    output.write([
+      "Memento Mori Jester playground",
+      "",
+      `Open ${started.url}`,
+      loadedConfig.path ? `Config: ${loadedConfig.path}` : "Config: built-in defaults",
+      "Press Ctrl+C to stop.",
+      ""
+    ].join("\n"));
+  }
+
+  await new Promise<void>((resolve) => {
+    const shutdown = () => {
+      started.server.close(() => resolve());
+    };
+
+    process.once("SIGINT", shutdown);
+    process.once("SIGTERM", shutdown);
+  });
+}
+
 function hookCommandPrefix(options: SetupOptions): string {
   if (options.mode === "local") {
     return shellCommandPrefixForLocalCli(cliPath());
@@ -1536,6 +1630,7 @@ Usage:
   jester github-action --write
   jester bootstrap --preset node
   jester doctor
+  jester playground
   jester config init
   jester config init --preset web
   jester config init --preset infra
@@ -1567,6 +1662,7 @@ Options:
   --file <path>
   --config <path>                     Use a specific jester config file
   --no-config                         Ignore jester.config.json discovery
+  --port <number>                     Playground port; default is 4818
   --preset <default|node|python|web|infra|security>
   --level <team|strict>
   --sarif                             Output SARIF 2.1.0 for CI/code scanning

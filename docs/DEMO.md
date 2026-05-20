@@ -65,7 +65,25 @@ Concerns:
 
 The exact jab varies by tone, but the point should be clear: add evidence before marching onward.
 
-## 4. Preset Preview
+## 4. Local Playground
+
+Command:
+
+```powershell
+npx -y memento-mori-jester@latest playground
+```
+
+Typical output:
+
+```text
+Memento Mori Jester playground
+
+Open http://127.0.0.1:4818/
+Config: built-in defaults
+Press Ctrl+C to stop.
+```
+
+## 5. Preset Preview
 
 Command:
 
@@ -86,7 +104,7 @@ security
 
 Use `web` for frontend/browser apps, `infra` for deployment or cloud infrastructure repos, and `security` for a stricter general policy.
 
-## 5. Bootstrap A Project
+## 6. Bootstrap A Project
 
 Command:
 
@@ -112,7 +130,7 @@ Next:
   Add memento-mori.mcp.json to your MCP client, or copy the command and args from it.
 ```
 
-## 6. MCP Setup Preview
+## 7. MCP Setup Preview
 
 Command:
 

@@ -4,6 +4,11 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.22
+
+- Suppressed broad `risky-domain` and project sensitive-domain noise for docs-only diffs.
+- Kept concrete risky patterns active in docs, including secrets, blocked commands, install scripts, and custom rules.
+
 ## 0.1.21
 
 - Added `jester start`, a read-only first-run checklist for health checks, playground, agent setup, bootstrap, config validation, and sample review.

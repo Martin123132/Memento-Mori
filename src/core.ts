@@ -327,12 +327,15 @@ export function review(input: ReviewInput): ReviewResult {
   const subject = input.subject?.trim() || defaultSubject(input.kind);
   const combined = [input.subject, input.context, input.content].filter(Boolean).join("\n\n");
 
-  const issues = filterDisabledIssues(dedupeIssues([
+  const matchedIssues = filterDisabledIssues(dedupeIssues([
     ...findPatternIssues(combined, input.kind, universalRules),
     ...findKindIssues(combined, input.kind),
     ...findStructuralIssues(input.kind, input.content),
     ...findConfigIssues(combined, input.kind, input.config)
   ]), input.config?.disabledRules);
+  const issues = input.kind === "diff" && isDocsOnlyDiff(input.content)
+    ? filterDocsOnlyNoise(matchedIssues)
+    : matchedIssues;
 
   const riskScore = scoreIssues(issues, riskTolerance);
   const verdict = riskScore >= 72 || issues.some((issue) => issue.severity === 5) ? "block" : riskScore >= 18 ? "caution" : "pass";
@@ -516,6 +519,43 @@ function findPatternIssues(text: string, kind: ReviewKind, rules: PatternRule[])
       }
     ];
   });
+}
+
+function filterDocsOnlyNoise(issues: Issue[]): Issue[] {
+  return issues.filter((issue) => issue.id !== "risky-domain" && !issue.id.startsWith("configured-sensitive-domain-"));
+}
+
+function isDocsOnlyDiff(content: string): boolean {
+  const paths = changedDiffPaths(content);
+  return paths.length > 0 && paths.every(isDocumentationPath);
+}
+
+function changedDiffPaths(content: string): string[] {
+  const paths = new Set<string>();
+  const headerPattern = /^diff --git a\/(.+?) b\/(.+)$/gm;
+  let match: RegExpExecArray | null;
+
+  while ((match = headerPattern.exec(content)) !== null) {
+    const beforePath = normalizeDiffPath(match[1]);
+    const afterPath = normalizeDiffPath(match[2]);
+    paths.add(afterPath || beforePath);
+  }
+
+  return [...paths].filter(Boolean);
+}
+
+function normalizeDiffPath(path: string | undefined): string {
+  return (path ?? "").replace(/^"|"$/g, "").replace(/\\/g, "/").trim();
+}
+
+function isDocumentationPath(path: string): boolean {
+  const normalized = path.toLocaleLowerCase();
+  const fileName = normalized.split("/").pop() ?? normalized;
+
+  return normalized.startsWith("docs/")
+    || normalized.startsWith("examples/")
+    || /\.(md|mdx|rst|txt)$/.test(normalized)
+    || /^(readme|changelog|roadmap|license|licence|release_notes?)(?:[._-]|$)/.test(fileName);
 }
 
 function catalogEntryFromPatternRule(rule: PatternRule): RuleCatalogEntry {

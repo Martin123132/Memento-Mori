@@ -59,6 +59,76 @@ test("warns on sensitive environment changes in diffs", () => {
   assert.ok(result.issues.some((issue) => issue.id === "sensitive-env-change"));
 });
 
+test("docs-only diffs suppress broad risky-domain noise", () => {
+  const result = reviewDiff(`diff --git a/README.md b/README.md
+--- a/README.md
++++ b/README.md
+@@ -1 +1,2 @@
++This release mentions auth and production only as documentation examples.
+`);
+
+  assert.equal(result.verdict, "pass");
+  assert.ok(!result.issues.some((issue) => issue.id === "risky-domain"));
+});
+
+test("docs-only diffs suppress project sensitive-domain noise", () => {
+  const result = reviewDiff(`diff --git a/docs/SECURITY.md b/docs/SECURITY.md
+--- a/docs/SECURITY.md
++++ b/docs/SECURITY.md
+@@ -1 +1,2 @@
++Document the auth setup path for new users.
+`, {
+    config: {
+      sensitiveDomains: ["auth"]
+    }
+  });
+
+  assert.equal(result.verdict, "pass");
+  assert.ok(!result.issues.some((issue) => issue.id === "configured-sensitive-domain-auth"));
+});
+
+test("code diffs still warn on risky domains", () => {
+  const result = reviewDiff(`diff --git a/src/login.ts b/src/login.ts
+--- a/src/login.ts
++++ b/src/login.ts
+@@ -1 +1,2 @@
++export const authMode = "production";
+`);
+
+  assert.equal(result.verdict, "caution");
+  assert.ok(result.issues.some((issue) => issue.id === "risky-domain"));
+});
+
+test("mixed docs and code diffs still warn on risky domains", () => {
+  const result = reviewDiff(`diff --git a/README.md b/README.md
+--- a/README.md
++++ b/README.md
+@@ -1 +1,2 @@
++Document auth setup.
+diff --git a/src/app.ts b/src/app.ts
+--- a/src/app.ts
++++ b/src/app.ts
+@@ -1 +1,2 @@
++export const touched = true;
+`);
+
+  assert.equal(result.verdict, "caution");
+  assert.ok(result.issues.some((issue) => issue.id === "risky-domain"));
+});
+
+test("docs-only diffs still report concrete secret material", () => {
+  const secretName = "OPENAI_" + "API_KEY";
+  const result = reviewDiff(`diff --git a/docs/SETUP.md b/docs/SETUP.md
+--- a/docs/SETUP.md
++++ b/docs/SETUP.md
+@@ -1 +1,2 @@
++${secretName}=example
+`);
+
+  assert.equal(result.verdict, "block");
+  assert.ok(result.issues.some((issue) => issue.id === "secret-material"));
+});
+
 test("blocks commands listed in project config", () => {
   const result = reviewCommand("deploy-prod --now", {
     config: {

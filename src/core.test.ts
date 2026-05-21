@@ -163,6 +163,43 @@ test("infra preset blocks destructive infra commands", () => {
   assert.ok(result.issues.some((issue) => issue.id === "blocked-command-terraform-destroy"));
 });
 
+test("api preset warns on broad cors", () => {
+  const result = reviewDiff(`diff --git a/src/server.ts b/src/server.ts
+--- a/src/server.ts
++++ b/src/server.ts
+@@ -1 +1,2 @@
++response.setHeader("Access-Control-Allow-Origin", "*");
+`, {
+    config: userConfigForPreset("api")
+  });
+
+  assert.equal(result.verdict, "caution");
+  assert.ok(result.issues.some((issue) => issue.id === "custom-api-broad-cors"));
+});
+
+test("api preset blocks raw sql from request input", () => {
+  const result = reviewDiff(`diff --git a/src/users.ts b/src/users.ts
+--- a/src/users.ts
++++ b/src/users.ts
+@@ -1 +1,2 @@
++db.query(req.query.sql);
+`, {
+    config: userConfigForPreset("api")
+  });
+
+  assert.equal(result.verdict, "block");
+  assert.ok(result.issues.some((issue) => issue.id === "custom-api-raw-sql-user-input"));
+});
+
+test("api preset warns on disabled webhook signatures", () => {
+  const result = reviewPlan("Disable webhook signature verification for the new endpoint.", {
+    config: userConfigForPreset("api")
+  });
+
+  assert.notEqual(result.verdict, "pass");
+  assert.ok(result.issues.some((issue) => issue.id === "custom-api-webhook-signature-disabled"));
+});
+
 test("ai preset flags client-exposed provider keys", () => {
   const publicKeyName = "NEXT_PUBLIC_" + "OPENAI_" + "API_KEY";
   const result = reviewDiff(`diff --git a/src/app.ts b/src/app.ts

@@ -57,6 +57,8 @@ npx.cmd -y memento-mori-jester@latest config disable-rule console-log --json
 npx.cmd -y memento-mori-jester@latest config enable-rule console-log --json
 npx.cmd -y memento-mori-jester@latest config init --preset web --path jester-web.config.json
 npx.cmd -y memento-mori-jester@latest config validate --config jester-web.config.json
+npx.cmd -y memento-mori-jester@latest config init --preset api --path jester-api.config.json
+npx.cmd -y memento-mori-jester@latest config validate --config jester-api.config.json
 npx.cmd -y memento-mori-jester@latest config init --preset infra --path jester-infra.config.json
 npx.cmd -y memento-mori-jester@latest config validate --config jester-infra.config.json
 npx.cmd -y memento-mori-jester@latest config init --preset ai --path jester-ai.config.json

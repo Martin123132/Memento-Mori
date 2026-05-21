@@ -37,7 +37,7 @@
   <text x="34" y="424" style="fill:#dbeafe">[S2] No verification step: name the check before the crown goes on.</text>
   <text x="34" y="448" style="fill:#dbeafe"></text>
   <text x="34" y="472" style="fill:#f8fafc;font-weight:700">$ npx -y memento-mori-jester@latest config presets</text>
-  <text x="34" y="496" style="fill:#7dd3fc">default   node   python   web   infra   ai   security</text>
+  <text x="34" y="496" style="fill:#7dd3fc">default   node   python   web   api   infra   ai   security</text>
   <text x="34" y="520" style="fill:#dbeafe"></text>
   <text x="34" y="544" style="fill:#f8fafc;font-weight:700">$ npx -y memento-mori-jester@latest mcp-config --mode npx</text>
   <text x="34" y="568" style="fill:#c4b5fd">{</text>

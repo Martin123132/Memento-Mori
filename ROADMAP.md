@@ -9,6 +9,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Recently Shipped
 
+- Backend API preset for auth bypasses, CORS, rate limits, unsigned webhooks, raw SQL, and destructive migrations.
 - AI app preset for LLM apps, MCP servers, agent tools, prompt-injection checks, eval coverage, and model-output execution risks.
 - Docs-only diff noise tuning for harmless auth, security, and production wording in documentation changes.
 - Guided first-run flow combining preset selection, agent setup, playground smoke checks, and optional git hooks.
@@ -18,7 +19,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Product Ideas
 
-- Backend API preset or more false-positive tuning from real usage.
+- More language/framework presets or false-positive tuning from real usage.
 
 ## Quality And Safety
 

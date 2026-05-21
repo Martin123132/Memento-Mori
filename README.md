@@ -227,6 +227,7 @@ jester config init --force
 jester config init --preset node
 jester config init --preset python
 jester config init --preset web
+jester config init --preset api
 jester config init --preset infra
 jester config init --preset ai
 jester config init --preset security
@@ -278,6 +279,7 @@ Presets layer extra rules on top of the default config:
 - `node`: npm lifecycle scripts, publish/unpublish, package metadata.
 - `python`: dependency files, migrations, pickle, eval/exec.
 - `web`: browser storage, client-exposed config, unsafe HTML, redirect risks.
+- `api`: auth bypasses, CORS, rate limits, webhooks, raw SQL, and destructive migrations.
 - `infra`: Terraform, Kubernetes, Helm, IAM, and public exposure risks.
 - `ai`: LLM apps, MCP servers, agent tools, prompt injection, evals, and model-output execution.
 - `security`: lower risk tolerance, TLS/CORS checks, token/permission-sensitive areas.

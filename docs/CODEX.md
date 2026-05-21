@@ -20,7 +20,7 @@ npx -y memento-mori-jester@latest bootstrap --preset node
 
 This creates `memento-mori.mcp.json` and `MEMENTO_MORI.md`. Use the generated agent instruction from `MEMENTO_MORI.md` in your Codex rules.
 
-Use `--preset ai` for LLM apps, MCP servers, agent tools, and prompt-driven workflows.
+Use `--preset ai` for LLM apps, MCP servers, agent tools, and prompt-driven workflows. Use `--preset api` for backend APIs.
 
 ## Suggested Codex Rule
 

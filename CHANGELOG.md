@@ -4,6 +4,11 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.24
+
+- Added the `api` config preset for backend auth, CORS, rate limiting, webhooks, raw SQL, and destructive migration risks.
+- Documented `api` anywhere preset choices are listed.
+
 ## 0.1.23
 
 - Added the `ai` config preset for LLM apps, MCP servers, agent tools, prompt injection, evals, and model-output execution risks.

@@ -4,7 +4,7 @@ import { z } from "zod";
 import { reviewKinds, tones, type UserJesterConfig } from "./types.js";
 
 export const configFileNames = ["jester.config.json", ".jester.json"] as const;
-export const configPresetNames = ["default", "node", "python", "web", "infra", "ai", "security"] as const;
+export const configPresetNames = ["default", "node", "python", "web", "api", "infra", "ai", "security"] as const;
 export const policyLevelNames = ["team", "strict"] as const;
 
 export type ConfigPreset = (typeof configPresetNames)[number];
@@ -425,6 +425,88 @@ function presetConfig(preset: Exclude<ConfigPreset, "default">): UserJesterConfi
           title: "Open redirect-shaped change",
           detail: "Redirects built from request or URL parameters can send users to attacker-controlled destinations.",
           suggestedCheck: "Allowlist internal paths or trusted origins before redirecting.",
+          kinds: ["diff", "plan"]
+        }
+      ]
+    };
+  }
+
+  if (preset === "api") {
+    return {
+      sensitiveDomains: [
+        "auth middleware",
+        "authorization",
+        "session",
+        "cors",
+        "csrf",
+        "rate limit",
+        "webhook",
+        "database write",
+        "migration",
+        "admin route",
+        "tenant",
+        "request validation",
+        "openapi"
+      ],
+      blockedCommands: [
+        "prisma migrate reset --force",
+        "rails db:drop",
+        "sequelize db:drop",
+        "dotnet ef database drop"
+      ],
+      customRules: [
+        {
+          id: "api-broad-cors",
+          pattern: "(Access-Control-Allow-Origin[^\\n]{0,40}[\"']?\\*|cors\\s*\\([^\\n]*(origin\\s*:\\s*[\"']?\\*|credentials\\s*:\\s*true[\\s\\S]{0,80}origin\\s*:\\s*[\"']?\\*))",
+          severity: 4,
+          title: "Broad API CORS policy",
+          detail: "Wildcard or credentialed broad CORS can expose API responses to unintended browser origins.",
+          suggestedCheck: "Restrict origins to known clients and add an API CORS regression check.",
+          kinds: ["diff", "plan"]
+        },
+        {
+          id: "api-auth-bypass",
+          pattern: "\\b(skipAuth|disableAuth|bypassAuth|publicRoute\\s*:\\s*true|auth\\s*:\\s*false|requireAuth\\s*:\\s*false)\\b",
+          severity: 4,
+          title: "API auth bypass-shaped change",
+          detail: "Auth bypass flags can make protected API routes public by accident.",
+          suggestedCheck: "Confirm the route is intentionally public and add an authorization test.",
+          kinds: ["diff", "plan"]
+        },
+        {
+          id: "api-rate-limit-disabled",
+          pattern: "\\b(rateLimit|rateLimiter|throttle)\\b[^\\n]{0,80}\\b(disable|disabled|false|skip|off)\\b|\\b(skip|disable|disabled|off)\\b[^\\n]{0,80}\\b(rateLimit|rateLimiter|throttle)\\b",
+          severity: 3,
+          title: "API rate limiting disabled",
+          detail: "Removing or disabling throttles can turn normal endpoints into abuse or cost-amplification paths.",
+          suggestedCheck: "Keep a bounded limit, scope the exception, or add an abuse-focused smoke check.",
+          kinds: ["diff", "plan"]
+        },
+        {
+          id: "api-raw-sql-user-input",
+          pattern: "\\b(query|execute|raw|unsafe)\\s*\\([\\s\\S]{0,160}\\b(req\\.(?:body|query|params)|searchParams|URLSearchParams|userInput)\\b|\\b(req\\.(?:body|query|params)|searchParams|URLSearchParams|userInput)\\b[\\s\\S]{0,160}\\b(query|execute|raw|unsafe)\\s*\\(",
+          severity: 5,
+          title: "Raw SQL from request input",
+          detail: "Request-controlled values flowing into raw query execution can become SQL injection.",
+          suggestedCheck: "Use parameterized queries or a query builder, then add an injection-focused test.",
+          kinds: ["diff", "plan"]
+        },
+        {
+          id: "api-webhook-signature-disabled",
+          pattern: "\\bwebhook\\b[^\\n]{0,120}\\b(skip|disable|disabled|without|no)\\b[^\\n]{0,80}\\b(signature|signing|verify|verification)\\b|\\b(skip|disable|disabled|without|no)\\b[^\\n]{0,80}\\bwebhook\\b[^\\n]{0,120}\\b(signature|signing|verify|verification)\\b|\\b(signature|signing|verify|verification)\\b[^\\n]{0,80}\\b(skip|disable|disabled|without|no)\\b[^\\n]{0,120}\\bwebhook\\b",
+          severity: 4,
+          title: "Webhook signature verification disabled",
+          detail: "Unsigned webhooks let attackers forge events that look like trusted provider callbacks.",
+          suggestedCheck: "Verify provider signatures before parsing or acting on the webhook payload.",
+          kinds: ["diff", "plan"]
+        },
+        {
+          id: "api-destructive-migration",
+          pattern: "\\b(drop\\s+(column|table|database)|truncate\\s+table|delete\\s+from\\s+[a-z0-9_\"]+\\s*;)\\b",
+          severity: 5,
+          title: "Destructive API data migration",
+          detail: "Backend migrations that drop or broadly delete data need backups and rollback thinking.",
+          suggestedCheck: "Confirm the environment, backup, migration plan, and rollback path before applying it.",
           kinds: ["diff", "plan"]
         }
       ]

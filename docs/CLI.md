@@ -54,6 +54,7 @@ Print a read-only first-run checklist:
 ```powershell
 jester start
 jester start --preset ai --agent codex
+jester start --preset api --agent codex
 jester start --preset web --agent codex
 jester start --preset infra --agent claude --hook pre-commit
 jester start --json
@@ -162,6 +163,7 @@ Presets:
 - `node`: npm/package rules.
 - `python`: Python dependency and dynamic execution rules.
 - `web`: browser storage, client-exposed config, unsafe HTML, and redirect rules.
+- `api`: backend auth, CORS, rate limiting, webhooks, raw SQL, and migration rules.
 - `infra`: deployment, cloud, container, IAM, and public exposure rules.
 - `ai`: LLM apps, MCP servers, agent tools, prompt-injection, eval, and model-output execution rules.
 - `security`: stricter TLS, CORS, secrets, and permission checks.

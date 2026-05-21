@@ -37,7 +37,7 @@ This creates:
 - `memento-mori.mcp.json`
 - `MEMENTO_MORI.md`
 
-Use `--preset ai` for LLM apps, MCP servers, agent tools, and prompt-driven workflows.
+Use `--preset ai` for LLM apps, MCP servers, agent tools, and prompt-driven workflows. Use `--preset api` for backend APIs.
 
 ## Suggested Claude Instruction
 

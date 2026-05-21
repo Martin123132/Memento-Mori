@@ -24,7 +24,7 @@ const lines = [
   { text: "[S2] No verification step: name the check before the crown goes on.", kind: "plain" },
   { text: "", kind: "plain" },
   { text: "$ npx -y memento-mori-jester@latest config presets", kind: "command" },
-  { text: "default   node   python   web   infra   ai   security", kind: "accent" },
+  { text: "default   node   python   web   api   infra   ai   security", kind: "accent" },
   { text: "", kind: "plain" },
   { text: "$ npx -y memento-mori-jester@latest mcp-config --mode npx", kind: "command" },
   { text: "{", kind: "json" },

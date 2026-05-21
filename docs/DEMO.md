@@ -98,12 +98,13 @@ default
 node
 python
 web
+api
 infra
 ai
 security
 ```
 
-Use `ai` for LLM apps and agent tooling, `web` for frontend/browser apps, `infra` for deployment or cloud infrastructure repos, and `security` for a stricter general policy.
+Use `ai` for LLM apps and agent tooling, `api` for backend APIs, `web` for frontend/browser apps, `infra` for deployment or cloud infrastructure repos, and `security` for a stricter general policy.
 
 ## 6. Bootstrap A Project
 

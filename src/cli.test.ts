@@ -576,6 +576,82 @@ test("config init can write web and infra presets", async () => {
   assert.match(ai, /ai-public-provider-key/);
 });
 
+test("config recommend prints preset reasons and next commands", async () => {
+  const cwd = await mkdtemp(join(tmpdir(), "jester-recommend-cli-"));
+  await writeFile(join(cwd, "package.json"), "{}\n", "utf8");
+  await writeFile(join(cwd, "package-lock.json"), "{}\n", "utf8");
+
+  const { stdout } = await execFileAsync(process.execPath, [
+    cliPath,
+    "config",
+    "recommend"
+  ], { cwd });
+
+  assert.match(stdout, /Recommended preset: node/);
+  assert.match(stdout, /Found package\.json/);
+  assert.match(stdout, /jester start --preset node/);
+  assert.match(stdout, /jester config init --preset node/);
+  assert.match(stdout, /jester bootstrap --preset node/);
+});
+
+test("config recommend json returns stable keys and candidate scores", async () => {
+  const cwd = await mkdtemp(join(tmpdir(), "jester-recommend-json-"));
+  await writeFile(join(cwd, "openapi.yaml"), "openapi: 3.1.0\n", "utf8");
+  const { stdout } = await execFileAsync(process.execPath, [
+    cliPath,
+    "config",
+    "recommend",
+    "--json"
+  ], { cwd });
+  const result = JSON.parse(stdout) as {
+    recommendedPreset: string;
+    confidence: string;
+    reasons: string[];
+    candidates: Array<{ preset: string; score: number; reasons: string[] }>;
+    configPath: string | null;
+  };
+
+  assert.deepEqual(Object.keys(result), ["recommendedPreset", "confidence", "reasons", "candidates", "configPath"]);
+  assert.equal(result.recommendedPreset, "api");
+  assert.equal(result.confidence, "high");
+  assert.equal(result.configPath, null);
+  assert.ok(result.candidates.some((candidate) => candidate.preset === "api" && candidate.score >= 5));
+});
+
+test("config recommend reports existing config path without changing recommendation", async () => {
+  const cwd = await mkdtemp(join(tmpdir(), "jester-recommend-existing-"));
+  await writeFile(join(cwd, "package.json"), "{}\n", "utf8");
+  await writeFile(join(cwd, "jester.config.json"), JSON.stringify({ riskTolerance: "low" }), "utf8");
+
+  const { stdout } = await execFileAsync(process.execPath, [
+    cliPath,
+    "config",
+    "recommend",
+    "--json"
+  ], { cwd });
+  const result = JSON.parse(stdout) as {
+    recommendedPreset: string;
+    configPath: string | null;
+  };
+
+  assert.equal(result.recommendedPreset, "node");
+  assert.match(result.configPath ?? "", /jester\.config\.json$/);
+});
+
+test("help and unknown config command mention recommend", async () => {
+  const help = await execFileAsync(process.execPath, [cliPath, "--help"]);
+  assert.match(help.stdout, /jester config recommend/);
+
+  await assert.rejects(
+    () => execFileAsync(process.execPath, [cliPath, "config", "nonsense"]),
+    (error: unknown) => {
+      const failure = error as { stderr?: string; message?: string };
+      assert.match(`${failure.stderr ?? ""}${failure.message ?? ""}`, /jester config recommend/);
+      return true;
+    }
+  );
+});
+
 test("policy init writes stricter project config", async () => {
   const cwd = await mkdtemp(join(tmpdir(), "jester-policy-"));
   const { stdout } = await execFileAsync(process.execPath, [

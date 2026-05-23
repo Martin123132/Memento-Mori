@@ -1,9 +1,15 @@
 import assert from "node:assert/strict";
-import { mkdtemp, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import test from "node:test";
-import { loadConfig, userConfigForPolicy, userConfigForPreset, validateConfig, writeDefaultConfig, writePolicyConfig } from "./config.js";
+import { loadConfig, recommendConfigPreset, userConfigForPolicy, userConfigForPreset, validateConfig, writeDefaultConfig, writePolicyConfig } from "./config.js";
+
+async function writeRepoFile(cwd: string, path: string, content: string = ""): Promise<void> {
+  const fullPath = join(cwd, path);
+  await mkdir(dirname(fullPath), { recursive: true });
+  await writeFile(fullPath, content, "utf8");
+}
 
 test("loads jester.config.json from the working tree", async () => {
   const cwd = await mkdtemp(join(tmpdir(), "jester-config-"));
@@ -117,6 +123,87 @@ test("writes web and infra preset configs", async () => {
   assert.ok(infra.config?.blockedCommands?.includes("kubectl delete"));
   assert.equal(ai.ok, true);
   assert.ok(ai.config?.customRules?.some((rule) => rule.id === "ai-prompt-injection-shape"));
+});
+
+test("recommends node preset from package markers", async () => {
+  const cwd = await mkdtemp(join(tmpdir(), "jester-recommend-node-"));
+  await writeRepoFile(cwd, "package.json", JSON.stringify({ scripts: { test: "node --test" } }));
+  await writeRepoFile(cwd, "package-lock.json", "{}");
+
+  const recommendation = await recommendConfigPreset({ cwd });
+
+  assert.equal(recommendation.recommendedPreset, "node");
+  assert.equal(recommendation.confidence, "high");
+  assert.ok(recommendation.reasons.includes("Found package.json"));
+});
+
+test("recommends web preset from frontend markers", async () => {
+  const cwd = await mkdtemp(join(tmpdir(), "jester-recommend-web-"));
+  await writeRepoFile(cwd, "package.json", JSON.stringify({ dependencies: { vite: "^5.0.0", react: "^18.0.0" } }));
+  await writeRepoFile(cwd, "vite.config.ts", "export default {};\n");
+  await writeRepoFile(cwd, "src/App.tsx", "export function App() { return null; }\n");
+
+  const recommendation = await recommendConfigPreset({ cwd });
+
+  assert.equal(recommendation.recommendedPreset, "web");
+  assert.ok(recommendation.reasons.includes("Found frontend framework config"));
+});
+
+test("recommends api preset from backend markers", async () => {
+  const cwd = await mkdtemp(join(tmpdir(), "jester-recommend-api-"));
+  await writeRepoFile(cwd, "openapi.yaml", "openapi: 3.1.0\n");
+  await writeRepoFile(cwd, "prisma/schema.prisma", "datasource db {}\n");
+  await writeRepoFile(cwd, "src/routes/users.ts", "export const route = true;\n");
+
+  const recommendation = await recommendConfigPreset({ cwd });
+
+  assert.equal(recommendation.recommendedPreset, "api");
+  assert.ok(recommendation.reasons.includes("Found OpenAPI or Swagger spec"));
+});
+
+test("recommends ai preset from MCP prompt and eval markers", async () => {
+  const cwd = await mkdtemp(join(tmpdir(), "jester-recommend-ai-"));
+  await writeRepoFile(cwd, "mcp.json", "{}\n");
+  await writeRepoFile(cwd, "prompts/system.md", "You are helpful.\n");
+  await writeRepoFile(cwd, "evals/smoke.yml", "cases: []\n");
+
+  const recommendation = await recommendConfigPreset({ cwd });
+
+  assert.equal(recommendation.recommendedPreset, "ai");
+  assert.ok(recommendation.reasons.includes("Found MCP-related files"));
+});
+
+test("recommends infra preset from deployment markers", async () => {
+  const cwd = await mkdtemp(join(tmpdir(), "jester-recommend-infra-"));
+  await writeRepoFile(cwd, "main.tf", "resource \"example\" \"demo\" {}\n");
+  await writeRepoFile(cwd, "k8s/deployment.yaml", "kind: Deployment\n");
+  await writeRepoFile(cwd, "Dockerfile", "FROM node:20\n");
+
+  const recommendation = await recommendConfigPreset({ cwd });
+
+  assert.equal(recommendation.recommendedPreset, "infra");
+  assert.ok(recommendation.reasons.includes("Found Terraform files"));
+});
+
+test("falls back to default preset when no markers exist", async () => {
+  const cwd = await mkdtemp(join(tmpdir(), "jester-recommend-empty-"));
+
+  const recommendation = await recommendConfigPreset({ cwd });
+
+  assert.equal(recommendation.recommendedPreset, "default");
+  assert.equal(recommendation.confidence, "low");
+  assert.deepEqual(recommendation.reasons, ["No strong stack markers found."]);
+});
+
+test("reports existing config path with advisory recommendation", async () => {
+  const cwd = await mkdtemp(join(tmpdir(), "jester-recommend-config-"));
+  await writeRepoFile(cwd, "package.json", "{}\n");
+  await writeDefaultConfig({ cwd, preset: "web" });
+
+  const recommendation = await recommendConfigPreset({ cwd });
+
+  assert.equal(recommendation.recommendedPreset, "node");
+  assert.match(recommendation.configPath ?? "", /jester\.config\.json$/);
 });
 
 test("builds strict policy on top of security defaults", () => {

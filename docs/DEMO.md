@@ -83,7 +83,37 @@ Config: built-in defaults
 Press Ctrl+C to stop.
 ```
 
-## 5. Preset Preview
+## 5. Preset Recommendation And Preview
+
+Command:
+
+```powershell
+npx -y memento-mori-jester@latest config recommend
+```
+
+Typical output:
+
+```text
+Memento Mori Jester config recommendation
+
+Recommended preset: web
+Confidence: high
+Existing config: none
+Note: no files were changed.
+
+Why:
+- Found frontend framework config
+- Found frontend framework dependency
+
+Candidates:
+- web: 8 (Found frontend framework config; Found frontend framework dependency)
+- node: 5 (Found package.json)
+
+Next:
+  jester start --preset web
+  jester config init --preset web
+  jester bootstrap --preset web
+```
 
 Command:
 

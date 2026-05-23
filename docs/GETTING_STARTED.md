@@ -37,10 +37,13 @@ npx -y memento-mori-jester@latest playground
 Run this from the folder of the project you want protected:
 
 ```powershell
+npx -y memento-mori-jester@latest config recommend
 npx -y memento-mori-jester@latest bootstrap --preset node
 ```
 
 Use `--preset ai` for LLM, MCP, and agent apps, `--preset api` for backend APIs, `--preset web` for frontend/browser apps, `--preset infra` for deployment or cloud infrastructure repos, or `--preset security` for a stricter general policy.
+
+`config recommend` is read-only. It scans local repo file names, reports the strongest preset match with evidence, and prints the next commands without creating config files or installing hooks.
 
 That creates:
 
@@ -83,6 +86,7 @@ Before risky commands, final answers, commits, or large edits, call the Memento 
 For most people, this is enough:
 
 ```powershell
+npx -y memento-mori-jester@latest config recommend
 npx -y memento-mori-jester@latest bootstrap --preset node
 ```
 

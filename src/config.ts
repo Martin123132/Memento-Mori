@@ -1,5 +1,6 @@
-import { access, readFile, writeFile } from "node:fs/promises";
-import { dirname, resolve } from "node:path";
+import { type Dirent } from "node:fs";
+import { access, readdir, readFile, writeFile } from "node:fs/promises";
+import { dirname, join, relative, resolve } from "node:path";
 import { z } from "zod";
 import { reviewKinds, tones, type UserJesterConfig } from "./types.js";
 
@@ -20,6 +21,22 @@ export interface ConfigValidationResult {
   path?: string;
   config?: UserJesterConfig;
   issues: string[];
+}
+
+export type RecommendationConfidence = "low" | "medium" | "high";
+
+export interface PresetRecommendationCandidate {
+  preset: ConfigPreset;
+  score: number;
+  reasons: string[];
+}
+
+export interface PresetRecommendation {
+  recommendedPreset: ConfigPreset;
+  confidence: RecommendationConfidence;
+  reasons: string[];
+  candidates: PresetRecommendationCandidate[];
+  configPath: string | null;
 }
 
 const severitySchema = z.union([
@@ -107,6 +124,39 @@ export async function validateConfig(options: {
       issues: [error instanceof Error ? error.message : String(error)]
     };
   }
+}
+
+export async function recommendConfigPreset(options: {
+  cwd?: string;
+  configPath?: string;
+  search?: boolean;
+} = {}): Promise<PresetRecommendation> {
+  const cwd = resolve(options.cwd ?? process.cwd());
+  const search = options.search ?? true;
+  const explicitConfigPath = options.configPath ? resolve(cwd, options.configPath) : undefined;
+  const configPath = explicitConfigPath
+    ? await fileExists(explicitConfigPath) ? explicitConfigPath : undefined
+    : search ? await findConfigPath(cwd) : undefined;
+  const paths = await collectRepoPaths(cwd);
+  const packageDependencies = await readPackageDependencyNames(cwd);
+  const rankedCandidates = rankRecommendationCandidates(scorePresetCandidates(paths, packageDependencies));
+  const meaningfulCandidates = rankedCandidates.filter((candidate) => candidate.score > 0);
+  const candidates = meaningfulCandidates.length > 0
+    ? meaningfulCandidates
+    : [{
+        preset: "default" as const,
+        score: 0,
+        reasons: ["No strong stack markers found."]
+      }];
+  const winner = candidates[0];
+
+  return {
+    recommendedPreset: winner.preset,
+    confidence: recommendationConfidence(winner.preset, winner.score),
+    reasons: winner.reasons,
+    candidates,
+    configPath: configPath ?? null
+  };
 }
 
 export async function findConfigPath(cwd: string = process.cwd()): Promise<string | undefined> {
@@ -699,6 +749,231 @@ function mergeConfigs(base: UserJesterConfig, extra: UserJesterConfig): UserJest
 function mergeStringArrays(left: string[] | undefined, right: string[] | undefined): string[] | undefined {
   const merged = [...new Set([...(left ?? []), ...(right ?? [])])];
   return merged.length > 0 ? merged : left || right ? [] : undefined;
+}
+
+const skippedRecommendationDirectories = new Set([
+  ".git",
+  "node_modules",
+  "dist",
+  "build",
+  "coverage",
+  ".next",
+  ".venv",
+  "venv",
+  "vendor"
+]);
+
+const recommendationTieBreak: ConfigPreset[] = [
+  "ai",
+  "infra",
+  "api",
+  "web",
+  "node",
+  "python",
+  "security",
+  "default"
+];
+
+async function collectRepoPaths(root: string, current: string = root): Promise<string[]> {
+  let entries: Dirent[];
+
+  try {
+    entries = await readdir(current, { withFileTypes: true });
+  } catch {
+    return [];
+  }
+
+  const paths: string[] = [];
+  const sortedEntries = entries.sort((left, right) => left.name.localeCompare(right.name));
+
+  for (const entry of sortedEntries) {
+    const fullPath = join(current, entry.name);
+
+    if (entry.isDirectory()) {
+      if (!skippedRecommendationDirectories.has(entry.name.toLocaleLowerCase())) {
+        paths.push(...await collectRepoPaths(root, fullPath));
+      }
+      continue;
+    }
+
+    if (entry.isFile()) {
+      paths.push(relative(root, fullPath).replace(/\\/g, "/"));
+    }
+  }
+
+  return paths;
+}
+
+async function readPackageDependencyNames(cwd: string): Promise<Set<string>> {
+  try {
+    const raw = await readFile(join(cwd, "package.json"), "utf8");
+    const parsed = JSON.parse(raw) as {
+      dependencies?: Record<string, unknown>;
+      devDependencies?: Record<string, unknown>;
+      peerDependencies?: Record<string, unknown>;
+      optionalDependencies?: Record<string, unknown>;
+    };
+
+    return new Set([
+      ...Object.keys(parsed.dependencies ?? {}),
+      ...Object.keys(parsed.devDependencies ?? {}),
+      ...Object.keys(parsed.peerDependencies ?? {}),
+      ...Object.keys(parsed.optionalDependencies ?? {})
+    ].map((dependency) => dependency.toLocaleLowerCase()));
+  } catch {
+    return new Set();
+  }
+}
+
+function scorePresetCandidates(paths: string[], packageDependencies: Set<string>): PresetRecommendationCandidate[] {
+  const candidates = new Map<ConfigPreset, PresetRecommendationCandidate>(
+    configPresetNames.map((preset) => [preset, { preset, score: 0, reasons: [] }])
+  );
+  const lowerPaths = paths.map((path) => path.toLocaleLowerCase());
+
+  const add = (preset: ConfigPreset, score: number, reason: string) => {
+    const candidate = candidates.get(preset);
+    if (!candidate) {
+      return;
+    }
+
+    candidate.score += score;
+    if (!candidate.reasons.includes(reason)) {
+      candidate.reasons.push(reason);
+    }
+  };
+
+  if (hasExactPath(lowerPaths, "package.json")) {
+    add("node", 5, "Found package.json");
+  }
+  if (hasFileName(lowerPaths, ["package-lock.json", "npm-shrinkwrap.json", "yarn.lock", "pnpm-lock.yaml", "bun.lock", "bun.lockb"])) {
+    add("node", 2, "Found JavaScript package lockfile");
+  }
+  if (hasFileName(lowerPaths, ["tsconfig.json", "jsconfig.json"])) {
+    add("node", 2, "Found TypeScript or JavaScript project config");
+  }
+  if (lowerPaths.some((path) => /\.(?:mjs|cjs|js|jsx|mts|cts|ts|tsx)$/.test(path) && !path.endsWith(".d.ts"))) {
+    add("node", 1, "Found JavaScript or TypeScript source files");
+  }
+
+  if (hasFileName(lowerPaths, ["pyproject.toml"])) {
+    add("python", 5, "Found pyproject.toml");
+  }
+  if (hasFileName(lowerPaths, ["requirements.txt", "setup.py", "poetry.lock", "uv.lock"])) {
+    add("python", 3, "Found Python dependency or package file");
+  }
+  if (lowerPaths.some((path) => path.endsWith(".py"))) {
+    add("python", 1, "Found Python source files");
+  }
+
+  if (lowerPaths.some((path) => /(?:^|\/)(?:next|vite|astro|remix)\.config\.(?:js|mjs|cjs|ts|mts|cts)$/.test(path))) {
+    add("web", 5, "Found frontend framework config");
+  }
+  if (hasFileName(lowerPaths, ["index.html"])) {
+    add("web", 3, "Found browser entry HTML");
+  }
+  if (hasAnyDependency(packageDependencies, ["@remix-run/node", "@sveltejs/kit", "astro", "next", "react", "svelte", "vite", "vue"])) {
+    add("web", 3, "Found frontend framework dependency");
+  }
+  if (lowerPaths.some((path) => /(?:^|\/)(?:app|pages|src\/routes)\//.test(path) && /\.(?:jsx|tsx|vue|svelte)$/.test(path))) {
+    add("web", 2, "Found frontend route or app files");
+  }
+  if (lowerPaths.some((path) => /\.(?:jsx|tsx|vue|svelte)$/.test(path))) {
+    add("web", 2, "Found component source files");
+  }
+
+  if (lowerPaths.some((path) => /(?:^|\/)(?:openapi|swagger)\.(?:ya?ml|json)$/.test(path))) {
+    add("api", 5, "Found OpenAPI or Swagger spec");
+  }
+  if (lowerPaths.some((path) => path === "prisma/schema.prisma" || path.includes("/prisma/schema.prisma") || /(?:^|\/)migrations\//.test(path))) {
+    add("api", 4, "Found ORM schema or database migrations");
+  }
+  if (lowerPaths.some((path) => /(?:^|\/)(?:api|routes|server|controllers|middleware)\//.test(path))) {
+    add("api", 3, "Found server or API route folders");
+  }
+  if (hasAnyDependency(packageDependencies, ["@fastify/cors", "@nestjs/core", "@prisma/client", "express", "fastify", "hapi", "koa", "nestjs", "prisma"])) {
+    add("api", 3, "Found API server or ORM dependency");
+  }
+
+  if (lowerPaths.some((path) => path.endsWith(".tf") || path.endsWith(".tfvars") || path.endsWith(".tf.json"))) {
+    add("infra", 5, "Found Terraform files");
+  }
+  if (hasFileName(lowerPaths, ["pulumi.yaml", "pulumi.yml", "pulumi.json"])) {
+    add("infra", 5, "Found Pulumi project file");
+  }
+  if (hasFileName(lowerPaths, ["dockerfile", "docker-compose.yml", "docker-compose.yaml", "compose.yml", "compose.yaml"])) {
+    add("infra", 3, "Found Docker config");
+  }
+  if (hasFileName(lowerPaths, ["chart.yaml", "values.yaml"]) || lowerPaths.some((path) => /(?:^|\/)(?:k8s|kubernetes|helm)\//.test(path))) {
+    add("infra", 3, "Found Kubernetes or Helm files");
+  }
+  if (lowerPaths.some((path) => path.startsWith(".github/workflows/") && /\b(?:deploy|release|publish|terraform|kubectl)\b/.test(path))) {
+    add("infra", 2, "Found deployment workflow");
+  }
+
+  if (lowerPaths.some((path) => /(?:^|\/|\.)(?:mcp)(?:\/|\.|-|_|$)/.test(path))) {
+    add("ai", 4, "Found MCP-related files");
+  }
+  if (hasFileName(lowerPaths, ["agents.md", "claude.md", "memento_mori.md", "memento-mori.md"])) {
+    add("ai", 3, "Found agent instruction files");
+  }
+  if (lowerPaths.some((path) => /(?:^|\/)(?:prompts?|evals?|evaluations?|vector-store|retrieval)\//.test(path))) {
+    add("ai", 4, "Found prompt, eval, retrieval, or vector-store folders");
+  }
+  if (hasAnyDependency(packageDependencies, ["@anthropic-ai/sdk", "@modelcontextprotocol/sdk", "ai", "langchain", "openai"])) {
+    add("ai", 4, "Found AI or MCP dependency");
+  }
+  if (lowerPaths.some((path) => /(?:^|\/|[-_.])(?:agent|llm|prompt|eval)(?:\/|[-_.]|$)/.test(path))) {
+    add("ai", 2, "Found AI-oriented file naming");
+  }
+
+  if (hasFileName(lowerPaths, ["security.md"])) {
+    add("security", 2, "Found security policy documentation");
+  }
+  if (lowerPaths.some((path) => /(?:^|\/)(?:\.semgrep|semgrep|snyk|trivy|codeql|dependabot)(?:\/|\.|$)/.test(path) || path.includes("/codeql-"))) {
+    add("security", 3, "Found security scanning config");
+  }
+  if (lowerPaths.some((path) => path.startsWith(".github/workflows/") && /\b(?:security|codeql|snyk|trivy|semgrep)\b/.test(path))) {
+    add("security", 3, "Found security workflow");
+  }
+
+  return [...candidates.values()];
+}
+
+function rankRecommendationCandidates(candidates: PresetRecommendationCandidate[]): PresetRecommendationCandidate[] {
+  return [...candidates].sort((left, right) => {
+    if (right.score !== left.score) {
+      return right.score - left.score;
+    }
+
+    return recommendationTieBreak.indexOf(left.preset) - recommendationTieBreak.indexOf(right.preset);
+  });
+}
+
+function recommendationConfidence(preset: ConfigPreset, score: number): RecommendationConfidence {
+  if (preset === "default") {
+    return "low";
+  }
+  if (score >= 5) {
+    return "high";
+  }
+  if (score >= 3) {
+    return "medium";
+  }
+  return "low";
+}
+
+function hasExactPath(paths: string[], expectedPath: string): boolean {
+  return paths.includes(expectedPath) || paths.some((path) => path.endsWith(`/${expectedPath}`));
+}
+
+function hasFileName(paths: string[], fileNames: string[]): boolean {
+  const fileNameSet = new Set(fileNames);
+  return paths.some((path) => fileNameSet.has(path.split("/").pop() ?? ""));
+}
+
+function hasAnyDependency(packageDependencies: Set<string>, dependencyNames: string[]): boolean {
+  return dependencyNames.some((dependency) => packageDependencies.has(dependency.toLocaleLowerCase()));
 }
 
 async function fileExists(path: string): Promise<boolean> {

@@ -4,6 +4,11 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.25
+
+- Added `jester config recommend` for local, read-only preset recommendations with text and JSON output.
+- Documented the advisory recommendation flow in README, getting-started, CLI, demo, and release guidance.
+
 ## 0.1.24
 
 - Added the `api` config preset for backend auth, CORS, rate limiting, webhooks, raw SQL, and destructive migration risks.

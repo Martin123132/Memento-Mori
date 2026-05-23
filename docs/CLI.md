@@ -6,6 +6,7 @@ Use the CLI when you want quick checks without wiring an agent yet.
 
 ```powershell
 npx -y memento-mori-jester@latest start
+npx -y memento-mori-jester@latest config recommend
 npx -y memento-mori-jester@latest doctor
 npx -y memento-mori-jester@latest command "git reset --hard"
 npx -y memento-mori-jester@latest plan "I will just refactor auth and ship it"
@@ -154,6 +155,15 @@ jester explain final --file .\final-answer.txt --json
 
 ## Bootstrap A Repo
 
+If you are unsure which preset fits, ask for a local read-only recommendation first:
+
+```powershell
+jester config recommend
+jester config recommend --json
+```
+
+It scans repo file paths, ignores generated folders such as `node_modules`, `dist`, `build`, `.next`, virtualenv folders, and `vendor`, then recommends one preset with evidence and next commands. If it finds an existing `jester.config.json` or `.jester.json`, it reports the path but keeps the recommendation advisory.
+
 ```powershell
 jester bootstrap --preset node
 ```
@@ -192,6 +202,7 @@ Use `--json` when another tool needs the review result:
 jester command "git reset --hard" --json
 jester explain command "git reset --hard" --json
 jester policy init --level strict --json
+jester config recommend --json
 jester config validate --json
 jester bootstrap --preset node --json
 ```

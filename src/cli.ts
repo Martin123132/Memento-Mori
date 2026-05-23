@@ -9,11 +9,13 @@ import {
   findConfigPath,
   loadConfig,
   policyLevelNames,
+  recommendConfigPreset,
   userConfigForPolicy,
   validateConfig,
   writeDefaultConfig,
   writePolicyConfig,
   type ConfigPreset,
+  type PresetRecommendation,
   type PolicyLevel
 } from "./config.js";
 import { listRules, review, reviewCommand, type RuleCatalogEntry } from "./core.js";
@@ -1425,6 +1427,15 @@ async function handleConfigCommand(argv: string[]): Promise<string> {
     return `${configPresetNames.join("\n")}\n`;
   }
 
+  if (subcommand === "recommend") {
+    const recommendation = await recommendConfigPreset({
+      configPath: options.configPath,
+      search: !options.noConfig
+    });
+
+    return renderConfigRecommendation(recommendation, options.json);
+  }
+
   if (subcommand === "disable-rule" || subcommand === "enable-rule") {
     return handleConfigRuleToggle(subcommand, options);
   }
@@ -1461,7 +1472,42 @@ async function handleConfigCommand(argv: string[]): Promise<string> {
     return `Config invalid${result.path ? `: ${result.path}` : ""}\n${result.issues.map((issue) => `- ${issue}`).join("\n")}\n`;
   }
 
-  throw new Error('Unknown config command. Use "jester config init", "jester config show", "jester config validate", "jester config presets", "jester config disable-rule <id>", or "jester config enable-rule <id>".');
+  throw new Error('Unknown config command. Use "jester config init", "jester config show", "jester config validate", "jester config presets", "jester config recommend", "jester config disable-rule <id>", or "jester config enable-rule <id>".');
+}
+
+function renderConfigRecommendation(recommendation: PresetRecommendation, json: boolean): string {
+  if (json) {
+    return `${JSON.stringify(recommendation, null, 2)}\n`;
+  }
+
+  const preset = recommendation.recommendedPreset;
+  const reasons = recommendation.reasons.length > 0
+    ? recommendation.reasons.map((reason) => `- ${reason}`).join("\n")
+    : "- No strong stack markers found.";
+  const candidates = recommendation.candidates
+    .map((candidate) => `- ${candidate.preset}: ${candidate.score}${candidate.reasons.length > 0 ? ` (${candidate.reasons.join("; ")})` : ""}`)
+    .join("\n");
+  const configLine = recommendation.configPath
+    ? `Existing config: ${recommendation.configPath}\nNote: this recommendation is advisory; no files were changed.`
+    : "Existing config: none\nNote: no files were changed.";
+
+  return `Memento Mori Jester config recommendation
+
+Recommended preset: ${preset}
+Confidence: ${recommendation.confidence}
+${configLine}
+
+Why:
+${reasons}
+
+Candidates:
+${candidates}
+
+Next:
+  jester start --preset ${preset}
+  jester config init --preset ${preset}
+  jester bootstrap --preset ${preset}
+`;
 }
 
 async function handleConfigRuleToggle(subcommand: "disable-rule" | "enable-rule", options: ConfigCommandOptions): Promise<string> {
@@ -1966,6 +2012,7 @@ Usage:
   jester config show
   jester config validate
   jester config presets
+  jester config recommend
   jester config disable-rule console-log
   jester config enable-rule console-log
   jester policy init --level team

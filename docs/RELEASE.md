@@ -52,6 +52,8 @@ npx.cmd -y memento-mori-jester@latest mcp-config --agent claude --mode npx
 npx.cmd -y memento-mori-jester@latest policy levels
 npx.cmd -y memento-mori-jester@latest policy show --level strict
 npx.cmd -y memento-mori-jester@latest bootstrap --preset node
+npx.cmd -y memento-mori-jester@latest config recommend
+npx.cmd -y memento-mori-jester@latest config recommend --json
 npx.cmd -y memento-mori-jester@latest config init
 npx.cmd -y memento-mori-jester@latest config disable-rule console-log --json
 npx.cmd -y memento-mori-jester@latest config enable-rule console-log --json

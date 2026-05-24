@@ -135,6 +135,8 @@ test("recommends node preset from package markers", async () => {
   assert.equal(recommendation.recommendedPreset, "node");
   assert.equal(recommendation.confidence, "high");
   assert.ok(recommendation.reasons.includes("Found package.json"));
+  assert.ok(recommendation.detectedStacks.includes("Node.js"));
+  assert.ok(recommendation.detectedStacks.includes("npm"));
 });
 
 test("recommends web preset from frontend markers", async () => {
@@ -146,7 +148,9 @@ test("recommends web preset from frontend markers", async () => {
   const recommendation = await recommendConfigPreset({ cwd });
 
   assert.equal(recommendation.recommendedPreset, "web");
-  assert.ok(recommendation.reasons.includes("Found frontend framework config"));
+  assert.ok(recommendation.reasons.includes("Found Vite config"));
+  assert.ok(recommendation.detectedStacks.includes("Vite"));
+  assert.ok(recommendation.detectedStacks.includes("React"));
 });
 
 test("recommends api preset from backend markers", async () => {
@@ -159,11 +163,27 @@ test("recommends api preset from backend markers", async () => {
 
   assert.equal(recommendation.recommendedPreset, "api");
   assert.ok(recommendation.reasons.includes("Found OpenAPI or Swagger spec"));
+  assert.ok(recommendation.detectedStacks.includes("OpenAPI"));
+  assert.ok(recommendation.detectedStacks.includes("Prisma"));
+});
+
+test("recommends api preset from Python API dependencies", async () => {
+  const cwd = await mkdtemp(join(tmpdir(), "jester-recommend-fastapi-"));
+  await writeRepoFile(cwd, "pyproject.toml", "[project]\ndependencies = [\"fastapi\", \"sqlalchemy\"]\n");
+  await writeRepoFile(cwd, "app/main.py", "from fastapi import FastAPI\n");
+
+  const recommendation = await recommendConfigPreset({ cwd });
+
+  assert.equal(recommendation.recommendedPreset, "api");
+  assert.ok(recommendation.detectedStacks.includes("FastAPI"));
+  assert.ok(recommendation.detectedStacks.includes("SQLAlchemy"));
+  assert.ok(recommendation.candidates.some((candidate) => candidate.preset === "python"));
 });
 
 test("recommends ai preset from MCP prompt and eval markers", async () => {
   const cwd = await mkdtemp(join(tmpdir(), "jester-recommend-ai-"));
   await writeRepoFile(cwd, "mcp.json", "{}\n");
+  await writeRepoFile(cwd, "requirements.txt", "openai\nanthropic\n");
   await writeRepoFile(cwd, "prompts/system.md", "You are helpful.\n");
   await writeRepoFile(cwd, "evals/smoke.yml", "cases: []\n");
 
@@ -171,6 +191,10 @@ test("recommends ai preset from MCP prompt and eval markers", async () => {
 
   assert.equal(recommendation.recommendedPreset, "ai");
   assert.ok(recommendation.reasons.includes("Found MCP-related files"));
+  assert.ok(recommendation.detectedStacks.includes("MCP"));
+  assert.ok(recommendation.detectedStacks.includes("OpenAI SDK"));
+  assert.ok(recommendation.detectedStacks.includes("Anthropic SDK"));
+  assert.ok(recommendation.detectedStacks.includes("Prompt/eval workflow"));
 });
 
 test("recommends infra preset from deployment markers", async () => {
@@ -183,6 +207,9 @@ test("recommends infra preset from deployment markers", async () => {
 
   assert.equal(recommendation.recommendedPreset, "infra");
   assert.ok(recommendation.reasons.includes("Found Terraform files"));
+  assert.ok(recommendation.detectedStacks.includes("Terraform"));
+  assert.ok(recommendation.detectedStacks.includes("Kubernetes"));
+  assert.ok(recommendation.detectedStacks.includes("Docker"));
 });
 
 test("falls back to default preset when no markers exist", async () => {
@@ -193,6 +220,7 @@ test("falls back to default preset when no markers exist", async () => {
   assert.equal(recommendation.recommendedPreset, "default");
   assert.equal(recommendation.confidence, "low");
   assert.deepEqual(recommendation.reasons, ["No strong stack markers found."]);
+  assert.deepEqual(recommendation.detectedStacks, []);
 });
 
 test("reports existing config path with advisory recommendation", async () => {

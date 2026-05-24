@@ -588,6 +588,7 @@ test("config recommend prints preset reasons and next commands", async () => {
   ], { cwd });
 
   assert.match(stdout, /Recommended preset: node/);
+  assert.match(stdout, /Detected stack: Node\.js \+ npm/);
   assert.match(stdout, /Found package\.json/);
   assert.match(stdout, /jester start --preset node/);
   assert.match(stdout, /jester config init --preset node/);
@@ -607,15 +608,17 @@ test("config recommend json returns stable keys and candidate scores", async () 
     recommendedPreset: string;
     confidence: string;
     reasons: string[];
-    candidates: Array<{ preset: string; score: number; reasons: string[] }>;
+    detectedStacks: string[];
+    candidates: Array<{ preset: string; score: number; reasons: string[]; detectedStacks: string[] }>;
     configPath: string | null;
   };
 
-  assert.deepEqual(Object.keys(result), ["recommendedPreset", "confidence", "reasons", "candidates", "configPath"]);
+  assert.deepEqual(Object.keys(result), ["recommendedPreset", "confidence", "reasons", "detectedStacks", "candidates", "configPath"]);
   assert.equal(result.recommendedPreset, "api");
   assert.equal(result.confidence, "high");
+  assert.ok(result.detectedStacks.includes("OpenAPI"));
   assert.equal(result.configPath, null);
-  assert.ok(result.candidates.some((candidate) => candidate.preset === "api" && candidate.score >= 5));
+  assert.ok(result.candidates.some((candidate) => candidate.preset === "api" && candidate.score >= 5 && candidate.detectedStacks.includes("OpenAPI")));
 });
 
 test("config recommend reports existing config path without changing recommendation", async () => {

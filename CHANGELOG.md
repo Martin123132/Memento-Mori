@@ -4,6 +4,11 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.26
+
+- Added framework and stack detection details to `jester config recommend` text and JSON output.
+- Improved preset scoring evidence for Next.js, Vite, React, FastAPI, Express, Prisma, Terraform, Kubernetes, MCP, OpenAI, Anthropic, and related tooling.
+
 ## 0.1.25
 
 - Added `jester config recommend` for local, read-only preset recommendations with text and JSON output.

@@ -29,12 +29,14 @@ export interface PresetRecommendationCandidate {
   preset: ConfigPreset;
   score: number;
   reasons: string[];
+  detectedStacks: string[];
 }
 
 export interface PresetRecommendation {
   recommendedPreset: ConfigPreset;
   confidence: RecommendationConfidence;
   reasons: string[];
+  detectedStacks: string[];
   candidates: PresetRecommendationCandidate[];
   configPath: string | null;
 }
@@ -139,14 +141,16 @@ export async function recommendConfigPreset(options: {
     : search ? await findConfigPath(cwd) : undefined;
   const paths = await collectRepoPaths(cwd);
   const packageDependencies = await readPackageDependencyNames(cwd);
-  const rankedCandidates = rankRecommendationCandidates(scorePresetCandidates(paths, packageDependencies));
+  const pythonDependencies = await readPythonDependencyNames(cwd);
+  const rankedCandidates = rankRecommendationCandidates(scorePresetCandidates(paths, packageDependencies, pythonDependencies));
   const meaningfulCandidates = rankedCandidates.filter((candidate) => candidate.score > 0);
   const candidates = meaningfulCandidates.length > 0
     ? meaningfulCandidates
     : [{
         preset: "default" as const,
         score: 0,
-        reasons: ["No strong stack markers found."]
+        reasons: ["No strong stack markers found."],
+        detectedStacks: []
       }];
   const winner = candidates[0];
 
@@ -154,6 +158,7 @@ export async function recommendConfigPreset(options: {
     recommendedPreset: winner.preset,
     confidence: recommendationConfidence(winner.preset, winner.score),
     reasons: winner.reasons,
+    detectedStacks: winner.detectedStacks,
     candidates,
     configPath: configPath ?? null
   };
@@ -825,13 +830,35 @@ async function readPackageDependencyNames(cwd: string): Promise<Set<string>> {
   }
 }
 
-function scorePresetCandidates(paths: string[], packageDependencies: Set<string>): PresetRecommendationCandidate[] {
+async function readPythonDependencyNames(cwd: string): Promise<Set<string>> {
+  const dependencies = new Set<string>();
+  const dependencyFiles = [
+    "requirements.txt",
+    "requirements-dev.txt",
+    "pyproject.toml"
+  ];
+
+  for (const dependencyFile of dependencyFiles) {
+    try {
+      const raw = await readFile(join(cwd, dependencyFile), "utf8");
+      for (const match of raw.matchAll(/[A-Za-z0-9_.-]+/g)) {
+        dependencies.add(match[0].toLocaleLowerCase().replace(/_/g, "-"));
+      }
+    } catch {
+      // Missing or unreadable dependency files simply mean less recommendation evidence.
+    }
+  }
+
+  return dependencies;
+}
+
+function scorePresetCandidates(paths: string[], packageDependencies: Set<string>, pythonDependencies: Set<string>): PresetRecommendationCandidate[] {
   const candidates = new Map<ConfigPreset, PresetRecommendationCandidate>(
-    configPresetNames.map((preset) => [preset, { preset, score: 0, reasons: [] }])
+    configPresetNames.map((preset) => [preset, { preset, score: 0, reasons: [], detectedStacks: [] }])
   );
   const lowerPaths = paths.map((path) => path.toLocaleLowerCase());
 
-  const add = (preset: ConfigPreset, score: number, reason: string) => {
+  const add = (preset: ConfigPreset, score: number, reason: string, stacks: string[] = []) => {
     const candidate = candidates.get(preset);
     if (!candidate) {
       return;
@@ -841,100 +868,183 @@ function scorePresetCandidates(paths: string[], packageDependencies: Set<string>
     if (!candidate.reasons.includes(reason)) {
       candidate.reasons.push(reason);
     }
+    for (const stack of stacks) {
+      if (!candidate.detectedStacks.includes(stack)) {
+        candidate.detectedStacks.push(stack);
+      }
+    }
   };
 
   if (hasExactPath(lowerPaths, "package.json")) {
-    add("node", 5, "Found package.json");
+    add("node", 5, "Found package.json", ["Node.js"]);
   }
-  if (hasFileName(lowerPaths, ["package-lock.json", "npm-shrinkwrap.json", "yarn.lock", "pnpm-lock.yaml", "bun.lock", "bun.lockb"])) {
-    add("node", 2, "Found JavaScript package lockfile");
+  if (hasFileName(lowerPaths, ["package-lock.json", "npm-shrinkwrap.json"])) {
+    add("node", 2, "Found npm lockfile", ["npm"]);
+  }
+  if (hasFileName(lowerPaths, ["pnpm-lock.yaml"])) {
+    add("node", 2, "Found pnpm lockfile", ["pnpm"]);
+  }
+  if (hasFileName(lowerPaths, ["yarn.lock"])) {
+    add("node", 2, "Found Yarn lockfile", ["Yarn"]);
+  }
+  if (hasFileName(lowerPaths, ["bun.lock", "bun.lockb"])) {
+    add("node", 2, "Found Bun lockfile", ["Bun"]);
   }
   if (hasFileName(lowerPaths, ["tsconfig.json", "jsconfig.json"])) {
-    add("node", 2, "Found TypeScript or JavaScript project config");
+    add("node", 2, "Found TypeScript or JavaScript project config", ["TypeScript"]);
   }
   if (lowerPaths.some((path) => /\.(?:mjs|cjs|js|jsx|mts|cts|ts|tsx)$/.test(path) && !path.endsWith(".d.ts"))) {
-    add("node", 1, "Found JavaScript or TypeScript source files");
+    add("node", 1, "Found JavaScript or TypeScript source files", ["JavaScript/TypeScript"]);
   }
 
   if (hasFileName(lowerPaths, ["pyproject.toml"])) {
-    add("python", 5, "Found pyproject.toml");
+    add("python", 5, "Found pyproject.toml", ["Python"]);
   }
-  if (hasFileName(lowerPaths, ["requirements.txt", "setup.py", "poetry.lock", "uv.lock"])) {
-    add("python", 3, "Found Python dependency or package file");
+  if (hasFileName(lowerPaths, ["requirements.txt", "requirements-dev.txt"])) {
+    add("python", 3, "Found Python requirements file", ["pip"]);
+  }
+  if (hasFileName(lowerPaths, ["setup.py"])) {
+    add("python", 3, "Found Python setup.py", ["setuptools"]);
+  }
+  if (hasFileName(lowerPaths, ["poetry.lock"])) {
+    add("python", 3, "Found Poetry lockfile", ["Poetry"]);
+  }
+  if (hasFileName(lowerPaths, ["uv.lock"])) {
+    add("python", 3, "Found uv lockfile", ["uv"]);
   }
   if (lowerPaths.some((path) => path.endsWith(".py"))) {
-    add("python", 1, "Found Python source files");
+    add("python", 1, "Found Python source files", ["Python"]);
   }
 
-  if (lowerPaths.some((path) => /(?:^|\/)(?:next|vite|astro|remix)\.config\.(?:js|mjs|cjs|ts|mts|cts)$/.test(path))) {
-    add("web", 5, "Found frontend framework config");
+  if (lowerPaths.some((path) => /(?:^|\/)next\.config\.(?:js|mjs|cjs|ts|mts|cts)$/.test(path))) {
+    add("web", 6, "Found Next.js config", ["Next.js"]);
+  }
+  if (lowerPaths.some((path) => /(?:^|\/)vite\.config\.(?:js|mjs|cjs|ts|mts|cts)$/.test(path))) {
+    add("web", 6, "Found Vite config", ["Vite"]);
+  }
+  if (lowerPaths.some((path) => /(?:^|\/)astro\.config\.(?:js|mjs|cjs|ts|mts|cts)$/.test(path))) {
+    add("web", 6, "Found Astro config", ["Astro"]);
+  }
+  if (lowerPaths.some((path) => /(?:^|\/)remix\.config\.(?:js|mjs|cjs|ts|mts|cts)$/.test(path))) {
+    add("web", 6, "Found Remix config", ["Remix"]);
   }
   if (hasFileName(lowerPaths, ["index.html"])) {
-    add("web", 3, "Found browser entry HTML");
+    add("web", 3, "Found browser entry HTML", ["Browser app"]);
   }
-  if (hasAnyDependency(packageDependencies, ["@remix-run/node", "@sveltejs/kit", "astro", "next", "react", "svelte", "vite", "vue"])) {
-    add("web", 3, "Found frontend framework dependency");
-  }
+  addPackageSignals(add, packageDependencies, "web", 3, [
+    ["next", "Next.js", "Found Next.js dependency"],
+    ["vite", "Vite", "Found Vite dependency"],
+    ["react", "React", "Found React dependency"],
+    ["vue", "Vue", "Found Vue dependency"],
+    ["svelte", "Svelte", "Found Svelte dependency"],
+    ["@sveltejs/kit", "SvelteKit", "Found SvelteKit dependency"],
+    ["astro", "Astro", "Found Astro dependency"],
+    ["@remix-run/node", "Remix", "Found Remix dependency"]
+  ]);
   if (lowerPaths.some((path) => /(?:^|\/)(?:app|pages|src\/routes)\//.test(path) && /\.(?:jsx|tsx|vue|svelte)$/.test(path))) {
-    add("web", 2, "Found frontend route or app files");
+    add("web", 2, "Found frontend route or app files", ["Frontend routes"]);
   }
   if (lowerPaths.some((path) => /\.(?:jsx|tsx|vue|svelte)$/.test(path))) {
-    add("web", 2, "Found component source files");
+    add("web", 2, "Found component source files", ["Component UI"]);
   }
 
   if (lowerPaths.some((path) => /(?:^|\/)(?:openapi|swagger)\.(?:ya?ml|json)$/.test(path))) {
-    add("api", 5, "Found OpenAPI or Swagger spec");
+    add("api", 5, "Found OpenAPI or Swagger spec", ["OpenAPI"]);
   }
   if (lowerPaths.some((path) => path === "prisma/schema.prisma" || path.includes("/prisma/schema.prisma") || /(?:^|\/)migrations\//.test(path))) {
-    add("api", 4, "Found ORM schema or database migrations");
+    add("api", 4, "Found ORM schema or database migrations", ["Database migrations"]);
+  }
+  if (lowerPaths.some((path) => path === "prisma/schema.prisma" || path.includes("/prisma/schema.prisma"))) {
+    add("api", 3, "Found Prisma schema", ["Prisma"]);
   }
   if (lowerPaths.some((path) => /(?:^|\/)(?:api|routes|server|controllers|middleware)\//.test(path))) {
-    add("api", 3, "Found server or API route folders");
+    add("api", 3, "Found server or API route folders", ["API routes"]);
   }
-  if (hasAnyDependency(packageDependencies, ["@fastify/cors", "@nestjs/core", "@prisma/client", "express", "fastify", "hapi", "koa", "nestjs", "prisma"])) {
-    add("api", 3, "Found API server or ORM dependency");
-  }
+  addPackageSignals(add, packageDependencies, "api", 3, [
+    ["express", "Express", "Found Express dependency"],
+    ["fastify", "Fastify", "Found Fastify dependency"],
+    ["@fastify/cors", "Fastify", "Found Fastify dependency"],
+    ["@nestjs/core", "NestJS", "Found NestJS dependency"],
+    ["nestjs", "NestJS", "Found NestJS dependency"],
+    ["koa", "Koa", "Found Koa dependency"],
+    ["hapi", "Hapi", "Found Hapi dependency"],
+    ["@prisma/client", "Prisma", "Found Prisma dependency"],
+    ["prisma", "Prisma", "Found Prisma dependency"]
+  ]);
+  addPythonSignals(add, pythonDependencies, "api", 3, [
+    ["fastapi", "FastAPI", "Found FastAPI dependency"],
+    ["django", "Django", "Found Django dependency"],
+    ["flask", "Flask", "Found Flask dependency"],
+    ["sqlalchemy", "SQLAlchemy", "Found SQLAlchemy dependency"],
+    ["alembic", "Alembic", "Found Alembic dependency"]
+  ]);
 
   if (lowerPaths.some((path) => path.endsWith(".tf") || path.endsWith(".tfvars") || path.endsWith(".tf.json"))) {
-    add("infra", 5, "Found Terraform files");
+    add("infra", 5, "Found Terraform files", ["Terraform"]);
   }
   if (hasFileName(lowerPaths, ["pulumi.yaml", "pulumi.yml", "pulumi.json"])) {
-    add("infra", 5, "Found Pulumi project file");
+    add("infra", 5, "Found Pulumi project file", ["Pulumi"]);
   }
   if (hasFileName(lowerPaths, ["dockerfile", "docker-compose.yml", "docker-compose.yaml", "compose.yml", "compose.yaml"])) {
-    add("infra", 3, "Found Docker config");
+    add("infra", 3, "Found Docker config", ["Docker"]);
   }
-  if (hasFileName(lowerPaths, ["chart.yaml", "values.yaml"]) || lowerPaths.some((path) => /(?:^|\/)(?:k8s|kubernetes|helm)\//.test(path))) {
-    add("infra", 3, "Found Kubernetes or Helm files");
+  if (hasFileName(lowerPaths, ["chart.yaml", "values.yaml"]) || lowerPaths.some((path) => /(?:^|\/)helm\//.test(path))) {
+    add("infra", 3, "Found Helm files", ["Helm"]);
+  }
+  if (lowerPaths.some((path) => /(?:^|\/)(?:k8s|kubernetes)\//.test(path))) {
+    add("infra", 3, "Found Kubernetes files", ["Kubernetes"]);
   }
   if (lowerPaths.some((path) => path.startsWith(".github/workflows/") && /\b(?:deploy|release|publish|terraform|kubectl)\b/.test(path))) {
-    add("infra", 2, "Found deployment workflow");
+    add("infra", 2, "Found deployment workflow", ["GitHub Actions deploy"]);
   }
 
   if (lowerPaths.some((path) => /(?:^|\/|\.)(?:mcp)(?:\/|\.|-|_|$)/.test(path))) {
-    add("ai", 4, "Found MCP-related files");
+    add("ai", 4, "Found MCP-related files", ["MCP"]);
   }
   if (hasFileName(lowerPaths, ["agents.md", "claude.md", "memento_mori.md", "memento-mori.md"])) {
-    add("ai", 3, "Found agent instruction files");
+    add("ai", 3, "Found agent instruction files", ["Agent instructions"]);
   }
   if (lowerPaths.some((path) => /(?:^|\/)(?:prompts?|evals?|evaluations?|vector-store|retrieval)\//.test(path))) {
-    add("ai", 4, "Found prompt, eval, retrieval, or vector-store folders");
+    add("ai", 4, "Found prompt, eval, retrieval, or vector-store folders", ["Prompt/eval workflow"]);
   }
-  if (hasAnyDependency(packageDependencies, ["@anthropic-ai/sdk", "@modelcontextprotocol/sdk", "ai", "langchain", "openai"])) {
-    add("ai", 4, "Found AI or MCP dependency");
-  }
+  addPackageSignals(add, packageDependencies, "ai", 4, [
+    ["@modelcontextprotocol/sdk", "MCP SDK", "Found MCP SDK dependency"],
+    ["openai", "OpenAI SDK", "Found OpenAI SDK dependency"],
+    ["@anthropic-ai/sdk", "Anthropic SDK", "Found Anthropic SDK dependency"],
+    ["langchain", "LangChain", "Found LangChain dependency"],
+    ["ai", "Vercel AI SDK", "Found Vercel AI SDK dependency"]
+  ]);
+  addPythonSignals(add, pythonDependencies, "ai", 4, [
+    ["mcp", "MCP SDK", "Found MCP SDK dependency"],
+    ["openai", "OpenAI SDK", "Found OpenAI SDK dependency"],
+    ["anthropic", "Anthropic SDK", "Found Anthropic SDK dependency"],
+    ["langchain", "LangChain", "Found LangChain dependency"],
+    ["llama-index", "LlamaIndex", "Found LlamaIndex dependency"]
+  ]);
   if (lowerPaths.some((path) => /(?:^|\/|[-_.])(?:agent|llm|prompt|eval)(?:\/|[-_.]|$)/.test(path))) {
-    add("ai", 2, "Found AI-oriented file naming");
+    add("ai", 2, "Found AI-oriented file naming", ["AI app files"]);
   }
 
   if (hasFileName(lowerPaths, ["security.md"])) {
-    add("security", 2, "Found security policy documentation");
+    add("security", 2, "Found security policy documentation", ["Security policy"]);
   }
-  if (lowerPaths.some((path) => /(?:^|\/)(?:\.semgrep|semgrep|snyk|trivy|codeql|dependabot)(?:\/|\.|$)/.test(path) || path.includes("/codeql-"))) {
-    add("security", 3, "Found security scanning config");
+  if (lowerPaths.some((path) => /(?:^|\/)(?:\.semgrep|semgrep)(?:\/|\.|$)/.test(path))) {
+    add("security", 3, "Found Semgrep config", ["Semgrep"]);
+  }
+  if (lowerPaths.some((path) => /(?:^|\/)snyk(?:\/|\.|$)/.test(path))) {
+    add("security", 3, "Found Snyk config", ["Snyk"]);
+  }
+  if (lowerPaths.some((path) => /(?:^|\/)trivy(?:\/|\.|$)/.test(path))) {
+    add("security", 3, "Found Trivy config", ["Trivy"]);
+  }
+  if (lowerPaths.some((path) => /(?:^|\/)codeql(?:\/|\.|$)/.test(path) || path.includes("/codeql-"))) {
+    add("security", 3, "Found CodeQL config", ["CodeQL"]);
+  }
+  if (lowerPaths.some((path) => /(?:^|\/)dependabot(?:\/|\.|$)/.test(path))) {
+    add("security", 3, "Found Dependabot config", ["Dependabot"]);
   }
   if (lowerPaths.some((path) => path.startsWith(".github/workflows/") && /\b(?:security|codeql|snyk|trivy|semgrep)\b/.test(path))) {
-    add("security", 3, "Found security workflow");
+    add("security", 3, "Found security workflow", ["Security workflow"]);
   }
 
   return [...candidates.values()];
@@ -972,8 +1082,36 @@ function hasFileName(paths: string[], fileNames: string[]): boolean {
   return paths.some((path) => fileNameSet.has(path.split("/").pop() ?? ""));
 }
 
-function hasAnyDependency(packageDependencies: Set<string>, dependencyNames: string[]): boolean {
-  return dependencyNames.some((dependency) => packageDependencies.has(dependency.toLocaleLowerCase()));
+function addPackageSignals(
+  add: (preset: ConfigPreset, score: number, reason: string, stacks?: string[]) => void,
+  packageDependencies: Set<string>,
+  preset: ConfigPreset,
+  score: number,
+  signals: Array<[dependency: string, stack: string, reason: string]>
+): void {
+  const addedReasons = new Set<string>();
+  for (const [dependency, stack, reason] of signals) {
+    if (packageDependencies.has(dependency.toLocaleLowerCase()) && !addedReasons.has(reason)) {
+      add(preset, score, reason, [stack]);
+      addedReasons.add(reason);
+    }
+  }
+}
+
+function addPythonSignals(
+  add: (preset: ConfigPreset, score: number, reason: string, stacks?: string[]) => void,
+  pythonDependencies: Set<string>,
+  preset: ConfigPreset,
+  score: number,
+  signals: Array<[dependency: string, stack: string, reason: string]>
+): void {
+  const addedReasons = new Set<string>();
+  for (const [dependency, stack, reason] of signals) {
+    if (pythonDependencies.has(dependency.toLocaleLowerCase()) && !addedReasons.has(reason)) {
+      add(preset, score, reason, [stack]);
+      addedReasons.add(reason);
+    }
+  }
 }
 
 async function fileExists(path: string): Promise<boolean> {

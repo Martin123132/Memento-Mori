@@ -98,16 +98,17 @@ Memento Mori Jester config recommendation
 
 Recommended preset: web
 Confidence: high
+Detected stack: Vite + React + Component UI
 Existing config: none
 Note: no files were changed.
 
 Why:
-- Found frontend framework config
-- Found frontend framework dependency
+- Found Vite config
+- Found React dependency
 
 Candidates:
-- web: 8 (Found frontend framework config; Found frontend framework dependency)
-- node: 5 (Found package.json)
+- web: 11 [Vite + React + Component UI] (Found Vite config; Found React dependency; Found component source files)
+- node: 5 [Node.js] (Found package.json)
 
 Next:
   jester start --preset web

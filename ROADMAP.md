@@ -4,11 +4,12 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Near Term
 
-- Framework-specific preset refinement.
-- Keep tuning false-positive cautions as real usage accumulates.
+- False-positive tuning recommendations from real usage.
+- More framework-specific preset examples.
 
 ## Recently Shipped
 
+- Framework-specific recommendation details for stacks such as Next.js, Vite, Express, Prisma, FastAPI, Terraform, Kubernetes, MCP, OpenAI, and Anthropic.
 - Preset recommendation for choosing a starter profile from local repo files.
 - Backend API preset for auth bypasses, CORS, rate limits, unsigned webhooks, raw SQL, and destructive migrations.
 - AI app preset for LLM apps, MCP servers, agent tools, prompt-injection checks, eval coverage, and model-output execution risks.
@@ -20,7 +21,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Product Ideas
 
-- Framework-specific preset refinement or real-usage false-positive tuning.
+- False-positive tuning helpers based on recent rule hits.
 
 ## Quality And Safety
 

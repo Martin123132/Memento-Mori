@@ -1481,11 +1481,20 @@ function renderConfigRecommendation(recommendation: PresetRecommendation, json: 
   }
 
   const preset = recommendation.recommendedPreset;
+  const detectedStack = recommendation.detectedStacks.length > 0
+    ? recommendation.detectedStacks.join(" + ")
+    : "No specific framework markers";
   const reasons = recommendation.reasons.length > 0
     ? recommendation.reasons.map((reason) => `- ${reason}`).join("\n")
     : "- No strong stack markers found.";
   const candidates = recommendation.candidates
-    .map((candidate) => `- ${candidate.preset}: ${candidate.score}${candidate.reasons.length > 0 ? ` (${candidate.reasons.join("; ")})` : ""}`)
+    .map((candidate) => {
+      const stackSummary = candidate.detectedStacks.length > 0
+        ? ` [${candidate.detectedStacks.join(" + ")}]`
+        : "";
+      const reasonSummary = candidate.reasons.length > 0 ? ` (${candidate.reasons.join("; ")})` : "";
+      return `- ${candidate.preset}: ${candidate.score}${stackSummary}${reasonSummary}`;
+    })
     .join("\n");
   const configLine = recommendation.configPath
     ? `Existing config: ${recommendation.configPath}\nNote: this recommendation is advisory; no files were changed.`
@@ -1495,6 +1504,7 @@ function renderConfigRecommendation(recommendation: PresetRecommendation, json: 
 
 Recommended preset: ${preset}
 Confidence: ${recommendation.confidence}
+Detected stack: ${detectedStack}
 ${configLine}
 
 Why:

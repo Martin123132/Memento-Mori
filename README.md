@@ -63,7 +63,7 @@ A dazzling command, if the desired outcome is court-sponsored regret.
 | Start | `jester start` | guided first-run checklist for setup, bootstrap, validation, and smoke checks |
 | Playground | `jester playground` | local paste-in checks for commands, plans, diffs, and final answers |
 | Examples | `jester examples` | copy-paste commands and links for new users |
-| Config Recommend | `jester config recommend` | local preset recommendation from repo files |
+| Config Recommend | `jester config recommend` | local preset and stack recommendation from repo files |
 | Rules | `jester rules --kind diff` | visible rule catalog for built-in and project checks |
 | GitHub Actions | `jester github-action --write` | SARIF workflow for code scanning |
 | Agents | `jester setup --agent codex` | exact MCP snippets and agent instructions for Codex, Claude Code, and generic clients |

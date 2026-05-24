@@ -162,7 +162,7 @@ jester config recommend
 jester config recommend --json
 ```
 
-It scans repo file paths, ignores generated folders such as `node_modules`, `dist`, `build`, `.next`, virtualenv folders, and `vendor`, then recommends one preset with evidence and next commands. If it finds an existing `jester.config.json` or `.jester.json`, it reports the path but keeps the recommendation advisory.
+It scans repo file paths and dependency manifests, ignores generated folders such as `node_modules`, `dist`, `build`, `.next`, virtualenv folders, and `vendor`, then recommends one preset with detected stack details, evidence, candidate scores, and next commands. If it finds an existing `jester.config.json` or `.jester.json`, it reports the path but keeps the recommendation advisory.
 
 ```powershell
 jester bootstrap --preset node

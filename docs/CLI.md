@@ -115,11 +115,15 @@ jester rules
 jester rules --kind command
 jester rules --kind diff --json
 jester rule destructive-git-history
+jester tune risky-domain
+jester tune risky-domain --json
 ```
 
 `rules` includes built-in regex checks, structural heuristics, and any active `jester.config.json` rules. Use `--no-config` to see only the built-in catalog, or `--config <path>` to inspect a specific project config.
 
 Use `jester rule <id>` before muting a rule. It explains why the rule exists, common false positives, safer alternatives, and how to tune it.
+
+Use `jester tune <id>` when the question is practical: should this noisy rule be muted here, and what exact commands do I run? It is read-only and prints a before-muting checklist, a recommendation, and `disable-rule` / `enable-rule` commands.
 
 If a rule is too noisy for a repo, add its id to `disabledRules` in `jester.config.json`:
 
@@ -201,6 +205,7 @@ Use `--json` when another tool needs the review result:
 ```powershell
 jester command "git reset --hard" --json
 jester explain command "git reset --hard" --json
+jester tune risky-domain --json
 jester policy init --level strict --json
 jester config recommend --json
 jester config validate --json

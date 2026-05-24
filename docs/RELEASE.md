@@ -54,6 +54,8 @@ npx.cmd -y memento-mori-jester@latest policy show --level strict
 npx.cmd -y memento-mori-jester@latest bootstrap --preset node
 npx.cmd -y memento-mori-jester@latest config recommend
 npx.cmd -y memento-mori-jester@latest config recommend --json
+npx.cmd -y memento-mori-jester@latest tune risky-domain
+npx.cmd -y memento-mori-jester@latest tune risky-domain --json
 npx.cmd -y memento-mori-jester@latest config init
 npx.cmd -y memento-mori-jester@latest config disable-rule console-log --json
 npx.cmd -y memento-mori-jester@latest config enable-rule console-log --json

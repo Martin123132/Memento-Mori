@@ -84,6 +84,7 @@ test("examples prints copy-paste onboarding commands", async () => {
   assert.match(stdout, /examples\/codex/);
   assert.match(stdout, /github-action/);
   assert.match(stdout, /rules --kind command/);
+  assert.match(stdout, /tune risky-domain/);
 });
 
 test("help includes the local playground command", async () => {
@@ -95,6 +96,7 @@ test("help includes the local playground command", async () => {
   assert.match(stdout, /jester start/);
   assert.match(stdout, /jester playground/);
   assert.match(stdout, /jester setup --agent codex/);
+  assert.match(stdout, /jester tune risky-domain/);
   assert.match(stdout, /--port <number>/);
 });
 
@@ -286,6 +288,116 @@ test("rules json includes guidance for built-in rules", async () => {
   assert.match(destructiveGitRule.guidance.falsePositive, /throwaway checkout/);
   assert.match(destructiveGitRule.guidance.saferAlternative, /git status/);
   assert.match(destructiveGitRule.guidance.tuning, /disable-rule destructive-git-history/);
+});
+
+test("tune explains safe muting for a noisy built-in rule", async () => {
+  const { stdout } = await execFileAsync(process.execPath, [
+    cliPath,
+    "tune",
+    "risky-domain",
+    "--no-config"
+  ]);
+
+  assert.match(stdout, /Memento Mori Jester tuning advice/);
+  assert.match(stdout, /Rule: risky-domain \[enabled\]/);
+  assert.match(stdout, /When it may be noisy/);
+  assert.match(stdout, /docs, release notes, or rule text/);
+  assert.match(stdout, /Before muting/);
+  assert.match(stdout, /jester config disable-rule risky-domain/);
+  assert.match(stdout, /jester config enable-rule risky-domain/);
+});
+
+test("tune supports json output with stable commands", async () => {
+  const { stdout } = await execFileAsync(process.execPath, [
+    cliPath,
+    "tune",
+    "console-log",
+    "--json",
+    "--no-config"
+  ]);
+  const result = JSON.parse(stdout) as {
+    ruleId: string;
+    title: string;
+    enabled: boolean;
+    severity: number;
+    source: string;
+    kinds: string[];
+    matcher: string;
+    configPath: string | null;
+    guidance: {
+      why: string;
+      falsePositive: string;
+      saferAlternative: string;
+      tuning: string;
+    };
+    recommendation: string;
+    checksBeforeMuting: string[];
+    commands: {
+      inspect: string;
+      disable: string;
+      enable: string;
+      validate: string;
+      list: string;
+    };
+  };
+
+  assert.deepEqual(Object.keys(result), [
+    "ruleId",
+    "title",
+    "enabled",
+    "severity",
+    "source",
+    "kinds",
+    "matcher",
+    "configPath",
+    "guidance",
+    "recommendation",
+    "checksBeforeMuting",
+    "commands"
+  ]);
+  assert.equal(result.ruleId, "console-log");
+  assert.equal(result.enabled, true);
+  assert.equal(result.commands.disable, "jester config disable-rule console-log");
+  assert.equal(result.commands.enable, "jester config enable-rule console-log");
+  assert.match(result.guidance.falsePositive, /scripts, CLIs, examples/);
+});
+
+test("tune reports disabled and project-config rules", async () => {
+  const cwd = await mkdtemp(join(tmpdir(), "jester-tune-config-"));
+  await writeFile(join(cwd, "jester.config.json"), `${JSON.stringify({
+    disabledRules: ["console-log"],
+    customRules: [
+      {
+        id: "must-mention-rollback",
+        pattern: "rollback",
+        severity: 3,
+        title: "Rollback mentioned",
+        kinds: ["plan"]
+      }
+    ]
+  }, null, 2)}\n`, "utf8");
+  const disabled = await execFileAsync(process.execPath, [
+    cliPath,
+    "tune",
+    "console-log"
+  ], { cwd });
+  const custom = await execFileAsync(process.execPath, [
+    cliPath,
+    "tune",
+    "custom-must-mention-rollback",
+    "--json"
+  ], { cwd });
+  const customResult = JSON.parse(custom.stdout) as {
+    source: string;
+    configPath: string | null;
+    recommendation: string;
+  };
+
+  assert.match(disabled.stdout, /Rule: console-log \[disabled\]/);
+  assert.match(disabled.stdout, /already disabled/);
+  assert.equal(customResult.source, "project-config");
+  assert.match(customResult.configPath ?? "", /jester\.config\.json$/);
+  assert.match(customResult.recommendation, /narrow jester\.config\.json/);
 });
 
 test("config can disable and enable rules", async () => {

@@ -137,7 +137,33 @@ security
 
 Use `ai` for LLM apps and agent tooling, `api` for backend APIs, `web` for frontend/browser apps, `infra` for deployment or cloud infrastructure repos, and `security` for a stricter general policy.
 
-## 6. Bootstrap A Project
+## 6. Tune A Noisy Rule
+
+Command:
+
+```powershell
+npx -y memento-mori-jester@latest tune risky-domain
+```
+
+Typical output:
+
+```text
+Memento Mori Jester tuning advice
+
+Rule: risky-domain [enabled]
+Severity: S3
+
+When it may be noisy:
+It can be noisy in docs, release notes, or rule text that merely mentions a sensitive word.
+
+Commands:
+  jester rule risky-domain
+  jester config disable-rule risky-domain
+  jester config validate
+  jester config enable-rule risky-domain
+```
+
+## 7. Bootstrap A Project
 
 Command:
 
@@ -163,7 +189,7 @@ Next:
   Add memento-mori.mcp.json to your MCP client, or copy the command and args from it.
 ```
 
-## 7. MCP Setup Preview
+## 8. MCP Setup Preview
 
 Command:
 

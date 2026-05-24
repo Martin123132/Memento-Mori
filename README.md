@@ -65,6 +65,7 @@ A dazzling command, if the desired outcome is court-sponsored regret.
 | Examples | `jester examples` | copy-paste commands and links for new users |
 | Config Recommend | `jester config recommend` | local preset and stack recommendation from repo files |
 | Rules | `jester rules --kind diff` | visible rule catalog for built-in and project checks |
+| Tuning | `jester tune risky-domain` | read-only advice before muting a noisy rule |
 | GitHub Actions | `jester github-action --write` | SARIF workflow for code scanning |
 | Agents | `jester setup --agent codex` | exact MCP snippets and agent instructions for Codex, Claude Code, and generic clients |
 
@@ -149,6 +150,7 @@ jester setup --agent codex
 jester examples
 jester rules
 jester rule destructive-git-history
+jester tune risky-domain
 jester github-action --write
 jester bootstrap --preset node
 jester config init
@@ -258,9 +260,13 @@ jester rules
 jester rules --kind diff
 jester rules --json
 jester rule destructive-git-history
+jester tune risky-domain
+jester tune risky-domain --json
 ```
 
 `jester rule <id>` explains why a rule exists, when it may be noisy, what safer move to make, and how to tune it.
+
+`jester tune <id>` turns that into a practical mute checklist with exact `disable-rule`, `enable-rule`, and validation commands. It does not edit config files.
 
 Disable a noisy rule by adding its id to `disabledRules` in `jester.config.json`:
 

@@ -4,6 +4,11 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.27
+
+- Added `jester tune <rule-id>` for read-only false-positive and safe-muting advice.
+- Added JSON output for tuning advice and documented the new rule tuning flow.
+
 ## 0.1.26
 
 - Added framework and stack detection details to `jester config recommend` text and JSON output.

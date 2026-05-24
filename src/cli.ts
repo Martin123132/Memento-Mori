@@ -101,6 +101,13 @@ type RulesCommandOptions = {
   noConfig: boolean;
 };
 
+type TuneCommandOptions = {
+  json: boolean;
+  id?: string;
+  configPath?: string;
+  noConfig: boolean;
+};
+
 type HookCommandOptions = {
   hook: HookName;
   setup: SetupOptions;
@@ -238,6 +245,11 @@ async function main(argv: string[]): Promise<void> {
 
   if (argv[0] === "rules" || argv[0] === "rule") {
     output.write(await handleRulesCommand(argv[0], argv.slice(1)));
+    return;
+  }
+
+  if (argv[0] === "tune") {
+    output.write(await handleTuneCommand(argv.slice(1)));
     return;
   }
 
@@ -489,6 +501,38 @@ function parseRulesCommandOptions(command: "rules" | "rule", argv: string[]): Ru
 
   if (command === "rule" && !options.id) {
     throw new Error('Missing rule id. Use "jester rule <id>" or "jester rules --id <id>".');
+  }
+
+  return options;
+}
+
+function parseTuneCommandOptions(argv: string[]): TuneCommandOptions {
+  const options: TuneCommandOptions = {
+    json: false,
+    noConfig: false
+  };
+
+  for (let index = 0; index < argv.length; index += 1) {
+    const arg = argv[index];
+    const next = argv[index + 1];
+
+    if (arg === "--json") {
+      options.json = true;
+    } else if (arg === "--id") {
+      options.id = requireValue(arg, next);
+      index += 1;
+    } else if (arg === "--config") {
+      options.configPath = requireValue(arg, next);
+      index += 1;
+    } else if (arg === "--no-config") {
+      options.noConfig = true;
+    } else if (!arg.startsWith("--") && !options.id) {
+      options.id = arg;
+    }
+  }
+
+  if (!options.id) {
+    throw new Error('Missing rule id. Use "jester tune <rule-id>".');
   }
 
   return options;
@@ -1101,6 +1145,7 @@ function renderExamples(options: SetupOptions): string {
       `${cliCommand} explain command "git reset --hard"`,
       `${cliCommand} playground`,
       `${cliCommand} rules --kind command`,
+      `${cliCommand} tune risky-domain`,
       `${cliCommand} github-action`
     ],
     setup: [
@@ -1240,6 +1285,104 @@ function renderRules(result: {
   }
 
   return lines.join("\n");
+}
+
+async function handleTuneCommand(argv: string[]): Promise<string> {
+  const options = parseTuneCommandOptions(argv);
+  const loadedConfig = await loadConfig({
+    configPath: options.configPath,
+    search: !options.noConfig
+  });
+  const rules = listRules({
+    config: loadedConfig.config
+  });
+  const rule = rules.find((entry) => entry.id === options.id);
+
+  if (!rule) {
+    throw new Error(`No rule found for "${options.id}". Run "jester rules" to list rule ids.`);
+  }
+
+  const advice = tuneAdvice(rule, loadedConfig.path);
+
+  if (options.json) {
+    return `${JSON.stringify(advice, null, 2)}\n`;
+  }
+
+  return renderTuneAdvice(advice);
+}
+
+function tuneAdvice(rule: RuleCatalogEntry, configPath?: string) {
+  const commands = {
+    inspect: `jester rule ${rule.id}`,
+    disable: `jester config disable-rule ${rule.id}`,
+    validate: "jester config validate",
+    enable: `jester config enable-rule ${rule.id}`,
+    list: "jester rules"
+  };
+  const checksBeforeMuting = [
+    "Confirm the latest hit is harmless, documentation-only, example-only, or already covered by another guard.",
+    "Prefer fixing the risky change or adding verification when the rule found real risk.",
+    rule.source === "project-config"
+      ? "Prefer narrowing the local project config pattern or value before muting the whole rule id."
+      : "Prefer muting only after repeated false positives in this repo."
+  ];
+  const recommendation = rule.enabled
+    ? rule.severity >= 5
+      ? "High severity: fix, narrow, or document the guard before disabling this rule."
+      : rule.source === "project-config"
+        ? "Project-config rule: narrow jester.config.json first; disable only if the local rule is intentionally too broad."
+        : "If repeated hits are harmless for this repo, disable the rule and validate the config."
+    : "This rule is already disabled; re-enable it when the noisy work is done or if the risk becomes relevant again.";
+
+  return {
+    ruleId: rule.id,
+    title: rule.title,
+    enabled: rule.enabled,
+    severity: rule.severity,
+    source: rule.source,
+    kinds: rule.kinds,
+    matcher: rule.matcher,
+    configPath: configPath ?? null,
+    guidance: rule.guidance,
+    recommendation,
+    checksBeforeMuting,
+    commands
+  };
+}
+
+function renderTuneAdvice(advice: ReturnType<typeof tuneAdvice>): string {
+  const enabledLabel = advice.enabled ? "enabled" : "disabled";
+
+  return `Memento Mori Jester tuning advice
+
+Rule: ${advice.ruleId} [${enabledLabel}]
+Title: ${advice.title}
+Severity: S${advice.severity}
+Source: ${advice.source}
+Kinds: ${advice.kinds.join(", ")}
+Project config: ${advice.configPath ?? "none loaded"}
+
+Why it exists:
+${advice.guidance.why}
+
+When it may be noisy:
+${advice.guidance.falsePositive}
+
+Safer move:
+${advice.guidance.saferAlternative}
+
+Recommendation:
+${advice.recommendation}
+
+Before muting:
+${advice.checksBeforeMuting.map((check) => `- ${check}`).join("\n")}
+
+Commands:
+  ${advice.commands.inspect}
+  ${advice.commands.disable}
+  ${advice.commands.validate}
+  ${advice.commands.enable}
+`;
 }
 
 async function handleGithubAction(argv: string[]): Promise<string> {
@@ -2008,6 +2151,7 @@ Usage:
   jester rules
   jester rules --kind diff
   jester rule destructive-git-history
+  jester tune risky-domain
   jester github-action
   jester github-action --write
   jester bootstrap --preset node

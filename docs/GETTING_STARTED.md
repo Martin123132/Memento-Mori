@@ -32,6 +32,12 @@ For the local browser version:
 npx -y memento-mori-jester@latest playground
 ```
 
+If a rule feels noisy, ask for tuning advice before disabling it:
+
+```powershell
+npx -y memento-mori-jester@latest tune risky-domain
+```
+
 ## 3. Add It To A Project
 
 Run this from the folder of the project you want protected:

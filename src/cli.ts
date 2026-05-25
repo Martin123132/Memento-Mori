@@ -1610,6 +1610,7 @@ jobs:
         with:
           format: sarif
           output-file: jester.sarif
+          summary: true
           fail-on: ${options.failOn}
           subject: ${yamlSingleQuote(options.subject)}
 

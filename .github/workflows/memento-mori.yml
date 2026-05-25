@@ -25,6 +25,7 @@ jobs:
         with:
           format: sarif
           output-file: jester.sarif
+          summary: true
           fail-on: block
           subject: 'pull request diff'
 

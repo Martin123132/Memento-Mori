@@ -92,7 +92,7 @@ jester examples --json
 
 ## GitHub Action Generator
 
-Print a copy-paste workflow that reviews pull request diffs as SARIF and uploads the result to GitHub code scanning:
+Print a copy-paste workflow that reviews pull request diffs as SARIF, uploads the result to GitHub code scanning, and appends a readable summary to the GitHub Actions run:
 
 ```powershell
 jester github-action
@@ -106,7 +106,7 @@ jester github-action --write --force
 jester github-action --write --path .github/workflows/jester.yml
 ```
 
-Use `--fail-on caution`, `--subject`, or `--ref` to tune the generated workflow.
+Use `--fail-on caution`, `--subject`, or `--ref` to tune the generated workflow. The generated workflow sets the composite action's `summary: true` input; edit the workflow to `summary: false` if you only want SARIF output.
 
 ## Rules
 

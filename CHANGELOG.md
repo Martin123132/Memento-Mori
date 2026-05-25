@@ -4,6 +4,11 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.29
+
+- Added GitHub Action job summaries with verdict, issue counts, rule hits, highest-severity issue, and next tuning commands.
+- Added a `summary` composite action input while preserving SARIF output and existing `fail-on` behavior.
+
 ## 0.1.28
 
 - Added `jester summary` for grouped rule-hit summaries across reviewed plans, commands, diffs, and final answers.

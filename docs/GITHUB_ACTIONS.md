@@ -16,7 +16,7 @@ Or write it directly into a repo:
 npx -y memento-mori-jester@latest github-action --write
 ```
 
-The generated workflow reviews pull request diffs, writes `jester.sarif`, and uploads it with `github/codeql-action/upload-sarif@v3`.
+The generated workflow reviews pull request diffs, writes `jester.sarif`, uploads it with `github/codeql-action/upload-sarif@v3`, and appends a readable Jester summary to the GitHub Actions run.
 
 This repository dogfoods that generated workflow in [.github/workflows/memento-mori.yml](../.github/workflows/memento-mori.yml).
 
@@ -46,9 +46,12 @@ jobs:
         with:
           fail-on: block
           subject: pull request diff
+          summary: true
 ```
 
 For pinned releases, replace `@main` with a tag such as `@v0.1.0`.
+
+Set `summary: false` if you only want the raw action output or SARIF file.
 
 ## Pull Request Diff Review
 
@@ -151,6 +154,7 @@ The composite action can also write SARIF to a file:
   with:
     format: sarif
     output-file: jester.sarif
+    summary: true
     fail-on: block
 ```
 

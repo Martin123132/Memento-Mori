@@ -44,6 +44,8 @@ Add it to GitHub code scanning:
 npx -y memento-mori-jester@latest github-action --write
 ```
 
+The generated workflow uploads SARIF for code scanning and adds a readable Jester summary to the GitHub Actions run.
+
 Expected vibe:
 
 ```text
@@ -67,7 +69,7 @@ A dazzling command, if the desired outcome is court-sponsored regret.
 | Config Recommend | `jester config recommend` | local preset and stack recommendation from repo files |
 | Rules | `jester rules --kind diff` | visible rule catalog for built-in and project checks |
 | Tuning | `jester tune risky-domain` | read-only advice before muting a noisy rule |
-| GitHub Actions | `jester github-action --write` | SARIF workflow for code scanning |
+| GitHub Actions | `jester github-action --write` | SARIF workflow plus Actions job summary |
 | Agents | `jester setup --agent codex` | exact MCP snippets and agent instructions for Codex, Claude Code, and generic clients |
 
 ## Try It Locally

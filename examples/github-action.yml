@@ -19,3 +19,4 @@ jobs:
         with:
           fail-on: block
           subject: pull request diff
+          summary: true

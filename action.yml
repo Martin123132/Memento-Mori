@@ -26,6 +26,10 @@ inputs:
     description: Optional file path to write review output, useful for SARIF upload steps.
     required: false
     default: ""
+  summary:
+    description: Append a human-readable review summary to the GitHub Actions job summary.
+    required: false
+    default: "true"
 
 runs:
   using: composite
@@ -51,15 +55,24 @@ runs:
         NO_CONFIG: ${{ inputs.no-config }}
         FORMAT: ${{ inputs.format }}
         OUTPUT_FILE: ${{ inputs.output-file }}
+        SUMMARY: ${{ inputs.summary }}
       run: |
         set -euo pipefail
 
+        if [ "$SUMMARY" != "true" ] && [ "$SUMMARY" != "false" ]; then
+          echo "Unknown summary: $SUMMARY. Use true or false." >&2
+          exit 1
+        fi
+
         args=(diff --fail-on "$FAIL_ON" --subject "$SUBJECT")
+        summary_args=(summary --subject "$SUBJECT")
         if [ -n "$CONFIG" ]; then
           args+=(--config "$CONFIG")
+          summary_args+=(--config "$CONFIG")
         fi
         if [ "$NO_CONFIG" = "true" ]; then
           args+=(--no-config)
+          summary_args+=(--no-config)
         fi
         if [ "$FORMAT" = "sarif" ]; then
           args+=(--sarif)
@@ -68,19 +81,31 @@ runs:
           exit 1
         fi
 
-        run_review() {
-          if [ -n "$OUTPUT_FILE" ]; then
-            node "$GITHUB_ACTION_PATH/dist/cli.js" "${args[@]}" > "$OUTPUT_FILE"
-          else
-            node "$GITHUB_ACTION_PATH/dist/cli.js" "${args[@]}"
-          fi
-        }
+        diff_file="$(mktemp)"
+        trap 'rm -f "$diff_file"' EXIT
 
         if [ -n "${GITHUB_BASE_REF:-}" ]; then
           git fetch origin "$GITHUB_BASE_REF" --depth=1
-          git diff --binary --no-ext-diff "origin/$GITHUB_BASE_REF...HEAD" \
-            | run_review
+          git diff --binary --no-ext-diff "origin/$GITHUB_BASE_REF...HEAD" > "$diff_file"
         else
-          git diff --binary --no-ext-diff HEAD~1..HEAD \
-            | run_review
+          git diff --binary --no-ext-diff HEAD~1..HEAD > "$diff_file"
         fi
+
+        review_status=0
+        if [ -n "$OUTPUT_FILE" ]; then
+          node "$GITHUB_ACTION_PATH/dist/cli.js" "${args[@]}" < "$diff_file" > "$OUTPUT_FILE" || review_status=$?
+        else
+          node "$GITHUB_ACTION_PATH/dist/cli.js" "${args[@]}" < "$diff_file" || review_status=$?
+        fi
+
+        if [ "$SUMMARY" = "true" ] && [ -n "${GITHUB_STEP_SUMMARY:-}" ]; then
+          if ! {
+            echo "## Memento Mori Jester"
+            echo
+            node "$GITHUB_ACTION_PATH/dist/cli.js" "${summary_args[@]}" < "$diff_file"
+          } >> "$GITHUB_STEP_SUMMARY"; then
+            echo "Failed to append Jester summary; keeping review status $review_status." >&2
+          fi
+        fi
+
+        exit "$review_status"

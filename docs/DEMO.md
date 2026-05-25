@@ -137,7 +137,32 @@ security
 
 Use `ai` for LLM apps and agent tooling, `api` for backend APIs, `web` for frontend/browser apps, `infra` for deployment or cloud infrastructure repos, and `security` for a stricter general policy.
 
-## 6. Tune A Noisy Rule
+## 6. Summarize Rule Hits
+
+Command:
+
+```powershell
+npx -y memento-mori-jester@latest summary --kind command "git reset --hard"
+```
+
+Typical output:
+
+```text
+Memento Mori Jester summary
+
+Verdict: BLOCK (100/100)
+Kind: command
+Issues: 1
+
+Rules hit:
+- destructive-git-history: 1 hit [S5] Destructive git history operation
+
+Suggested next:
+  jester tune destructive-git-history
+  jester rule destructive-git-history
+```
+
+## 7. Tune A Noisy Rule
 
 Command:
 
@@ -163,7 +188,7 @@ Commands:
   jester config enable-rule risky-domain
 ```
 
-## 7. Bootstrap A Project
+## 8. Bootstrap A Project
 
 Command:
 
@@ -189,7 +214,7 @@ Next:
   Add memento-mori.mcp.json to your MCP client, or copy the command and args from it.
 ```
 
-## 8. MCP Setup Preview
+## 9. MCP Setup Preview
 
 Command:
 
@@ -214,7 +239,7 @@ Output:
 }
 ```
 
-## 8. Agent Setup Chooser
+## 10. Agent Setup Chooser
 
 Command:
 
@@ -240,7 +265,7 @@ MCP config:
 }
 ```
 
-## 9. Guided First Run
+## 11. Guided First Run
 
 Command:
 

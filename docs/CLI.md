@@ -9,6 +9,7 @@ npx -y memento-mori-jester@latest start
 npx -y memento-mori-jester@latest config recommend
 npx -y memento-mori-jester@latest doctor
 npx -y memento-mori-jester@latest command "git reset --hard"
+npx -y memento-mori-jester@latest summary --kind command "git reset --hard"
 npx -y memento-mori-jester@latest plan "I will just refactor auth and ship it"
 npx -y memento-mori-jester@latest playground
 npx -y memento-mori-jester@latest setup
@@ -30,6 +31,7 @@ jester final --file .\final-answer.txt --tone professional
 jester explain command "git reset --hard"
 git diff | jester diff --fail-on block
 git diff | jester diff --sarif > jester.sarif
+git diff | jester summary
 jester examples
 jester playground
 jester setup --agent codex
@@ -107,6 +109,16 @@ jester github-action --write --path .github/workflows/jester.yml
 Use `--fail-on caution`, `--subject`, or `--ref` to tune the generated workflow.
 
 ## Rules
+
+Summarize which rules fired in a review:
+
+```powershell
+git diff | jester summary
+jester summary --kind command "git reset --hard"
+jester summary --kind plan "I will just refactor auth and ship it" --json
+```
+
+`summary` uses the same review engine as `plan`, `command`, `diff`, and `final`, but groups issues by rule id and suggests the next `jester tune <id>` command. It defaults to `--kind diff` for piped input.
 
 List the checks the Jester can apply:
 
@@ -204,6 +216,7 @@ Use `--json` when another tool needs the review result:
 
 ```powershell
 jester command "git reset --hard" --json
+jester summary --kind command "git reset --hard" --json
 jester explain command "git reset --hard" --json
 jester tune risky-domain --json
 jester policy init --level strict --json

@@ -108,6 +108,26 @@ type TuneCommandOptions = {
   noConfig: boolean;
 };
 
+type SummaryRuleHit = {
+  ruleId: string;
+  count: number;
+  severity: ReviewResult["issues"][number]["severity"];
+  title: string;
+  suggestedCheck: string;
+};
+
+type ReviewSummary = {
+  kind: ReviewKind;
+  subject: string;
+  verdict: ReviewResult["verdict"];
+  riskScore: number;
+  issueCount: number;
+  ruleHits: SummaryRuleHit[];
+  highestSeverity: SummaryRuleHit | null;
+  suggestedNext: string[];
+  configPath: string | null;
+};
+
 type HookCommandOptions = {
   hook: HookName;
   setup: SetupOptions;
@@ -250,6 +270,11 @@ async function main(argv: string[]): Promise<void> {
 
   if (argv[0] === "tune") {
     output.write(await handleTuneCommand(argv.slice(1)));
+    return;
+  }
+
+  if (argv[0] === "summary") {
+    output.write(await handleSummaryCommand(argv.slice(1)));
     return;
   }
 
@@ -1141,6 +1166,7 @@ function renderExamples(options: SetupOptions): string {
       `${cliCommand} command "git reset --hard"`,
       `${cliCommand} plan "I will just refactor auth and ship it"`,
       `git diff | ${cliCommand} diff --fail-on block`,
+      `git diff | ${cliCommand} summary`,
       `${cliCommand} final "Implemented the fix, but tests not run."`,
       `${cliCommand} explain command "git reset --hard"`,
       `${cliCommand} playground`,
@@ -1383,6 +1409,139 @@ Commands:
   ${advice.commands.validate}
   ${advice.commands.enable}
 `;
+}
+
+async function handleSummaryCommand(argv: string[]): Promise<string> {
+  const options = parseOptions(argv);
+  const kind = options.kind ?? "diff";
+  const content = await resolveContent(options, argv);
+
+  if (!content.trim()) {
+    throw new Error("Nothing to summarize. Pass text, use --file, or pipe content on stdin.");
+  }
+
+  const loadedConfig = await loadConfig({
+    configPath: options.configPath,
+    search: !options.noConfig
+  });
+  const result = review({
+    kind,
+    content,
+    subject: options.subject,
+    context: options.context,
+    tone: options.tone,
+    intensity: options.intensity,
+    riskTolerance: options.riskTolerance,
+    config: loadedConfig.config
+  });
+  const summary = summarizeReview(result, loadedConfig.path);
+
+  if (options.failOn === "block" && result.verdict === "block") {
+    process.exitCode = 2;
+  } else if (options.failOn === "caution" && result.verdict !== "pass") {
+    process.exitCode = result.verdict === "block" ? 2 : 1;
+  }
+
+  return options.json ? `${JSON.stringify(summary, null, 2)}\n` : renderSummary(summary);
+}
+
+function summarizeReview(result: ReviewResult, configPath?: string): ReviewSummary {
+  const hits = new Map<string, SummaryRuleHit>();
+
+  for (const issue of result.issues) {
+    const existing = hits.get(issue.id);
+    if (existing) {
+      existing.count += 1;
+      if (issue.severity > existing.severity) {
+        existing.severity = issue.severity;
+        existing.title = issue.title;
+        existing.suggestedCheck = issue.suggestedCheck;
+      }
+    } else {
+      hits.set(issue.id, {
+        ruleId: issue.id,
+        count: 1,
+        severity: issue.severity,
+        title: issue.title,
+        suggestedCheck: issue.suggestedCheck
+      });
+    }
+  }
+
+  const ruleHits = [...hits.values()].sort((left, right) => {
+    if (right.count !== left.count) {
+      return right.count - left.count;
+    }
+    if (right.severity !== left.severity) {
+      return right.severity - left.severity;
+    }
+    return left.ruleId.localeCompare(right.ruleId);
+  });
+  const highestSeverity = [...ruleHits].sort((left, right) => {
+    if (right.severity !== left.severity) {
+      return right.severity - left.severity;
+    }
+    if (right.count !== left.count) {
+      return right.count - left.count;
+    }
+    return left.ruleId.localeCompare(right.ruleId);
+  })[0] ?? null;
+  const topRule = ruleHits[0] ?? highestSeverity;
+
+  return {
+    kind: result.kind,
+    subject: result.subject,
+    verdict: result.verdict,
+    riskScore: result.riskScore,
+    issueCount: result.issues.length,
+    ruleHits,
+    highestSeverity,
+    suggestedNext: topRule
+      ? [
+          `jester tune ${topRule.ruleId}`,
+          `jester rule ${topRule.ruleId}`
+        ]
+      : ["No rule tuning needed."],
+    configPath: configPath ?? null
+  };
+}
+
+function renderSummary(summary: ReviewSummary): string {
+  const lines = [
+    "Memento Mori Jester summary",
+    "",
+    `Verdict: ${summary.verdict.toUpperCase()} (${summary.riskScore}/100)`,
+    `Kind: ${summary.kind}`,
+    `Subject: ${summary.subject}`,
+    `Issues: ${summary.issueCount}`,
+    "",
+    "Rules hit:"
+  ];
+
+  if (summary.ruleHits.length === 0) {
+    lines.push("- none");
+  } else {
+    for (const hit of summary.ruleHits) {
+      lines.push(`- ${hit.ruleId}: ${hit.count} ${hit.count === 1 ? "hit" : "hits"} [S${hit.severity}] ${hit.title}`);
+    }
+  }
+
+  lines.push("", "Highest severity:");
+  if (summary.highestSeverity) {
+    const hit = summary.highestSeverity;
+    lines.push(`- ${hit.ruleId} [S${hit.severity}] ${hit.title}`);
+  } else {
+    lines.push("- none");
+  }
+
+  lines.push(
+    "",
+    "Suggested next:",
+    ...summary.suggestedNext.map((step) => `  ${step}`),
+    ""
+  );
+
+  return lines.join("\n");
 }
 
 async function handleGithubAction(argv: string[]): Promise<string> {
@@ -2142,6 +2301,8 @@ Usage:
   git diff | jester diff --fail-on block
   jester final --file final-answer.txt --tone professional
   jester explain command "git reset --hard"
+  git diff | jester summary
+  jester summary --kind command "git reset --hard"
   jester start
   jester init
   jester setup

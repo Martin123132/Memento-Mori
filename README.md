@@ -60,6 +60,7 @@ A dazzling command, if the desired outcome is court-sponsored regret.
 | Diffs | `git diff \| jester diff --fail-on block` | removed tests, install scripts, env/config risks |
 | Final answers | `jester final --file final.txt` | done/fixed claims without evidence |
 | Explanations | `jester explain command "git reset --hard"` | plain-language teaching notes for verdicts |
+| Summary | `git diff \| jester summary` | rule hit counts and next tuning commands |
 | Start | `jester start` | guided first-run checklist for setup, bootstrap, validation, and smoke checks |
 | Playground | `jester playground` | local paste-in checks for commands, plans, diffs, and final answers |
 | Examples | `jester examples` | copy-paste commands and links for new users |
@@ -140,6 +141,8 @@ jester plan "I will just refactor auth and ship it"
 jester command "git reset --hard"
 git diff | jester diff --fail-on block
 git diff | jester diff --sarif > jester.sarif
+git diff | jester summary
+jester summary --kind command "git reset --hard"
 jester final --file .\final-answer.txt --tone professional
 jester explain command "git reset --hard"
 jester start
@@ -249,9 +252,20 @@ Structured output. SARIF is available in `v0.1.10` and later:
 
 ```powershell
 jester command "git reset --hard" --json
+jester summary --kind command "git reset --hard" --json
 jester command "git reset --hard" --sarif
 git diff | jester diff --sarif > jester.sarif
 ```
+
+Rule hit summaries:
+
+```powershell
+git diff | jester summary
+jester summary --kind plan "I will just refactor auth and ship it"
+jester summary --kind command "git reset --hard" --json
+```
+
+`jester summary` reviews the input and groups the resulting issues by rule id, then suggests the next `jester tune <id>` command for the noisiest rule.
 
 Rule transparency:
 

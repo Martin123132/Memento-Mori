@@ -85,6 +85,7 @@ test("examples prints copy-paste onboarding commands", async () => {
   assert.match(stdout, /github-action/);
   assert.match(stdout, /rules --kind command/);
   assert.match(stdout, /tune risky-domain/);
+  assert.match(stdout, /summary/);
 });
 
 test("help includes the local playground command", async () => {
@@ -398,6 +399,88 @@ test("tune reports disabled and project-config rules", async () => {
   assert.equal(customResult.source, "project-config");
   assert.match(customResult.configPath ?? "", /jester\.config\.json$/);
   assert.match(customResult.recommendation, /narrow jester\.config\.json/);
+});
+
+test("summary prints rule hit counts and next tuning commands", async () => {
+  const { stdout } = await execFileAsync(process.execPath, [
+    cliPath,
+    "summary",
+    "--kind",
+    "command",
+    "git reset --hard"
+  ]);
+
+  assert.match(stdout, /Memento Mori Jester summary/);
+  assert.match(stdout, /Verdict: BLOCK/);
+  assert.match(stdout, /Rules hit:/);
+  assert.match(stdout, /destructive-git-history: 1 hit/);
+  assert.match(stdout, /Highest severity:/);
+  assert.match(stdout, /jester tune destructive-git-history/);
+  assert.match(stdout, /jester rule destructive-git-history/);
+});
+
+test("summary supports json output with stable rule hits", async () => {
+  const { stdout } = await execFileAsync(process.execPath, [
+    cliPath,
+    "summary",
+    "--kind",
+    "plan",
+    "--json",
+    "I will just refactor auth and ship it"
+  ]);
+  const result = JSON.parse(stdout) as {
+    kind: string;
+    subject: string;
+    verdict: string;
+    riskScore: number;
+    issueCount: number;
+    ruleHits: Array<{
+      ruleId: string;
+      count: number;
+      severity: number;
+      title: string;
+      suggestedCheck: string;
+    }>;
+    highestSeverity: {
+      ruleId: string;
+      severity: number;
+      title: string;
+    } | null;
+    suggestedNext: string[];
+    configPath: string | null;
+  };
+
+  assert.deepEqual(Object.keys(result), [
+    "kind",
+    "subject",
+    "verdict",
+    "riskScore",
+    "issueCount",
+    "ruleHits",
+    "highestSeverity",
+    "suggestedNext",
+    "configPath"
+  ]);
+  assert.equal(result.kind, "plan");
+  assert.ok(result.issueCount > 0);
+  assert.ok(result.ruleHits.some((hit) => hit.ruleId === "risky-domain" && hit.count >= 1));
+  assert.ok(result.highestSeverity);
+  assert.ok(result.suggestedNext.some((command) => command.startsWith("jester tune ")));
+});
+
+test("summary reports a quiet review without tuning commands", async () => {
+  const { stdout } = await execFileAsync(process.execPath, [
+    cliPath,
+    "summary",
+    "--kind",
+    "final",
+    "Updated README wording. Verified with npm test."
+  ]);
+
+  assert.match(stdout, /Verdict: PASS/);
+  assert.match(stdout, /Issues: 0/);
+  assert.match(stdout, /Rules hit:\n- none/);
+  assert.match(stdout, /No rule tuning needed/);
 });
 
 test("config can disable and enable rules", async () => {

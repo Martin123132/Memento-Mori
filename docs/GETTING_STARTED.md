@@ -26,6 +26,12 @@ npx -y memento-mori-jester@latest command "git reset --hard"
 
 That should return `BLOCK`. Nothing dangerous is run; the command is only reviewed as text.
 
+To see which rule fired and what to inspect next:
+
+```powershell
+npx -y memento-mori-jester@latest summary --kind command "git reset --hard"
+```
+
 For the local browser version:
 
 ```powershell

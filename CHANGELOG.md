@@ -4,6 +4,11 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.28
+
+- Added `jester summary` for grouped rule-hit summaries across reviewed plans, commands, diffs, and final answers.
+- Added summary JSON output and next-step tuning commands for the noisiest rule hit.
+
 ## 0.1.27
 
 - Added `jester tune <rule-id>` for read-only false-positive and safe-muting advice.

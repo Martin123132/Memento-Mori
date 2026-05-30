@@ -583,6 +583,7 @@ test("github-action prints a SARIF code scanning workflow", async () => {
   ]);
 
   assert.match(stdout, /name: Memento Mori Jester/);
+  assert.match(stdout, /actions\/checkout@v6/);
   assert.match(stdout, /format: sarif/);
   assert.match(stdout, /output-file: jester\.sarif/);
   assert.match(stdout, /summary: true/);
@@ -612,12 +613,15 @@ test("github-action can write a workflow file", async () => {
   assert.match(result.path, /memento-mori\.yml$/);
   assert.match(workflow, /Jester SARIF review/);
   assert.match(workflow, /security-events: write/);
+  assert.match(workflow, /actions\/checkout@v6/);
   assert.match(workflow, /summary: true/);
 });
 
 test("composite action exposes GitHub step summary support", async () => {
   const action = await readFile("action.yml", "utf8");
 
+  assert.match(action, /actions\/setup-node@v6/);
+  assert.match(action, /node-version: 24/);
   assert.match(action, /summary:/);
   assert.match(action, /GITHUB_STEP_SUMMARY/);
   assert.match(action, /summary_args=\(summary --subject "\$SUBJECT"\)/);

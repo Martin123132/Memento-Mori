@@ -4,6 +4,11 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.30
+
+- Updated GitHub workflows, generated workflow examples, and the composite action to Node 24-era Actions versions.
+- Removed Node 20 GitHub Actions deprecation warnings without changing CLI, review, SARIF, or summary behavior.
+
 ## 0.1.29
 
 - Added GitHub Action job summaries with verdict, issue counts, rule hits, highest-severity issue, and next tuning commands.

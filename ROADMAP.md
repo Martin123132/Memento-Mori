@@ -8,6 +8,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Recently Shipped
 
+- Node 24 GitHub Actions cleanup for CI, generated workflows, and the composite action.
 - GitHub Action job summaries for readable PR/code-scanning run output.
 - Rule-hit summaries for seeing which checks fired before tuning a noisy rule.
 - False-positive tuning helper for deciding when and how to mute noisy rules.

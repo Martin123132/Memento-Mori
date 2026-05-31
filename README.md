@@ -397,9 +397,19 @@ More setup examples:
 - [GitHub Actions](docs/GITHUB_ACTIONS.md)
 - [Demo Script](docs/DEMO.md)
 - [Examples](examples)
+- [Preset Example Packs](examples/presets)
 - [Changelog](CHANGELOG.md)
 - [Roadmap](ROADMAP.md)
 - [Trusted npm Publishing](docs/TRUSTED_PUBLISHING.md)
+
+Preset example packs:
+
+- [Next.js](examples/presets/nextjs)
+- [Vite React](examples/presets/vite-react)
+- [Express API](examples/presets/express-api)
+- [FastAPI](examples/presets/fastapi)
+- [Terraform Kubernetes](examples/presets/terraform-k8s)
+- [AI MCP](examples/presets/ai-mcp)
 
 ## Installer Scripts
 

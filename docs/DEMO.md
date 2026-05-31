@@ -291,3 +291,23 @@ Run these in order:
 4. Write starter files
    npx -y memento-mori-jester@latest bootstrap --preset web --hook pre-commit
 ```
+
+## 12. Preset Example Packs
+
+Command:
+
+```powershell
+npx -y memento-mori-jester@latest examples
+```
+
+Typical output includes:
+
+```text
+Preset packs:
+  Next.js: https://github.com/Martin123132/Memento-Mori/tree/main/examples/presets/nextjs
+  Vite React: https://github.com/Martin123132/Memento-Mori/tree/main/examples/presets/vite-react
+  Express API: https://github.com/Martin123132/Memento-Mori/tree/main/examples/presets/express-api
+  FastAPI: https://github.com/Martin123132/Memento-Mori/tree/main/examples/presets/fastapi
+  Terraform Kubernetes: https://github.com/Martin123132/Memento-Mori/tree/main/examples/presets/terraform-k8s
+  AI MCP: https://github.com/Martin123132/Memento-Mori/tree/main/examples/presets/ai-mcp
+```

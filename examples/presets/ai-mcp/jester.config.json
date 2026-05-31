@@ -1,0 +1,50 @@
+{
+  "tone": "court_jester",
+  "riskTolerance": "medium",
+  "hookFailOn": "block",
+  "blockedCommands": [
+    "git reset --hard",
+    "git clean -fdx"
+  ],
+  "sensitiveDomains": [
+    "system prompt",
+    "developer message",
+    "tool call",
+    "mcp",
+    "agent",
+    "eval",
+    "retrieval",
+    "vector store",
+    "transcript"
+  ],
+  "disabledRules": [],
+  "customRules": [
+    {
+      "id": "mcp-user-controlled-tool-dispatch",
+      "pattern": "\\b(callTool|tool_choice|function_call|mcp\\s+tool)\\b[\\s\\S]{0,160}\\b(req\\.(body|query)|userPrompt|message\\.content|input\\.text)\\b",
+      "severity": 4,
+      "title": "User-controlled MCP tool dispatch",
+      "detail": "Tool dispatch influenced directly by user text can turn prompt injection into action.",
+      "suggestedCheck": "Use an explicit allowlist, validate tool names and arguments, and test denied calls.",
+      "kinds": ["diff", "plan"]
+    },
+    {
+      "id": "mcp-evals-skipped",
+      "pattern": "\\b(skip|disable|remove|delete|without)\\b[^\\n]{0,80}\\b(evals?|model\\s+checks?|safety\\s+checks?)\\b",
+      "severity": 3,
+      "title": "AI eval or safety check skipped",
+      "detail": "Prompt, tool, and retrieval changes need regression checks because model behavior can shift widely.",
+      "suggestedCheck": "Run or update representative evals, or document the replacement manual review.",
+      "kinds": ["diff", "plan", "final"]
+    },
+    {
+      "id": "mcp-model-output-execution",
+      "pattern": "\\b(eval|exec|spawn|execFile|child_process|shell)\\b[\\s\\S]{0,160}\\b(modelOutput|llmOutput|completion|message\\.content|generatedText)\\b",
+      "severity": 5,
+      "title": "Model output execution",
+      "detail": "Executing model-generated text as code or shell input can turn prompt injection into code execution.",
+      "suggestedCheck": "Treat model output as data, parse it into a constrained schema, and require allowlisted actions.",
+      "kinds": ["diff", "plan"]
+    }
+  ]
+}

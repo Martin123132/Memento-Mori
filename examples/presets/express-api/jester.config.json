@@ -1,0 +1,50 @@
+{
+  "tone": "professional",
+  "riskTolerance": "medium",
+  "hookFailOn": "block",
+  "blockedCommands": [
+    "git reset --hard",
+    "git clean -fdx",
+    "prisma migrate reset --force",
+    "sequelize db:drop"
+  ],
+  "sensitiveDomains": [
+    "auth middleware",
+    "authorization",
+    "cors",
+    "webhook",
+    "rate limit",
+    "database write",
+    "migration"
+  ],
+  "disabledRules": [],
+  "customRules": [
+    {
+      "id": "express-broad-cors",
+      "pattern": "(cors\\s*\\([^\\n]*(origin\\s*:\\s*[\"']?\\*|credentials\\s*:\\s*true)|Access-Control-Allow-Origin[^\\n]{0,40}[\"']?\\*)",
+      "severity": 4,
+      "title": "Broad Express CORS policy",
+      "detail": "Wildcard or credentialed broad CORS can expose API responses to unintended browser origins.",
+      "suggestedCheck": "Restrict origins to known clients and add a CORS regression check.",
+      "kinds": ["diff", "plan"]
+    },
+    {
+      "id": "express-auth-bypass",
+      "pattern": "\\b(skipAuth|disableAuth|bypassAuth|auth\\s*:\\s*false|requireAuth\\s*:\\s*false)\\b",
+      "severity": 4,
+      "title": "Express auth bypass-shaped change",
+      "detail": "Auth bypass flags can make protected API routes public by accident.",
+      "suggestedCheck": "Confirm the route is intentionally public and add an authorization test.",
+      "kinds": ["diff", "plan"]
+    },
+    {
+      "id": "express-raw-sql-request-input",
+      "pattern": "\\b(query|execute|raw|unsafe)\\s*\\([\\s\\S]{0,160}\\b(req\\.(body|query|params)|userInput)\\b",
+      "severity": 5,
+      "title": "Raw SQL from request input",
+      "detail": "Request-controlled values flowing into raw query execution can become SQL injection.",
+      "suggestedCheck": "Use parameterized queries or a query builder, then add an injection-focused test.",
+      "kinds": ["diff", "plan"]
+    }
+  ]
+}

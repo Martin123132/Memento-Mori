@@ -104,6 +104,6 @@ npx -y memento-mori-jester@latest bootstrap --preset node
 
 Then tell them to open `MEMENTO_MORI.md`.
 
-For copy-paste agent and hook examples, see [examples](../examples).
+For copy-paste agent and hook examples, see [examples](../examples). For stack-specific config examples, see [preset example packs](../examples/presets) for Next.js, Vite React, Express API, FastAPI, Terraform/Kubernetes, and AI MCP repos.
 
 For where this is going next, see [ROADMAP.md](../ROADMAP.md).

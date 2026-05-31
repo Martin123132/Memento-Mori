@@ -1,0 +1,53 @@
+{
+  "tone": "professional",
+  "riskTolerance": "low",
+  "hookFailOn": "caution",
+  "blockedCommands": [
+    "git reset --hard",
+    "terraform destroy",
+    "kubectl delete",
+    "helm uninstall",
+    "docker system prune -a"
+  ],
+  "sensitiveDomains": [
+    "terraform",
+    "kubernetes",
+    "helm",
+    "iam",
+    "security group",
+    "public bucket",
+    "production",
+    "tfstate",
+    "kubeconfig"
+  ],
+  "disabledRules": [],
+  "customRules": [
+    {
+      "id": "terraform-k8s-production-command",
+      "pattern": "\\b(terraform|kubectl|helm)\\b[^\\n]*(apply|destroy|delete|replace|uninstall|upgrade)",
+      "severity": 5,
+      "title": "Production-impacting infra command",
+      "detail": "Terraform, kubectl, and Helm commands can change live systems or delete resources.",
+      "suggestedCheck": "Confirm target environment, review the plan/diff, and name the rollback path.",
+      "kinds": ["command", "plan"]
+    },
+    {
+      "id": "terraform-iam-wildcard",
+      "pattern": "\\b(iam|policy|role)\\b[\\s\\S]{0,160}(\"Action\"\\s*:\\s*\"\\*\"|\"Resource\"\\s*:\\s*\"\\*\")",
+      "severity": 4,
+      "title": "IAM permission widening",
+      "detail": "Wildcard IAM actions or resources can grant more access than intended.",
+      "suggestedCheck": "Narrow actions and resources before applying.",
+      "kinds": ["diff", "plan"]
+    },
+    {
+      "id": "k8s-public-exposure",
+      "pattern": "\\b(0\\.0\\.0\\.0/0|type:\\s*LoadBalancer|public-read|allow\\s+all)\\b",
+      "severity": 4,
+      "title": "Public infrastructure exposure",
+      "detail": "Public networking or storage settings can expose infrastructure or data.",
+      "suggestedCheck": "Restrict the source, bucket, service, or network rule and document the intended exposure.",
+      "kinds": ["diff", "plan"]
+    }
+  ]
+}

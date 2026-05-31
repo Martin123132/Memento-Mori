@@ -1,0 +1,48 @@
+{
+  "tone": "court_jester",
+  "riskTolerance": "medium",
+  "hookFailOn": "block",
+  "blockedCommands": [
+    "git reset --hard",
+    "git clean -fdx"
+  ],
+  "sensitiveDomains": [
+    "VITE",
+    "browser storage",
+    "redirect",
+    "innerHTML",
+    "access token",
+    "session"
+  ],
+  "disabledRules": [],
+  "customRules": [
+    {
+      "id": "vite-public-secret-name",
+      "pattern": "\\bVITE_[A-Z0-9_]*(SECRET|TOKEN|KEY|PASSWORD)[A-Z0-9_]*\\b",
+      "severity": 5,
+      "title": "Vite public secret-like variable",
+      "detail": "Vite exposes VITE-prefixed variables to browser code.",
+      "suggestedCheck": "Keep provider keys and tokens behind a server boundary.",
+      "kinds": ["diff", "plan", "command"]
+    },
+    {
+      "id": "react-storage-sensitive-value",
+      "pattern": "\\b(localStorage|sessionStorage)\\s*\\.\\s*setItem\\s*\\([^\\n]*(token|password|secret|api[_-]?key)",
+      "flags": "i",
+      "severity": 4,
+      "title": "Sensitive value stored in browser storage",
+      "detail": "Tokens in browser storage are exposed to injected scripts.",
+      "suggestedCheck": "Prefer httpOnly cookies or a short-lived server-backed session.",
+      "kinds": ["diff", "plan"]
+    },
+    {
+      "id": "react-unsafe-html",
+      "pattern": "\\bdangerouslySetInnerHTML\\b|\\binnerHTML\\s*=",
+      "severity": 4,
+      "title": "Unsafe HTML rendering",
+      "detail": "Direct HTML rendering needs sanitization and an XSS regression check.",
+      "suggestedCheck": "Use safe rendering or sanitize trusted HTML at the boundary.",
+      "kinds": ["diff", "plan"]
+    }
+  ]
+}

@@ -4,6 +4,11 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.31
+
+- Added framework-specific preset example packs for Next.js, Vite React, Express API, FastAPI, Terraform/Kubernetes, and AI MCP repos.
+- Updated `jester examples` and docs to point users at stack-focused example configs.
+
 ## 0.1.30
 
 - Updated GitHub workflows, generated workflow examples, and the composite action to Node 24-era Actions versions.

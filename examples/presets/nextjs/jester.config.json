@@ -1,0 +1,49 @@
+{
+  "tone": "court_jester",
+  "riskTolerance": "medium",
+  "hookFailOn": "block",
+  "blockedCommands": [
+    "git reset --hard",
+    "git clean -fdx"
+  ],
+  "sensitiveDomains": [
+    "app router",
+    "middleware",
+    "server action",
+    "cookies",
+    "session",
+    "redirect",
+    "NEXT_PUBLIC",
+    "dangerouslySetInnerHTML"
+  ],
+  "disabledRules": [],
+  "customRules": [
+    {
+      "id": "next-public-secret-name",
+      "pattern": "\\bNEXT_PUBLIC_[A-Z0-9_]*(SECRET|TOKEN|KEY|PASSWORD)[A-Z0-9_]*\\b",
+      "severity": 5,
+      "title": "Next.js public secret-like variable",
+      "detail": "NEXT_PUBLIC values are bundled into browser code, so secret-looking names should stop the review.",
+      "suggestedCheck": "Keep credentials server-side and expose only non-sensitive public config.",
+      "kinds": ["diff", "plan", "command"]
+    },
+    {
+      "id": "next-middleware-open-redirect",
+      "pattern": "\\b(redirect|NextResponse\\.redirect|returnUrl|next)\\b[^\\n]*(request\\.nextUrl|searchParams|URLSearchParams)",
+      "severity": 4,
+      "title": "Next.js redirect from URL input",
+      "detail": "Middleware or route redirects built from URL parameters can become open redirects.",
+      "suggestedCheck": "Allowlist internal paths or trusted origins before redirecting.",
+      "kinds": ["diff", "plan"]
+    },
+    {
+      "id": "next-unsafe-html",
+      "pattern": "\\bdangerouslySetInnerHTML\\b|\\binnerHTML\\s*=",
+      "severity": 4,
+      "title": "Unsafe HTML rendering",
+      "detail": "Direct HTML rendering in a Next.js app needs sanitization and XSS-focused tests.",
+      "suggestedCheck": "Use safe rendering or sanitize trusted HTML at the boundary.",
+      "kinds": ["diff", "plan"]
+    }
+  ]
+}

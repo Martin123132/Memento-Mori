@@ -86,6 +86,9 @@ test("examples prints copy-paste onboarding commands", async () => {
   assert.match(stdout, /rules --kind command/);
   assert.match(stdout, /tune risky-domain/);
   assert.match(stdout, /summary/);
+  assert.match(stdout, /Preset packs:/);
+  assert.match(stdout, /examples\/presets\/nextjs/);
+  assert.match(stdout, /examples\/presets\/ai-mcp/);
 });
 
 test("help includes the local playground command", async () => {

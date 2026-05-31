@@ -1188,6 +1188,14 @@ function renderExamples(options: SetupOptions): string {
       "https://github.com/Martin123132/Memento-Mori/blob/main/docs/CLI.md",
       "https://github.com/Martin123132/Memento-Mori/blob/main/docs/MCP_TOOLS.md",
       "https://github.com/Martin123132/Memento-Mori/tree/main/examples"
+    ],
+    presetPacks: [
+      "Next.js: https://github.com/Martin123132/Memento-Mori/tree/main/examples/presets/nextjs",
+      "Vite React: https://github.com/Martin123132/Memento-Mori/tree/main/examples/presets/vite-react",
+      "Express API: https://github.com/Martin123132/Memento-Mori/tree/main/examples/presets/express-api",
+      "FastAPI: https://github.com/Martin123132/Memento-Mori/tree/main/examples/presets/fastapi",
+      "Terraform Kubernetes: https://github.com/Martin123132/Memento-Mori/tree/main/examples/presets/terraform-k8s",
+      "AI MCP: https://github.com/Martin123132/Memento-Mori/tree/main/examples/presets/ai-mcp"
     ]
   };
 
@@ -1209,6 +1217,9 @@ Example files:
   Generic MCP: https://github.com/Martin123132/Memento-Mori/tree/main/examples/generic-mcp
   Git hooks only: https://github.com/Martin123132/Memento-Mori/tree/main/examples/git-hooks-only
   GitHub code scanning: https://github.com/Martin123132/Memento-Mori/blob/main/examples/github-code-scanning.yml
+
+Preset packs:
+${examples.presetPacks.map((pack) => `  ${pack}`).join("\n")}
 
 Docs:
 ${examples.docs.map((doc) => `  ${doc}`).join("\n")}

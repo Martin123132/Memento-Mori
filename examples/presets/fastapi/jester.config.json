@@ -1,0 +1,51 @@
+{
+  "tone": "professional",
+  "riskTolerance": "medium",
+  "hookFailOn": "block",
+  "blockedCommands": [
+    "git reset --hard",
+    "git clean -fdx",
+    "alembic downgrade base",
+    "pip install --break-system-packages"
+  ],
+  "sensitiveDomains": [
+    "dependency injection",
+    "Depends",
+    "OAuth2",
+    "JWT",
+    "SQLAlchemy",
+    "Alembic",
+    "request validation",
+    "webhook"
+  ],
+  "disabledRules": [],
+  "customRules": [
+    {
+      "id": "fastapi-auth-dependency-removed",
+      "pattern": "\\b(Depends\\s*\\([^\\n]*(get_current_user|require_auth|verify_token)|dependencies\\s*=)\\b",
+      "severity": 4,
+      "title": "FastAPI auth dependency touched",
+      "detail": "Auth dependencies guard routes indirectly, so small edits can make endpoints public.",
+      "suggestedCheck": "Add an authorization test for protected routes before merging.",
+      "kinds": ["diff", "plan"]
+    },
+    {
+      "id": "fastapi-raw-sql-fstring",
+      "pattern": "\\b(text|execute)\\s*\\(\\s*f[\"']|\\.execute\\s*\\([^\\n]*(request\\.|query_params|path_params)",
+      "severity": 5,
+      "title": "Raw SQL from request-shaped input",
+      "detail": "Interpolated SQL or request-controlled values in execute calls can become SQL injection.",
+      "suggestedCheck": "Use bound parameters and add an injection-focused test.",
+      "kinds": ["diff", "plan"]
+    },
+    {
+      "id": "fastapi-destructive-alembic-migration",
+      "pattern": "\\b(op\\.drop_column|op\\.drop_table|drop\\s+table|truncate\\s+table)\\b",
+      "severity": 5,
+      "title": "Destructive Alembic migration",
+      "detail": "Schema changes that drop data need backups, rollout thinking, and a rollback path.",
+      "suggestedCheck": "Confirm backup, target environment, migration plan, and rollback before applying.",
+      "kinds": ["diff", "plan"]
+    }
+  ]
+}

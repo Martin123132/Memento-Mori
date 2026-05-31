@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import test from "node:test";
@@ -262,6 +262,45 @@ test("validates a good config", async () => {
 
   assert.equal(result.ok, true);
   assert.deepEqual(result.issues, []);
+});
+
+test("preset example configs load and validate", async () => {
+  const exampleConfigs = [
+    "examples/presets/nextjs/jester.config.json",
+    "examples/presets/vite-react/jester.config.json",
+    "examples/presets/express-api/jester.config.json",
+    "examples/presets/fastapi/jester.config.json",
+    "examples/presets/terraform-k8s/jester.config.json",
+    "examples/presets/ai-mcp/jester.config.json"
+  ];
+
+  for (const configPath of exampleConfigs) {
+    const result = await validateConfig({ configPath });
+
+    assert.equal(result.ok, true, `${configPath}: ${result.issues.join("; ")}`);
+    assert.ok(result.config?.customRules?.length, `${configPath} should include custom rules`);
+  }
+});
+
+test("preset example index links to real packs", async () => {
+  const index = await readFile("examples/presets/README.md", "utf8");
+  const packPaths = [
+    "examples/presets/nextjs/README.md",
+    "examples/presets/vite-react/README.md",
+    "examples/presets/express-api/README.md",
+    "examples/presets/fastapi/README.md",
+    "examples/presets/terraform-k8s/README.md",
+    "examples/presets/ai-mcp/README.md"
+  ];
+
+  for (const packPath of packPaths) {
+    const packName = packPath.split("/").at(-2) ?? "";
+    const readme = await readFile(packPath, "utf8");
+
+    assert.match(index, new RegExp(`\\(${packName}\\)`));
+    assert.match(readme, /bootstrap --preset/);
+    assert.match(readme, /config recommend/);
+  }
 });
 
 test("reports invalid config issues", async () => {

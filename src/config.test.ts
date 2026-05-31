@@ -303,6 +303,36 @@ test("preset example index links to real packs", async () => {
   }
 });
 
+test("framework CI examples use the current action shape", async () => {
+  const index = await readFile("examples/ci/README.md", "utf8");
+  const workflowPaths = [
+    "examples/ci/nextjs.yml",
+    "examples/ci/vite-react.yml",
+    "examples/ci/express-api.yml",
+    "examples/ci/fastapi.yml",
+    "examples/ci/terraform-k8s.yml",
+    "examples/ci/ai-mcp.yml"
+  ];
+
+  for (const workflowPath of workflowPaths) {
+    const fileName = workflowPath.split("/").at(-1) ?? "";
+    const workflow = await readFile(workflowPath, "utf8");
+
+    assert.match(index, new RegExp(`\\(${fileName}\\)`));
+    assert.match(workflow, /actions\/checkout@v6/);
+    assert.match(workflow, /Martin123132\/Memento-Mori@main/);
+    assert.match(workflow, /format: sarif/);
+    assert.match(workflow, /output-file: jester\.sarif/);
+    assert.match(workflow, /summary: true/);
+    assert.match(workflow, /github\/codeql-action\/upload-sarif@v3/);
+    assert.doesNotMatch(workflow, /actions\/checkout@v4|actions\/setup-node@v4|node-version: 20/);
+  }
+
+  const infra = await readFile("examples/ci/terraform-k8s.yml", "utf8");
+
+  assert.match(infra, /fail-on: caution/);
+});
+
 test("reports invalid config issues", async () => {
   const cwd = await mkdtemp(join(tmpdir(), "jester-config-"));
   await writeFile(join(cwd, "jester.config.json"), JSON.stringify({

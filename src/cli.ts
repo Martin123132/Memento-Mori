@@ -1196,6 +1196,14 @@ function renderExamples(options: SetupOptions): string {
       "FastAPI: https://github.com/Martin123132/Memento-Mori/tree/main/examples/presets/fastapi",
       "Terraform Kubernetes: https://github.com/Martin123132/Memento-Mori/tree/main/examples/presets/terraform-k8s",
       "AI MCP: https://github.com/Martin123132/Memento-Mori/tree/main/examples/presets/ai-mcp"
+    ],
+    ciExamples: [
+      "Next.js CI: https://github.com/Martin123132/Memento-Mori/blob/main/examples/ci/nextjs.yml",
+      "Vite React CI: https://github.com/Martin123132/Memento-Mori/blob/main/examples/ci/vite-react.yml",
+      "Express API CI: https://github.com/Martin123132/Memento-Mori/blob/main/examples/ci/express-api.yml",
+      "FastAPI CI: https://github.com/Martin123132/Memento-Mori/blob/main/examples/ci/fastapi.yml",
+      "Terraform Kubernetes CI: https://github.com/Martin123132/Memento-Mori/blob/main/examples/ci/terraform-k8s.yml",
+      "AI MCP CI: https://github.com/Martin123132/Memento-Mori/blob/main/examples/ci/ai-mcp.yml"
     ]
   };
 
@@ -1221,6 +1229,9 @@ Example files:
 
 Preset packs:
 ${examples.presetPacks.map((pack) => `  ${pack}`).join("\n")}
+
+CI examples:
+${examples.ciExamples.map((example) => `  ${example}`).join("\n")}
 
 Docs:
 ${examples.docs.map((doc) => `  ${doc}`).join("\n")}

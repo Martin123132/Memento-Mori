@@ -399,6 +399,7 @@ More setup examples:
 - [Examples](examples)
 - [Preset Example Packs](examples/presets)
 - [Review Fixtures](examples/fixtures)
+- [Framework CI Examples](examples/ci)
 - [Changelog](CHANGELOG.md)
 - [Roadmap](ROADMAP.md)
 - [Trusted npm Publishing](docs/TRUSTED_PUBLISHING.md)
@@ -411,6 +412,15 @@ Preset example packs:
 - [FastAPI](examples/presets/fastapi)
 - [Terraform Kubernetes](examples/presets/terraform-k8s)
 - [AI MCP](examples/presets/ai-mcp)
+
+Framework CI examples:
+
+- [Next.js CI](examples/ci/nextjs.yml)
+- [Vite React CI](examples/ci/vite-react.yml)
+- [Express API CI](examples/ci/express-api.yml)
+- [FastAPI CI](examples/ci/fastapi.yml)
+- [Terraform Kubernetes CI](examples/ci/terraform-k8s.yml)
+- [AI MCP CI](examples/ci/ai-mcp.yml)
 
 ## Installer Scripts
 

@@ -4,6 +4,11 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.33
+
+- Added framework-specific GitHub Actions examples for Next.js, Vite React, Express API, FastAPI, Terraform/Kubernetes, and AI MCP repos.
+- Updated `jester examples` and docs to link the new CI examples.
+
 ## 0.1.32
 
 - Added a real-usage review fixture suite with preset-specific pass, caution, and block examples.

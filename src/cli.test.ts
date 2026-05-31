@@ -90,6 +90,9 @@ test("examples prints copy-paste onboarding commands", async () => {
   assert.match(stdout, /Preset packs:/);
   assert.match(stdout, /examples\/presets\/nextjs/);
   assert.match(stdout, /examples\/presets\/ai-mcp/);
+  assert.match(stdout, /CI examples:/);
+  assert.match(stdout, /examples\/ci\/nextjs\.yml/);
+  assert.match(stdout, /examples\/ci\/terraform-k8s\.yml/);
 });
 
 test("help includes the local playground command", async () => {

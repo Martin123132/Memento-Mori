@@ -82,6 +82,7 @@ test("examples prints copy-paste onboarding commands", async () => {
   assert.match(stdout, /bootstrap --preset node/);
   assert.match(stdout, /playground/);
   assert.match(stdout, /examples\/codex/);
+  assert.match(stdout, /examples\/fixtures/);
   assert.match(stdout, /github-action/);
   assert.match(stdout, /rules --kind command/);
   assert.match(stdout, /tune risky-domain/);

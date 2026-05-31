@@ -1217,6 +1217,7 @@ Example files:
   Generic MCP: https://github.com/Martin123132/Memento-Mori/tree/main/examples/generic-mcp
   Git hooks only: https://github.com/Martin123132/Memento-Mori/tree/main/examples/git-hooks-only
   GitHub code scanning: https://github.com/Martin123132/Memento-Mori/blob/main/examples/github-code-scanning.yml
+  Review fixtures: https://github.com/Martin123132/Memento-Mori/tree/main/examples/fixtures
 
 Preset packs:
 ${examples.presetPacks.map((pack) => `  ${pack}`).join("\n")}

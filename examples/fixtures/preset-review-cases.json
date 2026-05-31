@@ -1,0 +1,132 @@
+[
+  {
+    "id": "web-docs-only-browser-storage-pass",
+    "preset": "web",
+    "kind": "diff",
+    "description": "Docs-only web guidance should not warn just because it mentions browser storage or redirects.",
+    "content": "diff --git a/docs/WEB.md b/docs/WEB.md\n--- a/docs/WEB.md\n+++ b/docs/WEB.md\n@@ -1 +1,2 @@\n+Document browser storage, redirects, and session tradeoffs for frontend contributors.\n",
+    "expectedVerdict": "pass",
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "risky-domain",
+      "configured-sensitive-domain-browser-storage",
+      "configured-sensitive-domain-redirect"
+    ]
+  },
+  {
+    "id": "web-vite-public-secret-block",
+    "preset": "web",
+    "kind": "diff",
+    "description": "Client-exposed Vite secret names should block.",
+    "content": "diff --git a/src/config.ts b/src/config.ts\n--- a/src/config.ts\n+++ b/src/config.ts\n@@ -1 +1,2 @@\n+export const keyName = \"VITE_PAYMENT_SECRET_KEY\";\n",
+    "expectedVerdict": "block",
+    "expectedRuleIds": [
+      "custom-web-public-secret-name"
+    ]
+  },
+  {
+    "id": "web-token-localstorage-block",
+    "preset": "web",
+    "kind": "diff",
+    "description": "Token storage in localStorage should block.",
+    "content": "diff --git a/src/auth.ts b/src/auth.ts\n--- a/src/auth.ts\n+++ b/src/auth.ts\n@@ -1 +1,2 @@\n+localStorage.setItem(\"token\", sessionToken);\n",
+    "expectedVerdict": "block",
+    "expectedRuleIds": [
+      "custom-web-storage-sensitive-value"
+    ]
+  },
+  {
+    "id": "api-docs-only-auth-pass",
+    "preset": "api",
+    "kind": "diff",
+    "description": "Docs-only API setup notes should not warn just because they mention auth and production.",
+    "content": "diff --git a/docs/API.md b/docs/API.md\n--- a/docs/API.md\n+++ b/docs/API.md\n@@ -1 +1,2 @@\n+Document auth, production, webhook, and migration setup for API maintainers.\n",
+    "expectedVerdict": "pass",
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "risky-domain",
+      "configured-sensitive-domain-auth-middleware",
+      "configured-sensitive-domain-webhook"
+    ]
+  },
+  {
+    "id": "api-broad-cors-block",
+    "preset": "api",
+    "kind": "diff",
+    "description": "Wildcard CORS should block once API preset sensitive-domain context is included.",
+    "content": "diff --git a/src/server.ts b/src/server.ts\n--- a/src/server.ts\n+++ b/src/server.ts\n@@ -1 +1,2 @@\n+response.setHeader(\"Access-Control-Allow-Origin\", \"*\");\n",
+    "expectedVerdict": "block",
+    "expectedRuleIds": [
+      "custom-api-broad-cors"
+    ]
+  },
+  {
+    "id": "api-raw-sql-request-block",
+    "preset": "api",
+    "kind": "diff",
+    "description": "Raw SQL fed by request input should block.",
+    "content": "diff --git a/src/users.ts b/src/users.ts\n--- a/src/users.ts\n+++ b/src/users.ts\n@@ -1 +1,2 @@\n+db.query(req.query.sql);\n",
+    "expectedVerdict": "block",
+    "expectedRuleIds": [
+      "custom-api-raw-sql-user-input"
+    ]
+  },
+  {
+    "id": "infra-public-ingress-block",
+    "preset": "infra",
+    "kind": "diff",
+    "description": "Public ingress should block in low-risk-tolerance infra repos.",
+    "content": "diff --git a/infra/security-group.tf b/infra/security-group.tf\n--- a/infra/security-group.tf\n+++ b/infra/security-group.tf\n@@ -1 +1,2 @@\n+cidr_blocks = [\"0.0.0.0/0\"]\n",
+    "expectedVerdict": "block",
+    "expectedRuleIds": [
+      "custom-infra-public-exposure"
+    ]
+  },
+  {
+    "id": "infra-destroy-command-block",
+    "preset": "infra",
+    "kind": "command",
+    "description": "Terraform destroy should block in infra repos.",
+    "content": "terraform destroy",
+    "expectedVerdict": "block",
+    "expectedRuleIds": [
+      "blocked-command-terraform-destroy"
+    ]
+  },
+  {
+    "id": "ai-docs-only-transcript-pass",
+    "preset": "ai",
+    "kind": "diff",
+    "description": "Docs-only AI setup notes should stay quiet when they do not include concrete dangerous patterns.",
+    "content": "diff --git a/docs/AI.md b/docs/AI.md\n--- a/docs/AI.md\n+++ b/docs/AI.md\n@@ -1 +1,2 @@\n+Document retrieval, vector store, transcript, and eval ownership for the agent team.\n",
+    "expectedVerdict": "pass",
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "risky-domain",
+      "configured-sensitive-domain-retrieval",
+      "configured-sensitive-domain-vector-store"
+    ]
+  },
+  {
+    "id": "ai-evals-skipped-block",
+    "preset": "ai",
+    "kind": "plan",
+    "description": "Skipping model checks should block when eval-sensitive context and missing verification combine.",
+    "content": "Skip the model checks and ship the prompt update.",
+    "expectedVerdict": "block",
+    "expectedRuleIds": [
+      "custom-ai-evals-skipped"
+    ]
+  },
+  {
+    "id": "ai-model-output-execution-block",
+    "preset": "ai",
+    "kind": "diff",
+    "description": "Executing model output should block.",
+    "content": "diff --git a/src/tools.ts b/src/tools.ts\n--- a/src/tools.ts\n+++ b/src/tools.ts\n@@ -1 +1,2 @@\n+eval(modelOutput);\n",
+    "expectedVerdict": "block",
+    "expectedRuleIds": [
+      "custom-ai-model-output-execution"
+    ]
+  }
+]

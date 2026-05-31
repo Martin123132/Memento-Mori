@@ -311,3 +311,7 @@ Preset packs:
   Terraform Kubernetes: https://github.com/Martin123132/Memento-Mori/tree/main/examples/presets/terraform-k8s
   AI MCP: https://github.com/Martin123132/Memento-Mori/tree/main/examples/presets/ai-mcp
 ```
+
+## 13. Review Fixtures
+
+The fixture suite in `examples/fixtures/preset-review-cases.json` captures small real-usage examples with expected `pass`, `caution`, or `block` verdicts. These examples are run by `npm test`, so preset tuning changes stay visible.

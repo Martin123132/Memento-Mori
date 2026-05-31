@@ -4,6 +4,11 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.32
+
+- Added a real-usage review fixture suite with preset-specific pass, caution, and block examples.
+- Added tests that run the fixtures through the actual review engine to keep preset tuning expectations stable.
+
 ## 0.1.31
 
 - Added framework-specific preset example packs for Next.js, Vite React, Express API, FastAPI, Terraform/Kubernetes, and AI MCP repos.

@@ -1,7 +1,20 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import test from "node:test";
-import { userConfigForPreset } from "./config.js";
-import { reviewCommand, reviewDiff, reviewFinalAnswer, reviewPlan } from "./core.js";
+import { type ConfigPreset, userConfigForPreset } from "./config.js";
+import { review, reviewCommand, reviewDiff, reviewFinalAnswer, reviewPlan } from "./core.js";
+import type { ReviewKind, Verdict } from "./types.js";
+
+type PresetFixture = {
+  id: string;
+  preset: ConfigPreset;
+  kind: ReviewKind;
+  description: string;
+  content: string;
+  expectedVerdict: Verdict;
+  expectedRuleIds: string[];
+  absentRuleIds?: string[];
+};
 
 test("blocks recursive force deletion", () => {
   const result = reviewCommand("Remove-Item .\\build -Recurse -Force");
@@ -241,6 +254,32 @@ test("ai preset blocks model output execution", () => {
 
   assert.equal(result.verdict, "block");
   assert.ok(result.issues.some((issue) => issue.id === "custom-ai-model-output-execution"));
+});
+
+test("preset review fixtures keep real-usage expectations stable", async () => {
+  const fixtures = JSON.parse(
+    await readFile("examples/fixtures/preset-review-cases.json", "utf8")
+  ) as PresetFixture[];
+
+  assert.ok(fixtures.length >= 10);
+
+  for (const fixture of fixtures) {
+    const result = review({
+      kind: fixture.kind,
+      content: fixture.content,
+      subject: fixture.id,
+      config: userConfigForPreset(fixture.preset)
+    });
+    const ruleIds = result.issues.map((issue) => issue.id);
+
+    assert.equal(result.verdict, fixture.expectedVerdict, `${fixture.id}: ${fixture.description}`);
+    for (const ruleId of fixture.expectedRuleIds) {
+      assert.ok(ruleIds.includes(ruleId), `${fixture.id} should include ${ruleId}. Saw: ${ruleIds.join(", ")}`);
+    }
+    for (const ruleId of fixture.absentRuleIds ?? []) {
+      assert.ok(!ruleIds.includes(ruleId), `${fixture.id} should not include ${ruleId}. Saw: ${ruleIds.join(", ")}`);
+    }
+  }
 });
 
 test("disabled rules do not affect review verdicts", () => {

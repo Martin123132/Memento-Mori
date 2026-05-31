@@ -398,6 +398,7 @@ More setup examples:
 - [Demo Script](docs/DEMO.md)
 - [Examples](examples)
 - [Preset Example Packs](examples/presets)
+- [Review Fixtures](examples/fixtures)
 - [Changelog](CHANGELOG.md)
 - [Roadmap](ROADMAP.md)
 - [Trusted npm Publishing](docs/TRUSTED_PUBLISHING.md)

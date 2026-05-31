@@ -90,7 +90,7 @@ jester examples --agent codex --mode npx
 jester examples --json
 ```
 
-`examples` also links to stack-focused preset packs for Next.js, Vite React, Express API, FastAPI, Terraform/Kubernetes, and AI MCP repos. Those packs live in [examples/presets](../examples/presets) and include valid `jester.config.json` files you can inspect before running `bootstrap --preset <name>`.
+`examples` also links to stack-focused preset packs for Next.js, Vite React, Express API, FastAPI, Terraform/Kubernetes, and AI MCP repos. Those packs live in [examples/presets](../examples/presets) and include valid `jester.config.json` files you can inspect before running `bootstrap --preset <name>`. The [review fixtures](../examples/fixtures) show pass, caution, and block examples used by the test suite.
 
 ## GitHub Action Generator
 

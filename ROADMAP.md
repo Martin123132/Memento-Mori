@@ -4,10 +4,11 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Near Term
 
-- Real-usage false-positive fixture suite for preset tuning.
+- Framework-specific CI examples.
 
 ## Recently Shipped
 
+- Real-usage review fixture suite for preset pass, caution, and block expectations.
 - Framework-specific preset example packs for Next.js, Vite React, Express API, FastAPI, Terraform/Kubernetes, and AI MCP repos.
 - Node 24 GitHub Actions cleanup for CI, generated workflows, and the composite action.
 - GitHub Action job summaries for readable PR/code-scanning run output.
@@ -25,7 +26,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Product Ideas
 
-- Framework-specific CI examples and richer false-positive tuning reports.
+- Richer false-positive tuning reports from fixture results and real usage.
 
 ## Quality And Safety
 

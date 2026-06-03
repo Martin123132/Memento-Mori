@@ -384,6 +384,18 @@
     ]
   },
   {
+    "id": "diff-ts-ignore-pass-2",
+    "preset": "default",
+    "kind": "diff",
+    "description": "TypeScript ignore markers should stay visible in alternate formatting.",
+    "content": "diff --git a/src/bridge.ts b/src/bridge.ts\n--- a/src/bridge.ts\n+++ b/src/bridge.ts\n@@ -1 +1,2 @@\n+const value: string = 42 as any;\n+// @ts-ignore\n",
+    "expectedVerdict": "pass",
+    "weight": 1,
+    "expectedRuleIds": [
+      "ts-ignore"
+    ]
+  },
+  {
     "id": "diff-temporary-marker-pass",
     "preset": "default",
     "kind": "diff",
@@ -391,6 +403,18 @@
     "content": "diff --git a/src/helpers.ts b/src/helpers.ts\n--- a/src/helpers.ts\n+++ b/src/helpers.ts\n@@ -1 +1,2 @@\n+// TODO: remove this helper before shipping\n",
     "expectedVerdict": "pass",
     "weight": 2,
+    "expectedRuleIds": [
+      "temporary-marker"
+    ]
+  },
+  {
+    "id": "diff-temporary-marker-pass-2",
+    "preset": "default",
+    "kind": "diff",
+    "description": "Legacy migration markers should still trigger the temporary marker check.",
+    "content": "diff --git a/src/legacy.ts b/src/legacy.ts\n--- a/src/legacy.ts\n+++ b/src/legacy.ts\n@@ -1 +1,2 @@\n+// FIXME: remove this helper before shipping\n",
+    "expectedVerdict": "pass",
+    "weight": 1,
     "expectedRuleIds": [
       "temporary-marker"
     ]
@@ -420,6 +444,18 @@
     ]
   },
   {
+    "id": "diff-package-install-script-pass-2",
+    "preset": "default",
+    "kind": "diff",
+    "description": "Postinstall script additions should share the same install-script caution.",
+    "content": "diff --git a/package.json b/package.json\n--- a/package.json\n+++ b/package.json\n@@ -3,6 +3,7 @@\n   \"scripts\": {\n+    \"postinstall\": \"node scripts/verify.js\"\n   }\n ",
+    "expectedVerdict": "caution",
+    "weight": 1,
+    "expectedRuleIds": [
+      "package-install-script"
+    ]
+  },
+  {
     "id": "diff-large-removal-pass",
     "preset": "default",
     "kind": "diff",
@@ -439,6 +475,18 @@
     "content": "mv *.js ./dist/",
     "expectedVerdict": "pass",
     "weight": 2,
+    "expectedRuleIds": [
+      "wildcard-file-operation"
+    ]
+  },
+  {
+    "id": "command-wildcard-file-operation-pass-2",
+    "preset": "default",
+    "kind": "command",
+    "description": "Wildcard copies can also over-match files in command surfaces.",
+    "content": "cp *.md ./docs/",
+    "expectedVerdict": "pass",
+    "weight": 1,
     "expectedRuleIds": [
       "wildcard-file-operation"
     ]

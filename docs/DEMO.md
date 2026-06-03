@@ -178,6 +178,7 @@ Memento Mori Jester tuning advice
 Rule: risky-domain [enabled]
 Severity: S3
 Fixture tuning evidence:
+Support: thin
 Confidence: low
 Total fixtures checked: 36
 Weighted fixtures checked: 72.95

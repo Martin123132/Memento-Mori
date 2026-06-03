@@ -4,6 +4,16 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.39
+
+- Added deterministic fixture support guidance to `jester tune` so each rule now gets a `support` signal:
+  - `none` when no fixture references exist
+  - `thin` for sparse/mixed fixture matches
+  - `limited` for moderate, aligned evidence
+  - `strong` for strong fixture support
+- `ruleFixtureEvidence` now optionally evaluates fixtures with project config (including project-config/custom rules) while still evaluating disabled rules with their rule shape intact, then surfaces support as a stable read-only field.
+- `jester tune` now prints `Support:` in the fixture section and includes it in `--json` output, while leaving existing key names and behavior stable.
+
 ## 0.1.38
 
 - `jester tune` now reports fixture evidence by review kind (command/plan/diff/final) so users can quickly see how broad the fixture signal is.

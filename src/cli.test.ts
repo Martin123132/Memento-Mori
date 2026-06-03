@@ -311,6 +311,7 @@ test("tune explains safe muting for a noisy built-in rule", async () => {
   assert.match(stdout, /When it may be noisy/);
   assert.match(stdout, /docs, release notes, or rule text/);
   assert.match(stdout, /Fixture tuning evidence:/);
+  assert.match(stdout, /Support: (none|thin|limited|strong)/);
   assert.match(stdout, /Confidence: (low|medium|high)/);
   assert.match(stdout, /Total fixtures checked: [0-9]+/);
   assert.match(stdout, /Weighted fixtures checked: [0-9.]+/);
@@ -386,6 +387,7 @@ test("tune supports json output with stable commands", async () => {
         block: number;
       };
       confidence: string;
+      support: "none" | "thin" | "limited" | "strong";
       matchedFixtures: Array<{
         id: string;
         description: string;
@@ -432,6 +434,7 @@ test("tune supports json output with stable commands", async () => {
   assert.match(result.guidance.falsePositive, /scripts, CLIs, examples/);
   assert.equal(result.fixtureEvidence.ruleId, "console-log");
   assert.equal(result.fixtureEvidence.totalWeightedFixtures > 0, true);
+  assert.ok(["none", "thin", "limited", "strong"].includes(result.fixtureEvidence.support));
   assert.ok(["low", "medium", "high"].includes(result.fixtureEvidence.confidence));
   assert.equal(typeof result.fixtureEvidence.matchWeight, "number");
   assert.equal(typeof result.fixtureEvidence.expectedWeight, "number");
@@ -465,6 +468,7 @@ test("tune --json for matched fixture evidence is deterministic", async () => {
       samples: string[];
       matchCount: number;
       confidence: string;
+      support: "none" | "thin" | "limited" | "strong";
       byKind: {
         command: number;
         plan: number;
@@ -475,6 +479,7 @@ test("tune --json for matched fixture evidence is deterministic", async () => {
   };
 
   assert.ok(result.fixtureEvidence.confidence === "low" || result.fixtureEvidence.confidence === "medium" || result.fixtureEvidence.confidence === "high");
+  assert.ok(["none", "thin", "limited", "strong"].includes(result.fixtureEvidence.support));
   assert.equal(result.fixtureEvidence.matchCount > 0, true);
   assert.equal(result.fixtureEvidence.matchedFixtures.length >= result.fixtureEvidence.samples.length, true);
   for (const sample of result.fixtureEvidence.samples) {
@@ -538,6 +543,7 @@ test("tune reports disabled and project-config rules", async () => {
         block: number;
       };
       confidence: string;
+      support: "none" | "thin" | "limited" | "strong";
       matchedFixtures: Array<{
         id: string;
         description: string;
@@ -558,6 +564,7 @@ test("tune reports disabled and project-config rules", async () => {
   assert.equal(customResult.source, "project-config");
   assert.equal(customResult.fixtureEvidence.matchCount, 0);
   assert.equal(customResult.fixtureEvidence.confidence, "none");
+  assert.equal(customResult.fixtureEvidence.support, "none");
   assert.equal(customResult.fixtureEvidence.totalWeightedFixtures > 0, true);
   assert.equal(customResult.fixtureEvidence.matchWeight, 0);
   assert.match(customText.stdout, /No fixture coverage is currently available for this rule\./);

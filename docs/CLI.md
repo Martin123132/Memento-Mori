@@ -142,6 +142,7 @@ Use `jester tune <id>` when the question is practical: should this noisy rule be
 `jester tune` now also includes fixture evidence:
 
 - total fixtures loaded and how many matched the rule,
+- a deterministic support signal (`none`, `thin`, `limited`, `strong`) derived from hit count, expected-coverage split, and surprise rate,
 - weighted fixture coverage totals and weighted matches,
 - match-weight and unexpected-weight decomposition (so broad noisy fixtures and fixture misses are easier to read),
 - a precision confidence signal (`none`/`low`/`medium`/`high`),

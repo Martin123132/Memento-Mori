@@ -12,6 +12,7 @@ import {
   recommendConfigPreset,
   userConfigForPolicy,
   validateConfig,
+  type LoadedConfig,
   writeDefaultConfig,
   writePolicyConfig,
   type ConfigPreset,
@@ -1352,7 +1353,7 @@ async function handleTuneCommand(argv: string[]): Promise<string> {
     throw new Error(`No rule found for "${options.id}". Run "jester rules" to list rule ids.`);
   }
 
-  const advice = await tuneAdvice(rule, loadedConfig.path);
+  const advice = await tuneAdvice(rule, loadedConfig);
 
   if (options.json) {
     return `${JSON.stringify(advice, null, 2)}\n`;
@@ -1361,7 +1362,7 @@ async function handleTuneCommand(argv: string[]): Promise<string> {
   return renderTuneAdvice(advice);
 }
 
-async function tuneAdvice(rule: RuleCatalogEntry, configPath?: string) {
+async function tuneAdvice(rule: RuleCatalogEntry, loadedConfig?: LoadedConfig) {
   const commands = {
     inspect: `jester rule ${rule.id}`,
     disable: `jester config disable-rule ${rule.id}`,
@@ -1384,7 +1385,9 @@ async function tuneAdvice(rule: RuleCatalogEntry, configPath?: string) {
         : "If repeated hits are harmless for this repo, disable the rule and validate the config."
     : "This rule is already disabled; re-enable it when the noisy work is done or if the risk becomes relevant again.";
 
-  const evidence = await ruleFixtureEvidence(rule.id);
+  const evidence = await ruleFixtureEvidence(rule.id, {
+    config: loadedConfig?.config
+  });
 
   return {
     ruleId: rule.id,
@@ -1394,7 +1397,7 @@ async function tuneAdvice(rule: RuleCatalogEntry, configPath?: string) {
     source: rule.source,
     kinds: rule.kinds,
     matcher: rule.matcher,
-    configPath: configPath ?? null,
+    configPath: loadedConfig?.path ?? null,
     guidance: rule.guidance,
     fixtureEvidence: evidence,
     recommendation,
@@ -1410,6 +1413,7 @@ function renderFixtureEvidence(evidence: RuleFixtureEvidence): string {
 
   const lines = [
     "Fixture tuning evidence:",
+    `Support: ${evidence.support}`,
     `Confidence: ${evidence.confidence}`,
     `Total fixtures checked: ${evidence.totalFixtures}`,
     `Weighted fixtures checked: ${evidence.totalWeightedFixtures}`,

@@ -6,6 +6,8 @@
     "description": "Docs-only web guidance should not warn just because it mentions browser storage or redirects.",
     "content": "diff --git a/docs/WEB.md b/docs/WEB.md\n--- a/docs/WEB.md\n+++ b/docs/WEB.md\n@@ -1 +1,2 @@\n+Document browser storage, redirects, and session tradeoffs for frontend contributors.\n",
     "expectedVerdict": "pass",
+    "edgeCase": true,
+    "weight": 1,
     "expectedRuleIds": [],
     "absentRuleIds": [
       "risky-domain",
@@ -19,6 +21,7 @@
     "kind": "diff",
     "description": "Client-exposed Vite secret names should block.",
     "content": "diff --git a/src/config.ts b/src/config.ts\n--- a/src/config.ts\n+++ b/src/config.ts\n@@ -1 +1,2 @@\n+export const keyName = \"VITE_PAYMENT_SECRET_KEY\";\n",
+    "weight": 2,
     "expectedVerdict": "block",
     "expectedRuleIds": [
       "custom-web-public-secret-name"
@@ -31,6 +34,7 @@
     "description": "Token storage in localStorage should block.",
     "content": "diff --git a/src/auth.ts b/src/auth.ts\n--- a/src/auth.ts\n+++ b/src/auth.ts\n@@ -1 +1,2 @@\n+localStorage.setItem(\"token\", sessionToken);\n",
     "expectedVerdict": "block",
+    "weight": 2,
     "expectedRuleIds": [
       "custom-web-storage-sensitive-value"
     ]
@@ -42,6 +46,8 @@
     "description": "Docs-only API setup notes should not warn just because they mention auth and production.",
     "content": "diff --git a/docs/API.md b/docs/API.md\n--- a/docs/API.md\n+++ b/docs/API.md\n@@ -1 +1,2 @@\n+Document auth, production, webhook, and migration setup for API maintainers.\n",
     "expectedVerdict": "pass",
+    "edgeCase": true,
+    "weight": 1,
     "expectedRuleIds": [],
     "absentRuleIds": [
       "risky-domain",
@@ -55,6 +61,7 @@
     "kind": "diff",
     "description": "Wildcard CORS should block once API preset sensitive-domain context is included.",
     "content": "diff --git a/src/server.ts b/src/server.ts\n--- a/src/server.ts\n+++ b/src/server.ts\n@@ -1 +1,2 @@\n+response.setHeader(\"Access-Control-Allow-Origin\", \"*\");\n",
+    "weight": 2,
     "expectedVerdict": "block",
     "expectedRuleIds": [
       "custom-api-broad-cors"
@@ -67,6 +74,7 @@
     "description": "Raw SQL fed by request input should block.",
     "content": "diff --git a/src/users.ts b/src/users.ts\n--- a/src/users.ts\n+++ b/src/users.ts\n@@ -1 +1,2 @@\n+db.query(req.query.sql);\n",
     "expectedVerdict": "block",
+    "weight": 2,
     "expectedRuleIds": [
       "custom-api-raw-sql-user-input"
     ]
@@ -78,6 +86,7 @@
     "description": "Public ingress should block in low-risk-tolerance infra repos.",
     "content": "diff --git a/infra/security-group.tf b/infra/security-group.tf\n--- a/infra/security-group.tf\n+++ b/infra/security-group.tf\n@@ -1 +1,2 @@\n+cidr_blocks = [\"0.0.0.0/0\"]\n",
     "expectedVerdict": "block",
+    "weight": 2,
     "expectedRuleIds": [
       "custom-infra-public-exposure"
     ]
@@ -89,6 +98,7 @@
     "description": "Terraform destroy should block in infra repos.",
     "content": "terraform destroy",
     "expectedVerdict": "block",
+    "weight": 2,
     "expectedRuleIds": [
       "blocked-command-terraform-destroy"
     ]
@@ -100,6 +110,8 @@
     "description": "Docs-only AI setup notes should stay quiet when they do not include concrete dangerous patterns.",
     "content": "diff --git a/docs/AI.md b/docs/AI.md\n--- a/docs/AI.md\n+++ b/docs/AI.md\n@@ -1 +1,2 @@\n+Document retrieval, vector store, transcript, and eval ownership for the agent team.\n",
     "expectedVerdict": "pass",
+    "edgeCase": true,
+    "weight": 1,
     "expectedRuleIds": [],
     "absentRuleIds": [
       "risky-domain",
@@ -114,6 +126,7 @@
     "description": "Skipping model checks should block when eval-sensitive context and missing verification combine.",
     "content": "Skip the model checks and ship the prompt update.",
     "expectedVerdict": "block",
+    "weight": 2,
     "expectedRuleIds": [
       "custom-ai-evals-skipped"
     ]
@@ -125,8 +138,57 @@
     "description": "Executing model output should block.",
     "content": "diff --git a/src/tools.ts b/src/tools.ts\n--- a/src/tools.ts\n+++ b/src/tools.ts\n@@ -1 +1,2 @@\n+eval(modelOutput);\n",
     "expectedVerdict": "block",
+    "weight": 2,
     "expectedRuleIds": [
       "custom-ai-model-output-execution"
+    ]
+  },
+  {
+    "id": "sec-secret-material-openai",
+    "preset": "default",
+    "kind": "diff",
+    "description": "Hard-coded OpenAI-like token should map to the secret-material rule.",
+    "content": "diff --git a/src/auth.ts b/src/auth.ts\n--- a/src/auth.ts\n+++ b/src/auth.ts\n@@ -1 +1,2 @@\n+const OPENAI_API_KEY = \"placeholder-openai-key\";\n",
+    "expectedVerdict": "block",
+    "weight": 2,
+    "expectedRuleIds": [
+      "secret-material"
+    ]
+  },
+  {
+    "id": "sec-secret-material-bot-token",
+    "preset": "default",
+    "kind": "diff",
+    "description": "Slack-like bot token should map to the secret-material rule.",
+    "content": "diff --git a/src/chat.ts b/src/chat.ts\n--- a/src/chat.ts\n+++ b/src/chat.ts\n@@ -1 +1,2 @@\n+const ANTHROPIC_API_KEY = \"placeholder-anthropic\";\n",
+    "expectedVerdict": "block",
+    "weight": 2,
+    "expectedRuleIds": [
+      "secret-material"
+    ]
+  },
+  {
+    "id": "sec-env-change-db-url",
+    "preset": "api",
+    "kind": "diff",
+    "description": "Database URL changes should be flagged by sensitive-env-change.",
+    "content": "diff --git a/.env.example b/.env.example\n--- a/.env.example\n+++ b/.env.example\n@@ -1 +1,2 @@\n+DATABASE_URL=postgres://example:example@localhost:5432/app\n",
+    "expectedVerdict": "caution",
+    "weight": 2,
+    "expectedRuleIds": [
+      "sensitive-env-change"
+    ]
+  },
+  {
+    "id": "sec-env-change-secret-key",
+    "preset": "api",
+    "kind": "diff",
+    "description": "Secret keys in environment files should map to sensitive-env-change.",
+    "content": "diff --git a/.env.example b/.env.example\n--- a/.env.example\n+++ b/.env.example\n@@ -1 +1,2 @@\n+SECRET_KEY=supersecret\n",
+    "expectedVerdict": "caution",
+    "weight": 2,
+    "expectedRuleIds": [
+      "sensitive-env-change"
     ]
   }
 ]

@@ -313,7 +313,10 @@ test("tune explains safe muting for a noisy built-in rule", async () => {
   assert.match(stdout, /Fixture tuning evidence:/);
   assert.match(stdout, /Confidence: (low|medium|high)/);
   assert.match(stdout, /Total fixtures checked: [0-9]+/);
+  assert.match(stdout, /Weighted fixtures checked: [0-9.]+/);
   assert.match(stdout, /Matching fixtures: [1-9][0-9]*/);
+  assert.match(stdout, /Weighted matches: [0-9.]+/);
+  assert.match(stdout, /Fixture coverage: [0-9]+\/[0-9]+/);
   assert.match(stdout, /By verdict:/);
   assert.match(stdout, /Matched fixture samples:/);
   assert.match(stdout, /web-token-localstorage-block: Token storage in localStorage should block\./);
@@ -349,6 +352,17 @@ test("tune supports json output with stable commands", async () => {
       ruleId: string;
       matchCount: number;
       totalFixtures: number;
+      totalWeightedFixtures: number;
+      matchWeight: number;
+      expectedWeight: number;
+      unexpectedWeight: number;
+      edgeCaseMatches: number;
+      coverage: {
+        total: number;
+        matched: number;
+        weightedTotal: number;
+        weightedMatched: number;
+      };
       byVerdict: {
         pass: number;
         caution: number;
@@ -363,6 +377,8 @@ test("tune supports json output with stable commands", async () => {
         verdict: string;
         expectedMatch: boolean;
         unexpectedMatch: boolean;
+        weight: 1 | 2 | 3;
+        edgeCase: boolean;
       }>;
       samples: string[];
     };
@@ -398,11 +414,43 @@ test("tune supports json output with stable commands", async () => {
   assert.equal(result.commands.enable, "jester config enable-rule console-log");
   assert.match(result.guidance.falsePositive, /scripts, CLIs, examples/);
   assert.equal(result.fixtureEvidence.ruleId, "console-log");
+  assert.equal(result.fixtureEvidence.totalWeightedFixtures > 0, true);
+  assert.equal(typeof result.fixtureEvidence.matchWeight, "number");
+  assert.equal(typeof result.fixtureEvidence.expectedWeight, "number");
+  assert.equal(typeof result.fixtureEvidence.unexpectedWeight, "number");
   assert.equal(result.fixtureEvidence.matchedFixtures.length, result.fixtureEvidence.matchCount);
   assert.equal(result.fixtureEvidence.totalFixtures > 0, true);
+  assert.equal(result.fixtureEvidence.coverage.total, result.fixtureEvidence.totalFixtures);
   assert.ok(result.fixtureEvidence.samples.length <= 5);
   assert.ok(result.fixtureEvidence.byVerdict.pass >= 0);
   assert.equal(result.fixtureEvidence.confidence, "none");
+});
+
+test("tune --json for matched fixture evidence is deterministic", async () => {
+  const { stdout } = await execFileAsync(process.execPath, [
+    cliPath,
+    "tune",
+    "risky-domain",
+    "--json",
+    "--no-config"
+  ]);
+  const result = JSON.parse(stdout) as {
+    fixtureEvidence: {
+      matchedFixtures: Array<{
+        id: string;
+        description: string;
+      }>;
+      samples: string[];
+      matchCount: number;
+      confidence: string;
+    };
+  };
+
+  assert.equal(result.fixtureEvidence.confidence, "low");
+  assert.equal(result.fixtureEvidence.matchCount > 0, true);
+  assert.equal(result.fixtureEvidence.matchedFixtures.length, result.fixtureEvidence.samples.length);
+  assert.match(result.fixtureEvidence.samples.join("\n"), /web-token-localstorage-block: Token storage in localStorage should block\./);
+  assert.match(result.fixtureEvidence.samples.join("\n"), /infra-public-ingress-block: Public ingress should block in low-risk-tolerance infra repos\./);
 });
 
 test("tune reports disabled and project-config rules", async () => {
@@ -443,6 +491,17 @@ test("tune reports disabled and project-config rules", async () => {
       ruleId: string;
       matchCount: number;
       totalFixtures: number;
+      totalWeightedFixtures: number;
+      matchWeight: number;
+      expectedWeight: number;
+      unexpectedWeight: number;
+      edgeCaseMatches: number;
+      coverage: {
+        total: number;
+        matched: number;
+        weightedTotal: number;
+        weightedMatched: number;
+      };
       byVerdict: {
         pass: number;
         caution: number;
@@ -457,6 +516,8 @@ test("tune reports disabled and project-config rules", async () => {
         verdict: string;
         expectedMatch: boolean;
         unexpectedMatch: boolean;
+        weight: 1 | 2 | 3;
+        edgeCase: boolean;
       }>;
       samples: string[];
     };
@@ -467,6 +528,8 @@ test("tune reports disabled and project-config rules", async () => {
   assert.equal(customResult.source, "project-config");
   assert.equal(customResult.fixtureEvidence.matchCount, 0);
   assert.equal(customResult.fixtureEvidence.confidence, "none");
+  assert.equal(customResult.fixtureEvidence.totalWeightedFixtures > 0, true);
+  assert.equal(customResult.fixtureEvidence.matchWeight, 0);
   assert.match(customText.stdout, /No fixture coverage is currently available for this rule\./);
   assert.match(customResult.configPath ?? "", /jester\.config\.json$/);
   assert.match(customResult.recommendation, /narrow jester\.config\.json/);

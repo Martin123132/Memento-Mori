@@ -179,8 +179,14 @@ Rule: risky-domain [enabled]
 Severity: S3
 Fixture tuning evidence:
 Confidence: low
-Total fixtures checked: 11
+Total fixtures checked: 15
+Weighted fixtures checked: 25.95
 Matching fixtures: 2
+Weighted matches: 4
+Expected-match weight: 4
+Unexpected-match weight: 0
+Edge-case matches: 0
+Fixture coverage: 2/15 (15.4% weighted)
 By verdict: pass 0, caution 0, block 2
 Matched fixture samples:
   web-token-localstorage-block: Token storage in localStorage should block.

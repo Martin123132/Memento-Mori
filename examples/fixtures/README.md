@@ -11,6 +11,7 @@ The fixture file is [preset-review-cases.json](preset-review-cases.json).
 - API preset CORS and raw SQL risks.
 - Infra preset public exposure risks.
 - AI preset eval-skipping and model-output execution risks.
+- Fixture metadata like `weight` and `edgeCase` to support precision-weighted tuning evidence.
 
 ## Local Check
 

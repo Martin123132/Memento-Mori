@@ -4,6 +4,14 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.36
+
+- Added fixture evidence weighting and edge-case signals so `jester tune` can rank fixture support by stability (1–3 weights plus edge-case penalties).
+- Extended `ruleFixtureEvidence` to include weighted coverage totals, weighted match counts, expected-match / unexpected-match weights, edge-case match counts, and deterministic sample ordering.
+- Expanded `jester tune` text output and JSON `fixtureEvidence` with weighted diagnostics and coverage details while keeping existing keys and command behavior stable.
+- Added more precision fixture cases for secrets and sensitive env changes and documented the fixture-driven tuning improvements in CLI and demo docs.
+- Updated `ROADMAP.md` with the next precision-pass idea and added release notes for `v0.1.36`.
+
 ## 0.1.35
 
 - Extended fixture-backed `jester tune` evidence with a precision confidence signal (`none`, `low`, `medium`, `high`) and explicit fixture match expectation metadata.

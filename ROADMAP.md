@@ -27,7 +27,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Product Ideas
 
-- Another precision pass for tuning signals from curated fixture quality/coverage and edge-case weighting (high-signal families first).
+- Continue the precision pass for tuning signals by extending curated fixture quality checks to all families and adding confidence-weighted triage for less-trustworthy fixture matches.
 
 ## Quality And Safety
 

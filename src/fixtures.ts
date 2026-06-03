@@ -5,6 +5,9 @@ import { userConfigForPreset, type ConfigPreset } from "./config.js";
 import { review } from "./core.js";
 import type { ReviewKind, Verdict } from "./types.js";
 
+type FixtureWeight = 1 | 2 | 3;
+type FixtureMatchWeight = FixtureWeight | number;
+
 export type PresetReviewFixture = {
   id: string;
   preset: ConfigPreset;
@@ -14,6 +17,8 @@ export type PresetReviewFixture = {
   expectedVerdict: Verdict;
   expectedRuleIds: string[];
   absentRuleIds?: string[];
+  edgeCase?: boolean;
+  weight?: FixtureMatchWeight;
 };
 
 export type RuleFixtureMatch = {
@@ -24,15 +29,30 @@ export type RuleFixtureMatch = {
   verdict: Verdict;
   expectedMatch: boolean;
   unexpectedMatch: boolean;
+  weight: FixtureWeight;
+  edgeCase: boolean;
 };
 
 export type FixtureEvidenceConfidence = "none" | "low" | "medium" | "high";
+
+type RuleFixtureCoverage = {
+  total: number;
+  matched: number;
+  weightedTotal: number;
+  weightedMatched: number;
+};
 
 export type RuleFixtureEvidence = {
   ruleId: string;
   matchCount: number;
   totalFixtures: number;
+  totalWeightedFixtures: number;
+  matchWeight: number;
+  expectedWeight: number;
+  unexpectedWeight: number;
+  edgeCaseMatches: number;
   confidence: FixtureEvidenceConfidence;
+  coverage: RuleFixtureCoverage;
   byVerdict: {
     pass: number;
     caution: number;
@@ -68,17 +88,59 @@ export async function loadPresetFixtures(): Promise<PresetReviewFixture[]> {
   return fixturesPromise;
 }
 
-function fixtureEvidenceConfidence(matchCount: number, expectedMatches: number, unexpectedMatches: number): FixtureEvidenceConfidence {
-  if (matchCount === 0) {
+function fixtureWeight(rawWeight: FixtureMatchWeight | undefined): FixtureWeight {
+  if (typeof rawWeight === "number" && rawWeight > 0 && Number.isFinite(rawWeight)) {
+    return Math.max(1, Math.min(3, Math.round(rawWeight))) as FixtureWeight;
+  }
+
+  return 1;
+}
+
+function edgeCasePenalty(isEdgeCase: boolean): number {
+  return isEdgeCase ? 0.65 : 1;
+}
+
+function fixtureEvidenceConfidence(
+  matchWeight: number,
+  expectedWeight: number,
+  unexpectedWeight: number,
+  coverage: RuleFixtureCoverage
+): FixtureEvidenceConfidence {
+  if (matchWeight === 0) {
     return "none";
   }
-  if (unexpectedMatches > 0 || (expectedMatches === 0 && matchCount > 1)) {
+
+  const coverageRatio = coverage.weightedMatched / Math.max(1, coverage.weightedTotal);
+  const unexpectedRatio = unexpectedWeight / Math.max(0.5, matchWeight);
+
+  if (coverageRatio < 0.05) {
     return "low";
   }
-  if (expectedMatches >= 2 && unexpectedMatches === 0) {
+
+  if (unexpectedRatio >= 0.5 || expectedWeight < 1.2) {
+    return "low";
+  }
+
+  if (unexpectedWeight === 0 && expectedWeight >= 4 && coverageRatio >= 0.15) {
     return "high";
   }
+
   return "medium";
+}
+
+function fixtureCoverageTotals(fixtures: PresetReviewFixture[]): { total: number; weightedTotal: number } {
+  let total = 0;
+  let weightedTotal = 0;
+
+  for (const fixture of fixtures) {
+    total += 1;
+    weightedTotal += fixtureWeight(fixture.weight) * edgeCasePenalty(fixture.edgeCase ?? false);
+  }
+
+  return {
+    total,
+    weightedTotal: Number(weightedTotal.toFixed(3))
+  };
 }
 
 export async function ruleFixtureEvidence(ruleId: string): Promise<RuleFixtureEvidence> {
@@ -90,6 +152,7 @@ export async function ruleFixtureEvidence(ruleId: string): Promise<RuleFixtureEv
   const fixtures = await loadPresetFixtures();
   const matchedFixtures: RuleFixtureMatch[] = [];
   const byVerdict = { pass: 0, caution: 0, block: 0 };
+  const coverageTotals = fixtureCoverageTotals(fixtures);
 
   for (const fixture of fixtures) {
     const expectedRuleIds = new Set(fixture.expectedRuleIds);
@@ -109,6 +172,8 @@ export async function ruleFixtureEvidence(ruleId: string): Promise<RuleFixtureEv
 
     byVerdict[result.verdict] += 1;
 
+    const edgeCase = fixture.edgeCase ?? false;
+    const weight = fixtureWeight(fixture.weight);
     const unexpectedMatch = !expectedMatch && !absentRuleIds.has(ruleId);
     matchedFixtures.push({
       id: fixture.id,
@@ -117,26 +182,52 @@ export async function ruleFixtureEvidence(ruleId: string): Promise<RuleFixtureEv
       kind: fixture.kind,
       verdict: result.verdict,
       expectedMatch,
-      unexpectedMatch
+      unexpectedMatch,
+      weight,
+      edgeCase
     });
   }
 
   const matchCount = matchedFixtures.length;
-  const expectedMatches = matchedFixtures.filter((entry) => entry.expectedMatch).length;
-  const unexpectedMatches = matchedFixtures.filter((entry) => entry.unexpectedMatch).length;
+  const expectedWeight = matchedFixtures
+    .filter((entry) => entry.expectedMatch)
+    .reduce((acc, match) => acc + match.weight * edgeCasePenalty(match.edgeCase), 0);
+  const unexpectedWeight = matchedFixtures
+    .filter((entry) => entry.unexpectedMatch)
+    .reduce((acc, match) => acc + match.weight * edgeCasePenalty(match.edgeCase), 0);
+
+  const edgeCaseMatches = matchedFixtures.filter((entry) => entry.edgeCase).length;
+  const matchWeight = matchedFixtures
+    .reduce((acc, entry) => acc + entry.weight * edgeCasePenalty(entry.edgeCase), 0);
 
   const orderedSamples = matchedFixtures.length > 0
     ? matchedFixtures
       .slice()
-      .sort((a, b) => Number(b.expectedMatch) - Number(a.expectedMatch) || a.id.localeCompare(b.id))
+      .sort((a, b) => Number(b.expectedMatch) - Number(a.expectedMatch) || b.weight - a.weight || a.id.localeCompare(b.id))
       .slice(0, fixtureEvidenceLimit)
     : [];
 
   const evidence: RuleFixtureEvidence = {
     ruleId,
     matchCount,
-    totalFixtures: fixtures.length,
-    confidence: fixtureEvidenceConfidence(matchCount, expectedMatches, unexpectedMatches),
+    totalFixtures: coverageTotals.total,
+    totalWeightedFixtures: coverageTotals.weightedTotal,
+    matchWeight: Number(matchWeight.toFixed(3)),
+    expectedWeight: Number(expectedWeight.toFixed(3)),
+    unexpectedWeight: Number(unexpectedWeight.toFixed(3)),
+    edgeCaseMatches,
+    confidence: fixtureEvidenceConfidence(matchWeight, expectedWeight, unexpectedWeight, {
+      total: coverageTotals.total,
+      matched: matchCount,
+      weightedTotal: coverageTotals.weightedTotal,
+      weightedMatched: Number(matchWeight.toFixed(3))
+    }),
+    coverage: {
+      total: coverageTotals.total,
+      matched: matchCount,
+      weightedTotal: coverageTotals.weightedTotal,
+      weightedMatched: Number(matchWeight.toFixed(3))
+    },
     byVerdict,
     matchedFixtures,
     samples: orderedSamples

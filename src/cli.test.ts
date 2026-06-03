@@ -310,6 +310,12 @@ test("tune explains safe muting for a noisy built-in rule", async () => {
   assert.match(stdout, /Rule: risky-domain \[enabled\]/);
   assert.match(stdout, /When it may be noisy/);
   assert.match(stdout, /docs, release notes, or rule text/);
+  assert.match(stdout, /Fixture tuning evidence:/);
+  assert.match(stdout, /Total fixtures checked: [0-9]+/);
+  assert.match(stdout, /Matching fixtures: [1-9][0-9]*/);
+  assert.match(stdout, /By verdict:/);
+  assert.match(stdout, /Matched fixture samples:/);
+  assert.match(stdout, /web-token-localstorage-block: Token storage in localStorage should block\./);
   assert.match(stdout, /Before muting/);
   assert.match(stdout, /jester config disable-rule risky-domain/);
   assert.match(stdout, /jester config enable-rule risky-domain/);
@@ -338,6 +344,24 @@ test("tune supports json output with stable commands", async () => {
       saferAlternative: string;
       tuning: string;
     };
+    fixtureEvidence: {
+      ruleId: string;
+      matchCount: number;
+      totalFixtures: number;
+      byVerdict: {
+        pass: number;
+        caution: number;
+        block: number;
+      };
+      matchedFixtures: Array<{
+        id: string;
+        description: string;
+        preset: string;
+        kind: string;
+        verdict: string;
+      }>;
+      samples: string[];
+    };
     recommendation: string;
     checksBeforeMuting: string[];
     commands: {
@@ -359,6 +383,7 @@ test("tune supports json output with stable commands", async () => {
     "matcher",
     "configPath",
     "guidance",
+    "fixtureEvidence",
     "recommendation",
     "checksBeforeMuting",
     "commands"
@@ -368,6 +393,11 @@ test("tune supports json output with stable commands", async () => {
   assert.equal(result.commands.disable, "jester config disable-rule console-log");
   assert.equal(result.commands.enable, "jester config enable-rule console-log");
   assert.match(result.guidance.falsePositive, /scripts, CLIs, examples/);
+  assert.equal(result.fixtureEvidence.ruleId, "console-log");
+  assert.equal(result.fixtureEvidence.matchedFixtures.length, result.fixtureEvidence.matchCount);
+  assert.equal(result.fixtureEvidence.totalFixtures > 0, true);
+  assert.ok(result.fixtureEvidence.samples.length <= 5);
+  assert.ok(result.fixtureEvidence.byVerdict.pass >= 0);
 });
 
 test("tune reports disabled and project-config rules", async () => {
@@ -395,15 +425,40 @@ test("tune reports disabled and project-config rules", async () => {
     "custom-must-mention-rollback",
     "--json"
   ], { cwd });
+  const customText = await execFileAsync(process.execPath, [
+    cliPath,
+    "tune",
+    "custom-must-mention-rollback"
+  ], { cwd });
   const customResult = JSON.parse(custom.stdout) as {
     source: string;
     configPath: string | null;
     recommendation: string;
+    fixtureEvidence: {
+      ruleId: string;
+      matchCount: number;
+      totalFixtures: number;
+      byVerdict: {
+        pass: number;
+        caution: number;
+        block: number;
+      };
+      matchedFixtures: Array<{
+        id: string;
+        description: string;
+        preset: string;
+        kind: string;
+        verdict: string;
+      }>;
+      samples: string[];
+    };
   };
 
   assert.match(disabled.stdout, /Rule: console-log \[disabled\]/);
   assert.match(disabled.stdout, /already disabled/);
   assert.equal(customResult.source, "project-config");
+  assert.equal(customResult.fixtureEvidence.matchCount, 0);
+  assert.match(customText.stdout, /No fixture coverage is currently available for this rule\./);
   assert.match(customResult.configPath ?? "", /jester\.config\.json$/);
   assert.match(customResult.recommendation, /narrow jester\.config\.json/);
 });

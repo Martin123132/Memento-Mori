@@ -139,6 +139,13 @@ Use `jester rule <id>` before muting a rule. It explains why the rule exists, co
 
 Use `jester tune <id>` when the question is practical: should this noisy rule be muted here, and what exact commands do I run? It is read-only and prints a before-muting checklist, a recommendation, and `disable-rule` / `enable-rule` commands.
 
+`jester tune` now also includes fixture evidence:
+
+- total fixtures loaded and how many matched the rule,
+- breakdown by verdict,
+- deterministic fixture IDs + descriptions with sample truncation,
+- and explicit `No fixture coverage is currently available for this rule.` when no fixture references apply.
+
 If a rule is too noisy for a repo, add its id to `disabledRules` in `jester.config.json`:
 
 ```json

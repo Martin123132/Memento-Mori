@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.34
+
+- Added fixture-backed evidence to `jester tune` output, including total fixture coverage, verdict breakdown, and deterministic fixture samples.
+- Preserved CLI output and JSON shapes while adding `fixtureEvidence` for tune guidance.
+- Documented fixture-aware tuning in CLI and demo docs.
+
 ## 0.1.33
 
 - Added framework-specific GitHub Actions examples for Next.js, Vite React, Express API, FastAPI, Terraform/Kubernetes, and AI MCP repos.

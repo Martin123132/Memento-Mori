@@ -31,6 +31,7 @@ import {
   type HookName
 } from "./hooks.js";
 import { playgroundHost, playgroundPortDefault, startPlaygroundServer } from "./playground.js";
+import { type RuleFixtureEvidence, ruleFixtureEvidence } from "./fixtures.js";
 import { formatSarif } from "./sarif.js";
 import { type HookFailOn, type ReviewInput, type ReviewKind, type ReviewResult, reviewKinds, type RiskTolerance, type Tone, tones } from "./types.js";
 
@@ -1351,7 +1352,7 @@ async function handleTuneCommand(argv: string[]): Promise<string> {
     throw new Error(`No rule found for "${options.id}". Run "jester rules" to list rule ids.`);
   }
 
-  const advice = tuneAdvice(rule, loadedConfig.path);
+  const advice = await tuneAdvice(rule, loadedConfig.path);
 
   if (options.json) {
     return `${JSON.stringify(advice, null, 2)}\n`;
@@ -1360,7 +1361,7 @@ async function handleTuneCommand(argv: string[]): Promise<string> {
   return renderTuneAdvice(advice);
 }
 
-function tuneAdvice(rule: RuleCatalogEntry, configPath?: string) {
+async function tuneAdvice(rule: RuleCatalogEntry, configPath?: string) {
   const commands = {
     inspect: `jester rule ${rule.id}`,
     disable: `jester config disable-rule ${rule.id}`,
@@ -1383,6 +1384,8 @@ function tuneAdvice(rule: RuleCatalogEntry, configPath?: string) {
         : "If repeated hits are harmless for this repo, disable the rule and validate the config."
     : "This rule is already disabled; re-enable it when the noisy work is done or if the risk becomes relevant again.";
 
+  const evidence = await ruleFixtureEvidence(rule.id);
+
   return {
     ruleId: rule.id,
     title: rule.title,
@@ -1393,13 +1396,35 @@ function tuneAdvice(rule: RuleCatalogEntry, configPath?: string) {
     matcher: rule.matcher,
     configPath: configPath ?? null,
     guidance: rule.guidance,
+    fixtureEvidence: evidence,
     recommendation,
     checksBeforeMuting,
     commands
   };
 }
 
-function renderTuneAdvice(advice: ReturnType<typeof tuneAdvice>): string {
+function renderFixtureEvidence(evidence: RuleFixtureEvidence): string {
+  const lines = [
+    "Fixture tuning evidence:",
+    `Total fixtures checked: ${evidence.totalFixtures}`,
+    `Matching fixtures: ${evidence.matchCount}`,
+    `By verdict: pass ${evidence.byVerdict.pass}, caution ${evidence.byVerdict.caution}, block ${evidence.byVerdict.block}`
+  ];
+
+  if (evidence.matchCount === 0) {
+    lines.push("No fixture coverage is currently available for this rule.");
+    return lines.join("\n");
+  }
+
+  lines.push("Matched fixture samples:");
+  for (const sample of evidence.samples) {
+    lines.push(`  ${sample}`);
+  }
+
+  return lines.join("\n");
+}
+
+function renderTuneAdvice(advice: Awaited<ReturnType<typeof tuneAdvice>>): string {
   const enabledLabel = advice.enabled ? "enabled" : "disabled";
 
   return `Memento Mori Jester tuning advice
@@ -1425,6 +1450,8 @@ ${advice.recommendation}
 
 Before muting:
 ${advice.checksBeforeMuting.map((check) => `- ${check}`).join("\n")}
+
+${renderFixtureEvidence(advice.fixtureEvidence)}
 
 Commands:
   ${advice.commands.inspect}

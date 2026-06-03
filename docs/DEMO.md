@@ -177,6 +177,13 @@ Memento Mori Jester tuning advice
 
 Rule: risky-domain [enabled]
 Severity: S3
+Fixture tuning evidence:
+Total fixtures checked: 11
+Matching fixtures: 2
+By verdict: pass 0, caution 0, block 2
+Matched fixture samples:
+  web-token-localstorage-block: Token storage in localStorage should block.
+  infra-public-ingress-block: Public ingress should block in low-risk-tolerance infra repos.
 
 When it may be noisy:
 It can be noisy in docs, release notes, or rule text that merely mentions a sensitive word.

@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.37
+
+- Release maintenance patch for post-release stabilization.
+- Updated fixture review expectations to match current rule behavior and deterministic tuning evidence semantics.
+- Hardened `tune` fixture output tests to avoid brittle exact-text assumptions while keeping tune command behavior unchanged.
+
 ## 0.1.36
 
 - Added fixture evidence weighting and edge-case signals so `jester tune` can rank fixture support by stability (1–3 weights plus edge-case penalties).

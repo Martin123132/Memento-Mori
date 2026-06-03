@@ -4,6 +4,15 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.40
+
+- Added more deterministic fixture examples for `jester tune` so sparse signals get stronger, more stable evidence:
+  - additional `ts-ignore` case
+  - additional `temporary-marker` case
+  - additional `package-install-script` case
+  - additional `wildcard-file-operation` case
+- Updated demo fixture statistics in `docs/DEMO.md` to reflect the current fixture corpus.
+
 ## 0.1.39
 
 - Added deterministic fixture support guidance to `jester tune` so each rule now gets a `support` signal:

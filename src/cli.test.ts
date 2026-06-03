@@ -311,6 +311,7 @@ test("tune explains safe muting for a noisy built-in rule", async () => {
   assert.match(stdout, /When it may be noisy/);
   assert.match(stdout, /docs, release notes, or rule text/);
   assert.match(stdout, /Fixture tuning evidence:/);
+  assert.match(stdout, /Confidence: (low|medium|high)/);
   assert.match(stdout, /Total fixtures checked: [0-9]+/);
   assert.match(stdout, /Matching fixtures: [1-9][0-9]*/);
   assert.match(stdout, /By verdict:/);
@@ -353,12 +354,15 @@ test("tune supports json output with stable commands", async () => {
         caution: number;
         block: number;
       };
+      confidence: string;
       matchedFixtures: Array<{
         id: string;
         description: string;
         preset: string;
         kind: string;
         verdict: string;
+        expectedMatch: boolean;
+        unexpectedMatch: boolean;
       }>;
       samples: string[];
     };
@@ -398,6 +402,7 @@ test("tune supports json output with stable commands", async () => {
   assert.equal(result.fixtureEvidence.totalFixtures > 0, true);
   assert.ok(result.fixtureEvidence.samples.length <= 5);
   assert.ok(result.fixtureEvidence.byVerdict.pass >= 0);
+  assert.equal(result.fixtureEvidence.confidence, "none");
 });
 
 test("tune reports disabled and project-config rules", async () => {
@@ -443,12 +448,15 @@ test("tune reports disabled and project-config rules", async () => {
         caution: number;
         block: number;
       };
+      confidence: string;
       matchedFixtures: Array<{
         id: string;
         description: string;
         preset: string;
         kind: string;
         verdict: string;
+        expectedMatch: boolean;
+        unexpectedMatch: boolean;
       }>;
       samples: string[];
     };
@@ -458,6 +466,7 @@ test("tune reports disabled and project-config rules", async () => {
   assert.match(disabled.stdout, /already disabled/);
   assert.equal(customResult.source, "project-config");
   assert.equal(customResult.fixtureEvidence.matchCount, 0);
+  assert.equal(customResult.fixtureEvidence.confidence, "none");
   assert.match(customText.stdout, /No fixture coverage is currently available for this rule\./);
   assert.match(customResult.configPath ?? "", /jester\.config\.json$/);
   assert.match(customResult.recommendation, /narrow jester\.config\.json/);

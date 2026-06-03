@@ -1406,6 +1406,7 @@ async function tuneAdvice(rule: RuleCatalogEntry, configPath?: string) {
 function renderFixtureEvidence(evidence: RuleFixtureEvidence): string {
   const lines = [
     "Fixture tuning evidence:",
+    `Confidence: ${evidence.confidence}`,
     `Total fixtures checked: ${evidence.totalFixtures}`,
     `Matching fixtures: ${evidence.matchCount}`,
     `By verdict: pass ${evidence.byVerdict.pass}, caution ${evidence.byVerdict.caution}, block ${evidence.byVerdict.block}`

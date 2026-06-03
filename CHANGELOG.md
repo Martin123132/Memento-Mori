@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.35
+
+- Extended fixture-backed `jester tune` evidence with a precision confidence signal (`none`, `low`, `medium`, `high`) and explicit fixture match expectation metadata.
+- Preserved stable tune output while including `expectedMatch`/`unexpectedMatch` fields for matched fixtures in text and JSON guidance.
+- Updated demo and CLI docs to reflect the new precision-tuning signal.
+
 ## 0.1.34
 
 - Added fixture-backed evidence to `jester tune` output, including total fixture coverage, verdict breakdown, and deterministic fixture samples.

@@ -142,6 +142,7 @@ Use `jester tune <id>` when the question is practical: should this noisy rule be
 `jester tune` now also includes fixture evidence:
 
 - total fixtures loaded and how many matched the rule,
+- a precision confidence signal (`none`/`low`/`medium`/`high`),
 - breakdown by verdict,
 - deterministic fixture IDs + descriptions with sample truncation,
 - and explicit `No fixture coverage is currently available for this rule.` when no fixture references apply.

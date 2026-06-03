@@ -4,10 +4,9 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Near Term
 
-- Additional precision pass for fixture-driven tuning signals (scoped to high-signal rule families first).
-
 ## Recently Shipped
 
+- Additional precision pass for fixture-driven tuning signals (scoped to high-signal rule families first).
 - Fixture-informed `jester tune` evidence from preset review cases, including matched fixture IDs and verdict buckets.
 - Framework-specific GitHub Actions examples for Next.js, Vite React, Express API, FastAPI, Terraform/Kubernetes, and AI MCP repos.
 - Real-usage review fixture suite for preset pass, caution, and block expectations.
@@ -28,7 +27,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Product Ideas
 
-- Precision pass for tuning signals (e.g., confidence-weighted fixture coverage and edge-case curation).
+- Another precision pass for tuning signals from curated fixture quality/coverage and edge-case weighting (high-signal families first).
 
 ## Quality And Safety
 

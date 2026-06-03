@@ -317,6 +317,7 @@ test("tune explains safe muting for a noisy built-in rule", async () => {
   assert.match(stdout, /Matching fixtures: [1-9][0-9]*/);
   assert.match(stdout, /Weighted matches: [0-9.]+/);
   assert.match(stdout, /Fixture coverage: [0-9]+\/[0-9]+/);
+  assert.match(stdout, /By kind: command [0-9]+, plan [0-9]+, diff [0-9]+, final [0-9]+/);
   assert.match(stdout, /By verdict:/);
   const sampleSectionStart = stdout.indexOf("Matched fixture samples:");
   const sampleSectionEnd = stdout.indexOf("Commands:");
@@ -367,6 +368,12 @@ test("tune supports json output with stable commands", async () => {
       expectedWeight: number;
       unexpectedWeight: number;
       edgeCaseMatches: number;
+      byKind: {
+        command: number;
+        plan: number;
+        diff: number;
+        final: number;
+      };
       coverage: {
         total: number;
         matched: number;
@@ -433,6 +440,10 @@ test("tune supports json output with stable commands", async () => {
   assert.equal(result.fixtureEvidence.totalFixtures > 0, true);
   assert.equal(result.fixtureEvidence.coverage.total, result.fixtureEvidence.totalFixtures);
   assert.ok(result.fixtureEvidence.samples.length <= 5);
+  assert.ok(result.fixtureEvidence.byKind.command >= 0);
+  assert.ok(result.fixtureEvidence.byKind.plan >= 0);
+  assert.ok(result.fixtureEvidence.byKind.diff >= 0);
+  assert.ok(result.fixtureEvidence.byKind.final >= 0);
   assert.ok(result.fixtureEvidence.byVerdict.pass >= 0);
   assert.ok(result.fixtureEvidence.confidence === "low" || result.fixtureEvidence.confidence === "medium" || result.fixtureEvidence.confidence === "high");
 });
@@ -454,6 +465,12 @@ test("tune --json for matched fixture evidence is deterministic", async () => {
       samples: string[];
       matchCount: number;
       confidence: string;
+      byKind: {
+        command: number;
+        plan: number;
+        diff: number;
+        final: number;
+      };
     };
   };
 

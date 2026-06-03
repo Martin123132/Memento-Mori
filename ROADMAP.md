@@ -24,10 +24,11 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 - Agent setup chooser for Codex, Claude Code, and generic MCP clients.
 - Local paste-in playground for commands, plans, diffs, and final answers.
 - README demo snapshot generated as a small deterministic SVG.
+- Kind-aware fixture coverage and confidence-triage surface for `jester tune` outputs.
 
 ## Product Ideas
 
-- Continue the precision pass for tuning signals by extending curated fixture quality checks to all families and adding confidence-weighted triage for less-trustworthy fixture matches.
+- Continue the precision pass by improving project-config and custom-rule fixture confidence signals, plus deterministic scoring for sparse rule families.
 
 ## Quality And Safety
 

@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.38
+
+- `jester tune` now reports fixture evidence by review kind (command/plan/diff/final) so users can quickly see how broad the fixture signal is.
+- Added deterministic kind-bucket diagnostics to fixture evidence output (text + JSON), while preserving existing tune keys and command behavior.
+- Updated precision-pass docs to reflect kind-sliced fixture tuning evidence and the current roadmap status.
+
 ## 0.1.37
 
 - Release maintenance patch for post-release stabilization.

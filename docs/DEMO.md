@@ -179,18 +179,20 @@ Rule: risky-domain [enabled]
 Severity: S3
 Fixture tuning evidence:
 Confidence: low
-Total fixtures checked: 15
-Weighted fixtures checked: 25.95
-Matching fixtures: 2
-Weighted matches: 4
-Expected-match weight: 4
-Unexpected-match weight: 0
+Total fixtures checked: 36
+Weighted fixtures checked: 72.95
+Matching fixtures: 6
+Weighted matches: 13
+Expected-match weight: 2
+Unexpected-match weight: 11
 Edge-case matches: 0
-Fixture coverage: 2/15 (15.4% weighted)
-By verdict: pass 0, caution 0, block 2
+Fixture coverage: 6/36 (17.8% weighted)
+By kind: command 0, plan 3, diff 3, final 0
+By verdict: pass 0, caution 3, block 3
 Matched fixture samples:
   web-token-localstorage-block: Token storage in localStorage should block.
   infra-public-ingress-block: Public ingress should block in low-risk-tolerance infra repos.
+  sec-secret-material-openai: Hard-coded OpenAI-like token should map to the secret-material rule.
 
 When it may be noisy:
 It can be noisy in docs, release notes, or rule text that merely mentions a sensitive word.

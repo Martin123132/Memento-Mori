@@ -53,6 +53,7 @@ export type RuleFixtureEvidence = {
   edgeCaseMatches: number;
   confidence: FixtureEvidenceConfidence;
   coverage: RuleFixtureCoverage;
+  byKind: Record<ReviewKind, number>;
   byVerdict: {
     pass: number;
     caution: number;
@@ -152,6 +153,12 @@ export async function ruleFixtureEvidence(ruleId: string): Promise<RuleFixtureEv
   const fixtures = await loadPresetFixtures();
   const matchedFixtures: RuleFixtureMatch[] = [];
   const byVerdict = { pass: 0, caution: 0, block: 0 };
+  const byKind = {
+    command: 0,
+    plan: 0,
+    diff: 0,
+    final: 0
+  };
   const coverageTotals = fixtureCoverageTotals(fixtures);
 
   for (const fixture of fixtures) {
@@ -171,6 +178,7 @@ export async function ruleFixtureEvidence(ruleId: string): Promise<RuleFixtureEv
     }
 
     byVerdict[result.verdict] += 1;
+    byKind[fixture.kind] += 1;
 
     const edgeCase = fixture.edgeCase ?? false;
     const weight = fixtureWeight(fixture.weight);
@@ -229,6 +237,7 @@ export async function ruleFixtureEvidence(ruleId: string): Promise<RuleFixtureEv
       weightedMatched: Number(matchWeight.toFixed(3))
     },
     byVerdict,
+    byKind,
     matchedFixtures,
     samples: orderedSamples
       .map((entry) => `${entry.id}: ${entry.description}`)

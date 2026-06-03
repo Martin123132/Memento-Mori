@@ -1418,6 +1418,7 @@ function renderFixtureEvidence(evidence: RuleFixtureEvidence): string {
     `Expected-match weight: ${evidence.expectedWeight}`,
     `Unexpected-match weight: ${evidence.unexpectedWeight}`,
     `Edge-case matches: ${evidence.edgeCaseMatches}`,
+    `By kind: command ${evidence.byKind.command}, plan ${evidence.byKind.plan}, diff ${evidence.byKind.diff}, final ${evidence.byKind.final}`,
     `Fixture coverage: ${evidence.coverage.matched}/${evidence.coverage.total} (${weightedCoverage} weighted)`,
     `By verdict: pass ${evidence.byVerdict.pass}, caution ${evidence.byVerdict.caution}, block ${evidence.byVerdict.block}`
   ];

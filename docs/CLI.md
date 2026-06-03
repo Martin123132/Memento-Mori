@@ -146,6 +146,7 @@ Use `jester tune <id>` when the question is practical: should this noisy rule be
 - match-weight and unexpected-weight decomposition (so broad noisy fixtures and fixture misses are easier to read),
 - a precision confidence signal (`none`/`low`/`medium`/`high`),
 - breakdown by verdict,
+- breakdown by review kind of matched fixtures (command/plan/diff/final),
 - count of edge-case matches,
 - deterministic fixture IDs + descriptions with sample truncation,
 - and explicit `No fixture coverage is currently available for this rule.` when no fixture references apply.

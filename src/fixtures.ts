@@ -3,7 +3,7 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { userConfigForPreset, type ConfigPreset } from "./config.js";
 import { review } from "./core.js";
-import type { ReviewKind, UserJesterConfig, Verdict } from "./types.js";
+import type { ReviewKind, Verdict } from "./types.js";
 
 type FixtureWeight = 1 | 2 | 3;
 type FixtureMatchWeight = FixtureWeight | number;
@@ -162,35 +162,6 @@ function fixtureEvidenceSupport(
   return "thin";
 }
 
-function stableStringify(value: unknown): string {
-  if (value === null || typeof value !== "object") {
-    return JSON.stringify(value);
-  }
-
-  if (Array.isArray(value)) {
-    return `[${value.map((entry) => stableStringify(entry)).join(",")}]`;
-  }
-
-  const record = value as Record<string, unknown>;
-  const keys = Object.keys(record).sort();
-  return `{${
-    keys.map((key) => `${JSON.stringify(key)}:${stableStringify(record[key])}`).join(",")
-  }}`;
-}
-
-function normalizeFixtureConfig(config: UserJesterConfig | undefined): UserJesterConfig | undefined {
-  if (!config) {
-    return undefined;
-  }
-
-  const normalized: UserJesterConfig = {
-    ...config,
-    disabledRules: []
-  };
-
-  return normalized;
-}
-
 function fixtureCoverageTotals(fixtures: PresetReviewFixture[]): { total: number; weightedTotal: number } {
   let total = 0;
   let weightedTotal = 0;
@@ -206,20 +177,61 @@ function fixtureCoverageTotals(fixtures: PresetReviewFixture[]): { total: number
   };
 }
 
+function emptyRuleFixtureEvidence(ruleId: string, fixtures: PresetReviewFixture[]): RuleFixtureEvidence {
+  const coverageTotals = fixtureCoverageTotals(fixtures);
+
+  return {
+    ruleId,
+    matchCount: 0,
+    support: "none",
+    totalFixtures: coverageTotals.total,
+    totalWeightedFixtures: coverageTotals.weightedTotal,
+    matchWeight: 0,
+    expectedWeight: 0,
+    unexpectedWeight: 0,
+    edgeCaseMatches: 0,
+    confidence: "none",
+    coverage: {
+      total: coverageTotals.total,
+      matched: 0,
+      weightedTotal: coverageTotals.weightedTotal,
+      weightedMatched: 0
+    },
+    byKind: {
+      command: 0,
+      plan: 0,
+      diff: 0,
+      final: 0
+    },
+    byVerdict: {
+      pass: 0,
+      caution: 0,
+      block: 0
+    },
+    matchedFixtures: [],
+    samples: []
+  };
+}
+
 export async function ruleFixtureEvidence(
   ruleId: string,
   options: {
-    config?: UserJesterConfig;
+    projectConfigRule?: boolean;
   } = {}
 ): Promise<RuleFixtureEvidence> {
-  const normalizedConfig = normalizeFixtureConfig(options.config);
-  const cacheKey = `${ruleId}:${stableStringify(normalizedConfig ?? null)}`;
+  const cacheKey = `${ruleId}:${options.projectConfigRule ? "project-config" : "preset-fixtures"}`;
   const cached = fixtureEvidenceCache.get(cacheKey);
   if (cached) {
     return cached;
   }
 
   const fixtures = await loadPresetFixtures();
+  if (options.projectConfigRule) {
+    const evidence = emptyRuleFixtureEvidence(ruleId, fixtures);
+    fixtureEvidenceCache.set(cacheKey, evidence);
+    return evidence;
+  }
+
   const matchedFixtures: RuleFixtureMatch[] = [];
   const byVerdict = { pass: 0, caution: 0, block: 0 };
   const byKind = {
@@ -235,12 +247,11 @@ export async function ruleFixtureEvidence(
     const absentRuleIds = new Set(fixture.absentRuleIds ?? []);
     const expectedMatch = expectedRuleIds.has(ruleId);
 
-    const configForFixture = normalizedConfig ? { ...normalizedConfig } : userConfigForPreset(fixture.preset);
     const result = review({
       kind: fixture.kind,
       content: fixture.content,
       subject: fixture.id,
-      config: configForFixture
+      config: userConfigForPreset(fixture.preset)
     });
 
     if (!result.issues.some((issue) => issue.id === ruleId)) {

@@ -1386,7 +1386,7 @@ async function tuneAdvice(rule: RuleCatalogEntry, loadedConfig?: LoadedConfig) {
     : "This rule is already disabled; re-enable it when the noisy work is done or if the risk becomes relevant again.";
 
   const evidence = await ruleFixtureEvidence(rule.id, {
-    config: loadedConfig?.config
+    projectConfigRule: rule.source === "project-config"
   });
 
   return {

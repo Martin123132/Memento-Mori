@@ -541,6 +541,7 @@ test("tune reports disabled and project-config rules", async () => {
   const cwd = await mkdtemp(join(tmpdir(), "jester-tune-config-"));
   await writeFile(join(cwd, "jester.config.json"), `${JSON.stringify({
     disabledRules: ["console-log"],
+    blockedCommands: ["git reset --hard"],
     customRules: [
       {
         id: "must-mention-rollback",
@@ -566,6 +567,12 @@ test("tune reports disabled and project-config rules", async () => {
     cliPath,
     "tune",
     "custom-must-mention-rollback"
+  ], { cwd });
+  const overlappingProjectRule = await execFileAsync(process.execPath, [
+    cliPath,
+    "tune",
+    "blocked-command-git-reset-hard",
+    "--json"
   ], { cwd });
   const customResult = JSON.parse(custom.stdout) as {
     source: string;
@@ -607,6 +614,13 @@ test("tune reports disabled and project-config rules", async () => {
       samples: string[];
     };
   };
+  const overlappingProjectRuleResult = JSON.parse(overlappingProjectRule.stdout) as {
+    fixtureEvidence: {
+      matchCount: number;
+      confidence: string;
+      support: "none" | "thin" | "limited" | "strong";
+    };
+  };
 
   assert.match(disabled.stdout, /Rule: console-log \[disabled\]/);
   assert.match(disabled.stdout, /already disabled/);
@@ -617,6 +631,9 @@ test("tune reports disabled and project-config rules", async () => {
   assert.equal(customResult.fixtureEvidence.totalWeightedFixtures > 0, true);
   assert.equal(customResult.fixtureEvidence.matchWeight, 0);
   assert.match(customText.stdout, /No fixture coverage is currently available for this rule\./);
+  assert.equal(overlappingProjectRuleResult.fixtureEvidence.matchCount, 0);
+  assert.equal(overlappingProjectRuleResult.fixtureEvidence.confidence, "none");
+  assert.equal(overlappingProjectRuleResult.fixtureEvidence.support, "none");
   assert.match(customResult.configPath ?? "", /jester\.config\.json$/);
   assert.match(customResult.recommendation, /narrow jester\.config\.json/);
 });

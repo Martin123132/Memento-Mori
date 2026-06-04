@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.42
+
+- Tightened `jester tune` fixture evidence so built-in and structural rules always evaluate the fixture suite with each fixture's intended preset config.
+- Project-config rules now deliberately report no generic fixture coverage instead of accidentally matching preset fixtures through local `blockedCommands`, `sensitiveDomains`, or custom rules.
+- Added regression coverage for project-config tuning evidence when a local blocked command overlaps existing fixtures.
+
 ## 0.1.41
 
 - Added a focused precision-fixture pass for `jester tune` evidence so more sparse rule families now have at least two matching examples.

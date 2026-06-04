@@ -152,6 +152,8 @@ Use `jester tune <id>` when the question is practical: should this noisy rule be
 - deterministic fixture IDs + descriptions with sample truncation,
 - and explicit `No fixture coverage is currently available for this rule.` when no fixture references apply.
 
+Support and confidence are rule-specific signals: they reward expected fixture matches and low surprise rates rather than measuring how much of the whole fixture corpus a single rule touches.
+
 Project-config rules intentionally do not borrow generic fixture coverage: local `blockedCommands`, `sensitiveDomains`, and custom rules report no fixture coverage unless a future fixture suite explicitly covers that project-specific rule.
 
 If a rule is too noisy for a repo, add its id to `disabledRules` in `jester.config.json`:

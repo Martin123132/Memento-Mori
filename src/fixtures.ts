@@ -105,27 +105,23 @@ function edgeCasePenalty(isEdgeCase: boolean): number {
 }
 
 function fixtureEvidenceConfidence(
+  matchCount: number,
   matchWeight: number,
   expectedWeight: number,
-  unexpectedWeight: number,
-  coverage: RuleFixtureCoverage
+  unexpectedWeight: number
 ): FixtureEvidenceConfidence {
   if (matchWeight === 0) {
     return "none";
   }
 
-  const coverageRatio = coverage.weightedMatched / Math.max(1, coverage.weightedTotal);
+  const expectedRatio = expectedWeight / Math.max(0.5, matchWeight);
   const unexpectedRatio = unexpectedWeight / Math.max(0.5, matchWeight);
 
-  if (coverageRatio < 0.05) {
+  if (expectedWeight < 2 || expectedRatio < 0.6 || unexpectedRatio >= 0.5) {
     return "low";
   }
 
-  if (unexpectedRatio >= 0.5 || expectedWeight < 1.2) {
-    return "low";
-  }
-
-  if (unexpectedWeight === 0 && expectedWeight >= 4 && coverageRatio >= 0.15) {
+  if (matchCount >= 3 && expectedWeight >= 5 && expectedRatio >= 0.85 && unexpectedRatio <= 0.15) {
     return "high";
   }
 
@@ -136,30 +132,24 @@ function fixtureEvidenceSupport(
   matchCount: number,
   matchWeight: number,
   expectedWeight: number,
-  unexpectedWeight: number,
-  coverage: RuleFixtureCoverage
+  unexpectedWeight: number
 ): FixtureEvidenceSupport {
   if (matchWeight === 0) {
     return "none";
   }
 
-  if (coverage.weightedTotal === 0) {
-    return "thin";
-  }
-
-  const weightedCoverage = matchWeight / coverage.weightedTotal;
   const expectedRatio = matchWeight > 0 ? expectedWeight / Math.max(0.5, matchWeight) : 0;
   const unexpectedRatio = unexpectedWeight / Math.max(0.5, matchWeight);
 
-  if (matchCount >= 4 && weightedCoverage >= 0.18 && unexpectedRatio <= 0.2 && expectedRatio >= 0.85) {
+  if (expectedWeight < 2 || expectedRatio < 0.6 || unexpectedRatio >= 0.5) {
+    return "thin";
+  }
+
+  if (matchCount >= 3 && expectedWeight >= 5 && unexpectedRatio <= 0.15 && expectedRatio >= 0.85) {
     return "strong";
   }
 
-  if (matchCount >= 2 && weightedCoverage >= 0.08 && unexpectedRatio <= 0.4 && expectedRatio >= 0.7) {
-    return "limited";
-  }
-
-  return "thin";
+  return "limited";
 }
 
 function fixtureCoverageTotals(fixtures: PresetReviewFixture[]): { total: number; weightedTotal: number } {
@@ -303,13 +293,7 @@ export async function ruleFixtureEvidence(
       matchCount,
       Number(matchWeight.toFixed(3)),
       Number(expectedWeight.toFixed(3)),
-      Number(unexpectedWeight.toFixed(3)),
-      {
-        total: coverageTotals.total,
-        matched: matchCount,
-        weightedTotal: coverageTotals.weightedTotal,
-        weightedMatched: Number(matchWeight.toFixed(3))
-      }
+      Number(unexpectedWeight.toFixed(3))
     ),
     totalFixtures: coverageTotals.total,
     totalWeightedFixtures: coverageTotals.weightedTotal,
@@ -317,12 +301,7 @@ export async function ruleFixtureEvidence(
     expectedWeight: Number(expectedWeight.toFixed(3)),
     unexpectedWeight: Number(unexpectedWeight.toFixed(3)),
     edgeCaseMatches,
-    confidence: fixtureEvidenceConfidence(matchWeight, expectedWeight, unexpectedWeight, {
-      total: coverageTotals.total,
-      matched: matchCount,
-      weightedTotal: coverageTotals.weightedTotal,
-      weightedMatched: Number(matchWeight.toFixed(3))
-    }),
+    confidence: fixtureEvidenceConfidence(matchCount, matchWeight, expectedWeight, unexpectedWeight),
     coverage: {
       total: coverageTotals.total,
       matched: matchCount,

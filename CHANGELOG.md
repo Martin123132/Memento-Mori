@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.43
+
+- Improved `jester tune` fixture support/confidence scoring so it rewards rule-specific expected fixture coverage instead of penalizing every rule against the full fixture corpus size.
+- Clean sparse rule families can now surface as `limited` / `medium`, while well-covered low-surprise families can surface as `strong` / `high`.
+- Added regression coverage for the updated scoring on `console-log`, `risky-domain`, and `package-install-script`.
+
 ## 0.1.42
 
 - Tightened `jester tune` fixture evidence so built-in and structural rules always evaluate the fixture suite with each fixture's intended preset config.

@@ -434,8 +434,8 @@ test("tune supports json output with stable commands", async () => {
   assert.match(result.guidance.falsePositive, /scripts, CLIs, examples/);
   assert.equal(result.fixtureEvidence.ruleId, "console-log");
   assert.equal(result.fixtureEvidence.totalWeightedFixtures > 0, true);
-  assert.ok(["none", "thin", "limited", "strong"].includes(result.fixtureEvidence.support));
-  assert.ok(["low", "medium", "high"].includes(result.fixtureEvidence.confidence));
+  assert.equal(result.fixtureEvidence.support, "limited");
+  assert.equal(result.fixtureEvidence.confidence, "medium");
   assert.equal(typeof result.fixtureEvidence.matchWeight, "number");
   assert.equal(typeof result.fixtureEvidence.expectedWeight, "number");
   assert.equal(typeof result.fixtureEvidence.unexpectedWeight, "number");
@@ -448,7 +448,6 @@ test("tune supports json output with stable commands", async () => {
   assert.ok(result.fixtureEvidence.byKind.diff >= 0);
   assert.ok(result.fixtureEvidence.byKind.final >= 0);
   assert.ok(result.fixtureEvidence.byVerdict.pass >= 0);
-  assert.ok(result.fixtureEvidence.confidence === "low" || result.fixtureEvidence.confidence === "medium" || result.fixtureEvidence.confidence === "high");
 });
 
 test("tune --json for matched fixture evidence is deterministic", async () => {
@@ -478,14 +477,39 @@ test("tune --json for matched fixture evidence is deterministic", async () => {
     };
   };
 
-  assert.ok(result.fixtureEvidence.confidence === "low" || result.fixtureEvidence.confidence === "medium" || result.fixtureEvidence.confidence === "high");
-  assert.ok(["none", "thin", "limited", "strong"].includes(result.fixtureEvidence.support));
+  assert.equal(result.fixtureEvidence.confidence, "low");
+  assert.equal(result.fixtureEvidence.support, "thin");
   assert.equal(result.fixtureEvidence.matchCount > 0, true);
   assert.equal(result.fixtureEvidence.matchedFixtures.length >= result.fixtureEvidence.samples.length, true);
   for (const sample of result.fixtureEvidence.samples) {
     assert.ok(result.fixtureEvidence.matchedFixtures.some((fixture) => sample === `${fixture.id}: ${fixture.description}`));
   }
   assert.ok(result.fixtureEvidence.samples.length <= 5);
+});
+
+test("tune support rewards expected fixture coverage without surprise matches", async () => {
+  const { stdout } = await execFileAsync(process.execPath, [
+    cliPath,
+    "tune",
+    "package-install-script",
+    "--json",
+    "--no-config"
+  ]);
+  const result = JSON.parse(stdout) as {
+    fixtureEvidence: {
+      support: "none" | "thin" | "limited" | "strong";
+      confidence: "none" | "low" | "medium" | "high";
+      matchCount: number;
+      expectedWeight: number;
+      unexpectedWeight: number;
+    };
+  };
+
+  assert.equal(result.fixtureEvidence.support, "strong");
+  assert.equal(result.fixtureEvidence.confidence, "high");
+  assert.equal(result.fixtureEvidence.matchCount >= 3, true);
+  assert.equal(result.fixtureEvidence.expectedWeight >= 5, true);
+  assert.equal(result.fixtureEvidence.unexpectedWeight, 0);
 });
 
 test("tune json includes expanded sparse-family fixture coverage", async () => {

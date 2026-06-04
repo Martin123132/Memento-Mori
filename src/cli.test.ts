@@ -488,6 +488,55 @@ test("tune --json for matched fixture evidence is deterministic", async () => {
   assert.ok(result.fixtureEvidence.samples.length <= 5);
 });
 
+test("tune json includes expanded sparse-family fixture coverage", async () => {
+  const skip = await execFileAsync(process.execPath, [
+    cliPath,
+    "tune",
+    "skip-tests",
+    "--json",
+    "--no-config"
+  ]);
+  const privileged = await execFileAsync(process.execPath, [
+    cliPath,
+    "tune",
+    "privileged-command",
+    "--json",
+    "--no-config"
+  ]);
+  const largeRemoval = await execFileAsync(process.execPath, [
+    cliPath,
+    "tune",
+    "large-removal",
+    "--json",
+    "--no-config"
+  ]);
+  const skipResult = JSON.parse(skip.stdout) as {
+    fixtureEvidence: {
+      matchCount: number;
+      samples: string[];
+    };
+  };
+  const privilegedResult = JSON.parse(privileged.stdout) as {
+    fixtureEvidence: {
+      matchCount: number;
+      samples: string[];
+    };
+  };
+  const largeRemovalResult = JSON.parse(largeRemoval.stdout) as {
+    fixtureEvidence: {
+      matchCount: number;
+      samples: string[];
+    };
+  };
+
+  assert.equal(skipResult.fixtureEvidence.matchCount >= 2, true);
+  assert.ok(skipResult.fixtureEvidence.samples.includes("plan-skip-tests-2: Explicitly declining tests in a second style should still trigger the skip-tests check."));
+  assert.equal(privilegedResult.fixtureEvidence.matchCount >= 2, true);
+  assert.ok(privilegedResult.fixtureEvidence.samples.includes("universal-privileged-command-plan: Plan language requesting elevated command should still be surfaced as privileged."));
+  assert.equal(largeRemovalResult.fixtureEvidence.matchCount >= 2, true);
+  assert.ok(largeRemovalResult.fixtureEvidence.samples.includes("diff-large-removal-pass-2: Another large deletion example for structural coverage."));
+});
+
 test("tune reports disabled and project-config rules", async () => {
   const cwd = await mkdtemp(join(tmpdir(), "jester-tune-config-"));
   await writeFile(join(cwd, "jester.config.json"), `${JSON.stringify({

@@ -4,6 +4,22 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.41
+
+- Added a focused precision-fixture pass for `jester tune` evidence so more sparse rule families now have at least two matching examples.
+- Added new `preset-review-cases.json` fixtures for:
+  - `universal-privileged-command-plan`
+  - `plan-skip-tests-2`
+  - `plan-vibes-based-plan-2`
+  - `diff-test-removal-caution-2`
+  - `diff-ts-ignore-pass-3`
+  - `diff-temporary-marker-pass-3`
+  - `diff-console-debug-pass`
+  - `diff-package-install-script-pass-3`
+  - `command-chmod-777-pass`
+  - `diff-large-removal-pass-2`
+- Updated demo fixture counters in `docs/DEMO.md` to the expanded corpus.
+
 ## 0.1.40
 
 - Added more deterministic fixture examples for `jester tune` so sparse signals get stronger, more stable evidence:

@@ -26,10 +26,11 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 - README demo snapshot generated as a small deterministic SVG.
 - Kind-aware fixture coverage and confidence-triage surface for `jester tune` outputs.
 - Deterministic tune fixture support signal (`none` / `thin` / `limited` / `strong`) for sparse/noisy families.
+- Precision-pass fixture expansion in v0.1.41 to strengthen repeat signal coverage for plan/command/diff families.
 
 ## Product Ideas
 
-- Continue precision pass work by adding custom/example-driven fixture additions for remaining sparse families and a stronger signal ranking before broad rollout.
+- Continue precision pass work by adding example-backed rule-specific fixtures for the remaining thin families, then add a second-pass confidence signal before broad rollout.
 
 ## Quality And Safety
 

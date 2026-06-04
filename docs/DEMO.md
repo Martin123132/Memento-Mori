@@ -180,8 +180,8 @@ Severity: S3
 Fixture tuning evidence:
 Support: thin
 Confidence: low
-Total fixtures checked: 40
-Weighted fixtures checked: 76.95
+Total fixtures checked: 50
+Weighted fixtures checked: 96.95
 Matching fixtures: 6
 Weighted matches: 13
 Expected-match weight: 2

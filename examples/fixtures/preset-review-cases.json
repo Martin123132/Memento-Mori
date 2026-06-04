@@ -252,6 +252,18 @@
     ]
   },
   {
+    "id": "universal-privileged-command-plan",
+    "preset": "default",
+    "kind": "plan",
+    "description": "Plan language requesting elevated command should still be surfaced as privileged.",
+    "content": "This step requires sudo to patch the cert store. Keep it narrow and documented.",
+    "weight": 2,
+    "expectedVerdict": "caution",
+    "expectedRuleIds": [
+      "privileged-command"
+    ]
+  },
+  {
     "id": "universal-risky-domain-caution",
     "preset": "default",
     "kind": "plan",
@@ -300,6 +312,18 @@
     ]
   },
   {
+    "id": "plan-vibes-based-plan-2",
+    "preset": "default",
+    "kind": "plan",
+    "description": "A second style of vibes-based language should remain a caution.",
+    "content": "This is just probably should work once the cache warms up.",
+    "weight": 2,
+    "expectedVerdict": "caution",
+    "expectedRuleIds": [
+      "vibes-based-plan"
+    ]
+  },
+  {
     "id": "plan-skip-tests",
     "preset": "default",
     "kind": "plan",
@@ -307,6 +331,18 @@
     "content": "No need to test this path before shipping.",
     "expectedVerdict": "caution",
     "weight": 2,
+    "expectedRuleIds": [
+      "skip-tests"
+    ]
+  },
+  {
+    "id": "plan-skip-tests-2",
+    "preset": "default",
+    "kind": "plan",
+    "description": "Explicitly declining tests in a second style should still trigger the skip-tests check.",
+    "content": "Skip tests for this change in the rollout path.",
+    "weight": 2,
+    "expectedVerdict": "block",
     "expectedRuleIds": [
       "skip-tests"
     ]
@@ -372,6 +408,18 @@
     ]
   },
   {
+    "id": "diff-test-removal-caution-2",
+    "preset": "default",
+    "kind": "diff",
+    "description": "Removing another test chunk should also surface the test-removal check.",
+    "content": "diff --git a/src/utils.spec.ts b/src/utils.spec.ts\n--- a/src/utils.spec.ts\n+++ b/src/utils.spec.ts\n@@ -1,3 +1,0 @@\n-it(\"helper helper\", () => {});\n-it(\"edge\", () => {});\n",
+    "weight": 2,
+    "expectedVerdict": "caution",
+    "expectedRuleIds": [
+      "test-removal"
+    ]
+  },
+  {
     "id": "diff-ts-ignore-pass",
     "preset": "default",
     "kind": "diff",
@@ -391,6 +439,18 @@
     "content": "diff --git a/src/bridge.ts b/src/bridge.ts\n--- a/src/bridge.ts\n+++ b/src/bridge.ts\n@@ -1 +1,2 @@\n+const value: string = 42 as any;\n+// @ts-ignore\n",
     "expectedVerdict": "pass",
     "weight": 1,
+    "expectedRuleIds": [
+      "ts-ignore"
+    ]
+  },
+  {
+    "id": "diff-ts-ignore-pass-3",
+    "preset": "default",
+    "kind": "diff",
+    "description": "TS expect-error markers should stay visible in fixture evidence too.",
+    "content": "diff --git a/src/bridge.ts b/src/bridge.ts\n--- a/src/bridge.ts\n+++ b/src/bridge.ts\n@@ -1 +1,2 @@\n+// @ts-expect-error\n+const value: number = \"oops\";\n",
+    "weight": 2,
+    "expectedVerdict": "pass",
     "expectedRuleIds": [
       "ts-ignore"
     ]
@@ -420,6 +480,18 @@
     ]
   },
   {
+    "id": "diff-temporary-marker-pass-3",
+    "preset": "default",
+    "kind": "diff",
+    "description": "Hack markers should still be called out.",
+    "content": "diff --git a/src/legacy.ts b/src/legacy.ts\n--- a/src/legacy.ts\n+++ b/src/legacy.ts\n@@ -1 +1,2 @@\n+// HACK: keep this around until partner team updates their integration.\n",
+    "weight": 2,
+    "expectedVerdict": "pass",
+    "expectedRuleIds": [
+      "temporary-marker"
+    ]
+  },
+  {
     "id": "diff-console-log-pass",
     "preset": "default",
     "kind": "diff",
@@ -432,6 +504,18 @@
     ]
   },
   {
+    "id": "diff-console-debug-pass",
+    "preset": "default",
+    "kind": "diff",
+    "description": "Console debug calls should be flagged in alternate method form.",
+    "content": "diff --git a/src/trace.ts b/src/trace.ts\n--- a/src/trace.ts\n+++ b/src/trace.ts\n@@ -1 +1,2 @@\n+console.debug(\"Trace path entered\");\n",
+    "weight": 1,
+    "expectedVerdict": "pass",
+    "expectedRuleIds": [
+      "console-log"
+    ]
+  },
+  {
     "id": "diff-package-install-script-pass",
     "preset": "default",
     "kind": "diff",
@@ -439,6 +523,18 @@
     "content": "diff --git a/package.json b/package.json\n--- a/package.json\n+++ b/package.json\n@@ -3,6 +3,7 @@\n   \"scripts\": {\n+    \"preinstall\": \"node scripts/setup.js\"\n   }\n ",
     "expectedVerdict": "caution",
     "weight": 2,
+    "expectedRuleIds": [
+      "package-install-script"
+    ]
+  },
+  {
+    "id": "diff-package-install-script-pass-3",
+    "preset": "default",
+    "kind": "diff",
+    "description": "Prepare/install scripts are still high-risk and should remain a fixture signal.",
+    "content": "diff --git a/package.json b/package.json\n--- a/package.json\n+++ b/package.json\n@@ -3,6 +3,7 @@\n   \"scripts\": {\n+    \"prepare\": \"node scripts/prepare.js\"\n   }\n ",
+    "weight": 2,
+    "expectedVerdict": "caution",
     "expectedRuleIds": [
       "package-install-script"
     ]
@@ -480,6 +576,18 @@
     ]
   },
   {
+    "id": "command-chmod-777-pass",
+    "preset": "default",
+    "kind": "command",
+    "description": "Another over-broad permissions command should keep the same caution signal alive.",
+    "content": "chmod -R 777 ./tmp/secrets",
+    "weight": 2,
+    "expectedVerdict": "caution",
+    "expectedRuleIds": [
+      "chmod-777"
+    ]
+  },
+  {
     "id": "command-wildcard-file-operation-pass-2",
     "preset": "default",
     "kind": "command",
@@ -489,6 +597,18 @@
     "weight": 1,
     "expectedRuleIds": [
       "wildcard-file-operation"
+    ]
+  },
+  {
+    "id": "diff-large-removal-pass-2",
+    "preset": "default",
+    "kind": "diff",
+    "description": "Another large deletion example for structural coverage.",
+    "content": "diff --git a/src/big-cleanup.ts b/src/big-cleanup.ts\n--- a/src/big-cleanup.ts\n+++ b/src/big-cleanup.ts\n@@ -1,90 +1,4 @@\n-old-item-01\n-old-item-02\n-old-item-03\n-old-item-04\n-old-item-05\n-old-item-06\n-old-item-07\n-old-item-08\n-old-item-09\n-old-item-10\n-old-item-11\n-old-item-12\n-old-item-13\n-old-item-14\n-old-item-15\n-old-item-16\n-old-item-17\n-old-item-18\n-old-item-19\n-old-item-20\n-old-item-21\n-old-item-22\n-old-item-23\n-old-item-24\n-old-item-25\n-old-item-26\n-old-item-27\n-old-item-28\n-old-item-29\n-old-item-30\n-old-item-31\n-old-item-32\n-old-item-33\n-old-item-34\n-old-item-35\n-old-item-36\n-old-item-37\n-old-item-38\n-old-item-39\n-old-item-40\n-old-item-41\n-old-item-42\n-old-item-43\n-old-item-44\n-old-item-45\n-old-item-46\n-old-item-47\n-old-item-48\n-old-item-49\n-old-item-50\n-old-item-51\n-old-item-52\n-old-item-53\n-old-item-54\n-old-item-55\n-old-item-56\n-old-item-57\n-old-item-58\n-old-item-59\n-old-item-60\n-old-item-61\n-old-item-62\n-old-item-63\n-old-item-64\n-old-item-65\n-old-item-66\n-old-item-67\n-old-item-68\n-old-item-69\n-old-item-70\n-old-item-71\n-old-item-72\n-old-item-73\n-old-item-74\n-old-item-75\n-old-item-76\n-old-item-77\n-old-item-78\n-old-item-79\n-old-item-80\n-old-item-81\n-old-item-82\n-old-item-83\n-old-item-84\n-old-item-85\n+// intentional cleanup with replacement notes\n+// review replacement path separately\n",
+    "weight": 3,
+    "expectedVerdict": "pass",
+    "expectedRuleIds": [
+      "large-removal"
     ]
   }
 ]

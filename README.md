@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/Martin123132/Memento-Mori/actions/workflows/ci.yml/badge.svg)](https://github.com/Martin123132/Memento-Mori/actions/workflows/ci.yml)
 [![npm version](https://img.shields.io/npm/v/memento-mori-jester.svg)](https://www.npmjs.com/package/memento-mori-jester)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License: PolyForm Noncommercial](https://img.shields.io/badge/License-PolyForm%20Noncommercial-blue.svg)](LICENSE)
 
 A local court-jester sidecar for AI coding agents. It reviews plans, shell commands, diffs, and final answers before they get too pleased with themselves.
 

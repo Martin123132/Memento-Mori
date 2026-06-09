@@ -1,0 +1,20 @@
+# Memento-Mori Notice
+
+Memento-Mori is source-available software, not open-source software.
+
+Required Notice: Copyright (c) 2026 TWO HANDS NETWORK LTD.
+
+Memento-Mori is licensed under the PolyForm Noncommercial License 1.0.0. Personal, hobby, research, educational, public-interest, and other non-commercial uses are permitted under that license.
+
+Commercial use requires a separate written license from the licensor. Commercial use includes, without limitation:
+
+- bundling Memento-Mori or derived code into a paid product;
+- offering Memento-Mori functionality through a hosted, managed, SaaS, cloud, API, or agent service;
+- using Memento-Mori in an enterprise product or commercial developer tool;
+- using Memento-Mori or derived code as part of a commercial AI coding, agent, memory, context, retrieval, or repository-analysis product;
+- training, fine-tuning, distilling, evaluating, or improving a commercial AI model or commercial AI system using Memento-Mori source code, documentation, pack format, tests, or derived materials;
+- removing or obscuring copyright, license, attribution, or required notices.
+
+Memento-Mori was created by Martin Ollett and is owned/licensed by TWO HANDS NETWORK LTD.
+
+This notice does not limit rights you may have under fair use, fair dealing, or other applicable law. It is intended to make the licensor's permission boundaries clear before the repository is made public.

@@ -176,24 +176,31 @@ Typical output:
 Memento Mori Jester tuning advice
 
 Rule: risky-domain [enabled]
+Title: High-risk domain touched
 Severity: S3
+Source: built-in
+Kinds: plan, command, diff, final
+Project config: none loaded
+
 Fixture tuning evidence:
-Support: thin
-Confidence: low
-Total fixtures checked: 50
-Weighted fixtures checked: 96.95
-Matching fixtures: 6
-Weighted matches: 13
-Expected-match weight: 2
-Unexpected-match weight: 11
+Support: limited
+Confidence: medium
+Total fixtures checked: 58
+Weighted fixtures checked: 112.95
+Matching fixtures: 8
+Weighted matches: 17
+Expected-match weight: 14
+Unexpected-match weight: 3
 Edge-case matches: 0
-Fixture coverage: 6/40 (16.9% weighted)
-By kind: command 0, plan 2, diff 4, final 0
-By verdict: pass 0, caution 5, block 1
+By kind: command 0, plan 3, diff 4, final 1
+Fixture coverage: 8/58 (15.1% weighted)
+By verdict: pass 0, caution 3, block 5
 Matched fixture samples:
-  web-token-localstorage-block: Token storage in localStorage should block.
   infra-public-ingress-block: Public ingress should block in low-risk-tolerance infra repos.
+  plan-missing-verification-step: Implementation plan without verification steps should trigger the structural rule.
   sec-secret-material-openai: Hard-coded OpenAI-like token should map to the secret-material rule.
+  universal-risky-domain-auth-caution-2: Auth callback changes should keep the broad risky-domain signal covered when verification is present.
+  universal-risky-domain-billing-final: Billing changes in final responses should remain covered when evidence is supplied.
 
 When it may be noisy:
 It can be noisy in docs, release notes, or rule text that merely mentions a sensitive word.

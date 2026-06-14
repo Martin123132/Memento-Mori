@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.45
+
+- Added eight focused preset review fixtures for `risky-domain`, `missing-verification-step`, `confidence-theater`, and `done-without-evidence`.
+- Curated intentional overlap expectations for existing fixtures so `jester tune coverage` no longer treats auth, security-group, eval, skip-tests, and migration intersections as surprise matches.
+- Improved the fixture coverage baseline from low/thin families to medium-or-better support across the built-in and structural rule set.
+
 ## 0.1.44
 
 - Added `jester tune coverage` and `jester tune coverage --json` as read-only maintenance reports for fixture support across every rule.

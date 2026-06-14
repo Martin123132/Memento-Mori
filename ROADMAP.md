@@ -6,6 +6,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Recently Shipped
 
+- Fixture curation pass in v0.1.45 that moved all built-in and structural rule evidence to medium-or-better confidence.
 - Additional precision pass for fixture-driven tuning signals (scoped to high-signal rule families first).
 - Fixture-informed `jester tune` evidence from preset review cases, including matched fixture IDs and verdict buckets.
 - Framework-specific GitHub Actions examples for Next.js, Vite React, Express API, FastAPI, Terraform/Kubernetes, and AI MCP repos.
@@ -33,7 +34,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Product Ideas
 
-- Use the coverage report to add example-backed fixtures for the weakest important rule families, then improve playground onboarding samples.
+- Improve playground onboarding samples so users can try realistic command, plan, diff, and final-answer reviews without inventing input.
 
 ## Quality And Safety
 

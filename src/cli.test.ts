@@ -478,8 +478,8 @@ test("tune --json for matched fixture evidence is deterministic", async () => {
     };
   };
 
-  assert.equal(result.fixtureEvidence.confidence, "low");
-  assert.equal(result.fixtureEvidence.support, "thin");
+  assert.equal(result.fixtureEvidence.confidence, "medium");
+  assert.equal(result.fixtureEvidence.support, "limited");
   assert.equal(result.fixtureEvidence.matchCount > 0, true);
   assert.equal(result.fixtureEvidence.matchedFixtures.length >= result.fixtureEvidence.samples.length, true);
   for (const sample of result.fixtureEvidence.samples) {
@@ -567,10 +567,10 @@ test("tune coverage json returns stable rule evidence summary", async () => {
   assert.equal(result.enabledCount <= result.count, true);
   assert.equal(packageInstall?.support, "strong");
   assert.equal(packageInstall?.confidence, "high");
-  assert.equal(riskyDomain?.support, "thin");
-  assert.equal(riskyDomain?.confidence, "low");
+  assert.equal(riskyDomain?.support, "limited");
+  assert.equal(riskyDomain?.confidence, "medium");
   assert.match(packageInstall?.nextCommand ?? "", /^jester tune /);
-  assert.match(riskyDomain?.suggestedAction ?? "", /surprise matches/);
+  assert.match(riskyDomain?.suggestedAction ?? "", /usable signal/);
 });
 
 test("tune coverage includes project config rules without generic coverage", async () => {

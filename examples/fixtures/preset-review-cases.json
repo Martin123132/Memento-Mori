@@ -36,7 +36,10 @@
     "weight": 2,
     "expectedVerdict": "block",
     "expectedRuleIds": [
-      "custom-web-storage-sensitive-value"
+      "custom-web-storage-sensitive-value",
+      "risky-domain",
+      "configured-sensitive-domain-auth",
+      "configured-sensitive-domain-session"
     ]
   },
   {
@@ -88,7 +91,8 @@
     "expectedVerdict": "block",
     "weight": 2,
     "expectedRuleIds": [
-      "custom-infra-public-exposure"
+      "custom-infra-public-exposure",
+      "risky-domain"
     ]
   },
   {
@@ -128,7 +132,9 @@
     "expectedVerdict": "block",
     "weight": 2,
     "expectedRuleIds": [
-      "custom-ai-evals-skipped"
+      "custom-ai-evals-skipped",
+      "configured-sensitive-domain-eval",
+      "missing-verification-step"
     ]
   },
   {
@@ -152,7 +158,9 @@
     "weight": 2,
     "expectedVerdict": "block",
     "expectedRuleIds": [
-      "secret-material"
+      "secret-material",
+      "risky-domain",
+      "configured-sensitive-domain-auth"
     ]
   },
   {
@@ -272,7 +280,8 @@
     "weight": 2,
     "expectedVerdict": "caution",
     "expectedRuleIds": [
-      "risky-domain"
+      "risky-domain",
+      "missing-verification-step"
     ]
   },
   {
@@ -344,7 +353,8 @@
     "weight": 2,
     "expectedVerdict": "block",
     "expectedRuleIds": [
-      "skip-tests"
+      "skip-tests",
+      "missing-verification-step"
     ]
   },
   {
@@ -356,7 +366,8 @@
     "expectedVerdict": "caution",
     "weight": 2,
     "expectedRuleIds": [
-      "missing-verification-step"
+      "missing-verification-step",
+      "risky-domain"
     ]
   },
   {
@@ -609,6 +620,104 @@
     "expectedVerdict": "pass",
     "expectedRuleIds": [
       "large-removal"
+    ]
+  },
+  {
+    "id": "universal-risky-domain-auth-caution-2",
+    "preset": "default",
+    "kind": "plan",
+    "description": "Auth callback changes should keep the broad risky-domain signal covered when verification is present.",
+    "content": "Change the auth callback after running the focused login smoke test.",
+    "weight": 2,
+    "expectedVerdict": "block",
+    "expectedRuleIds": [
+      "risky-domain",
+      "configured-sensitive-domain-auth"
+    ]
+  },
+  {
+    "id": "universal-risky-domain-billing-final",
+    "preset": "default",
+    "kind": "final",
+    "description": "Billing changes in final responses should remain covered when evidence is supplied.",
+    "content": "Completed the billing label update after running the smoke check.",
+    "weight": 2,
+    "expectedVerdict": "block",
+    "expectedRuleIds": [
+      "risky-domain",
+      "configured-sensitive-domain-billing"
+    ]
+  },
+  {
+    "id": "plan-missing-verification-step-2",
+    "preset": "default",
+    "kind": "plan",
+    "description": "Implementation plans without a verification step should have a clean missing-verification example.",
+    "content": "Implement the toolbar state cleanup.",
+    "weight": 2,
+    "expectedVerdict": "pass",
+    "expectedRuleIds": [
+      "missing-verification-step"
+    ]
+  },
+  {
+    "id": "plan-missing-verification-step-3",
+    "preset": "default",
+    "kind": "plan",
+    "description": "Refactor plans that omit validation should keep missing-verification coverage separate from domain wording.",
+    "content": "Refactor the account menu routing.",
+    "weight": 2,
+    "expectedVerdict": "pass",
+    "expectedRuleIds": [
+      "missing-verification-step"
+    ]
+  },
+  {
+    "id": "plan-confidence-theater-2",
+    "preset": "default",
+    "kind": "plan",
+    "description": "Overconfident certainty language should have a direct confidence-theater fixture.",
+    "content": "This is definitely straightforward.",
+    "weight": 2,
+    "expectedVerdict": "pass",
+    "expectedRuleIds": [
+      "confidence-theater"
+    ]
+  },
+  {
+    "id": "plan-confidence-theater-3",
+    "preset": "default",
+    "kind": "plan",
+    "description": "Dismissive easy-language plans should keep confidence-theater coverage healthy.",
+    "content": "Obviously easy config rename.",
+    "weight": 2,
+    "expectedVerdict": "pass",
+    "expectedRuleIds": [
+      "confidence-theater"
+    ]
+  },
+  {
+    "id": "final-done-without-evidence-2",
+    "preset": "default",
+    "kind": "final",
+    "description": "Completion claims without test evidence should keep done-without-evidence coverage explicit.",
+    "content": "Implemented the parser cleanup.",
+    "weight": 2,
+    "expectedVerdict": "caution",
+    "expectedRuleIds": [
+      "done-without-evidence"
+    ]
+  },
+  {
+    "id": "final-done-without-evidence-3",
+    "preset": "default",
+    "kind": "final",
+    "description": "All-set final responses without evidence should remain covered as done-without-evidence.",
+    "content": "All set on the theme switcher.",
+    "weight": 2,
+    "expectedVerdict": "caution",
+    "expectedRuleIds": [
+      "done-without-evidence"
     ]
   }
 ]

@@ -105,6 +105,7 @@ test("help includes the local playground command", async () => {
   assert.match(stdout, /jester playground/);
   assert.match(stdout, /jester setup --agent codex/);
   assert.match(stdout, /jester tune risky-domain/);
+  assert.match(stdout, /jester tune coverage/);
   assert.match(stdout, /--port <number>/);
 });
 
@@ -510,6 +511,98 @@ test("tune support rewards expected fixture coverage without surprise matches", 
   assert.equal(result.fixtureEvidence.matchCount >= 3, true);
   assert.equal(result.fixtureEvidence.expectedWeight >= 5, true);
   assert.equal(result.fixtureEvidence.unexpectedWeight, 0);
+});
+
+test("tune coverage prints fixture coverage actions", async () => {
+  const { stdout } = await execFileAsync(process.execPath, [
+    cliPath,
+    "tune",
+    "coverage",
+    "--no-config"
+  ]);
+
+  assert.match(stdout, /Memento Mori Jester tune coverage/);
+  assert.match(stdout, /Support: none \d+, thin \d+, limited \d+, strong \d+/);
+  assert.match(stdout, /Confidence: none \d+, low \d+, medium \d+, high \d+/);
+  assert.match(stdout, /risky-domain/);
+  assert.match(stdout, /Action:/);
+  assert.match(stdout, /Next: jester tune /);
+});
+
+test("tune coverage json returns stable rule evidence summary", async () => {
+  const { stdout } = await execFileAsync(process.execPath, [
+    cliPath,
+    "tune",
+    "coverage",
+    "--json",
+    "--no-config"
+  ]);
+  const result = JSON.parse(stdout) as {
+    configPath: string | null;
+    count: number;
+    enabledCount: number;
+    summary: {
+      bySupport: Record<string, number>;
+      byConfidence: Record<string, number>;
+      projectConfigRules: number;
+    };
+    rules: Array<{
+      ruleId: string;
+      support: string;
+      confidence: string;
+      matchCount: number;
+      expectedWeight: number;
+      unexpectedWeight: number;
+      suggestedAction: string;
+      nextCommand: string;
+    }>;
+  };
+  const packageInstall = result.rules.find((rule) => rule.ruleId === "package-install-script");
+  const riskyDomain = result.rules.find((rule) => rule.ruleId === "risky-domain");
+
+  assert.deepEqual(Object.keys(result), ["configPath", "count", "enabledCount", "summary", "rules"]);
+  assert.equal(result.configPath, null);
+  assert.equal(result.summary.projectConfigRules, 0);
+  assert.equal(result.count, result.rules.length);
+  assert.equal(result.enabledCount <= result.count, true);
+  assert.equal(packageInstall?.support, "strong");
+  assert.equal(packageInstall?.confidence, "high");
+  assert.equal(riskyDomain?.support, "thin");
+  assert.equal(riskyDomain?.confidence, "low");
+  assert.match(packageInstall?.nextCommand ?? "", /^jester tune /);
+  assert.match(riskyDomain?.suggestedAction ?? "", /surprise matches/);
+});
+
+test("tune coverage includes project config rules without generic coverage", async () => {
+  const cwd = await mkdtemp(join(tmpdir(), "jester-tune-coverage-config-"));
+  await writeFile(join(cwd, "jester.config.json"), `${JSON.stringify({
+    blockedCommands: ["git reset --hard"]
+  }, null, 2)}\n`, "utf8");
+  const { stdout } = await execFileAsync(process.execPath, [
+    cliPath,
+    "tune",
+    "coverage",
+    "--json"
+  ], { cwd });
+  const result = JSON.parse(stdout) as {
+    summary: {
+      projectConfigRules: number;
+    };
+    rules: Array<{
+      ruleId: string;
+      source: string;
+      support: string;
+      confidence: string;
+      suggestedAction: string;
+    }>;
+  };
+  const projectRule = result.rules.find((rule) => rule.ruleId === "blocked-command-git-reset-hard");
+
+  assert.equal(result.summary.projectConfigRules >= 1, true);
+  assert.equal(projectRule?.source, "project-config");
+  assert.equal(projectRule?.support, "none");
+  assert.equal(projectRule?.confidence, "none");
+  assert.match(projectRule?.suggestedAction ?? "", /project-specific/);
 });
 
 test("tune json includes expanded sparse-family fixture coverage", async () => {

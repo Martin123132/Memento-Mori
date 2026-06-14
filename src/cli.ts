@@ -110,6 +110,37 @@ type TuneCommandOptions = {
   noConfig: boolean;
 };
 
+type TuneCoverageRule = {
+  ruleId: string;
+  title: string;
+  enabled: boolean;
+  severity: number;
+  source: RuleCatalogEntry["source"];
+  kinds: ReviewKind[];
+  support: RuleFixtureEvidence["support"];
+  confidence: RuleFixtureEvidence["confidence"];
+  matchCount: number;
+  matchWeight: number;
+  expectedWeight: number;
+  unexpectedWeight: number;
+  edgeCaseMatches: number;
+  samples: string[];
+  suggestedAction: string;
+  nextCommand: string;
+};
+
+type TuneCoverageReport = {
+  configPath: string | null;
+  count: number;
+  enabledCount: number;
+  summary: {
+    bySupport: Record<RuleFixtureEvidence["support"], number>;
+    byConfidence: Record<RuleFixtureEvidence["confidence"], number>;
+    projectConfigRules: number;
+  };
+  rules: TuneCoverageRule[];
+};
+
 type SummaryRuleHit = {
   ruleId: string;
   count: number;
@@ -533,7 +564,7 @@ function parseRulesCommandOptions(command: "rules" | "rule", argv: string[]): Ru
   return options;
 }
 
-function parseTuneCommandOptions(argv: string[]): TuneCommandOptions {
+function parseTuneCommandOptions(argv: string[], optionsConfig: { requireId?: boolean } = {}): TuneCommandOptions {
   const options: TuneCommandOptions = {
     json: false,
     noConfig: false
@@ -558,7 +589,7 @@ function parseTuneCommandOptions(argv: string[]): TuneCommandOptions {
     }
   }
 
-  if (!options.id) {
+  if ((optionsConfig.requireId ?? true) && !options.id) {
     throw new Error('Missing rule id. Use "jester tune <rule-id>".');
   }
 
@@ -1339,6 +1370,12 @@ function renderRules(result: {
 }
 
 async function handleTuneCommand(argv: string[]): Promise<string> {
+  if (argv[0] === "coverage") {
+    const options = parseTuneCommandOptions(argv.slice(1), { requireId: false });
+    const report = await tuneCoverageReport(options);
+    return options.json ? `${JSON.stringify(report, null, 2)}\n` : renderTuneCoverageReport(report);
+  }
+
   const options = parseTuneCommandOptions(argv);
   const loadedConfig = await loadConfig({
     configPath: options.configPath,
@@ -1404,6 +1441,171 @@ async function tuneAdvice(rule: RuleCatalogEntry, loadedConfig?: LoadedConfig) {
     checksBeforeMuting,
     commands
   };
+}
+
+async function tuneCoverageReport(options: TuneCommandOptions): Promise<TuneCoverageReport> {
+  const loadedConfig = await loadConfig({
+    configPath: options.configPath,
+    search: !options.noConfig
+  });
+  const rules = listRules({
+    config: loadedConfig.config
+  });
+  const coverageRules = await Promise.all(rules.map(async (rule) => {
+    const evidence = await ruleFixtureEvidence(rule.id, {
+      projectConfigRule: rule.source === "project-config"
+    });
+
+    return {
+      ruleId: rule.id,
+      title: rule.title,
+      enabled: rule.enabled,
+      severity: rule.severity,
+      source: rule.source,
+      kinds: rule.kinds,
+      support: evidence.support,
+      confidence: evidence.confidence,
+      matchCount: evidence.matchCount,
+      matchWeight: evidence.matchWeight,
+      expectedWeight: evidence.expectedWeight,
+      unexpectedWeight: evidence.unexpectedWeight,
+      edgeCaseMatches: evidence.edgeCaseMatches,
+      samples: evidence.samples,
+      suggestedAction: tuneCoverageAction(rule, evidence),
+      nextCommand: `jester tune ${rule.id}`
+    } satisfies TuneCoverageRule;
+  }));
+  const sortedRules = coverageRules.sort((left, right) => {
+    return tuneCoveragePriority(left) - tuneCoveragePriority(right)
+      || supportRank(left.support) - supportRank(right.support)
+      || confidenceRank(left.confidence) - confidenceRank(right.confidence)
+      || right.unexpectedWeight - left.unexpectedWeight
+      || right.severity - left.severity
+      || left.ruleId.localeCompare(right.ruleId);
+  });
+
+  return {
+    configPath: loadedConfig.path ?? null,
+    count: sortedRules.length,
+    enabledCount: sortedRules.filter((rule) => rule.enabled).length,
+    summary: {
+      bySupport: countBySupport(sortedRules),
+      byConfidence: countByConfidence(sortedRules),
+      projectConfigRules: sortedRules.filter((rule) => rule.source === "project-config").length
+    },
+    rules: sortedRules
+  };
+}
+
+function countBySupport(rules: TuneCoverageRule[]): Record<RuleFixtureEvidence["support"], number> {
+  return {
+    none: rules.filter((rule) => rule.support === "none").length,
+    thin: rules.filter((rule) => rule.support === "thin").length,
+    limited: rules.filter((rule) => rule.support === "limited").length,
+    strong: rules.filter((rule) => rule.support === "strong").length
+  };
+}
+
+function countByConfidence(rules: TuneCoverageRule[]): Record<RuleFixtureEvidence["confidence"], number> {
+  return {
+    none: rules.filter((rule) => rule.confidence === "none").length,
+    low: rules.filter((rule) => rule.confidence === "low").length,
+    medium: rules.filter((rule) => rule.confidence === "medium").length,
+    high: rules.filter((rule) => rule.confidence === "high").length
+  };
+}
+
+function supportRank(support: RuleFixtureEvidence["support"]): number {
+  return {
+    none: 0,
+    thin: 1,
+    limited: 2,
+    strong: 3
+  }[support];
+}
+
+function confidenceRank(confidence: RuleFixtureEvidence["confidence"]): number {
+  return {
+    none: 0,
+    low: 1,
+    medium: 2,
+    high: 3
+  }[confidence];
+}
+
+function tuneCoveragePriority(rule: TuneCoverageRule): number {
+  if (!rule.enabled) {
+    return 5;
+  }
+
+  if (rule.support === "none") {
+    return rule.source === "project-config" ? 4 : 0;
+  }
+
+  if (rule.unexpectedWeight > rule.expectedWeight) {
+    return 1;
+  }
+
+  if (rule.support === "thin") {
+    return 2;
+  }
+
+  return 3;
+}
+
+function tuneCoverageAction(rule: RuleCatalogEntry, evidence: RuleFixtureEvidence): string {
+  if (!rule.enabled) {
+    return "disabled rule; re-enable before investing in fixture coverage";
+  }
+
+  if (rule.source === "project-config") {
+    return "project-specific rule; generic fixtures intentionally do not cover it";
+  }
+
+  if (evidence.support === "none") {
+    return "add at least one expected fixture";
+  }
+
+  if (evidence.unexpectedWeight > evidence.expectedWeight) {
+    return "review surprise matches before trusting this rule's tuning signal";
+  }
+
+  if (evidence.support === "thin") {
+    return "add one or two targeted expected fixtures";
+  }
+
+  if (evidence.support === "limited") {
+    return "usable signal; add fixtures when this rule changes";
+  }
+
+  return "healthy fixture signal";
+}
+
+function renderTuneCoverageReport(report: TuneCoverageReport): string {
+  const lines = [
+    "Memento Mori Jester tune coverage",
+    "",
+    `Project config: ${report.configPath ?? "none loaded"}`,
+    `Rules: ${report.count}`,
+    `Enabled: ${report.enabledCount}`,
+    `Support: none ${report.summary.bySupport.none}, thin ${report.summary.bySupport.thin}, limited ${report.summary.bySupport.limited}, strong ${report.summary.bySupport.strong}`,
+    `Confidence: none ${report.summary.byConfidence.none}, low ${report.summary.byConfidence.low}, medium ${report.summary.byConfidence.medium}, high ${report.summary.byConfidence.high}`,
+    `Project config rules: ${report.summary.projectConfigRules}`,
+    "",
+    "Coverage by rule:"
+  ];
+
+  for (const rule of report.rules) {
+    lines.push(
+      `- ${rule.ruleId} [${rule.source} S${rule.severity}] ${rule.enabled ? "" : "[disabled] "}${rule.support}/${rule.confidence}`,
+      `  Matches: ${rule.matchCount}; expected weight ${rule.expectedWeight}; unexpected weight ${rule.unexpectedWeight}; edge cases ${rule.edgeCaseMatches}`,
+      `  Action: ${rule.suggestedAction}`,
+      `  Next: ${rule.nextCommand}`
+    );
+  }
+
+  lines.push("");
+  return lines.join("\n");
 }
 
 function renderFixtureEvidence(evidence: RuleFixtureEvidence): string {
@@ -2380,6 +2582,7 @@ Usage:
   jester rules --kind diff
   jester rule destructive-git-history
   jester tune risky-domain
+  jester tune coverage
   jester github-action
   jester github-action --write
   jester bootstrap --preset node

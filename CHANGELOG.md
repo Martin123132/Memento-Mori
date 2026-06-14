@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.44
+
+- Added `jester tune coverage` and `jester tune coverage --json` as read-only maintenance reports for fixture support across every rule.
+- The coverage report includes support, confidence, expected/unexpected fixture weight, sample counts, suggested actions, and next `jester tune <rule>` commands.
+- Project-config rules are included when config is loaded, while still reporting no generic fixture coverage by design.
+
 ## 0.1.43
 
 - Improved `jester tune` fixture support/confidence scoring so it rewards rule-specific expected fixture coverage instead of penalizing every rule against the full fixture corpus size.

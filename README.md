@@ -156,6 +156,7 @@ jester examples
 jester rules
 jester rule destructive-git-history
 jester tune risky-domain
+jester tune coverage
 jester github-action --write
 jester bootstrap --preset node
 jester config init
@@ -278,11 +279,15 @@ jester rules --json
 jester rule destructive-git-history
 jester tune risky-domain
 jester tune risky-domain --json
+jester tune coverage
+jester tune coverage --json
 ```
 
 `jester rule <id>` explains why a rule exists, when it may be noisy, what safer move to make, and how to tune it.
 
 `jester tune <id>` turns that into a practical mute checklist with exact `disable-rule`, `enable-rule`, and validation commands. It does not edit config files.
+
+`jester tune coverage` shows the fixture support and confidence signal for every rule, including suggested next actions such as adding coverage, reviewing surprise matches, or leaving a healthy signal alone.
 
 Disable a noisy rule by adding its id to `disabledRules` in `jester.config.json`:
 

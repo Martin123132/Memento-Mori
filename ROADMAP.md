@@ -29,10 +29,11 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 - Precision-pass fixture expansion in v0.1.41 to strengthen repeat signal coverage for plan/command/diff families.
 - Tune fixture evidence determinism in v0.1.42 so project-config rules no longer borrow generic preset fixture coverage.
 - Rule-specific tune support/confidence scoring in v0.1.43 so sparse clean evidence is no longer punished by total fixture corpus growth.
+- Tune coverage report in v0.1.44 for seeing every rule's fixture support, confidence, surprise weight, and next maintenance action.
 
 ## Product Ideas
 
-- Continue precision pass work by adding example-backed rule-specific fixtures for the remaining thin families, then add a second-pass confidence signal before broad rollout.
+- Use the coverage report to add example-backed fixtures for the weakest important rule families, then improve playground onboarding samples.
 
 ## Quality And Safety
 

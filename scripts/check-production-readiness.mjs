@@ -26,6 +26,13 @@ function requireText(path, pattern, description) {
   }
 }
 
+function forbidText(path, pattern, description) {
+  const content = read(path);
+  if (pattern.test(content)) {
+    failures.push(`${path} should not include ${description}.`);
+  }
+}
+
 function requirePackageFile(packageJson, value) {
   if (!Array.isArray(packageJson.files) || !packageJson.files.includes(value)) {
     failures.push(`package.json files should include ${value}.`);
@@ -107,6 +114,7 @@ requireText("examples/fixtures/README.md", /Adding A Fixture From A Report/, "fi
 requireText("examples/fixtures/README.md", /fixtures:check/, "fixture authoring check guidance");
 requireText("scripts/check-fixtures.mjs", /duplicated/, "duplicate fixture id check");
 requireText("scripts/check-fixtures.mjs", /unsafeContentPatterns/, "unsafe fixture content checks");
+forbidText("scripts/check-fixtures.mjs", /src\/config\.ts|src\/types\.ts/, "source-only fixture validator dependencies");
 requireText("package.json", /"fixtures:check": "node scripts\/check-fixtures\.mjs"/, "fixture authoring check script");
 requireText("package.json", /npm run fixtures:check/, "fixture authoring check in npm test");
 requireText("SECURITY.md", /doctor --json/, "doctor JSON redaction guidance");

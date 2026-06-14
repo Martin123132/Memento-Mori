@@ -6,6 +6,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Recently Shipped
 
+- Published-package fixture validator fix in v0.1.53 so `npm run fixtures:check` works outside a source checkout.
 - Fixture authoring validator in v0.1.52 for duplicate IDs, missing expected/absent rule intent, weak metadata, unsafe-looking content, and duplicate content.
 - Maintainer triage guide in v0.1.51 for turning useful false-positive reports into redacted fixture coverage.
 - Security policy and GitHub issue templates in v0.1.50 for bug reports, false positives, feature requests, and vulnerability intake.

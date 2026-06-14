@@ -10,20 +10,8 @@ function read(path) {
   return readFileSync(join(root, path), "utf8");
 }
 
-function readConstStringArray(path, constName) {
-  const source = read(path);
-  const match = source.match(new RegExp(`export const ${constName} = \\[([^\\]]+)\\] as const`));
-
-  if (!match) {
-    failures.push(`Could not read ${constName} from ${path}.`);
-    return [];
-  }
-
-  return [...match[1].matchAll(/"([^"]+)"/g)].map((entry) => entry[1]);
-}
-
-const allowedPresets = new Set(readConstStringArray("src/config.ts", "configPresetNames"));
-const allowedKinds = new Set(readConstStringArray("src/types.ts", "reviewKinds"));
+const allowedPresets = new Set(["default", "node", "python", "web", "api", "infra", "ai", "security"]);
+const allowedKinds = new Set(["plan", "command", "diff", "final"]);
 const allowedVerdicts = new Set(["pass", "caution", "block"]);
 const unsafeContentPatterns = [
   { name: "private key block", pattern: /-----BEGIN [A-Z ]*PRIVATE KEY-----/ },

@@ -4,6 +4,11 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.53
+
+- Made `npm run fixtures:check` self-contained so it works from the published npm package, where `src/` files are intentionally not shipped.
+- Added a production-readiness guard to prevent the fixture validator from depending on source-only files.
+
 ## 0.1.52
 
 - Added `npm run fixtures:check`, a local fixture authoring validator for duplicate IDs, weak metadata, unsafe-looking content, duplicate content, and explicit expected/absent rule intent.

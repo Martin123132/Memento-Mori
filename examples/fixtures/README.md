@@ -19,6 +19,7 @@ Maintainer triage guidance lives in [docs/MAINTAINER_TRIAGE.md](../../docs/MAINT
 
 ```powershell
 npm.cmd test
+npm.cmd run fixtures:check
 ```
 
 For one-off manual review, paste a fixture `content` value into:
@@ -34,8 +35,10 @@ Use the smallest redacted example that still reproduces the behavior. A good fix
 - the review `kind`,
 - the preset or config needed to reproduce it,
 - the expected verdict,
-- the rule ids that should match,
-- any intentional overlaps in `expectedMatches`,
+- the rule ids that should match in `expectedRuleIds`,
+- noisy rules that must stay absent in `absentRuleIds`,
 - and whether the case is an unusual `edgeCase`.
 
 Do not add secrets, private code, customer data, complete logs, or machine-specific paths. If a false-positive report is safe but broad, add a passing fixture before loosening a rule.
+
+`npm run fixtures:check` validates duplicate IDs, missing expected rule metadata, weak descriptions, unsafe-looking fixture content, and duplicate content before the fixture suite becomes tuning evidence.

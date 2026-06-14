@@ -57,6 +57,7 @@ for (const path of [
   "docs/MAINTAINER_TRIAGE.md",
   `docs/RELEASE_NOTES_${tag}.md`,
   "action.yml",
+  "scripts/check-fixtures.mjs",
   ".github/ISSUE_TEMPLATE/bug_report.yml",
   ".github/ISSUE_TEMPLATE/false_positive.yml",
   ".github/ISSUE_TEMPLATE/feature_request.yml",
@@ -83,6 +84,7 @@ requireText("README.md", /github-action --write/, "GitHub Action onboarding");
 requireText("README.md", /SECURITY\.md/, "security policy link");
 requireText("README.md", /false-positive/i, "false-positive support guidance");
 requireText("README.md", /MAINTAINER_TRIAGE\.md/, "maintainer triage guide link");
+requireText("README.md", /fixtures:check/, "fixture authoring check guidance");
 requireText("README.md", /License: PolyForm Noncommercial/, "the noncommercial license badge");
 requireText("docs/PRODUCTION_READINESS.md", /npm package/i, "npm package readiness");
 requireText("docs/PRODUCTION_READINESS.md", /GitHub Action/i, "GitHub Action readiness");
@@ -93,13 +95,20 @@ requireText("docs/PRODUCTION_READINESS.md", /doctor --json/, "doctor JSON suppor
 requireText("docs/PRODUCTION_READINESS.md", /SECURITY\.md/, "security policy readiness");
 requireText("docs/PRODUCTION_READINESS.md", /issue templates/i, "issue template readiness");
 requireText("docs/PRODUCTION_READINESS.md", /MAINTAINER_TRIAGE\.md/, "maintainer triage readiness");
+requireText("docs/PRODUCTION_READINESS.md", /fixtures:check/, "fixture authoring check readiness");
 requireText("docs/CLI.md", /jester doctor --json/, "doctor JSON CLI docs");
 requireText("docs/MAINTAINER_TRIAGE.md", /doctor --json/, "doctor JSON triage prompt");
 requireText("docs/MAINTAINER_TRIAGE.md", /tune <rule-id> --json/, "tune JSON triage prompt");
 requireText("docs/MAINTAINER_TRIAGE.md", /preset-review-cases\.json/, "fixture suite link");
-requireText("docs/MAINTAINER_TRIAGE.md", /expectedMatches/, "fixture overlap guidance");
+requireText("docs/MAINTAINER_TRIAGE.md", /expectedRuleIds/, "fixture expected rule guidance");
+requireText("docs/MAINTAINER_TRIAGE.md", /absentRuleIds/, "fixture absent rule guidance");
 requireText("examples/fixtures/README.md", /MAINTAINER_TRIAGE\.md/, "maintainer triage link");
 requireText("examples/fixtures/README.md", /Adding A Fixture From A Report/, "fixture report conversion guidance");
+requireText("examples/fixtures/README.md", /fixtures:check/, "fixture authoring check guidance");
+requireText("scripts/check-fixtures.mjs", /duplicated/, "duplicate fixture id check");
+requireText("scripts/check-fixtures.mjs", /unsafeContentPatterns/, "unsafe fixture content checks");
+requireText("package.json", /"fixtures:check": "node scripts\/check-fixtures\.mjs"/, "fixture authoring check script");
+requireText("package.json", /npm run fixtures:check/, "fixture authoring check in npm test");
 requireText("SECURITY.md", /doctor --json/, "doctor JSON redaction guidance");
 requireText("SECURITY.md", /security\/advisories\/new/, "private vulnerability report link");
 requireText(".github/ISSUE_TEMPLATE/bug_report.yml", /doctor --json/, "doctor JSON support prompt");

@@ -52,6 +52,7 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 - GitHub issue templates collect bug reports, false-positive reports, and feature requests with the diagnostic context maintainers need.
 - `SECURITY.md` routes vulnerability reports away from public issues and asks for redacted diagnostics.
 - `docs/MAINTAINER_TRIAGE.md` explains how to turn useful false-positive reports into fixture coverage before changing rule logic.
+- `npm run fixtures:check` validates fixture IDs, metadata, unsafe-looking content, duplicate content, and explicit expected/absent rule intent.
 - npm publish has a manual workflow fallback, but the normal release path is tag-driven trusted publishing.
 
 ## Static Guard
@@ -65,6 +66,7 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 - production readiness documentation covers package, GitHub Action, MCP, git hooks, docs, and support,
 - `SECURITY.md` and GitHub issue templates exist and ask for the right diagnostics.
 - maintainer triage docs exist and link noisy-rule reports back to fixture coverage.
+- fixture authoring checks are wired into `npm test`.
 
 `npm test` runs this check after the TypeScript build and unit tests.
 

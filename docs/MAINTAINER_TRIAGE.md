@@ -53,8 +53,8 @@ Good fixture candidates:
 - use the smallest command, plan, diff, or final answer that reproduces the behavior,
 - identify the preset or default config needed to reproduce it,
 - include the expected verdict,
-- include the expected rule id when the fixture should cover a specific rule,
-- include `expectedMatches` for intentional multi-rule overlaps,
+- include `expectedRuleIds` when the fixture should cover specific rules,
+- include `absentRuleIds` when a quiet fixture protects against noisy matches,
 - include `weight` when the case should strongly influence tuning confidence,
 - set `edgeCase: true` when the example is useful but unusual.
 
@@ -74,13 +74,15 @@ Avoid fixtures that:
 
 ```powershell
 npm.cmd test
+npm.cmd run fixtures:check
 node .\dist\cli.js tune <rule-id>
 node .\dist\cli.js tune <rule-id> --json
 node .\dist\cli.js tune coverage
 ```
 
-5. Check whether support/confidence changed in the expected direction.
-6. If the fixture changes verdict behavior, mention the exact rule impact in `CHANGELOG.md`.
+5. Fix any duplicate IDs, missing expected rule metadata, weak descriptions, unsafe content, or duplicate content reported by `fixtures:check`.
+6. Check whether support/confidence changed in the expected direction.
+7. If the fixture changes verdict behavior, mention the exact rule impact in `CHANGELOG.md`.
 
 ## When To Change A Rule
 

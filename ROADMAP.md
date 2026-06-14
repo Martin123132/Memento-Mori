@@ -6,6 +6,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Recently Shipped
 
+- Fixture authoring validator in v0.1.52 for duplicate IDs, missing expected/absent rule intent, weak metadata, unsafe-looking content, and duplicate content.
 - Maintainer triage guide in v0.1.51 for turning useful false-positive reports into redacted fixture coverage.
 - Security policy and GitHub issue templates in v0.1.50 for bug reports, false positives, feature requests, and vulnerability intake.
 - Support-focused `doctor --json` diagnostics in v0.1.49 for package, config, hook, MCP, and GitHub Action state.
@@ -41,7 +42,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 ## Product Ideas
 
 - Add more framework-specific false-positive examples from real reports so tuning guidance keeps getting sharper.
-- Add a fixture authoring validator for duplicate IDs, missing expected matches, and weak metadata.
+- Add a fixture report generator that shows which rules, presets, and review kinds still need better pass-case coverage.
 
 ## Quality And Safety
 

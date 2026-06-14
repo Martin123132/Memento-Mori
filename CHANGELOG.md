@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.52
+
+- Added `npm run fixtures:check`, a local fixture authoring validator for duplicate IDs, weak metadata, unsafe-looking content, duplicate content, and explicit expected/absent rule intent.
+- Wired fixture authoring validation into `npm test` so fixture quality is checked alongside the review-engine expectations.
+- Updated maintainer, fixture, release, and production-readiness docs to make fixture validation part of the support-to-coverage workflow.
+
 ## 0.1.51
 
 - Added `docs/MAINTAINER_TRIAGE.md` with a repeatable flow for triaging bugs, false positives, security-sensitive reports, and fixture candidates.

@@ -9,6 +9,8 @@ npm.cmd version 0.1.x --no-git-tag-version
 npm.cmd test
 npm.cmd run production:check
 npm.cmd run fixtures:check
+npm.cmd run fixtures:report
+npm.cmd run fixtures:report -- --json
 npm.cmd run pack:dry
 git diff --check
 ```

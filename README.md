@@ -501,6 +501,7 @@ Use the false-positive template for noisy cautions or blocks. Include `jester su
 
 Maintainers can use [docs/MAINTAINER_TRIAGE.md](docs/MAINTAINER_TRIAGE.md) to turn useful false-positive reports into redacted fixtures.
 Run `npm run fixtures:check` before merging fixture changes; it catches duplicate IDs, missing rule metadata, weak descriptions, unsafe-looking content, and duplicate content.
+Run `npm run fixtures:report` to see fixture coverage by rule, preset, kind, and verdict before choosing the next pass-case fixture.
 
 For vulnerabilities, private code exposure, or credential-handling concerns, follow [SECURITY.md](SECURITY.md) instead of opening a public issue with sensitive details.
 

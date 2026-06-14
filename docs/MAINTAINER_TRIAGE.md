@@ -75,14 +75,17 @@ Avoid fixtures that:
 ```powershell
 npm.cmd test
 npm.cmd run fixtures:check
+npm.cmd run fixtures:report
+npm.cmd run fixtures:report -- --json
 node .\dist\cli.js tune <rule-id>
 node .\dist\cli.js tune <rule-id> --json
 node .\dist\cli.js tune coverage
 ```
 
 5. Fix any duplicate IDs, missing expected rule metadata, weak descriptions, unsafe content, or duplicate content reported by `fixtures:check`.
-6. Check whether support/confidence changed in the expected direction.
-7. If the fixture changes verdict behavior, mention the exact rule impact in `CHANGELOG.md`.
+6. Use `fixtures:report` to check whether the change improves pass-case, preset, kind, or verdict coverage.
+7. Check whether support/confidence changed in the expected direction.
+8. If the fixture changes verdict behavior, mention the exact rule impact in `CHANGELOG.md`.
 
 ## When To Change A Rule
 

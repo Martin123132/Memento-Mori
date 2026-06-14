@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.54
+
+- Added `npm run fixtures:report`, a local fixture coverage report for rule, preset, review-kind, and verdict coverage.
+- The report highlights rules without pass-case coverage, thin rule coverage, preset/kind gaps, and quiet pass fixtures, with text and `--json` output.
+- Wired fixture coverage reporting into `npm test` and production-readiness checks so coverage gaps stay visible during maintenance.
+
 ## 0.1.53
 
 - Made `npm run fixtures:check` self-contained so it works from the published npm package, where `src/` files are intentionally not shipped.

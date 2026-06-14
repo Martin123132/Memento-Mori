@@ -215,6 +215,70 @@ type PlaygroundCommandOptions = {
   noConfig: boolean;
 };
 
+type DoctorCheckStatus = "pass" | "fail" | "info";
+
+type DoctorCheck = {
+  name: string;
+  status: DoctorCheckStatus;
+  ok: boolean;
+  detail: string;
+  data?: unknown;
+};
+
+type DoctorReport = {
+  ok: boolean;
+  version: string;
+  cwd: string;
+  checks: DoctorCheck[];
+  diagnostics: {
+    package: {
+      name: string;
+      version: string;
+      packageJsonPath: string;
+    };
+    node: {
+      version: string;
+      major: number;
+      required: string;
+      ok: boolean;
+    };
+    mcpServer: {
+      path: string;
+      exists: boolean;
+    };
+    reviewEngine: {
+      command: string;
+      verdict: ReviewResult["verdict"];
+      ok: boolean;
+    };
+    config: {
+      ok: boolean;
+      path: string | null;
+      mode: "loaded" | "default" | "ignored" | "error";
+      detail: string;
+    };
+    hooks: {
+      ok: boolean;
+      available: boolean;
+      detail: string;
+      hooks: Array<{
+        hook: HookName;
+        path: string;
+        status: string;
+        managed: boolean;
+      }>;
+    };
+    githubAction: {
+      ok: boolean;
+      path: string;
+      present: boolean;
+      summary: boolean;
+      sarif: boolean;
+      detail: string;
+    };
+  };
+};
+
 const agentSetupProfiles: Record<AgentTarget, AgentSetupProfile> = {
   codex: {
     agent: "codex",
@@ -2411,65 +2475,239 @@ function hookCommandPrefix(options: SetupOptions): string {
 }
 
 async function renderDoctor(options: ConfigCommandOptions): Promise<{ ok: boolean; text: string }> {
-  let configCheck: { name: string; ok: boolean; detail: string };
-
-  try {
-    const loaded = await loadConfig({
-      configPath: options.configPath,
-      search: !options.noConfig
-    });
-    configCheck = {
-      name: "config",
-      ok: true,
-      detail: loaded.path ? `Loaded ${loaded.path}.` : "No config file found; using built-in defaults."
-    };
-  } catch (error) {
-    configCheck = {
-      name: "config",
-      ok: false,
-      detail: error instanceof Error ? error.message : String(error)
-    };
-  }
-
-  const checks = [
-    {
-      name: "node-version",
-      ok: nodeMajorVersion() >= 20,
-      detail: `Node ${process.version}; required >=20.`
-    },
-    {
-      name: "mcp-server-file",
-      ok: await fileExists(serverPath()),
-      detail: serverPath()
-    },
-    {
-      name: "review-engine",
-      ok: reviewCommand("git reset --hard").verdict === "block",
-      detail: "Dangerous git command is blocked."
-    },
-    configCheck
-  ];
-  const ok = checks.every((check) => check.ok);
+  const report = await doctorReport(options);
 
   if (options.json) {
     return {
-      ok,
-      text: `${JSON.stringify({ ok, checks }, null, 2)}\n`
+      ok: report.ok,
+      text: `${JSON.stringify(report, null, 2)}\n`
     };
   }
 
   const lines = [
     "Memento Mori Jester doctor",
     "",
-    ...checks.map((check) => `${check.ok ? "PASS" : "FAIL"} ${check.name}: ${check.detail}`),
+    ...report.checks.map((check) => `${doctorStatusLabel(check.status)} ${check.name}: ${check.detail}`),
     "",
-    ok
+    report.ok
       ? "The fool is fit for court."
       : "Something needs fixing before the fool can be trusted with sharp objects.",
     ""
   ];
 
-  return { ok, text: lines.join("\n") };
+  return { ok: report.ok, text: lines.join("\n") };
+}
+
+async function doctorReport(options: ConfigCommandOptions): Promise<DoctorReport> {
+  const packageInfo = await readPackageInfo();
+  const node = {
+    version: process.version,
+    major: nodeMajorVersion(),
+    required: ">=20",
+    ok: nodeMajorVersion() >= 20
+  };
+  const mcpServer = {
+    path: serverPath(),
+    exists: await fileExists(serverPath())
+  };
+  const reviewResult = reviewCommand("git reset --hard");
+  const reviewEngine = {
+    command: "git reset --hard",
+    verdict: reviewResult.verdict,
+    ok: reviewResult.verdict === "block"
+  };
+  const config = await doctorConfigDiagnostic(options);
+  const hooks = await doctorHookDiagnostic();
+  const githubAction = await doctorGithubActionDiagnostic();
+
+  const checks: DoctorCheck[] = [
+    {
+      name: "package-version",
+      status: "pass",
+      ok: true,
+      detail: `${packageInfo.name} ${packageInfo.version}.`,
+      data: packageInfo
+    },
+    {
+      name: "node-version",
+      status: node.ok ? "pass" : "fail",
+      ok: node.ok,
+      detail: `Node ${node.version}; required ${node.required}.`,
+      data: node
+    },
+    {
+      name: "mcp-server-file",
+      status: mcpServer.exists ? "pass" : "fail",
+      ok: mcpServer.exists,
+      detail: mcpServer.path,
+      data: mcpServer
+    },
+    {
+      name: "review-engine",
+      status: reviewEngine.ok ? "pass" : "fail",
+      ok: reviewEngine.ok,
+      detail: reviewEngine.ok
+        ? "Dangerous git command is blocked."
+        : `Expected block for ${reviewEngine.command}; saw ${reviewEngine.verdict}.`,
+      data: reviewEngine
+    },
+    {
+      name: "config",
+      status: config.ok ? "pass" : "fail",
+      ok: config.ok,
+      detail: config.detail,
+      data: config
+    },
+    {
+      name: "git-hooks",
+      status: hooks.ok ? "info" : "fail",
+      ok: hooks.ok,
+      detail: hooks.detail,
+      data: hooks
+    },
+    {
+      name: "github-action",
+      status: githubAction.ok ? "info" : "fail",
+      ok: githubAction.ok,
+      detail: githubAction.detail,
+      data: githubAction
+    }
+  ];
+  const ok = checks.every((check) => check.ok);
+
+  return {
+    ok,
+    version: packageInfo.version,
+    cwd: process.cwd(),
+    checks,
+    diagnostics: {
+      package: packageInfo,
+      node,
+      mcpServer,
+      reviewEngine,
+      config,
+      hooks,
+      githubAction
+    }
+  };
+}
+
+async function doctorConfigDiagnostic(options: ConfigCommandOptions): Promise<DoctorReport["diagnostics"]["config"]> {
+  if (options.noConfig) {
+    return {
+      ok: true,
+      path: null,
+      mode: "ignored",
+      detail: "Config discovery disabled by --no-config."
+    };
+  }
+
+  try {
+    const loaded = await loadConfig({
+      configPath: options.configPath,
+      search: true
+    });
+
+    return {
+      ok: true,
+      path: loaded.path ?? null,
+      mode: loaded.path ? "loaded" : "default",
+      detail: loaded.path ? `Loaded ${loaded.path}.` : "No config file found; using built-in defaults."
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      path: options.configPath ? resolve(process.cwd(), options.configPath) : null,
+      mode: "error",
+      detail: error instanceof Error ? error.message : String(error)
+    };
+  }
+}
+
+async function doctorHookDiagnostic(): Promise<DoctorReport["diagnostics"]["hooks"]> {
+  try {
+    const statuses = await hookStatus();
+    const hooks = statuses.map((status) => ({
+      hook: status.hook,
+      path: status.path,
+      status: status.message,
+      managed: status.message === "installed"
+    }));
+    return {
+      ok: true,
+      available: true,
+      detail: hooks.map((hook) => `${hook.hook} ${hook.status}`).join("; "),
+      hooks
+    };
+  } catch (error) {
+    return {
+      ok: true,
+      available: false,
+      detail: error instanceof Error ? error.message : String(error),
+      hooks: []
+    };
+  }
+}
+
+async function doctorGithubActionDiagnostic(): Promise<DoctorReport["diagnostics"]["githubAction"]> {
+  const path = resolve(process.cwd(), githubActionWorkflowPathDefault);
+  const workflow = await readOptionalFile(path);
+
+  if (!workflow) {
+    return {
+      ok: true,
+      path,
+      present: false,
+      summary: false,
+      sarif: false,
+      detail: "No generated GitHub Action workflow found; run jester github-action --write to add one."
+    };
+  }
+
+  const summary = /summary:\s*true/.test(workflow);
+  const sarif = /format:\s*sarif/.test(workflow) && /upload-sarif/.test(workflow);
+  return {
+    ok: summary && sarif,
+    path,
+    present: true,
+    summary,
+    sarif,
+    detail: summary && sarif
+      ? `Found ${path} with SARIF upload and job summary enabled.`
+      : `Found ${path}, but expected SARIF upload and summary: true.`
+  };
+}
+
+async function readPackageInfo(): Promise<DoctorReport["diagnostics"]["package"]> {
+  const packageJsonPath = resolve(dirname(fileURLToPath(import.meta.url)), "../package.json");
+  const raw = await readOptionalFile(packageJsonPath);
+
+  if (!raw) {
+    return {
+      name: "memento-mori-jester",
+      version: "unknown",
+      packageJsonPath
+    };
+  }
+
+  const parsed = JSON.parse(raw) as { name?: string; version?: string };
+  return {
+    name: parsed.name ?? "memento-mori-jester",
+    version: parsed.version ?? "unknown",
+    packageJsonPath
+  };
+}
+
+function doctorStatusLabel(status: DoctorCheckStatus): string {
+  if (status === "pass") {
+    return "PASS";
+  }
+
+  if (status === "fail") {
+    return "FAIL";
+  }
+
+  return "INFO";
 }
 
 async function ensureBootstrapConfig(options: BootstrapOptions): Promise<BootstrapFileResult> {
@@ -2558,6 +2796,14 @@ async function fileExists(path: string): Promise<boolean> {
     return true;
   } catch {
     return false;
+  }
+}
+
+async function readOptionalFile(path: string): Promise<string | undefined> {
+  try {
+    return await readFile(path, "utf8");
+  } catch {
+    return undefined;
   }
 }
 

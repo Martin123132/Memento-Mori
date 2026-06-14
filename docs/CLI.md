@@ -8,6 +8,7 @@ Use the CLI when you want quick checks without wiring an agent yet.
 npx -y memento-mori-jester@latest start
 npx -y memento-mori-jester@latest config recommend
 npx -y memento-mori-jester@latest doctor
+npx -y memento-mori-jester@latest doctor --json
 npx -y memento-mori-jester@latest command "git reset --hard"
 npx -y memento-mori-jester@latest summary --kind command "git reset --hard"
 npx -y memento-mori-jester@latest plan "I will just refactor auth and ship it"
@@ -38,6 +39,17 @@ jester setup --agent codex
 jester rules --kind diff
 jester github-action --write
 ```
+
+## Doctor
+
+Check the local install, config, MCP server, hook status, and generated GitHub Action status:
+
+```powershell
+jester doctor
+jester doctor --json
+```
+
+Use `jester doctor --json` when filing an issue or debugging automation. It includes stable keys for package version, Node version, MCP server path, review-engine health, config mode/path, hook status, and generated workflow status.
 
 ## Playground
 

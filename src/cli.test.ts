@@ -109,6 +109,100 @@ test("help includes the local playground command", async () => {
   assert.match(stdout, /--port <number>/);
 });
 
+test("doctor text includes support diagnostics", async () => {
+  const { stdout } = await execFileAsync(process.execPath, [
+    cliPath,
+    "doctor",
+    "--no-config"
+  ]);
+
+  assert.match(stdout, /Memento Mori Jester doctor/);
+  assert.match(stdout, /PASS package-version:/);
+  assert.match(stdout, /PASS node-version:/);
+  assert.match(stdout, /PASS mcp-server-file:/);
+  assert.match(stdout, /PASS review-engine:/);
+  assert.match(stdout, /PASS config: Config discovery disabled by --no-config\./);
+  assert.match(stdout, /INFO git-hooks:/);
+  assert.match(stdout, /INFO github-action:/);
+});
+
+test("doctor json returns stable diagnostics", async () => {
+  const { stdout } = await execFileAsync(process.execPath, [
+    cliPath,
+    "doctor",
+    "--json",
+    "--no-config"
+  ]);
+  const result = JSON.parse(stdout) as {
+    ok: boolean;
+    version: string;
+    cwd: string;
+    checks: Array<{ name: string; status: string; ok: boolean; detail: string }>;
+    diagnostics: {
+      package: { name: string; version: string; packageJsonPath: string };
+      node: { version: string; major: number; required: string; ok: boolean };
+      mcpServer: { path: string; exists: boolean };
+      reviewEngine: { command: string; verdict: string; ok: boolean };
+      config: { ok: boolean; path: string | null; mode: string; detail: string };
+      hooks: { ok: boolean; available: boolean; detail: string; hooks: unknown[] };
+      githubAction: { ok: boolean; path: string; present: boolean; summary: boolean; sarif: boolean; detail: string };
+    };
+  };
+
+  assert.deepEqual(Object.keys(result), ["ok", "version", "cwd", "checks", "diagnostics"]);
+  assert.equal(result.ok, true);
+  assert.equal(result.diagnostics.package.name, "memento-mori-jester");
+  assert.equal(result.diagnostics.package.version, result.version);
+  assert.equal(result.diagnostics.node.ok, true);
+  assert.equal(result.diagnostics.mcpServer.exists, true);
+  assert.equal(result.diagnostics.reviewEngine.verdict, "block");
+  assert.equal(result.diagnostics.config.mode, "ignored");
+  assert.equal(result.diagnostics.config.path, null);
+  assert.ok(result.checks.some((check) => check.name === "git-hooks" && check.status === "info"));
+  assert.ok(result.checks.some((check) => check.name === "github-action" && check.status === "info"));
+});
+
+test("doctor json reports config hooks and generated action", async () => {
+  const cwd = await mkdtemp(join(tmpdir(), "jester-doctor-"));
+  await execFileAsync("git", ["init"], { cwd });
+  await writeFile(join(cwd, "jester.config.json"), `${JSON.stringify({
+    hookFailOn: "caution"
+  }, null, 2)}\n`, "utf8");
+  await execFileAsync(process.execPath, [
+    cliPath,
+    "install-hook",
+    "pre-commit",
+    "--mode",
+    "local"
+  ], { cwd });
+  await execFileAsync(process.execPath, [
+    cliPath,
+    "github-action",
+    "--write"
+  ], { cwd });
+
+  const { stdout } = await execFileAsync(process.execPath, [
+    cliPath,
+    "doctor",
+    "--json"
+  ], { cwd });
+  const result = JSON.parse(stdout) as {
+    diagnostics: {
+      config: { mode: string; path: string | null };
+      hooks: { available: boolean; hooks: Array<{ hook: string; status: string; managed: boolean }> };
+      githubAction: { present: boolean; summary: boolean; sarif: boolean };
+    };
+  };
+
+  assert.equal(result.diagnostics.config.mode, "loaded");
+  assert.match(result.diagnostics.config.path ?? "", /jester\.config\.json$/);
+  assert.equal(result.diagnostics.hooks.available, true);
+  assert.ok(result.diagnostics.hooks.hooks.some((hook) => hook.hook === "pre-commit" && hook.status === "installed" && hook.managed));
+  assert.equal(result.diagnostics.githubAction.present, true);
+  assert.equal(result.diagnostics.githubAction.summary, true);
+  assert.equal(result.diagnostics.githubAction.sarif, true);
+});
+
 test("start prints the guided first-run checklist", async () => {
   const { stdout } = await execFileAsync(process.execPath, [
     cliPath,

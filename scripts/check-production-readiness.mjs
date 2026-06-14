@@ -70,6 +70,7 @@ for (const path of [
 requireText("CHANGELOG.md", new RegExp(`## ${version.replaceAll(".", "\\.")}`), `a ${version} section`);
 requireText(`docs/RELEASE_NOTES_${tag}.md`, /## Release Validation/, "release validation commands");
 requireText("README.md", /## Start Here/, "Start Here onboarding");
+requireText("README.md", /doctor --json/, "doctor JSON support guidance");
 requireText("README.md", /config recommend/, "preset recommendation onboarding");
 requireText("README.md", /setup --agent codex/, "Codex setup onboarding");
 requireText("README.md", /github-action --write/, "GitHub Action onboarding");
@@ -79,6 +80,8 @@ requireText("docs/PRODUCTION_READINESS.md", /GitHub Action/i, "GitHub Action rea
 requireText("docs/PRODUCTION_READINESS.md", /MCP/i, "MCP readiness");
 requireText("docs/PRODUCTION_READINESS.md", /git hooks/i, "git hook readiness");
 requireText("docs/PRODUCTION_READINESS.md", /support/i, "support readiness");
+requireText("docs/PRODUCTION_READINESS.md", /doctor --json/, "doctor JSON support diagnostics");
+requireText("docs/CLI.md", /jester doctor --json/, "doctor JSON CLI docs");
 
 for (const publicFile of ["dist", "docs", "examples", "scripts", "CHANGELOG.md", "LICENSE", "README.md", "ROADMAP.md"]) {
   requirePackageFile(packageJson, publicFile);

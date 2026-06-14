@@ -28,7 +28,8 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 
 - `jester setup`, `jester mcp-config`, and `jester bootstrap` provide copy-paste setup for Codex, Claude Code, and generic MCP clients.
 - `memento-mori-jester-mcp` is published as a package binary.
-- `jester doctor` verifies the MCP server file exists and that the review engine blocks a known destructive command.
+- `jester doctor` verifies package version, Node, the MCP server file, review-engine behavior, config loading, hook status, and generated GitHub Action status.
+- `jester doctor --json` exposes the same support diagnostics with stable structured keys for automation and bug reports.
 
 ## Git Hooks
 
@@ -45,7 +46,7 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 ## Support And Recovery
 
 - Package metadata points bug reports at the GitHub issues page.
-- `jester doctor`, `jester config validate`, and `jester rules` are the first troubleshooting commands.
+- `jester doctor --json`, `jester config validate`, and `jester rules` are the first troubleshooting commands.
 - `jester tune`, `jester tune coverage`, and the fixture suite give maintainers a way to inspect noisy rules before changing defaults.
 - npm publish has a manual workflow fallback, but the normal release path is tag-driven trusted publishing.
 
@@ -64,5 +65,4 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 ## Known Next Gaps
 
 - Add `SECURITY.md` and issue templates for clearer support intake.
-- Add `doctor --json` for easier automated diagnostics.
 - Continue expanding pass-case fixtures from real-world usage so false-positive tuning remains evidence-based.

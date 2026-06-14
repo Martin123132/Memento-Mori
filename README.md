@@ -170,6 +170,7 @@ jester final --file .\final-answer.txt --tone professional
 jester explain command "git reset --hard"
 jester start
 jester doctor
+jester doctor --json
 jester playground
 jester setup
 jester setup --agent codex
@@ -188,6 +189,7 @@ jester mcp-config --agent claude --mode npx
 ```
 
 `jester playground` includes one-click samples for command, plan, diff, and final-answer reviews, so you can see a block, caution, or evidence check without inventing input first.
+`jester doctor --json` is the best first artifact to share in a bug report because it includes package, config, MCP, hook, and GitHub Action diagnostics.
 
 The package-name binary works too:
 

@@ -36,6 +36,7 @@ The manual `npm Publish` workflow remains available in GitHub Actions as a fallb
 ```powershell
 npm.cmd view memento-mori-jester version --silent
 npx.cmd -y memento-mori-jester@latest doctor
+npx.cmd -y memento-mori-jester@latest doctor --json
 npx.cmd -y memento-mori-jester@latest examples
 npx.cmd -y memento-mori-jester@latest rules --kind command
 npx.cmd -y memento-mori-jester@latest rule destructive-git-history

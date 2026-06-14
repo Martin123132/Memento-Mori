@@ -53,7 +53,7 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 - `SECURITY.md` routes vulnerability reports away from public issues and asks for redacted diagnostics.
 - `docs/MAINTAINER_TRIAGE.md` explains how to turn useful false-positive reports into fixture coverage before changing rule logic.
 - `npm run fixtures:check` validates fixture IDs, metadata, unsafe-looking content, duplicate content, and explicit expected/absent rule intent.
-- `npm run fixtures:report` shows fixture coverage by rule, preset, kind, and verdict so maintainers can pick the next pass-case target.
+- `npm run fixtures:report` shows fixture coverage by rule, preset, kind, verdict, and quiet-pass rule boundaries so maintainers can pick the next fixture target.
 - npm publish has a manual workflow fallback, but the normal release path is tag-driven trusted publishing.
 
 ## Static Guard
@@ -74,5 +74,5 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 
 ## Known Next Gaps
 
-- Continue expanding pass-case fixtures from real-world usage so false-positive tuning remains evidence-based.
+- Continue expanding pass-case and quiet-pass fixtures from real-world usage so false-positive tuning remains evidence-based.
 - Add more framework-specific false-positive examples as people report real noisy cases.

@@ -33,6 +33,16 @@ export type RuleFixtureMatch = {
   edgeCase: boolean;
 };
 
+export type RuleFixtureQuietPass = {
+  id: string;
+  description: string;
+  preset: ConfigPreset;
+  kind: ReviewKind;
+  verdict: Verdict;
+  weight: FixtureWeight;
+  edgeCase: boolean;
+};
+
 export type FixtureEvidenceConfidence = "none" | "low" | "medium" | "high";
 
 type RuleFixtureCoverage = {
@@ -52,6 +62,8 @@ export type RuleFixtureEvidence = {
   expectedWeight: number;
   unexpectedWeight: number;
   edgeCaseMatches: number;
+  quietPassCount: number;
+  quietPassWeight: number;
   confidence: FixtureEvidenceConfidence;
   coverage: RuleFixtureCoverage;
   byKind: Record<ReviewKind, number>;
@@ -61,7 +73,9 @@ export type RuleFixtureEvidence = {
     block: number;
   };
   matchedFixtures: RuleFixtureMatch[];
+  quietPassFixtures: RuleFixtureQuietPass[];
   samples: string[];
+  quietPassSamples: string[];
 };
 
 export type FixtureEvidenceSupport = "none" | "thin" | "limited" | "strong";
@@ -180,6 +194,8 @@ function emptyRuleFixtureEvidence(ruleId: string, fixtures: PresetReviewFixture[
     expectedWeight: 0,
     unexpectedWeight: 0,
     edgeCaseMatches: 0,
+    quietPassCount: 0,
+    quietPassWeight: 0,
     confidence: "none",
     coverage: {
       total: coverageTotals.total,
@@ -199,7 +215,9 @@ function emptyRuleFixtureEvidence(ruleId: string, fixtures: PresetReviewFixture[
       block: 0
     },
     matchedFixtures: [],
-    samples: []
+    quietPassFixtures: [],
+    samples: [],
+    quietPassSamples: []
   };
 }
 
@@ -223,6 +241,7 @@ export async function ruleFixtureEvidence(
   }
 
   const matchedFixtures: RuleFixtureMatch[] = [];
+  const quietPassFixtures: RuleFixtureQuietPass[] = [];
   const byVerdict = { pass: 0, caution: 0, block: 0 };
   const byKind = {
     command: 0,
@@ -245,6 +264,17 @@ export async function ruleFixtureEvidence(
     });
 
     if (!result.issues.some((issue) => issue.id === ruleId)) {
+      if (absentRuleIds.has(ruleId) && result.verdict === "pass") {
+        quietPassFixtures.push({
+          id: fixture.id,
+          description: fixture.description,
+          preset: fixture.preset,
+          kind: fixture.kind,
+          verdict: result.verdict,
+          weight: fixtureWeight(fixture.weight),
+          edgeCase: fixture.edgeCase ?? false
+        });
+      }
       continue;
     }
 
@@ -278,11 +308,19 @@ export async function ruleFixtureEvidence(
   const edgeCaseMatches = matchedFixtures.filter((entry) => entry.edgeCase).length;
   const matchWeight = matchedFixtures
     .reduce((acc, entry) => acc + entry.weight * edgeCasePenalty(entry.edgeCase), 0);
+  const quietPassWeight = quietPassFixtures
+    .reduce((acc, entry) => acc + entry.weight * edgeCasePenalty(entry.edgeCase), 0);
 
   const orderedSamples = matchedFixtures.length > 0
     ? matchedFixtures
       .slice()
       .sort((a, b) => Number(b.expectedMatch) - Number(a.expectedMatch) || b.weight - a.weight || a.id.localeCompare(b.id))
+      .slice(0, fixtureEvidenceLimit)
+    : [];
+  const orderedQuietPassSamples = quietPassFixtures.length > 0
+    ? quietPassFixtures
+      .slice()
+      .sort((a, b) => b.weight - a.weight || a.id.localeCompare(b.id))
       .slice(0, fixtureEvidenceLimit)
     : [];
 
@@ -301,6 +339,8 @@ export async function ruleFixtureEvidence(
     expectedWeight: Number(expectedWeight.toFixed(3)),
     unexpectedWeight: Number(unexpectedWeight.toFixed(3)),
     edgeCaseMatches,
+    quietPassCount: quietPassFixtures.length,
+    quietPassWeight: Number(quietPassWeight.toFixed(3)),
     confidence: fixtureEvidenceConfidence(matchCount, matchWeight, expectedWeight, unexpectedWeight),
     coverage: {
       total: coverageTotals.total,
@@ -311,7 +351,10 @@ export async function ruleFixtureEvidence(
     byVerdict,
     byKind,
     matchedFixtures,
+    quietPassFixtures,
     samples: orderedSamples
+      .map((entry) => `${entry.id}: ${entry.description}`),
+    quietPassSamples: orderedQuietPassSamples
       .map((entry) => `${entry.id}: ${entry.description}`)
   };
 

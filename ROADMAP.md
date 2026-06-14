@@ -6,6 +6,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Recently Shipped
 
+- Targeted quiet-pass fixture batch in v0.1.55 for noisy high-signal rules, plus quiet-pass evidence in `jester tune` and `npm run fixtures:report`.
 - Fixture coverage report generator in v0.1.54 for rule, preset, review-kind, verdict, and pass-case gaps.
 - Published-package fixture validator fix in v0.1.53 so `npm run fixtures:check` works outside a source checkout.
 - Fixture authoring validator in v0.1.52 for duplicate IDs, missing expected/absent rule intent, weak metadata, unsafe-looking content, and duplicate content.
@@ -44,7 +45,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 ## Product Ideas
 
 - Add more framework-specific false-positive examples from real reports so tuning guidance keeps getting sharper.
-- Add the first targeted pass-case fixture batch from the fixture coverage report.
+- Add preset/kind fixture batches for currently empty `node`, `python`, and `security` coverage slices.
 
 ## Quality And Safety
 

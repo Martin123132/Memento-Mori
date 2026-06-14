@@ -42,7 +42,7 @@ Use a small, boring label vocabulary:
    - a rule bug,
    - or a preset mismatch.
 
-If the user has a safe example that should pass, prefer adding a pass fixture before loosening a rule. If the example should still caution but the wording is confusing, update the rule guidance or docs instead of changing matching behavior.
+If the user has a safe example that should pass, prefer adding a pass or quiet-pass fixture before loosening a rule. If the example should still caution but the wording is confusing, update the rule guidance or docs instead of changing matching behavior.
 
 ## Converting Reports Into Fixtures
 
@@ -83,7 +83,7 @@ node .\dist\cli.js tune coverage
 ```
 
 5. Fix any duplicate IDs, missing expected rule metadata, weak descriptions, unsafe content, or duplicate content reported by `fixtures:check`.
-6. Use `fixtures:report` to check whether the change improves pass-case, preset, kind, or verdict coverage.
+6. Use `fixtures:report` to check whether the change improves pass-case, quiet-pass, preset, kind, or verdict coverage.
 7. Check whether support/confidence changed in the expected direction.
 8. If the fixture changes verdict behavior, mention the exact rule impact in `CHANGELOG.md`.
 

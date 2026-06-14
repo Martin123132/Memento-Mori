@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.55
+
+- Added the first targeted quiet-pass fixture batch for noisy high-signal rules including `risky-domain`, `done-without-evidence`, `package-install-script`, `secret-material`, `sensitive-env-change`, `test-removal`, `skip-tests`, `vibes-based-plan`, `chmod-777`, and `privileged-command`.
+- Extended `jester tune` fixture evidence with quiet-pass counts, weights, fixtures, and samples so maintainers can see safe near-misses alongside matched rule hits.
+- Expanded `npm run fixtures:report` with quiet-pass rule coverage and rules-without-quiet-pass gaps.
+
 ## 0.1.54
 
 - Added `npm run fixtures:report`, a local fixture coverage report for rule, preset, review-kind, and verdict coverage.

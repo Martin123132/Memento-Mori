@@ -312,7 +312,7 @@ jester tune coverage --json
 
 `jester tune <id>` turns that into a practical mute checklist with exact `disable-rule`, `enable-rule`, and validation commands. It does not edit config files.
 
-`jester tune coverage` shows the fixture support and confidence signal for every rule, including suggested next actions such as adding coverage, reviewing surprise matches, or leaving a healthy signal alone.
+`jester tune coverage` shows the fixture support and confidence signal for every rule, including suggested next actions such as adding coverage, reviewing surprise matches, checking quiet-pass boundaries, or leaving a healthy signal alone.
 
 Disable a noisy rule by adding its id to `disabledRules` in `jester.config.json`:
 
@@ -501,7 +501,7 @@ Use the false-positive template for noisy cautions or blocks. Include `jester su
 
 Maintainers can use [docs/MAINTAINER_TRIAGE.md](docs/MAINTAINER_TRIAGE.md) to turn useful false-positive reports into redacted fixtures.
 Run `npm run fixtures:check` before merging fixture changes; it catches duplicate IDs, missing rule metadata, weak descriptions, unsafe-looking content, and duplicate content.
-Run `npm run fixtures:report` to see fixture coverage by rule, preset, kind, and verdict before choosing the next pass-case fixture.
+Run `npm run fixtures:report` to see fixture coverage by rule, preset, kind, verdict, and quiet-pass boundaries before choosing the next fixture.
 
 For vulnerabilities, private code exposure, or credential-handling concerns, follow [SECURITY.md](SECURITY.md) instead of opening a public issue with sensitive details.
 

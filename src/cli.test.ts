@@ -412,13 +412,15 @@ test("tune explains safe muting for a noisy built-in rule", async () => {
   assert.match(stdout, /Weighted fixtures checked: [0-9.]+/);
   assert.match(stdout, /Matching fixtures: [1-9][0-9]*/);
   assert.match(stdout, /Weighted matches: [0-9.]+/);
+  assert.match(stdout, /Quiet-pass fixtures: [1-9][0-9]*/);
+  assert.match(stdout, /Quiet-pass weight: [0-9.]+/);
   assert.match(stdout, /Fixture coverage: [0-9]+\/[0-9]+/);
   assert.match(stdout, /By kind: command [0-9]+, plan [0-9]+, diff [0-9]+, final [0-9]+/);
   assert.match(stdout, /By verdict:/);
   const sampleSectionStart = stdout.indexOf("Matched fixture samples:");
-  const sampleSectionEnd = stdout.indexOf("Commands:");
+  const sampleSectionEnd = stdout.indexOf("Quiet-pass fixture samples:");
   assert.ok(sampleSectionStart >= 0, "Expected fixture sample section");
-  assert.ok(sampleSectionEnd > sampleSectionStart, "Expected sample section followed by commands");
+  assert.ok(sampleSectionEnd > sampleSectionStart, "Expected sample section followed by quiet-pass section");
   const sampleSection = stdout.slice(sampleSectionStart + "Matched fixture samples:".length, sampleSectionEnd);
   const sampleLines = sampleSection
     .split("\n")
@@ -427,6 +429,8 @@ test("tune explains safe muting for a noisy built-in rule", async () => {
     .filter((line) => line.length > 0);
   assert.ok(sampleLines.length >= 1 && sampleLines.length <= 5);
   assert.ok(sampleLines.every((line) => line.startsWith("  ") && line.includes(": ")));
+  assert.match(stdout, /Quiet-pass fixture samples:/);
+  assert.match(stdout, /universal-risky-domain-docs-pass/);
   assert.match(stdout, /Before muting/);
   assert.match(stdout, /jester config disable-rule risky-domain/);
   assert.match(stdout, /jester config enable-rule risky-domain/);
@@ -464,6 +468,8 @@ test("tune supports json output with stable commands", async () => {
       expectedWeight: number;
       unexpectedWeight: number;
       edgeCaseMatches: number;
+      quietPassCount: number;
+      quietPassWeight: number;
       byKind: {
         command: number;
         plan: number;
@@ -494,7 +500,17 @@ test("tune supports json output with stable commands", async () => {
         weight: 1 | 2 | 3;
         edgeCase: boolean;
       }>;
+      quietPassFixtures: Array<{
+        id: string;
+        description: string;
+        preset: string;
+        kind: string;
+        verdict: string;
+        weight: 1 | 2 | 3;
+        edgeCase: boolean;
+      }>;
       samples: string[];
+      quietPassSamples: string[];
     };
     recommendation: string;
     checksBeforeMuting: string[];
@@ -534,10 +550,14 @@ test("tune supports json output with stable commands", async () => {
   assert.equal(typeof result.fixtureEvidence.matchWeight, "number");
   assert.equal(typeof result.fixtureEvidence.expectedWeight, "number");
   assert.equal(typeof result.fixtureEvidence.unexpectedWeight, "number");
+  assert.equal(typeof result.fixtureEvidence.quietPassCount, "number");
+  assert.equal(typeof result.fixtureEvidence.quietPassWeight, "number");
   assert.equal(result.fixtureEvidence.matchedFixtures.length, result.fixtureEvidence.matchCount);
+  assert.equal(result.fixtureEvidence.quietPassFixtures.length, result.fixtureEvidence.quietPassCount);
   assert.equal(result.fixtureEvidence.totalFixtures > 0, true);
   assert.equal(result.fixtureEvidence.coverage.total, result.fixtureEvidence.totalFixtures);
   assert.ok(result.fixtureEvidence.samples.length <= 5);
+  assert.ok(result.fixtureEvidence.quietPassSamples.length <= 5);
   assert.ok(result.fixtureEvidence.byKind.command >= 0);
   assert.ok(result.fixtureEvidence.byKind.plan >= 0);
   assert.ok(result.fixtureEvidence.byKind.diff >= 0);
@@ -559,8 +579,14 @@ test("tune --json for matched fixture evidence is deterministic", async () => {
         id: string;
         description: string;
       }>;
+      quietPassFixtures: Array<{
+        id: string;
+        description: string;
+      }>;
       samples: string[];
+      quietPassSamples: string[];
       matchCount: number;
+      quietPassCount: number;
       confidence: string;
       support: "none" | "thin" | "limited" | "strong";
       byKind: {
@@ -575,11 +601,17 @@ test("tune --json for matched fixture evidence is deterministic", async () => {
   assert.equal(result.fixtureEvidence.confidence, "medium");
   assert.equal(result.fixtureEvidence.support, "limited");
   assert.equal(result.fixtureEvidence.matchCount > 0, true);
+  assert.equal(result.fixtureEvidence.quietPassCount >= 1, true);
   assert.equal(result.fixtureEvidence.matchedFixtures.length >= result.fixtureEvidence.samples.length, true);
+  assert.equal(result.fixtureEvidence.quietPassFixtures.length >= result.fixtureEvidence.quietPassSamples.length, true);
   for (const sample of result.fixtureEvidence.samples) {
     assert.ok(result.fixtureEvidence.matchedFixtures.some((fixture) => sample === `${fixture.id}: ${fixture.description}`));
   }
+  for (const sample of result.fixtureEvidence.quietPassSamples) {
+    assert.ok(result.fixtureEvidence.quietPassFixtures.some((fixture) => sample === `${fixture.id}: ${fixture.description}`));
+  }
   assert.ok(result.fixtureEvidence.samples.length <= 5);
+  assert.ok(result.fixtureEvidence.quietPassSamples.includes("universal-risky-domain-docs-pass: Documentation-only sensitive-domain vocabulary should stay quiet when no code behavior changes."));
 });
 
 test("tune support rewards expected fixture coverage without surprise matches", async () => {
@@ -605,6 +637,38 @@ test("tune support rewards expected fixture coverage without surprise matches", 
   assert.equal(result.fixtureEvidence.matchCount >= 3, true);
   assert.equal(result.fixtureEvidence.expectedWeight >= 5, true);
   assert.equal(result.fixtureEvidence.unexpectedWeight, 0);
+});
+
+test("fixture report surfaces quiet-pass rule coverage", async () => {
+  const text = await execFileAsync(process.execPath, [
+    "scripts/report-fixtures.mjs"
+  ]);
+  const json = await execFileAsync(process.execPath, [
+    "scripts/report-fixtures.mjs",
+    "--json"
+  ]);
+  const result = JSON.parse(json.stdout) as {
+    totalFixtures: number;
+    quietPassRules: Array<{
+      ruleId: string;
+      total: number;
+      samples: Array<{ id: string; description: string }>;
+    }>;
+    gaps: {
+      rulesWithoutQuietPassCoverage: Array<{ ruleId: string }>;
+      quietPassRuleCoverage: Array<{ ruleId: string; total: number }>;
+    };
+  };
+  const riskyDomain = result.quietPassRules.find((rule) => rule.ruleId === "risky-domain");
+
+  assert.match(text.stdout, /Rules without quiet-pass coverage:/);
+  assert.match(text.stdout, /Quiet-pass rule coverage:/);
+  assert.match(text.stdout, /risky-domain: [1-9][0-9]* quiet-pass fixture/);
+  assert.equal(result.totalFixtures >= 68, true);
+  assert.equal(riskyDomain?.total, 4);
+  assert.ok(riskyDomain?.samples.some((sample) => sample.id === "universal-risky-domain-docs-pass"));
+  assert.ok(result.gaps.quietPassRuleCoverage.some((rule) => rule.ruleId === "risky-domain" && rule.total === 4));
+  assert.ok(result.gaps.rulesWithoutQuietPassCoverage.some((rule) => rule.ruleId === "missing-verification-step"));
 });
 
 test("tune coverage prints fixture coverage actions", async () => {

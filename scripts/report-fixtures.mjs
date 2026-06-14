@@ -42,6 +42,7 @@ function buildFixtureReport(rawFixtures) {
   const byKind = zeroCounts(allowedKinds);
   const byVerdict = zeroCounts(allowedVerdicts);
   const rules = new Map();
+  const quietPassRules = new Map();
   const quietPassFixtures = [];
 
   let totalWeight = 0;
@@ -52,6 +53,7 @@ function buildFixtureReport(rawFixtures) {
     const kind = typeof fixture.kind === "string" ? fixture.kind : "unknown";
     const verdict = typeof fixture.expectedVerdict === "string" ? fixture.expectedVerdict : "unknown";
     const expectedRuleIds = Array.isArray(fixture.expectedRuleIds) ? fixture.expectedRuleIds : [];
+    const absentRuleIds = Array.isArray(fixture.absentRuleIds) ? fixture.absentRuleIds : [];
     const weight = fixtureWeight(fixture.weight);
     const edgeCase = fixture.edgeCase === true;
     const sample = {
@@ -72,6 +74,21 @@ function buildFixtureReport(rawFixtures) {
 
     if (verdict === "pass" && expectedRuleIds.length === 0) {
       quietPassFixtures.push(sample);
+    }
+
+    if (verdict === "pass") {
+      for (const ruleId of absentRuleIds) {
+        const entry = quietPassRules.get(ruleId) ?? createQuietPassEntry(ruleId);
+        entry.total += 1;
+        entry.weight += weight;
+        entry.kinds[kind] = (entry.kinds[kind] ?? 0) + 1;
+        entry.presets[preset] = (entry.presets[preset] ?? 0) + 1;
+        if (edgeCase) {
+          entry.edgeCases += 1;
+        }
+        entry.samples.push(sample);
+        quietPassRules.set(ruleId, entry);
+      }
     }
 
     for (const ruleId of expectedRuleIds) {
@@ -101,16 +118,35 @@ function buildFixtureReport(rawFixtures) {
       verdicts: orderedCounts(entry.verdicts, allowedVerdicts),
       kinds: orderedCounts(entry.kinds, allowedKinds),
       presets: orderedCounts(entry.presets, allowedPresets),
+      quietPassCases: quietPassRules.get(entry.ruleId)?.total ?? 0,
       samples: entry.samples
         .slice()
         .sort((a, b) => a.id.localeCompare(b.id))
         .slice(0, sampleLimit)
     }))
     .sort((a, b) => a.ruleId.localeCompare(b.ruleId));
+  const quietPassRuleSummaries = [...quietPassRules.values()]
+    .map((entry) => ({
+      ruleId: entry.ruleId,
+      total: entry.total,
+      weight: entry.weight,
+      edgeCases: entry.edgeCases,
+      kinds: orderedCounts(entry.kinds, allowedKinds),
+      presets: orderedCounts(entry.presets, allowedPresets),
+      samples: entry.samples
+        .slice()
+        .sort((a, b) => a.id.localeCompare(b.id))
+        .slice(0, sampleLimit)
+    }))
+    .sort((a, b) => b.total - a.total || b.weight - a.weight || a.ruleId.localeCompare(b.ruleId));
 
   const gaps = {
     rulesWithoutPassCases: ruleSummaries
       .filter((entry) => entry.passCases === 0)
+      .sort((a, b) => b.total - a.total || a.ruleId.localeCompare(b.ruleId))
+      .map(ruleGapSummary),
+    rulesWithoutQuietPassCoverage: ruleSummaries
+      .filter((entry) => entry.quietPassCases === 0)
       .sort((a, b) => b.total - a.total || a.ruleId.localeCompare(b.ruleId))
       .map(ruleGapSummary),
     thinRuleCoverage: ruleSummaries
@@ -118,6 +154,7 @@ function buildFixtureReport(rawFixtures) {
       .sort((a, b) => a.total - b.total || a.ruleId.localeCompare(b.ruleId))
       .map(ruleGapSummary),
     presetKindGaps: presetKindGaps(rawFixtures),
+    quietPassRuleCoverage: quietPassRuleSummaries,
     quietPassFixtures: quietPassFixtures
       .slice()
       .sort((a, b) => a.id.localeCompare(b.id))
@@ -130,6 +167,7 @@ function buildFixtureReport(rawFixtures) {
     byVerdict: orderedCounts(byVerdict, allowedVerdicts),
     byKind: orderedCounts(byKind, allowedKinds),
     byPreset: orderedCounts(byPreset, allowedPresets),
+    quietPassRules: quietPassRuleSummaries,
     rules: ruleSummaries,
     gaps
   };
@@ -152,6 +190,10 @@ function renderFixtureReport(report) {
   ];
 
   lines.push(...formatRuleGaps(report.gaps.rulesWithoutPassCases));
+  lines.push("", "Rules without quiet-pass coverage:");
+  lines.push(...formatRuleGaps(report.gaps.rulesWithoutQuietPassCoverage));
+  lines.push("", "Quiet-pass rule coverage:");
+  lines.push(...formatQuietPassRuleCoverage(report.gaps.quietPassRuleCoverage));
   lines.push("", "Thin rule coverage:");
   lines.push(...formatRuleGaps(report.gaps.thinRuleCoverage));
   lines.push("", "Preset/kind gaps:");
@@ -176,6 +218,18 @@ function createRuleEntry(ruleId) {
     weight: 0,
     edgeCases: 0,
     verdicts: zeroCounts(allowedVerdicts),
+    kinds: zeroCounts(allowedKinds),
+    presets: zeroCounts(allowedPresets),
+    samples: []
+  };
+}
+
+function createQuietPassEntry(ruleId) {
+  return {
+    ruleId,
+    total: 0,
+    weight: 0,
+    edgeCases: 0,
     kinds: zeroCounts(allowedKinds),
     presets: zeroCounts(allowedPresets),
     samples: []
@@ -219,6 +273,7 @@ function ruleGapSummary(entry) {
     passCases: entry.passCases,
     cautionCases: entry.cautionCases,
     blockCases: entry.blockCases,
+    quietPassCases: entry.quietPassCases ?? 0,
     samples: entry.samples
   };
 }
@@ -236,7 +291,17 @@ function formatRuleGaps(entries) {
 
   return entries
     .slice(0, 12)
-    .map((entry) => `- ${entry.ruleId}: ${entry.total} fixture(s), pass ${entry.passCases}, caution ${entry.cautionCases}, block ${entry.blockCases}`);
+    .map((entry) => `- ${entry.ruleId}: ${entry.total} fixture(s), pass ${entry.passCases}, caution ${entry.cautionCases}, block ${entry.blockCases}, quiet-pass ${entry.quietPassCases}`);
+}
+
+function formatQuietPassRuleCoverage(entries) {
+  if (entries.length === 0) {
+    return ["- none"];
+  }
+
+  return entries
+    .slice(0, 12)
+    .map((entry) => `- ${entry.ruleId}: ${entry.total} quiet-pass fixture(s), weight ${entry.weight}`);
 }
 
 function formatPresetKindGaps(entries) {

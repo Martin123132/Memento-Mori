@@ -166,6 +166,7 @@ Use `jester tune coverage` when maintaining the rule set. It ranks every rule by
 - a deterministic support signal (`none`, `thin`, `limited`, `strong`) derived from hit count, expected-coverage split, and surprise rate,
 - weighted fixture coverage totals and weighted matches,
 - match-weight and unexpected-weight decomposition (so broad noisy fixtures and fixture misses are easier to read),
+- quiet-pass fixture counts and samples for cases where `absentRuleIds` proves the rule stayed silent,
 - a precision confidence signal (`none`/`low`/`medium`/`high`),
 - breakdown by verdict,
 - breakdown by review kind of matched fixtures (command/plan/diff/final),
@@ -173,7 +174,7 @@ Use `jester tune coverage` when maintaining the rule set. It ranks every rule by
 - deterministic fixture IDs + descriptions with sample truncation,
 - and explicit `No fixture coverage is currently available for this rule.` when no fixture references apply.
 
-Support and confidence are rule-specific signals: they reward expected fixture matches and low surprise rates rather than measuring how much of the whole fixture corpus a single rule touches.
+Support and confidence are rule-specific signals: they reward expected fixture matches and low surprise rates rather than measuring how much of the whole fixture corpus a single rule touches. Quiet-pass samples are separate boundary evidence: they show safe examples where a noisy rule is intentionally absent.
 
 Project-config rules intentionally do not borrow generic fixture coverage: local `blockedCommands`, `sensitiveDomains`, and custom rules report no fixture coverage unless a future fixture suite explicitly covers that project-specific rule.
 

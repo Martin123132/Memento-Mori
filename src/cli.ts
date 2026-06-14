@@ -1688,19 +1688,30 @@ function renderFixtureEvidence(evidence: RuleFixtureEvidence): string {
     `Expected-match weight: ${evidence.expectedWeight}`,
     `Unexpected-match weight: ${evidence.unexpectedWeight}`,
     `Edge-case matches: ${evidence.edgeCaseMatches}`,
+    `Quiet-pass fixtures: ${evidence.quietPassCount}`,
+    `Quiet-pass weight: ${evidence.quietPassWeight}`,
     `By kind: command ${evidence.byKind.command}, plan ${evidence.byKind.plan}, diff ${evidence.byKind.diff}, final ${evidence.byKind.final}`,
     `Fixture coverage: ${evidence.coverage.matched}/${evidence.coverage.total} (${weightedCoverage} weighted)`,
     `By verdict: pass ${evidence.byVerdict.pass}, caution ${evidence.byVerdict.caution}, block ${evidence.byVerdict.block}`
   ];
 
-  if (evidence.matchCount === 0) {
+  if (evidence.matchCount === 0 && evidence.quietPassCount === 0) {
     lines.push("No fixture coverage is currently available for this rule.");
     return lines.join("\n");
   }
 
-  lines.push("Matched fixture samples:");
-  for (const sample of evidence.samples) {
-    lines.push(`  ${sample}`);
+  if (evidence.matchCount > 0) {
+    lines.push("Matched fixture samples:");
+    for (const sample of evidence.samples) {
+      lines.push(`  ${sample}`);
+    }
+  }
+
+  if (evidence.quietPassCount > 0) {
+    lines.push("Quiet-pass fixture samples:");
+    for (const sample of evidence.quietPassSamples) {
+      lines.push(`  ${sample}`);
+    }
   }
 
   return lines.join("\n");

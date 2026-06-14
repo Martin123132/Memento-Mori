@@ -106,7 +106,9 @@ requireText("docs/PRODUCTION_READINESS.md", /issue templates/i, "issue template 
 requireText("docs/PRODUCTION_READINESS.md", /MAINTAINER_TRIAGE\.md/, "maintainer triage readiness");
 requireText("docs/PRODUCTION_READINESS.md", /fixtures:check/, "fixture authoring check readiness");
 requireText("docs/PRODUCTION_READINESS.md", /fixtures:report/, "fixture coverage report readiness");
+requireText("docs/PRODUCTION_READINESS.md", /quiet-pass/, "quiet-pass fixture readiness");
 requireText("docs/CLI.md", /jester doctor --json/, "doctor JSON CLI docs");
+requireText("docs/CLI.md", /quiet-pass fixture/, "quiet-pass fixture CLI docs");
 requireText("docs/MAINTAINER_TRIAGE.md", /doctor --json/, "doctor JSON triage prompt");
 requireText("docs/MAINTAINER_TRIAGE.md", /tune <rule-id> --json/, "tune JSON triage prompt");
 requireText("docs/MAINTAINER_TRIAGE.md", /preset-review-cases\.json/, "fixture suite link");
@@ -120,6 +122,8 @@ requireText("scripts/check-fixtures.mjs", /duplicated/, "duplicate fixture id ch
 requireText("scripts/check-fixtures.mjs", /unsafeContentPatterns/, "unsafe fixture content checks");
 forbidText("scripts/check-fixtures.mjs", /src\/config\.ts|src\/types\.ts/, "source-only fixture validator dependencies");
 requireText("scripts/report-fixtures.mjs", /rulesWithoutPassCases/, "rules without pass-case coverage report");
+requireText("scripts/report-fixtures.mjs", /rulesWithoutQuietPassCoverage/, "rules without quiet-pass coverage report");
+requireText("scripts/report-fixtures.mjs", /quietPassRuleCoverage/, "quiet-pass rule coverage report");
 requireText("scripts/report-fixtures.mjs", /presetKindGaps/, "preset and kind gap report");
 forbidText("scripts/report-fixtures.mjs", /src\/config\.ts|src\/types\.ts/, "source-only fixture report dependencies");
 requireText("package.json", /"fixtures:check": "node scripts\/check-fixtures\.mjs"/, "fixture authoring check script");

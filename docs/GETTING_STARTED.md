@@ -2,7 +2,7 @@
 
 This is the shortest path for a normal project.
 
-## 1. Check It Runs
+## 1. Try It Without Writing Files
 
 For a guided checklist:
 
@@ -17,8 +17,6 @@ npx -y memento-mori-jester@latest doctor
 ```
 
 You should see four `PASS` lines.
-
-## 2. See The Point
 
 ```powershell
 npx -y memento-mori-jester@latest command "git reset --hard"
@@ -38,19 +36,21 @@ For the local browser version:
 npx -y memento-mori-jester@latest playground
 ```
 
+The playground starts on `127.0.0.1` and includes sample buttons for command, plan, diff, and final-answer reviews.
+
 If a rule feels noisy, ask for tuning advice before disabling it:
 
 ```powershell
 npx -y memento-mori-jester@latest tune risky-domain
 ```
 
-## 3. Add It To A Project
+## 2. Add It To A Project
 
 Run this from the folder of the project you want protected:
 
 ```powershell
 npx -y memento-mori-jester@latest config recommend
-npx -y memento-mori-jester@latest bootstrap --preset node
+npx -y memento-mori-jester@latest bootstrap --preset <recommended-preset>
 ```
 
 Use `--preset ai` for LLM, MCP, and agent apps, `--preset api` for backend APIs, `--preset web` for frontend/browser apps, `--preset infra` for deployment or cloud infrastructure repos, or `--preset security` for a stricter general policy.
@@ -65,32 +65,34 @@ That creates:
 
 Existing files are kept. Add `--force` only when you want to overwrite the starter files.
 
-## 4. Optional Git Hooks
-
-To make git call the Jester before commits:
-
-```powershell
-npx -y memento-mori-jester@latest bootstrap --preset node --hook pre-commit
-```
-
-To also check before pushing:
-
-```powershell
-npx -y memento-mori-jester@latest bootstrap --preset node --hook pre-commit --hook pre-push
-```
-
-## 5. Agent Instruction
+## 3. Agent Instruction
 
 For exact Codex, Claude Code, or generic MCP snippets:
 
 ```powershell
 npx -y memento-mori-jester@latest setup
+npx -y memento-mori-jester@latest setup --agent codex
+npx -y memento-mori-jester@latest setup --agent claude
 ```
 
 Put this in your agent rules or custom instructions:
 
 ```text
 Before risky commands, final answers, commits, or large edits, call the Memento Mori Jester. Treat BLOCK as requiring a changed plan, and CAUTION as requiring at least one concrete verification step.
+```
+
+## 4. Optional Git Hooks
+
+To make git call the Jester before commits:
+
+```powershell
+npx -y memento-mori-jester@latest bootstrap --preset <recommended-preset> --hook pre-commit
+```
+
+To also check before pushing:
+
+```powershell
+npx -y memento-mori-jester@latest bootstrap --preset <recommended-preset> --hook pre-commit --hook pre-push
 ```
 
 ## What To Share With Someone Else

@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.47
+
+- Reworked the README Start Here section into a clearer four-step path: try without writing files, add a recommended preset, connect an agent, then add hooks or CI.
+- Updated Getting Started to mirror the same onboarding order and mention playground sample buttons.
+- Kept this as a docs-only onboarding release; no CLI, MCP, config, review, playground runtime, or release workflow behavior changed.
+
 ## 0.1.46
 
 - Added one-click sample buttons to the local playground for command, plan, diff, and final-answer reviews.

@@ -16,7 +16,7 @@ See the full [demo transcript](docs/DEMO.md).
 
 ## Start Here
 
-No install needed:
+### 1. Try It Without Writing Files
 
 ```powershell
 npx -y memento-mori-jester@latest start
@@ -25,11 +25,13 @@ npx -y memento-mori-jester@latest command "git reset --hard"
 npx -y memento-mori-jester@latest playground
 ```
 
-Add it to a project:
+`start` prints the guided checklist. `playground` opens the local browser UI with sample buttons for commands, plans, diffs, and final answers.
+
+### 2. Add It To A Project
 
 ```powershell
 npx -y memento-mori-jester@latest config recommend
-npx -y memento-mori-jester@latest bootstrap --preset node
+npx -y memento-mori-jester@latest bootstrap --preset <recommended-preset>
 ```
 
 That writes:
@@ -37,6 +39,25 @@ That writes:
 - `jester.config.json`
 - `memento-mori.mcp.json`
 - `MEMENTO_MORI.md`
+
+Common presets are `node`, `python`, `web`, `api`, `infra`, `ai`, and `security`.
+
+### 3. Connect Your Agent
+
+```powershell
+npx -y memento-mori-jester@latest setup
+npx -y memento-mori-jester@latest setup --agent codex
+npx -y memento-mori-jester@latest setup --agent claude
+```
+
+Use the generated MCP snippet and agent instruction in Codex, Claude Code, or another MCP-capable client.
+
+### 4. Add Hooks Or CI When Ready
+
+```powershell
+npx -y memento-mori-jester@latest bootstrap --preset <recommended-preset> --hook pre-commit
+npx -y memento-mori-jester@latest bootstrap --preset <recommended-preset> --hook pre-commit --hook pre-push
+```
 
 Add it to GitHub code scanning:
 

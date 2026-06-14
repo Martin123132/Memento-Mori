@@ -1,0 +1,131 @@
+#!/usr/bin/env node
+import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
+
+const root = process.cwd();
+const failures = [];
+
+function read(path) {
+  return readFileSync(join(root, path), "utf8");
+}
+
+function readJson(path) {
+  return JSON.parse(read(path));
+}
+
+function requireFile(path) {
+  if (!existsSync(join(root, path))) {
+    failures.push(`${path} is missing.`);
+  }
+}
+
+function requireText(path, pattern, description) {
+  const content = read(path);
+  if (!pattern.test(content)) {
+    failures.push(`${path} should include ${description}.`);
+  }
+}
+
+function requirePackageFile(packageJson, value) {
+  if (!Array.isArray(packageJson.files) || !packageJson.files.includes(value)) {
+    failures.push(`package.json files should include ${value}.`);
+  }
+}
+
+const packageJson = readJson("package.json");
+const packageLock = readJson("package-lock.json");
+const version = packageJson.version;
+const tag = `v${version}`;
+
+if (!/^\d+\.\d+\.\d+$/.test(version)) {
+  failures.push(`package.json version should be plain semver. Saw ${version}.`);
+}
+
+if (packageLock.version !== version || packageLock.packages?.[""]?.version !== version) {
+  failures.push("package-lock.json version should match package.json.");
+}
+
+for (const path of [
+  "README.md",
+  "CHANGELOG.md",
+  "ROADMAP.md",
+  "LICENSE",
+  "docs/RELEASE.md",
+  "docs/TRUSTED_PUBLISHING.md",
+  "docs/PRODUCTION_READINESS.md",
+  `docs/RELEASE_NOTES_${tag}.md`,
+  "action.yml",
+  ".github/workflows/ci.yml",
+  ".github/workflows/npm-publish.yml",
+  ".github/workflows/release.yml",
+  "examples/github-action.yml",
+  "examples/github-code-scanning.yml",
+  "examples/ci/README.md",
+  "examples/presets/README.md",
+  "examples/fixtures/preset-review-cases.json"
+]) {
+  requireFile(path);
+}
+
+requireText("CHANGELOG.md", new RegExp(`## ${version.replaceAll(".", "\\.")}`), `a ${version} section`);
+requireText(`docs/RELEASE_NOTES_${tag}.md`, /## Release Validation/, "release validation commands");
+requireText("README.md", /## Start Here/, "Start Here onboarding");
+requireText("README.md", /config recommend/, "preset recommendation onboarding");
+requireText("README.md", /setup --agent codex/, "Codex setup onboarding");
+requireText("README.md", /github-action --write/, "GitHub Action onboarding");
+requireText("README.md", /License: PolyForm Noncommercial/, "the noncommercial license badge");
+requireText("docs/PRODUCTION_READINESS.md", /npm package/i, "npm package readiness");
+requireText("docs/PRODUCTION_READINESS.md", /GitHub Action/i, "GitHub Action readiness");
+requireText("docs/PRODUCTION_READINESS.md", /MCP/i, "MCP readiness");
+requireText("docs/PRODUCTION_READINESS.md", /git hooks/i, "git hook readiness");
+requireText("docs/PRODUCTION_READINESS.md", /support/i, "support readiness");
+
+for (const publicFile of ["dist", "docs", "examples", "scripts", "CHANGELOG.md", "LICENSE", "README.md", "ROADMAP.md"]) {
+  requirePackageFile(packageJson, publicFile);
+}
+
+for (const binName of ["jester", "memento-mori-jester", "memento-mori-jester-mcp"]) {
+  if (!packageJson.bin?.[binName]) {
+    failures.push(`package.json bin should include ${binName}.`);
+  }
+}
+
+if (packageJson.license !== "SEE LICENSE IN LICENSE") {
+  failures.push("package.json license should point to LICENSE.");
+}
+
+if (packageJson.publishConfig?.access !== "public") {
+  failures.push("package.json publishConfig.access should be public.");
+}
+
+requireText(".github/workflows/ci.yml", /actions\/checkout@v6/, "checkout@v6");
+requireText(".github/workflows/ci.yml", /actions\/setup-node@v6/, "setup-node@v6");
+requireText(".github/workflows/ci.yml", /node-version:\s*24/, "Node 24");
+requireText(".github/workflows/ci.yml", /npm test/, "npm test");
+requireText(".github/workflows/ci.yml", /npm run pack:dry/, "package dry run");
+
+requireText(".github/workflows/npm-publish.yml", /tags:\s*\n\s*-\s*"v\*"/, "tag-triggered publishing");
+requireText(".github/workflows/npm-publish.yml", /workflow_dispatch/, "manual publish fallback");
+requireText(".github/workflows/npm-publish.yml", /id-token:\s*write/, "trusted publishing id-token permission");
+requireText(".github/workflows/npm-publish.yml", /Verify tag matches package version/, "tag/package version guard");
+requireText(".github/workflows/npm-publish.yml", /npm run pack:dry/, "package dry run before publish");
+requireText(".github/workflows/npm-publish.yml", /npm publish/, "npm publish step");
+
+requireText(".github/workflows/release.yml", /tags:\s*\n\s*-\s*"v\*"/, "tag-triggered GitHub Releases");
+requireText(".github/workflows/release.yml", /docs\/RELEASE_NOTES_\$\{TAG\}\.md/, "release notes lookup");
+requireText(".github/workflows/release.yml", /gh release create/, "GitHub Release creation");
+
+requireText("action.yml", /summary:/, "summary input");
+requireText("action.yml", /GITHUB_STEP_SUMMARY/, "GitHub step summary output");
+requireText("action.yml", /actions\/setup-node@v6/, "setup-node@v6");
+requireText("action.yml", /node-version:\s*24/, "Node 24");
+
+if (failures.length > 0) {
+  console.error("Production readiness check failed:");
+  for (const failure of failures) {
+    console.error(`- ${failure}`);
+  }
+  process.exit(1);
+}
+
+console.log(`Production readiness check passed for ${tag}.`);

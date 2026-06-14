@@ -6,6 +6,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Recently Shipped
 
+- Production readiness checklist and static guard in v0.1.48 for package, workflow, docs, release, and support drift.
 - README onboarding polish in v0.1.47 around the shortest path from `npx` to playground, agent setup, hooks, and CI.
 - Playground sample buttons in v0.1.46 for trying command, plan, diff, and final-answer reviews from the first screen.
 - Fixture curation pass in v0.1.45 that moved all built-in and structural rule evidence to medium-or-better confidence.
@@ -36,7 +37,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Product Ideas
 
-- Add first-run screenshots or a short hosted demo clip once the README path has had real-user feedback.
+- Add `doctor --json` and support templates so diagnostics and bug reports are easier to collect.
 
 ## Quality And Safety
 

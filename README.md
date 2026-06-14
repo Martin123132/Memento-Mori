@@ -495,6 +495,7 @@ Release checklist:
 
 ```powershell
 npm.cmd test
+npm.cmd run production:check
 npm.cmd run pack:dry
 git tag -a v0.1.x -m "Memento Mori Jester v0.1.x"
 git push origin main
@@ -502,6 +503,8 @@ git push origin v0.1.x
 ```
 
 Pushing a `v*` tag creates the GitHub Release and publishes the matching package version to npm through trusted publishing.
+
+The production readiness bar is documented in [docs/PRODUCTION_READINESS.md](docs/PRODUCTION_READINESS.md).
 
 GitHub: <https://github.com/Martin123132/Memento-Mori>
 

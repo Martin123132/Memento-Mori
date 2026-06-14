@@ -7,11 +7,12 @@ This project publishes GitHub Releases and npm packages from `v*` tags.
 ```powershell
 npm.cmd version 0.1.x --no-git-tag-version
 npm.cmd test
+npm.cmd run production:check
 npm.cmd run pack:dry
 git diff --check
 ```
 
-Move the current changelog bullets into a matching version section and add `docs/RELEASE_NOTES_v0.1.x.md` before committing.
+Move the current changelog bullets into a matching version section and add `docs/RELEASE_NOTES_v0.1.x.md` before committing. Keep `docs/PRODUCTION_READINESS.md` and `npm run production:check` aligned when package, workflow, docs, or support expectations change.
 
 ## 2. Tag And Push
 

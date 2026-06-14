@@ -1,0 +1,68 @@
+# Production Readiness
+
+This checklist defines what "production grade" means for Memento Mori Jester right now. It is intentionally practical: the project is a local CLI, MCP server, GitHub Action, and hook helper, so production readiness means users can install it, understand it, wire it in, recover from failures, and verify releases without guesswork.
+
+## Current Bar
+
+- The npm package installs with `npx -y memento-mori-jester@latest` and exposes the CLI plus MCP server binaries.
+- The default path is local and deterministic: reviews run on user-provided text, diffs, commands, plans, and final answers without sending project code to a hosted API.
+- GitHub Releases and npm publishing are automated from annotated `v*` tags through GitHub Actions trusted publishing.
+- CI runs tests and a package dry run on every push to `main` and pull request.
+- The local playground, GitHub Action, MCP setup snippets, preset examples, fixtures, and release notes ship in the npm package.
+
+## npm Package
+
+- `package.json` includes repository, homepage, bugs, binaries, exports, public package files, and public publish access.
+- `package-lock.json` version matches `package.json`.
+- `npm run pack:dry` confirms the package includes `dist`, `docs`, `examples`, `scripts`, `README.md`, `CHANGELOG.md`, `ROADMAP.md`, and `LICENSE`.
+- `prepublishOnly` runs tests and a package dry run for local publish attempts.
+
+## GitHub Action
+
+- `action.yml` builds with Node 24 through `actions/setup-node@v6`.
+- Action inputs cover `fail-on`, `subject`, `config`, `no-config`, `format`, `output-file`, and `summary`.
+- SARIF output and GitHub step summaries remain separate so users can enable readable summaries without new GitHub write permissions.
+- Example workflows in `examples/` and `examples/ci/` stay aligned with the action shape.
+
+## MCP And Agent Setup
+
+- `jester setup`, `jester mcp-config`, and `jester bootstrap` provide copy-paste setup for Codex, Claude Code, and generic MCP clients.
+- `memento-mori-jester-mcp` is published as a package binary.
+- `jester doctor` verifies the MCP server file exists and that the review engine blocks a known destructive command.
+
+## Git Hooks
+
+- `jester bootstrap --hook pre-commit` and `--hook pre-push` install managed hooks only when requested.
+- Hooks use the same deterministic local review engine as CLI and MCP calls.
+- `jester hook-status` lets users inspect managed hook state.
+
+## Documentation
+
+- `README.md` leads with a no-write first run, project bootstrap, agent setup, and optional hooks/CI.
+- `docs/GETTING_STARTED.md`, `docs/CLI.md`, `docs/RELEASE.md`, and `docs/TRUSTED_PUBLISHING.md` cover the core adoption and release paths.
+- Every public release has matching `CHANGELOG.md` notes and `docs/RELEASE_NOTES_vX.Y.Z.md`.
+
+## Support And Recovery
+
+- Package metadata points bug reports at the GitHub issues page.
+- `jester doctor`, `jester config validate`, and `jester rules` are the first troubleshooting commands.
+- `jester tune`, `jester tune coverage`, and the fixture suite give maintainers a way to inspect noisy rules before changing defaults.
+- npm publish has a manual workflow fallback, but the normal release path is tag-driven trusted publishing.
+
+## Static Guard
+
+`npm run production:check` validates the production-readiness contract:
+
+- current version release notes and changelog section exist,
+- package metadata and public package files are present,
+- CI, release, publish, and composite action workflows use the expected runtime and steps,
+- onboarding docs mention the important adoption paths,
+- production readiness documentation covers package, GitHub Action, MCP, git hooks, docs, and support.
+
+`npm test` runs this check after the TypeScript build and unit tests.
+
+## Known Next Gaps
+
+- Add `SECURITY.md` and issue templates for clearer support intake.
+- Add `doctor --json` for easier automated diagnostics.
+- Continue expanding pass-case fixtures from real-world usage so false-positive tuning remains evidence-based.

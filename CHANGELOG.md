@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.48
+
+- Added `docs/PRODUCTION_READINESS.md` to define the current production-grade bar across npm packaging, GitHub Action usage, MCP setup, git hooks, docs, release automation, and support.
+- Added `npm run production:check`, a static readiness guard for version/release-note coverage, package metadata, public package files, workflow runtime expectations, and onboarding docs.
+- Wired the production readiness check into `npm test` so CI catches readiness drift alongside the existing build, unit tests, and package dry run.
+
 ## 0.1.47
 
 - Reworked the README Start Here section into a clearer four-step path: try without writing files, add a recommended preset, connect an agent, then add hooks or CI.

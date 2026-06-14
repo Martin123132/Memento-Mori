@@ -83,6 +83,13 @@ Config: built-in defaults
 Press Ctrl+C to stop.
 ```
 
+The browser playground includes sample buttons for:
+
+- `Hard reset`
+- `Overconfident plan`
+- `Public token diff`
+- `Untested final`
+
 ## 5. Preset Recommendation And Preview
 
 Command:

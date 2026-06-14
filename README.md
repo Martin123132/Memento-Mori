@@ -166,6 +166,8 @@ jester mcp-config --mode npx
 jester mcp-config --agent claude --mode npx
 ```
 
+`jester playground` includes one-click samples for command, plan, diff, and final-answer reviews, so you can see a block, caution, or evidence check without inventing input first.
+
 The package-name binary works too:
 
 ```powershell

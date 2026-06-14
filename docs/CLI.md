@@ -49,6 +49,7 @@ jester playground --port 4919
 ```
 
 The playground listens on `127.0.0.1`, loads the same project config as the CLI, and reviews commands, plans, diffs, and final answers through the same rule engine.
+It includes one-click samples for the four review kinds so you can try realistic inputs before wiring Jester into an agent or hook.
 
 ## Start
 

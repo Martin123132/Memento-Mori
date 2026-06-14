@@ -6,6 +6,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Recently Shipped
 
+- Playground sample buttons in v0.1.46 for trying command, plan, diff, and final-answer reviews from the first screen.
 - Fixture curation pass in v0.1.45 that moved all built-in and structural rule evidence to medium-or-better confidence.
 - Additional precision pass for fixture-driven tuning signals (scoped to high-signal rule families first).
 - Fixture-informed `jester tune` evidence from preset review cases, including matched fixture IDs and verdict buckets.
@@ -34,7 +35,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Product Ideas
 
-- Improve playground onboarding samples so users can try realistic command, plan, diff, and final-answer reviews without inventing input.
+- Polish README onboarding around the shortest path from `npx` to playground, agent setup, and hooks.
 
 ## Quality And Safety
 

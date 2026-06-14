@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.46
+
+- Added one-click sample buttons to the local playground for command, plan, diff, and final-answer reviews.
+- The sample buttons populate both subject and content, switch the active review kind, and preserve the existing local-only review API.
+- Added playground tests for deterministic sample rendering and review-kind coverage.
+
 ## 0.1.45
 
 - Added eight focused preset review fixtures for `risky-domain`, `missing-verification-step`, `confidence-theater`, and `done-without-evidence`.

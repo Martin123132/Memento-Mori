@@ -37,6 +37,14 @@ type PlaygroundReviewRequest = {
   riskTolerance?: unknown;
 };
 
+export type PlaygroundSample = {
+  id: string;
+  label: string;
+  kind: ReviewKind;
+  subject: string;
+  content: string;
+};
+
 class HttpError extends Error {
   constructor(
     readonly status: number,
@@ -46,16 +54,47 @@ class HttpError extends Error {
   }
 }
 
-const sampleInputs: Record<ReviewKind, string> = {
-  command: "git reset --hard",
-  plan: "I will just refactor auth and ship it.",
-  final: "Implemented the fix, but tests not run.",
-  diff: `diff --git a/.env b/.env
+export const playgroundSamples: PlaygroundSample[] = [
+  {
+    id: "command-hard-reset",
+    label: "Hard reset",
+    kind: "command",
+    subject: "destructive git command",
+    content: "git reset --hard"
+  },
+  {
+    id: "plan-auth-ship",
+    label: "Overconfident plan",
+    kind: "plan",
+    subject: "auth refactor plan",
+    content: "I will just refactor auth and ship it."
+  },
+  {
+    id: "diff-public-token",
+    label: "Public token diff",
+    kind: "diff",
+    subject: "environment diff",
+    content: `diff --git a/.env b/.env
 index 1111111..2222222 100644
 --- a/.env
 +++ b/.env
 @@ -1 +1,2 @@
 +PUBLIC_TOKEN=redacted-demo-value`
+  },
+  {
+    id: "final-tests-not-run",
+    label: "Untested final",
+    kind: "final",
+    subject: "final answer",
+    content: "Implemented the fix, but tests not run."
+  }
+];
+
+const defaultSampleByKind: Record<ReviewKind, PlaygroundSample> = {
+  command: playgroundSamples[0],
+  plan: playgroundSamples[1],
+  diff: playgroundSamples[2],
+  final: playgroundSamples[3]
 };
 
 export function createPlaygroundServer(options: PlaygroundServerOptions = {}): Server {
@@ -396,6 +435,31 @@ export function renderPlaygroundHtml(): string {
       gap: 12px;
     }
 
+    .sample-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .sample-button {
+      min-height: 38px;
+      padding: 0 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 760;
+      white-space: normal;
+    }
+
+    .sample-button[aria-pressed="true"] {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
     .actions {
       display: flex;
       align-items: center;
@@ -555,6 +619,10 @@ export function renderPlaygroundHtml(): string {
         grid-template-columns: 1fr;
       }
 
+      .sample-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
       .segmented {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
@@ -605,6 +673,10 @@ export function renderPlaygroundHtml(): string {
             <textarea id="content" name="content" spellcheck="false"></textarea>
           </label>
 
+          <div class="sample-grid" aria-label="Sample inputs">
+            ${playgroundSamples.map((sample) => `<button class="sample-button" type="button" data-sample-id="${sample.id}" aria-pressed="false">${sample.label}</button>`).join("\n            ")}
+          </div>
+
           <div class="row">
             <label>
               Tone
@@ -644,8 +716,10 @@ export function renderPlaygroundHtml(): string {
   </main>
 
   <script>
-    const samples = ${JSON.stringify(sampleInputs, null, 6)};
+    const samples = ${JSON.stringify(playgroundSamples, null, 6)};
+    const defaultSamples = ${JSON.stringify(defaultSampleByKind, null, 6)};
     let activeKind = "command";
+    let activeSampleId = "";
 
     const content = document.querySelector("#content");
     const subject = document.querySelector("#subject");
@@ -653,6 +727,7 @@ export function renderPlaygroundHtml(): string {
     const risk = document.querySelector("#risk");
     const result = document.querySelector("#result");
     const kindButtons = Array.from(document.querySelectorAll("[data-kind]"));
+    const sampleButtons = Array.from(document.querySelectorAll("[data-sample-id]"));
 
     function escapeHtml(value) {
       return String(value)
@@ -662,12 +737,26 @@ export function renderPlaygroundHtml(): string {
         .replaceAll('"', "&quot;");
     }
 
+    function syncButtons() {
+      for (const button of kindButtons) {
+        button.setAttribute("aria-pressed", String(button.dataset.kind === activeKind));
+      }
+      for (const button of sampleButtons) {
+        button.setAttribute("aria-pressed", String(button.dataset.sampleId === activeSampleId));
+      }
+    }
+
+    function loadSample(sample) {
+      activeKind = sample.kind;
+      activeSampleId = sample.id;
+      subject.value = sample.subject;
+      content.value = sample.content;
+      syncButtons();
+    }
+
     function setKind(kind) {
       activeKind = kind;
-      content.value = samples[kind];
-      for (const button of kindButtons) {
-        button.setAttribute("aria-pressed", String(button.dataset.kind === kind));
-      }
+      loadSample(defaultSamples[kind]);
     }
 
     function issueList(issues) {
@@ -729,6 +818,15 @@ export function renderPlaygroundHtml(): string {
 
     for (const button of kindButtons) {
       button.addEventListener("click", () => setKind(button.dataset.kind));
+    }
+
+    for (const button of sampleButtons) {
+      button.addEventListener("click", () => {
+        const sample = samples.find((entry) => entry.id === button.dataset.sampleId);
+        if (sample) {
+          loadSample(sample);
+        }
+      });
     }
 
     document.querySelector("#sample").addEventListener("click", () => setKind(activeKind));

@@ -1,7 +1,12 @@
 import assert from "node:assert/strict";
 import { request } from "node:http";
 import test from "node:test";
-import { renderPlaygroundHtml, startPlaygroundServer, type StartedPlayground } from "./playground.js";
+import {
+  playgroundSamples,
+  renderPlaygroundHtml,
+  startPlaygroundServer,
+  type StartedPlayground
+} from "./playground.js";
 
 type HttpResult = {
   statusCode: number;
@@ -15,7 +20,20 @@ test("playground html renders the local review surface", () => {
   assert.match(html, /id="review-form"/);
   assert.match(html, /data-kind="command"/);
   assert.match(html, /data-kind="diff"/);
+  assert.match(html, /aria-label="Sample inputs"/);
+  assert.match(html, /data-sample-id="command-hard-reset"/);
+  assert.match(html, /data-sample-id="plan-auth-ship"/);
+  assert.match(html, /data-sample-id="diff-public-token"/);
+  assert.match(html, /data-sample-id="final-tests-not-run"/);
   assert.match(html, /\/api\/review/);
+});
+
+test("playground samples cover each review kind", () => {
+  assert.deepEqual(
+    playgroundSamples.map((sample) => sample.kind),
+    ["command", "plan", "diff", "final"]
+  );
+  assert.ok(playgroundSamples.every((sample) => sample.id && sample.label && sample.subject && sample.content));
 });
 
 test("playground api reviews commands with the core engine", async () => {

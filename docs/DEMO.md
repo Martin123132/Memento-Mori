@@ -347,6 +347,8 @@ Preset packs:
 
 The fixture suite in `examples/fixtures/preset-review-cases.json` captures small real-usage examples with expected `pass`, `caution`, or `block` verdicts. These examples are run by `npm test`, so preset tuning changes stay visible.
 
+Maintainers can use `docs/MAINTAINER_TRIAGE.md` to turn useful false-positive reports into redacted fixture cases.
+
 ## 14. Framework CI Examples
 
 The workflow examples in `examples/ci` show copy-paste GitHub Actions setups for Next.js, Vite React, Express API, FastAPI, Terraform/Kubernetes, and AI MCP repos. Each workflow uploads SARIF and writes the readable Jester job summary.

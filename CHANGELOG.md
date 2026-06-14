@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.51
+
+- Added `docs/MAINTAINER_TRIAGE.md` with a repeatable flow for triaging bugs, false positives, security-sensitive reports, and fixture candidates.
+- Updated fixture docs so useful noisy-rule reports can become small redacted fixture cases instead of one-off anecdotes.
+- Expanded the production readiness guard so maintainer triage and fixture-conversion guidance stay present in future releases.
+
 ## 0.1.50
 
 - Added `SECURITY.md` with vulnerability reporting guidance, supported-version expectations, scope, and redacted diagnostic guidance.

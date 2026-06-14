@@ -431,6 +431,7 @@ More setup examples:
 - [Review Fixtures](examples/fixtures)
 - [Framework CI Examples](examples/ci)
 - [Security Policy](SECURITY.md)
+- [Maintainer Triage](docs/MAINTAINER_TRIAGE.md)
 - [Changelog](CHANGELOG.md)
 - [Roadmap](ROADMAP.md)
 - [Trusted npm Publishing](docs/TRUSTED_PUBLISHING.md)
@@ -497,6 +498,8 @@ Both scripts check Node 20+, run a smoke `doctor`, and print MCP config.
 When filing a bug, include redacted `jester doctor --json` output. The GitHub issue templates ask for the command, workflow step, config, and observed output so support does not start with guesswork.
 
 Use the false-positive template for noisy cautions or blocks. Include `jester summary` and `jester tune <rule-id> --json` output when possible so rule changes can be backed by evidence.
+
+Maintainers can use [docs/MAINTAINER_TRIAGE.md](docs/MAINTAINER_TRIAGE.md) to turn useful false-positive reports into redacted fixtures.
 
 For vulnerabilities, private code exposure, or credential-handling concerns, follow [SECURITY.md](SECURITY.md) instead of opening a public issue with sensitive details.
 

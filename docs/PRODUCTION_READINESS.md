@@ -51,6 +51,7 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 - `jester tune`, `jester tune coverage`, and the fixture suite give maintainers a way to inspect noisy rules before changing defaults.
 - GitHub issue templates collect bug reports, false-positive reports, and feature requests with the diagnostic context maintainers need.
 - `SECURITY.md` routes vulnerability reports away from public issues and asks for redacted diagnostics.
+- `docs/MAINTAINER_TRIAGE.md` explains how to turn useful false-positive reports into fixture coverage before changing rule logic.
 - npm publish has a manual workflow fallback, but the normal release path is tag-driven trusted publishing.
 
 ## Static Guard
@@ -63,6 +64,7 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 - onboarding docs mention the important adoption paths,
 - production readiness documentation covers package, GitHub Action, MCP, git hooks, docs, and support,
 - `SECURITY.md` and GitHub issue templates exist and ask for the right diagnostics.
+- maintainer triage docs exist and link noisy-rule reports back to fixture coverage.
 
 `npm test` runs this check after the TypeScript build and unit tests.
 

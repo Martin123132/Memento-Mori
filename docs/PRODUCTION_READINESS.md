@@ -15,6 +15,7 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 - `package.json` includes repository, homepage, bugs, binaries, exports, public package files, and public publish access.
 - `package-lock.json` version matches `package.json`.
 - `npm run pack:dry` confirms the package includes `dist`, `docs`, `examples`, `scripts`, `README.md`, `CHANGELOG.md`, `ROADMAP.md`, and `LICENSE`.
+- `SECURITY.md` ships with the package so vulnerability reporting guidance is visible from the repository and npm tarball.
 - `prepublishOnly` runs tests and a package dry run for local publish attempts.
 
 ## GitHub Action
@@ -48,6 +49,8 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 - Package metadata points bug reports at the GitHub issues page.
 - `jester doctor --json`, `jester config validate`, and `jester rules` are the first troubleshooting commands.
 - `jester tune`, `jester tune coverage`, and the fixture suite give maintainers a way to inspect noisy rules before changing defaults.
+- GitHub issue templates collect bug reports, false-positive reports, and feature requests with the diagnostic context maintainers need.
+- `SECURITY.md` routes vulnerability reports away from public issues and asks for redacted diagnostics.
 - npm publish has a manual workflow fallback, but the normal release path is tag-driven trusted publishing.
 
 ## Static Guard
@@ -58,11 +61,12 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 - package metadata and public package files are present,
 - CI, release, publish, and composite action workflows use the expected runtime and steps,
 - onboarding docs mention the important adoption paths,
-- production readiness documentation covers package, GitHub Action, MCP, git hooks, docs, and support.
+- production readiness documentation covers package, GitHub Action, MCP, git hooks, docs, and support,
+- `SECURITY.md` and GitHub issue templates exist and ask for the right diagnostics.
 
 `npm test` runs this check after the TypeScript build and unit tests.
 
 ## Known Next Gaps
 
-- Add `SECURITY.md` and issue templates for clearer support intake.
 - Continue expanding pass-case fixtures from real-world usage so false-positive tuning remains evidence-based.
+- Add more framework-specific false-positive examples as people report real noisy cases.

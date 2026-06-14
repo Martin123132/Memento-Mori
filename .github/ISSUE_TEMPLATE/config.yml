@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Security report
+    url: https://github.com/Martin123132/Memento-Mori/security/advisories/new
+    about: Report vulnerabilities privately when GitHub private reporting is available.
+  - name: Getting started docs
+    url: https://github.com/Martin123132/Memento-Mori/blob/main/docs/GETTING_STARTED.md
+    about: Start here for install, preset, agent, hook, and CI setup.

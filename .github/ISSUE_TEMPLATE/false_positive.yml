@@ -1,0 +1,87 @@
+name: False-positive or noisy rule
+description: Report a rule that cautions or blocks when it should probably pass.
+title: "[False positive]: "
+labels:
+  - false-positive
+  - rules
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This template is for safe-but-noisy results. If you think Jester missed a dangerous case, use the bug template. If sensitive details are involved, follow `SECURITY.md`.
+
+        Helpful commands:
+
+        ```powershell
+        npx -y memento-mori-jester@latest summary --kind <kind> "<input>"
+        npx -y memento-mori-jester@latest tune <rule-id> --json
+        ```
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Review kind
+      options:
+        - command
+        - plan
+        - diff
+        - final
+    validations:
+      required: true
+  - type: input
+    id: rule
+    attributes:
+      label: Rule id
+      description: The rule that fired, for example `risky-domain`.
+      placeholder: risky-domain
+    validations:
+      required: true
+  - type: dropdown
+    id: verdict
+    attributes:
+      label: Current verdict
+      options:
+        - caution
+        - block
+        - pass
+    validations:
+      required: true
+  - type: textarea
+    id: input
+    attributes:
+      label: Minimal redacted input
+      description: Paste the smallest command, plan, diff excerpt, or final-answer text that reproduces the result.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: why-safe
+    attributes:
+      label: Why should this be safe?
+      description: Explain the context that makes this warning too noisy or wrong.
+    validations:
+      required: true
+  - type: textarea
+    id: tune
+    attributes:
+      label: tune output
+      description: Paste redacted `jester tune <rule-id> --json` output when possible.
+      render: json
+    validations:
+      required: false
+  - type: textarea
+    id: config
+    attributes:
+      label: Relevant config
+      description: Paste relevant `jester.config.json` snippets, especially disabled rules, presets, custom rules, or sensitive domains.
+      render: json
+    validations:
+      required: false
+  - type: checkboxes
+    id: fixture
+    attributes:
+      label: Fixture quality
+      options:
+        - label: This could become a small fixture for the review test suite.
+          required: false
+        - label: I have removed secrets, tokens, private code, and private customer data from this report.
+          required: true

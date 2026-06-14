@@ -51,6 +51,8 @@ jester doctor --json
 
 Use `jester doctor --json` when filing an issue or debugging automation. It includes stable keys for package version, Node version, MCP server path, review-engine health, config mode/path, hook status, and generated workflow status.
 
+The bug-report issue template asks for this redacted JSON so maintainers can separate install, config, hook, MCP, and GitHub Action problems quickly.
+
 ## Playground
 
 Start a local-only paste-in playground:
@@ -153,6 +155,8 @@ jester tune coverage --json
 Use `jester rule <id>` before muting a rule. It explains why the rule exists, common false positives, safer alternatives, and how to tune it.
 
 Use `jester tune <id>` when the question is practical: should this noisy rule be muted here, and what exact commands do I run? It is read-only and prints a before-muting checklist, a recommendation, and `disable-rule` / `enable-rule` commands.
+
+When filing a false-positive issue, include redacted `jester summary` output and `jester tune <rule-id> --json` output when possible.
 
 Use `jester tune coverage` when maintaining the rule set. It ranks every rule by fixture support and confidence, shows expected vs unexpected fixture weight, and suggests the next maintenance action for each rule.
 

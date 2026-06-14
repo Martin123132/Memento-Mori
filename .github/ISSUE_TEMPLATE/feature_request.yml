@@ -1,0 +1,55 @@
+name: Feature request
+description: Suggest a new command, preset, rule, workflow, or documentation improvement.
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What adoption, safety, tuning, or workflow problem would this solve?
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - CLI
+        - MCP server
+        - GitHub Action
+        - git hooks
+        - config presets
+        - rules or tuning
+        - playground
+        - docs
+        - release or packaging
+        - other
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: What should change?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: What workaround or smaller version would also help?
+    validations:
+      required: false
+  - type: checkboxes
+    id: constraints
+    attributes:
+      label: Fit with project constraints
+      options:
+        - label: This can stay local-first and deterministic.
+          required: false
+        - label: This does not require sending project code to a hosted service.
+          required: false
+        - label: This should be safe for `npx -y memento-mori-jester@latest`.
+          required: false

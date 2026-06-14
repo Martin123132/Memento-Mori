@@ -430,6 +430,7 @@ More setup examples:
 - [Preset Example Packs](examples/presets)
 - [Review Fixtures](examples/fixtures)
 - [Framework CI Examples](examples/ci)
+- [Security Policy](SECURITY.md)
 - [Changelog](CHANGELOG.md)
 - [Roadmap](ROADMAP.md)
 - [Trusted npm Publishing](docs/TRUSTED_PUBLISHING.md)
@@ -490,6 +491,14 @@ Both scripts check Node 20+, run a smoke `doctor`, and print MCP config.
 - Diffs with removed tests, type suppressions, debug logs, unfinished marker comments, sensitive env/config changes, npm install scripts, sensitive domains, and large deletions.
 - Final answers with "done/fixed/works" claims that do not mention evidence, or that admit tests were not run.
 - Project-specific commands, domains, and regex rules from `jester.config.json`.
+
+## Support
+
+When filing a bug, include redacted `jester doctor --json` output. The GitHub issue templates ask for the command, workflow step, config, and observed output so support does not start with guesswork.
+
+Use the false-positive template for noisy cautions or blocks. Include `jester summary` and `jester tune <rule-id> --json` output when possible so rule changes can be backed by evidence.
+
+For vulnerabilities, private code exposure, or credential-handling concerns, follow [SECURITY.md](SECURITY.md) instead of opening a public issue with sensitive details.
 
 ## Publishing
 

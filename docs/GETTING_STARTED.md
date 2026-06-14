@@ -108,4 +108,14 @@ Then tell them to open `MEMENTO_MORI.md`.
 
 For copy-paste agent and hook examples, see [examples](../examples). For stack-specific config examples, see [preset example packs](../examples/presets) for Next.js, Vite React, Express API, FastAPI, Terraform/Kubernetes, and AI MCP repos. For copy-paste CI workflows, see [framework CI examples](../examples/ci). For concrete pass, caution, and block cases, see [review fixtures](../examples/fixtures).
 
+## Need Help?
+
+Run this before opening a bug report:
+
+```powershell
+npx -y memento-mori-jester@latest doctor --json
+```
+
+Use the GitHub false-positive template for noisy rules and include `jester tune <rule-id> --json` when possible. For vulnerabilities, private code exposure, or credential-handling concerns, follow [SECURITY.md](../SECURITY.md) instead of posting sensitive details publicly.
+
 For where this is going next, see [ROADMAP.md](../ROADMAP.md).

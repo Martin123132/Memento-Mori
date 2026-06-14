@@ -50,11 +50,16 @@ for (const path of [
   "CHANGELOG.md",
   "ROADMAP.md",
   "LICENSE",
+  "SECURITY.md",
   "docs/RELEASE.md",
   "docs/TRUSTED_PUBLISHING.md",
   "docs/PRODUCTION_READINESS.md",
   `docs/RELEASE_NOTES_${tag}.md`,
   "action.yml",
+  ".github/ISSUE_TEMPLATE/bug_report.yml",
+  ".github/ISSUE_TEMPLATE/false_positive.yml",
+  ".github/ISSUE_TEMPLATE/feature_request.yml",
+  ".github/ISSUE_TEMPLATE/config.yml",
   ".github/workflows/ci.yml",
   ".github/workflows/npm-publish.yml",
   ".github/workflows/release.yml",
@@ -74,6 +79,8 @@ requireText("README.md", /doctor --json/, "doctor JSON support guidance");
 requireText("README.md", /config recommend/, "preset recommendation onboarding");
 requireText("README.md", /setup --agent codex/, "Codex setup onboarding");
 requireText("README.md", /github-action --write/, "GitHub Action onboarding");
+requireText("README.md", /SECURITY\.md/, "security policy link");
+requireText("README.md", /false-positive/i, "false-positive support guidance");
 requireText("README.md", /License: PolyForm Noncommercial/, "the noncommercial license badge");
 requireText("docs/PRODUCTION_READINESS.md", /npm package/i, "npm package readiness");
 requireText("docs/PRODUCTION_READINESS.md", /GitHub Action/i, "GitHub Action readiness");
@@ -81,9 +88,19 @@ requireText("docs/PRODUCTION_READINESS.md", /MCP/i, "MCP readiness");
 requireText("docs/PRODUCTION_READINESS.md", /git hooks/i, "git hook readiness");
 requireText("docs/PRODUCTION_READINESS.md", /support/i, "support readiness");
 requireText("docs/PRODUCTION_READINESS.md", /doctor --json/, "doctor JSON support diagnostics");
+requireText("docs/PRODUCTION_READINESS.md", /SECURITY\.md/, "security policy readiness");
+requireText("docs/PRODUCTION_READINESS.md", /issue templates/i, "issue template readiness");
 requireText("docs/CLI.md", /jester doctor --json/, "doctor JSON CLI docs");
+requireText("SECURITY.md", /doctor --json/, "doctor JSON redaction guidance");
+requireText("SECURITY.md", /security\/advisories\/new/, "private vulnerability report link");
+requireText(".github/ISSUE_TEMPLATE/bug_report.yml", /doctor --json/, "doctor JSON support prompt");
+requireText(".github/ISSUE_TEMPLATE/bug_report.yml", /SECURITY\.md|security policy/i, "security redirect");
+requireText(".github/ISSUE_TEMPLATE/false_positive.yml", /jester tune <rule-id> --json/, "tune JSON prompt");
+requireText(".github/ISSUE_TEMPLATE/false_positive.yml", /false-positive|noisy rule/i, "false-positive scope");
+requireText(".github/ISSUE_TEMPLATE/feature_request.yml", /local-first and deterministic/, "project constraint prompt");
+requireText(".github/ISSUE_TEMPLATE/config.yml", /security\/advisories\/new/, "security contact link");
 
-for (const publicFile of ["dist", "docs", "examples", "scripts", "CHANGELOG.md", "LICENSE", "README.md", "ROADMAP.md"]) {
+for (const publicFile of ["dist", "docs", "examples", "scripts", "CHANGELOG.md", "LICENSE", "SECURITY.md", "README.md", "ROADMAP.md"]) {
   requirePackageFile(packageJson, publicFile);
 }
 

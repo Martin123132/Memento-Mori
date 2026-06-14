@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.50
+
+- Added `SECURITY.md` with vulnerability reporting guidance, supported-version expectations, scope, and redacted diagnostic guidance.
+- Added GitHub issue templates for bug reports, false-positive/noisy-rule reports, and feature requests.
+- Expanded the production readiness guard so `SECURITY.md`, issue templates, and support-intake docs stay present in future releases.
+
 ## 0.1.49
 
 - Expanded `jester doctor` into a support-focused diagnostic report covering package version, Node, MCP server file, review engine, config loading, git hook status, and generated GitHub Action status.

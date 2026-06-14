@@ -6,6 +6,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Recently Shipped
 
+- Security policy and GitHub issue templates in v0.1.50 for bug reports, false positives, feature requests, and vulnerability intake.
 - Support-focused `doctor --json` diagnostics in v0.1.49 for package, config, hook, MCP, and GitHub Action state.
 - Production readiness checklist and static guard in v0.1.48 for package, workflow, docs, release, and support drift.
 - README onboarding polish in v0.1.47 around the shortest path from `npx` to playground, agent setup, hooks, and CI.
@@ -38,7 +39,8 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Product Ideas
 
-- Add `SECURITY.md` and issue templates so diagnostics and bug reports are easier to collect.
+- Add more framework-specific false-positive examples from real reports so tuning guidance keeps getting sharper.
+- Add a lightweight maintainer triage guide for turning noisy-rule reports into fixtures.
 
 ## Quality And Safety
 

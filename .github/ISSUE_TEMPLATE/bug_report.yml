@@ -1,0 +1,87 @@
+name: Bug report
+description: Report a broken command, workflow, install path, or documented behavior.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report this. If the report involves secrets, private code, or an exploitable security issue, please use the security policy instead of a public issue.
+
+        The fastest useful diagnostic is:
+
+        ```powershell
+        npx -y memento-mori-jester@latest doctor --json
+        ```
+  - type: input
+    id: version
+    attributes:
+      label: Jester version
+      description: Paste the package version, or say `latest`.
+      placeholder: "0.1.50"
+    validations:
+      required: true
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Surface
+      description: Where did the problem show up?
+      options:
+        - CLI
+        - MCP server
+        - GitHub Action
+        - git hook
+        - playground
+        - docs
+        - install or publish flow
+        - other
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: Command or workflow step
+      description: Paste the command, workflow step, or setup path involved. Redact private paths or values.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What did you expect Jester to do?
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: What happened instead? Include the error text if there was one.
+    validations:
+      required: true
+  - type: textarea
+    id: doctor
+    attributes:
+      label: doctor --json output
+      description: Paste redacted output from `jester doctor --json`.
+      render: json
+    validations:
+      required: false
+  - type: textarea
+    id: config
+    attributes:
+      label: Relevant config
+      description: Paste relevant `jester.config.json` or workflow snippets. Redact sensitive values.
+      render: json
+    validations:
+      required: false
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Quick checks
+      options:
+        - label: I have removed secrets, tokens, private code, and private customer data from this report.
+          required: true
+        - label: I tried the latest published package or local `main` build.
+          required: false

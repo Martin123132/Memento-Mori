@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.56
+
+- Added node, python, and security preset fixture coverage across plan, command, diff, and final review kinds.
+- Updated fixture-report regression coverage so those three presets cannot silently fall back to empty preset/kind coverage.
+- Refreshed demo and fixture docs with the expanded 80-fixture corpus.
+
 ## 0.1.55
 
 - Added the first targeted quiet-pass fixture batch for noisy high-signal rules including `risky-domain`, `done-without-evidence`, `package-install-script`, `secret-material`, `sensitive-env-change`, `test-removal`, `skip-tests`, `vibes-based-plan`, `chmod-777`, and `privileged-command`.

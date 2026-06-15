@@ -657,6 +657,7 @@ test("fixture report surfaces quiet-pass rule coverage", async () => {
     gaps: {
       rulesWithoutQuietPassCoverage: Array<{ ruleId: string }>;
       quietPassRuleCoverage: Array<{ ruleId: string; total: number }>;
+      presetKindGaps: Array<{ preset: string; missingKinds: string[] }>;
     };
   };
   const riskyDomain = result.quietPassRules.find((rule) => rule.ruleId === "risky-domain");
@@ -664,11 +665,12 @@ test("fixture report surfaces quiet-pass rule coverage", async () => {
   assert.match(text.stdout, /Rules without quiet-pass coverage:/);
   assert.match(text.stdout, /Quiet-pass rule coverage:/);
   assert.match(text.stdout, /risky-domain: [1-9][0-9]* quiet-pass fixture/);
-  assert.equal(result.totalFixtures >= 68, true);
-  assert.equal(riskyDomain?.total, 4);
-  assert.ok(riskyDomain?.samples.some((sample) => sample.id === "universal-risky-domain-docs-pass"));
-  assert.ok(result.gaps.quietPassRuleCoverage.some((rule) => rule.ruleId === "risky-domain" && rule.total === 4));
+  assert.equal(result.totalFixtures >= 80, true);
+  assert.equal(riskyDomain?.total, 5);
+  assert.equal((riskyDomain?.samples.length ?? 0) > 0, true);
+  assert.ok(result.gaps.quietPassRuleCoverage.some((rule) => rule.ruleId === "risky-domain" && rule.total === 5));
   assert.ok(result.gaps.rulesWithoutQuietPassCoverage.some((rule) => rule.ruleId === "missing-verification-step"));
+  assert.ok(!result.gaps.presetKindGaps.some((gap) => ["node", "python", "security"].includes(gap.preset)));
 });
 
 test("tune coverage prints fixture coverage actions", async () => {

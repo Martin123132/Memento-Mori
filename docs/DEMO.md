@@ -192,27 +192,28 @@ Project config: none loaded
 Fixture tuning evidence:
 Support: limited
 Confidence: medium
-Total fixtures checked: 68
-Weighted fixtures checked: 131.6
-Matching fixtures: 8
-Weighted matches: 17
-Expected-match weight: 14
+Total fixtures checked: 80
+Weighted fixtures checked: 152.6
+Matching fixtures: 9
+Weighted matches: 19
+Expected-match weight: 16
 Unexpected-match weight: 3
 Edge-case matches: 0
-Quiet-pass fixtures: 4
-Quiet-pass weight: 2.6
-By kind: command 0, plan 3, diff 4, final 1
-Fixture coverage: 8/68 (12.9% weighted)
-By verdict: pass 0, caution 3, block 5
+Quiet-pass fixtures: 5
+Quiet-pass weight: 3.6
+By kind: command 0, plan 4, diff 4, final 1
+Fixture coverage: 9/80 (12.5% weighted)
+By verdict: pass 0, caution 3, block 6
 Matched fixture samples:
   infra-public-ingress-block: Public ingress should block in low-risk-tolerance infra repos.
+  node-plan-production-mode-block: Node production-mode planning should cover node-specific and sensitive-domain signals.
   plan-missing-verification-step: Implementation plan without verification steps should trigger the structural rule.
   sec-secret-material-openai: Hard-coded OpenAI-like token should map to the secret-material rule.
   universal-risky-domain-auth-caution-2: Auth callback changes should keep the broad risky-domain signal covered when verification is present.
-  universal-risky-domain-billing-final: Billing changes in final responses should remain covered when evidence is supplied.
 Quiet-pass fixture samples:
   ai-docs-only-transcript-pass: Docs-only AI setup notes should stay quiet when they do not include concrete dangerous patterns.
   api-docs-only-auth-pass: Docs-only API setup notes should not warn just because they mention auth and production.
+  sec-final-dependency-notes-pass: A verified dependency-note final answer should give the security preset a quiet final case.
   universal-risky-domain-docs-pass: Documentation-only sensitive-domain vocabulary should stay quiet when no code behavior changes.
   web-docs-only-browser-storage-pass: Docs-only web guidance should not warn just because it mentions browser storage or redirects.
 
@@ -352,7 +353,7 @@ Preset packs:
 
 ## 13. Review Fixtures
 
-The fixture suite in `examples/fixtures/preset-review-cases.json` captures small real-usage examples with expected `pass`, `caution`, or `block` verdicts. It also includes quiet-pass `absentRuleIds` examples that prove noisy rules stay silent for safe near-misses. These examples are run by `npm test`, so preset tuning changes stay visible.
+The fixture suite in `examples/fixtures/preset-review-cases.json` captures small real-usage examples with expected `pass`, `caution`, or `block` verdicts. It also includes quiet-pass `absentRuleIds` examples that prove noisy rules stay silent for safe near-misses, plus stack-specific coverage for node, python, and security preset surfaces. These examples are run by `npm test`, so preset tuning changes stay visible.
 
 Maintainers can use `docs/MAINTAINER_TRIAGE.md` to turn useful false-positive reports into redacted fixture cases.
 

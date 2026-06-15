@@ -192,8 +192,8 @@ Project config: none loaded
 Fixture tuning evidence:
 Support: limited
 Confidence: medium
-Total fixtures checked: 80
-Weighted fixtures checked: 152.6
+Total fixtures checked: 90
+Weighted fixtures checked: 169.6
 Matching fixtures: 9
 Weighted matches: 19
 Expected-match weight: 16
@@ -202,7 +202,7 @@ Edge-case matches: 0
 Quiet-pass fixtures: 5
 Quiet-pass weight: 3.6
 By kind: command 0, plan 4, diff 4, final 1
-Fixture coverage: 9/80 (12.5% weighted)
+Fixture coverage: 9/90 (11.2% weighted)
 By verdict: pass 0, caution 3, block 6
 Matched fixture samples:
   infra-public-ingress-block: Public ingress should block in low-risk-tolerance infra repos.

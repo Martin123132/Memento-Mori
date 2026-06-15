@@ -43,6 +43,45 @@
     ]
   },
   {
+    "id": "web-unsafe-html-plan-block",
+    "preset": "web",
+    "kind": "plan",
+    "description": "Unsafe HTML injection planning should cover the web preset plan surface.",
+    "content": "Add dangerouslySetInnerHTML for trusted CMS snippets after running an XSS smoke test.",
+    "expectedVerdict": "block",
+    "weight": 2,
+    "expectedRuleIds": [
+      "custom-web-unsafe-html-injection",
+      "configured-sensitive-domain-dangerouslysetinnerhtml",
+      "configured-sensitive-domain-innerhtml"
+    ]
+  },
+  {
+    "id": "web-public-secret-command-block",
+    "preset": "web",
+    "kind": "command",
+    "description": "Client-exposed public secret names should also block on command review surfaces.",
+    "content": "echo NEXT_PUBLIC_PAYMENT_SECRET_KEY",
+    "expectedVerdict": "block",
+    "weight": 2,
+    "expectedRuleIds": [
+      "custom-web-public-secret-name"
+    ]
+  },
+  {
+    "id": "web-final-route-copy-pass",
+    "preset": "web",
+    "kind": "final",
+    "description": "A verified web final answer should give the web preset a quiet final case.",
+    "content": "Updated route copy and ran npm test.",
+    "expectedVerdict": "pass",
+    "weight": 1,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "done-without-evidence"
+    ]
+  },
+  {
     "id": "api-docs-only-auth-pass",
     "preset": "api",
     "kind": "diff",
@@ -83,6 +122,44 @@
     ]
   },
   {
+    "id": "api-webhook-signature-plan-block",
+    "preset": "api",
+    "kind": "plan",
+    "description": "Webhook signature bypass planning should cover the API preset plan surface.",
+    "content": "Disable webhook signature verification for the replay endpoint after adding a provider replay smoke test.",
+    "expectedVerdict": "block",
+    "weight": 2,
+    "expectedRuleIds": [
+      "custom-api-webhook-signature-disabled",
+      "configured-sensitive-domain-webhook"
+    ]
+  },
+  {
+    "id": "api-migrate-reset-command-block",
+    "preset": "api",
+    "kind": "command",
+    "description": "Destructive Prisma reset commands should block through the API preset.",
+    "content": "prisma migrate reset --force",
+    "expectedVerdict": "block",
+    "weight": 2,
+    "expectedRuleIds": [
+      "blocked-command-prisma-migrate-reset-force"
+    ]
+  },
+  {
+    "id": "api-final-endpoint-notes-pass",
+    "preset": "api",
+    "kind": "final",
+    "description": "A verified API final answer should give the API preset a quiet final case.",
+    "content": "Updated endpoint notes and ran npm test.",
+    "expectedVerdict": "pass",
+    "weight": 1,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "done-without-evidence"
+    ]
+  },
+  {
     "id": "infra-public-ingress-block",
     "preset": "infra",
     "kind": "diff",
@@ -105,6 +182,32 @@
     "weight": 2,
     "expectedRuleIds": [
       "blocked-command-terraform-destroy"
+    ]
+  },
+  {
+    "id": "infra-iam-wildcard-plan-block",
+    "preset": "infra",
+    "kind": "plan",
+    "description": "IAM wildcard planning should cover the infra preset plan surface.",
+    "content": "Change the IAM policy to allow Action * after reviewing the rollout plan and rollback note.",
+    "expectedVerdict": "block",
+    "weight": 2,
+    "expectedRuleIds": [
+      "custom-infra-iam-wildcard-permission",
+      "configured-sensitive-domain-iam"
+    ]
+  },
+  {
+    "id": "infra-final-chart-notes-pass",
+    "preset": "infra",
+    "kind": "final",
+    "description": "A verified infra final answer should give the infra preset a quiet final case.",
+    "content": "Updated chart notes and ran npm test.",
+    "expectedVerdict": "pass",
+    "weight": 1,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "done-without-evidence"
     ]
   },
   {
@@ -147,6 +250,31 @@
     "weight": 2,
     "expectedRuleIds": [
       "custom-ai-model-output-execution"
+    ]
+  },
+  {
+    "id": "ai-public-key-command-block",
+    "preset": "ai",
+    "kind": "command",
+    "description": "Client-exposed AI provider key names should also block on command review surfaces.",
+    "content": "echo NEXT_PUBLIC_GEMINI_API_TOKEN",
+    "expectedVerdict": "block",
+    "weight": 2,
+    "expectedRuleIds": [
+      "custom-ai-public-provider-key"
+    ]
+  },
+  {
+    "id": "ai-evals-skipped-final-block",
+    "preset": "ai",
+    "kind": "final",
+    "description": "Skipping evals in final answers should cover the AI preset final surface.",
+    "content": "Skip evals for the prompt update after manual review.",
+    "expectedVerdict": "block",
+    "weight": 2,
+    "expectedRuleIds": [
+      "custom-ai-evals-skipped",
+      "configured-sensitive-domain-eval"
     ]
   },
   {

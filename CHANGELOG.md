@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.57
+
+- Added web, API, infra, and AI preset fixture coverage across the remaining plan, command, and final review-kind gaps.
+- Updated fixture-report regression coverage so every preset now has plan, command, diff, and final examples.
+- Refreshed fixture and demo docs with the expanded 90-fixture corpus.
+
 ## 0.1.56
 
 - Added node, python, and security preset fixture coverage across plan, command, diff, and final review kinds.

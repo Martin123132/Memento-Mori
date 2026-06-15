@@ -9,10 +9,10 @@ Maintainer triage guidance lives in [docs/MAINTAINER_TRIAGE.md](../../docs/MAINT
 ## What They Cover
 
 - Documentation-only diffs that should stay quiet.
-- Node, Python, and security preset plan/command/diff/final coverage.
+- Plan, command, diff, and final coverage for every built-in preset.
 - Web preset client-exposed key and browser-storage risks.
-- API preset CORS and raw SQL risks.
-- Infra preset public exposure risks.
+- API preset CORS, raw SQL, webhook, and migration-command risks.
+- Infra preset public exposure, IAM wildcard, and destructive command risks.
 - AI preset eval-skipping and model-output execution risks.
 - Fixture metadata like `weight` and `edgeCase` to support precision-weighted tuning evidence.
 

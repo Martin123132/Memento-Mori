@@ -15,6 +15,7 @@ Maintainer triage guidance lives in [docs/MAINTAINER_TRIAGE.md](../../docs/MAINT
 - Infra preset public exposure, IAM wildcard, and destructive command risks.
 - AI preset eval-skipping and model-output execution risks.
 - Quiet-pass boundaries for thin custom, configured sensitive-domain, and preset blocked-command rules.
+- Quiet-pass boundaries for built-in and structural rules such as missing verification, TypeScript suppressions, large removals, wildcard operations, destructive commands, and untested finals.
 - Fixture metadata like `weight` and `edgeCase` to support precision-weighted tuning evidence.
 
 ## Local Check

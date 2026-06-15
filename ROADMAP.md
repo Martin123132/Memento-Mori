@@ -6,6 +6,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Recently Shipped
 
+- Quiet-pass boundaries for remaining sparse built-in and structural rules in v0.1.59 so the fixture report now has no rules without quiet-pass coverage.
 - Quiet-pass boundaries for thin custom/preset rules in v0.1.58 so preset blocked commands, sensitive-domain checks, and custom stack rules now have safe near-miss examples.
 - Completed preset-kind fixture coverage in v0.1.57 so `default`, `node`, `python`, `web`, `api`, `infra`, `ai`, and `security` now all have plan, command, diff, and final examples.
 - Node, python, and security preset-kind fixture coverage in v0.1.56 so those preset slices now have plan, command, diff, and final examples.
@@ -47,8 +48,8 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Product Ideas
 
-- Add quiet-pass boundaries for remaining sparse built-in and structural rules such as `missing-verification-step`, `confidence-theater`, `ts-ignore`, `large-removal`, and `wildcard-file-operation`.
 - Add more framework-specific false-positive examples from real reports so tuning guidance keeps getting sharper.
+- Add fixture report slices by rule family and preset so maintainers can spot which areas need real-world curation next.
 
 ## Quality And Safety
 

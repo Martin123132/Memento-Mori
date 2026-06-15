@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.59
+
+- Added quiet-pass fixtures for remaining sparse built-in and structural rules including missing verification, confidence theater, TypeScript suppressions, large removals, wildcard file operations, destructive commands, and untested finals.
+- Updated fixture-report regression coverage so every rule family now has quiet-pass coverage.
+- Refreshed demo and fixture docs with the expanded 125-fixture corpus.
+
 ## 0.1.58
 
 - Added quiet-pass fixtures for thin custom, configured sensitive-domain, and preset blocked-command rules.

@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.58
+
+- Added quiet-pass fixtures for thin custom, configured sensitive-domain, and preset blocked-command rules.
+- Updated fixture-report regression coverage so thin preset/config-derived rules cannot silently lose quiet-pass coverage.
+- Refreshed demo and fixture docs with the expanded 112-fixture corpus.
+
 ## 0.1.57
 
 - Added web, API, infra, and AI preset fixture coverage across the remaining plan, command, and final review-kind gaps.

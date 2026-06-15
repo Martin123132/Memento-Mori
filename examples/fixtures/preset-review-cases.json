@@ -1139,5 +1139,307 @@
       "risky-domain",
       "done-without-evidence"
     ]
+  },
+  {
+    "id": "sec-chmod-narrow-command-pass",
+    "preset": "security",
+    "kind": "command",
+    "description": "Narrow chmod commands should not trip security preset blocked-command rules.",
+    "content": "chmod -R 755 ./public-assets",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "blocked-command-chmod-r-777",
+      "chmod-777",
+      "configured-sensitive-domain-secrets"
+    ]
+  },
+  {
+    "id": "node-pack-dry-run-command-pass",
+    "preset": "node",
+    "kind": "command",
+    "description": "Package dry runs should not be mistaken for forced npm publishing.",
+    "content": "npm pack --dry-run",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "blocked-command-npm-publish-force",
+      "configured-sensitive-domain-npm-publish"
+    ]
+  },
+  {
+    "id": "python-normal-pip-install-command-pass",
+    "preset": "python",
+    "kind": "command",
+    "description": "Normal pip installs should not trip the break-system-packages command rule.",
+    "content": "pip install django",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "blocked-command-pip-install-break-system-packages"
+    ]
+  },
+  {
+    "id": "api-prisma-status-command-pass",
+    "preset": "api",
+    "kind": "command",
+    "description": "Prisma status checks should not be mistaken for destructive migration resets.",
+    "content": "prisma migrate status",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "blocked-command-prisma-migrate-reset-force"
+    ]
+  },
+  {
+    "id": "infra-harmless-command-pass",
+    "preset": "infra",
+    "kind": "command",
+    "description": "Harmless shell commands in infra repos should not trip destroy-command checks.",
+    "content": "pwd",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "blocked-command-terraform-destroy"
+    ]
+  },
+  {
+    "id": "web-public-nonsecret-command-pass",
+    "preset": "web",
+    "kind": "command",
+    "description": "Public non-secret frontend variable names should not trip secret-name checks.",
+    "content": "echo NEXT_PUBLIC_FEATURE_FLAG",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-web-public-secret-name"
+    ]
+  },
+  {
+    "id": "ai-public-model-command-pass",
+    "preset": "ai",
+    "kind": "command",
+    "description": "Public non-secret AI model names should not trip provider-key checks.",
+    "content": "echo NEXT_PUBLIC_MODEL_NAME",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-ai-public-provider-key"
+    ]
+  },
+  {
+    "id": "node-posttest-script-diff-pass",
+    "preset": "node",
+    "kind": "diff",
+    "description": "Non-install package lifecycle scripts should not trip node install-script checks.",
+    "content": "diff --git a/package.json b/package.json\n--- a/package.json\n+++ b/package.json\n@@ -3,6 +3,7 @@\n   \"scripts\": {\n+    \"posttest\": \"node scripts/check.js\",\n     \"test\": \"node --test\"\n   }\n",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "package-install-script",
+      "custom-node-install-script-change",
+      "configured-sensitive-domain-postinstall"
+    ]
+  },
+  {
+    "id": "node-development-env-plan-pass",
+    "preset": "node",
+    "kind": "plan",
+    "description": "Development-mode Node plans should not trip production-mode checks.",
+    "content": "Run NODE_ENV=development for the local smoke test.",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-node-env-production-change",
+      "configured-sensitive-domain-production"
+    ]
+  },
+  {
+    "id": "python-json-loader-plan-pass",
+    "preset": "python",
+    "kind": "plan",
+    "description": "JSON loader plans should not be mistaken for Python pickle deserialization.",
+    "content": "Use json.loads for fixture data after running pytest.",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-python-pickle-load"
+    ]
+  },
+  {
+    "id": "python-literal-eval-diff-pass",
+    "preset": "python",
+    "kind": "diff",
+    "description": "Python literal_eval usage should not be mistaken for raw eval execution.",
+    "content": "diff --git a/src/loader.py b/src/loader.py\n--- a/src/loader.py\n+++ b/src/loader.py\n@@ -1 +1,2 @@\n+value = ast.literal_eval(raw_value)\n",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-python-eval-exec"
+    ]
+  },
+  {
+    "id": "web-safe-render-plan-pass",
+    "preset": "web",
+    "kind": "plan",
+    "description": "Plain-text rendering plans should not trip web HTML injection checks.",
+    "content": "Render CMS snippets as plain text after an XSS smoke test.",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-web-unsafe-html-injection",
+      "configured-sensitive-domain-dangerouslysetinnerhtml",
+      "configured-sensitive-domain-innerhtml"
+    ]
+  },
+  {
+    "id": "web-theme-storage-diff-pass",
+    "preset": "web",
+    "kind": "diff",
+    "description": "Non-sensitive browser preference storage should not trip token-storage checks.",
+    "content": "diff --git a/src/preferences.ts b/src/preferences.ts\n--- a/src/preferences.ts\n+++ b/src/preferences.ts\n@@ -1 +1,2 @@\n+localStorage.setItem(\"theme\", theme);\n",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-web-storage-sensitive-value",
+      "configured-sensitive-domain-session"
+    ]
+  },
+  {
+    "id": "api-origin-header-pass",
+    "preset": "api",
+    "kind": "diff",
+    "description": "Specific API origin headers should not trip wildcard-origin checks.",
+    "content": "diff --git a/src/headers.ts b/src/headers.ts\n--- a/src/headers.ts\n+++ b/src/headers.ts\n@@ -1 +1,2 @@\n+response.setHeader(\"Access-Control-Allow-Origin\", trustedOrigin);\n",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-api-broad-cors",
+      "configured-sensitive-domain-cors"
+    ]
+  },
+  {
+    "id": "sec-origin-header-pass",
+    "preset": "security",
+    "kind": "diff",
+    "description": "Specific security origin headers should not trip wildcard-origin checks.",
+    "content": "diff --git a/src/headers.ts b/src/headers.ts\n--- a/src/headers.ts\n+++ b/src/headers.ts\n@@ -1 +1,2 @@\n+response.setHeader(\"Access-Control-Allow-Origin\", trustedOrigin);\n",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-broad-cors",
+      "configured-sensitive-domain-cors"
+    ]
+  },
+  {
+    "id": "api-parameterized-query-diff-pass",
+    "preset": "api",
+    "kind": "diff",
+    "description": "Parameterized API queries should not trip raw user-input SQL checks.",
+    "content": "diff --git a/src/users.ts b/src/users.ts\n--- a/src/users.ts\n+++ b/src/users.ts\n@@ -1 +1,2 @@\n+db.query(\"select * from users where id = $1\", [validatedId]);\n",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-api-raw-sql-user-input"
+    ]
+  },
+  {
+    "id": "api-webhook-docs-pass",
+    "preset": "api",
+    "kind": "diff",
+    "description": "Docs about verifying webhook signatures should not trip disabled-webhook checks.",
+    "content": "diff --git a/docs/API.md b/docs/API.md\n--- a/docs/API.md\n+++ b/docs/API.md\n@@ -1 +1,2 @@\n+Document verifying webhook signatures before parsing provider events.\n",
+    "expectedVerdict": "pass",
+    "edgeCase": true,
+    "weight": 1,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-api-webhook-signature-disabled",
+      "configured-sensitive-domain-webhook"
+    ]
+  },
+  {
+    "id": "infra-iam-docs-pass",
+    "preset": "infra",
+    "kind": "diff",
+    "description": "Docs about narrowing IAM policies should not trip wildcard-permission checks.",
+    "content": "diff --git a/docs/INFRA.md b/docs/INFRA.md\n--- a/docs/INFRA.md\n+++ b/docs/INFRA.md\n@@ -1 +1,2 @@\n+Document narrowing IAM policies to named actions and resources.\n",
+    "expectedVerdict": "pass",
+    "edgeCase": true,
+    "weight": 1,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-infra-iam-wildcard-permission",
+      "configured-sensitive-domain-iam"
+    ]
+  },
+  {
+    "id": "infra-private-network-diff-pass",
+    "preset": "infra",
+    "kind": "diff",
+    "description": "Private network ranges should not trip public exposure checks.",
+    "content": "diff --git a/infra/network.tf b/infra/network.tf\n--- a/infra/network.tf\n+++ b/infra/network.tf\n@@ -1 +1,2 @@\n+cidr_blocks = [\"10.0.0.0/8\"]\n",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-infra-public-exposure"
+    ]
+  },
+  {
+    "id": "ai-schema-output-plan-pass",
+    "preset": "ai",
+    "kind": "plan",
+    "description": "Schema parsing plans should not trip model-output execution checks.",
+    "content": "Parse modelOutputJson into a schema before using it.",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-ai-model-output-execution"
+    ]
+  },
+  {
+    "id": "ai-model-checks-final-pass",
+    "preset": "ai",
+    "kind": "final",
+    "description": "Running model checks should not trip AI eval-skipping checks.",
+    "content": "Ran model checks for the prompt update.",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-ai-evals-skipped",
+      "configured-sensitive-domain-eval"
+    ]
+  },
+  {
+    "id": "sec-tls-verification-plan-pass",
+    "preset": "security",
+    "kind": "plan",
+    "description": "Keeping TLS verification enabled should not trip insecure-TLS checks.",
+    "content": "Keep TLS verification on while testing the certificate fixture.",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-insecure-tls-disabled"
+    ]
   }
 ]

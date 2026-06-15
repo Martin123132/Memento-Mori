@@ -656,21 +656,26 @@ test("fixture report surfaces quiet-pass rule coverage", async () => {
     }>;
     gaps: {
       rulesWithoutQuietPassCoverage: Array<{ ruleId: string }>;
+      thinRuleCoverage: Array<{ ruleId: string; quietPassCases: number }>;
       quietPassRuleCoverage: Array<{ ruleId: string; total: number }>;
       presetKindGaps: Array<{ preset: string; missingKinds: string[] }>;
     };
   };
   const riskyDomain = result.quietPassRules.find((rule) => rule.ruleId === "risky-domain");
+  const thinPresetRulesWithoutQuietPass = result.gaps.thinRuleCoverage.filter((rule) =>
+    /^(custom-|configured-sensitive-domain-|blocked-command-)/.test(rule.ruleId) && rule.quietPassCases === 0
+  );
 
   assert.match(text.stdout, /Rules without quiet-pass coverage:/);
   assert.match(text.stdout, /Quiet-pass rule coverage:/);
   assert.match(text.stdout, /risky-domain: [1-9][0-9]* quiet-pass fixture/);
-  assert.equal(result.totalFixtures >= 90, true);
+  assert.equal(result.totalFixtures >= 112, true);
   assert.equal(riskyDomain?.total, 5);
   assert.equal((riskyDomain?.samples.length ?? 0) > 0, true);
   assert.ok(result.gaps.quietPassRuleCoverage.some((rule) => rule.ruleId === "risky-domain" && rule.total === 5));
   assert.ok(result.gaps.rulesWithoutQuietPassCoverage.some((rule) => rule.ruleId === "missing-verification-step"));
   assert.deepEqual(result.gaps.presetKindGaps, []);
+  assert.deepEqual(thinPresetRulesWithoutQuietPass, []);
 });
 
 test("tune coverage prints fixture coverage actions", async () => {

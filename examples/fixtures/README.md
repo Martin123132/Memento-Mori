@@ -14,6 +14,7 @@ Maintainer triage guidance lives in [docs/MAINTAINER_TRIAGE.md](../../docs/MAINT
 - API preset CORS, raw SQL, webhook, and migration-command risks.
 - Infra preset public exposure, IAM wildcard, and destructive command risks.
 - AI preset eval-skipping and model-output execution risks.
+- Quiet-pass boundaries for thin custom, configured sensitive-domain, and preset blocked-command rules.
 - Fixture metadata like `weight` and `edgeCase` to support precision-weighted tuning evidence.
 
 ## Local Check

@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.65
+
+- Added matched-pass fixtures for low-severity `vibes-based-plan` and `handwave-final` rule boundaries.
+- Added `passEligibleRulesWithoutPassCases` to `npm run fixtures:report -- --json` so curation only asks for pass-case coverage where a matched rule can genuinely remain a pass.
+- Updated fixture report curation to move on from impossible hard-rule pass cases to real-world preset collection, with docs refreshed for the 154-fixture corpus.
+
 ## 0.1.64
 
 - Added second firing fixtures for the remaining built-in destructive-command, final-answer, and configured billing-domain thin examples.

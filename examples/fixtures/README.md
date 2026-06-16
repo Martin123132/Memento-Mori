@@ -16,6 +16,7 @@ Maintainer triage guidance lives in [docs/MAINTAINER_TRIAGE.md](../../docs/MAINT
 - AI preset eval-skipping and model-output execution risks.
 - Quiet-pass boundaries for thin custom, configured sensitive-domain, and preset blocked-command rules.
 - Quiet-pass boundaries for built-in and structural rules such as missing verification, TypeScript suppressions, large removals, wildcard operations, destructive commands, and untested finals.
+- Matched-pass examples for low-severity rules where a single finding should stay below caution.
 - Second firing examples for preset blocked-command rules and high-value stack-specific sensitive-domain rules.
 - Second firing examples for AI and API custom rules around provider keys, model-output execution, raw SQL, and webhook signature checks.
 - Second firing examples for remaining framework custom rules across security, infra, node, python, and web presets.
@@ -52,6 +53,6 @@ Do not add secrets, private code, customer data, complete logs, or machine-speci
 
 `npm run fixtures:check` validates duplicate IDs, missing expected rule metadata, weak descriptions, unsafe-looking fixture content, and duplicate content before the fixture suite becomes tuning evidence.
 
-`npm run fixtures:report` summarizes coverage by rule, rule family, preset slice, review kind, verdict, and quiet-pass rule boundaries. Use it to find rules without pass-case coverage, rules without quiet-pass coverage, thin rule coverage, preset/kind gaps, quiet pass fixtures, and the next curation target.
+`npm run fixtures:report` summarizes coverage by rule, rule family, preset slice, review kind, verdict, and quiet-pass rule boundaries. Use it to find rules without pass-case coverage, pass-eligible rules without pass-case coverage, rules without quiet-pass coverage, thin rule coverage, preset/kind gaps, quiet pass fixtures, and the next curation target.
 
-The `Curation next` section is a maintainer shortcut: start there when deciding whether the next fixture batch should focus on thin rules, no-pass evidence, a specific rule family, or lower-count presets. The `--json` output includes the same `ruleFamilySlices`, `presetSlices`, and `curationNext` fields for scripts.
+The `Curation next` section is a maintainer shortcut: start there when deciding whether the next fixture batch should focus on thin rules, feasible pass-case evidence, a specific rule family, or lower-count presets. The `--json` output includes the same `ruleFamilySlices`, `presetSlices`, `passEligibleRulesWithoutPassCases`, and `curationNext` fields for scripts.

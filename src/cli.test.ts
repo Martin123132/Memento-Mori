@@ -678,6 +678,7 @@ test("fixture report surfaces quiet-pass rule coverage", async () => {
     gaps: {
       rulesWithoutQuietPassCoverage: Array<{ ruleId: string }>;
       thinRuleCoverage: Array<{ ruleId: string; quietPassCases: number }>;
+      passEligibleRulesWithoutPassCases: Array<{ ruleId: string }>;
       quietPassRuleCoverage: Array<{ ruleId: string; total: number }>;
       presetKindGaps: Array<{ preset: string; missingKinds: string[] }>;
     };
@@ -690,6 +691,8 @@ test("fixture report surfaces quiet-pass rule coverage", async () => {
     /^(custom-|configured-sensitive-domain-|blocked-command-)/.test(rule.ruleId) && rule.quietPassCases === 0
   );
 
+  assert.match(text.stdout, /Rules without pass-case coverage:/);
+  assert.match(text.stdout, /Pass-eligible rules without pass-case coverage:/);
   assert.match(text.stdout, /Rules without quiet-pass coverage:/);
   assert.match(text.stdout, /Quiet-pass rule coverage:/);
   assert.match(text.stdout, /By rule family:/);
@@ -705,7 +708,8 @@ test("fixture report surfaces quiet-pass rule coverage", async () => {
   assert.equal((nodeSlice?.total ?? 0) >= 7, true);
   assert.equal((nodeSlice?.quietPassFixtures ?? 0) > 0, true);
   assert.deepEqual(result.gaps.thinRuleCoverage, []);
-  assert.ok(result.curationNext.some((item) => item.area === "pass-case-coverage" && item.count > 0));
+  assert.deepEqual(result.gaps.passEligibleRulesWithoutPassCases, []);
+  assert.equal(result.curationNext.some((item) => item.area === "pass-case-coverage"), false);
   assert.ok(result.curationNext.some((item) => item.area === "preset-real-world-curation" && item.presets?.length));
   assert.ok(result.gaps.quietPassRuleCoverage.some((rule) => rule.ruleId === "risky-domain" && rule.total === 5));
   assert.deepEqual(result.gaps.rulesWithoutQuietPassCoverage, []);

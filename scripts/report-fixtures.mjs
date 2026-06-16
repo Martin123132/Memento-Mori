@@ -13,6 +13,16 @@ const structuralRuleIds = new Set([
   "missing-verification-step",
   "wildcard-file-operation"
 ]);
+const passEligibleRuleIds = new Set([
+  "confidence-theater",
+  "console-log",
+  "handwave-final",
+  "large-removal",
+  "missing-verification-step",
+  "temporary-marker",
+  "vibes-based-plan",
+  "wildcard-file-operation"
+]);
 const ruleFamilyOrder = [
   "built-in",
   "structural",
@@ -173,6 +183,10 @@ function buildFixtureReport(rawFixtures) {
       .filter((entry) => entry.passCases === 0)
       .sort((a, b) => b.total - a.total || a.ruleId.localeCompare(b.ruleId))
       .map(ruleGapSummary),
+    passEligibleRulesWithoutPassCases: ruleSummaries
+      .filter((entry) => passEligibleRuleIds.has(entry.ruleId) && entry.passCases === 0)
+      .sort((a, b) => b.total - a.total || a.ruleId.localeCompare(b.ruleId))
+      .map(ruleGapSummary),
     rulesWithoutQuietPassCoverage: ruleSummaries
       .filter((entry) => entry.quietPassCases === 0)
       .sort((a, b) => b.total - a.total || a.ruleId.localeCompare(b.ruleId))
@@ -232,6 +246,8 @@ function renderFixtureReport(report) {
   );
 
   lines.push(...formatRuleGaps(report.gaps.rulesWithoutPassCases));
+  lines.push("", "Pass-eligible rules without pass-case coverage:");
+  lines.push(...formatRuleGaps(report.gaps.passEligibleRulesWithoutPassCases));
   lines.push("", "Rules without quiet-pass coverage:");
   lines.push(...formatRuleGaps(report.gaps.rulesWithoutQuietPassCoverage));
   lines.push("", "Quiet-pass rule coverage:");
@@ -467,13 +483,13 @@ function buildCurationNext(gaps, ruleFamilySlices, presetSlices) {
     });
   }
 
-  if (gaps.rulesWithoutPassCases.length > 0) {
+  if (gaps.passEligibleRulesWithoutPassCases.length > 0) {
     items.push({
       priority: "medium",
       area: "pass-case-coverage",
-      title: "Add benign or docs-only examples for rules with no pass-case evidence",
-      count: gaps.rulesWithoutPassCases.length,
-      ruleIds: gaps.rulesWithoutPassCases.slice(0, 8).map((entry) => entry.ruleId)
+      title: "Add benign matched examples for low-severity rules with no pass-case evidence",
+      count: gaps.passEligibleRulesWithoutPassCases.length,
+      ruleIds: gaps.passEligibleRulesWithoutPassCases.slice(0, 8).map((entry) => entry.ruleId)
     });
   }
 

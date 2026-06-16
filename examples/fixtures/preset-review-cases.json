@@ -558,6 +558,18 @@
     ]
   },
   {
+    "id": "plan-vibes-low-severity-pass",
+    "preset": "default",
+    "kind": "plan",
+    "description": "A lone vague phrase should be recorded as a low-severity matched pass.",
+    "content": "This should work.",
+    "weight": 1,
+    "expectedVerdict": "pass",
+    "expectedRuleIds": [
+      "vibes-based-plan"
+    ]
+  },
+  {
     "id": "plan-skip-tests",
     "preset": "default",
     "kind": "plan",
@@ -653,6 +665,18 @@
     "weight": 2,
     "expectedRuleIds": [
       "done-without-evidence",
+      "handwave-final"
+    ]
+  },
+  {
+    "id": "final-handwave-low-severity-pass",
+    "preset": "default",
+    "kind": "final",
+    "description": "A lone hand-wavy phrase should be recorded as a low-severity matched pass.",
+    "content": "Looks good.",
+    "expectedVerdict": "pass",
+    "weight": 1,
+    "expectedRuleIds": [
       "handwave-final"
     ]
   },

@@ -6,6 +6,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Recently Shipped
 
+- Feasible pass-case fixture curation in v0.1.65, adding matched-pass examples for low-severity tone/planning rules and stopping curation from asking for impossible pass cases on hard rules.
 - Final thin-rule fixture precision pass in v0.1.64, clearing all remaining thin coverage gaps across built-in, structural, custom, configured sensitive-domain, and blocked-command rule families.
 - Framework custom-rule fixture precision pass in v0.1.63, clearing custom-rule thin coverage and reducing total thin fixture coverage from 16 rules to 7.
 - AI/API custom-rule fixture precision pass in v0.1.62, reducing total thin fixture coverage from 21 rules to 16 while keeping review behavior unchanged.
@@ -53,7 +54,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Product Ideas
 
-- Add benign pass-case evidence for rules that currently have match coverage and quiet-pass coverage but no explicit matched pass cases.
+- Collect real-world reports for the lowest-count preset slices: node, python, infra, and AI.
 - Add more framework-specific false-positive examples from real reports so tuning guidance keeps getting sharper.
 - Add a Markdown export for fixture reports so maintainers can paste coverage snapshots into issues or release notes.
 

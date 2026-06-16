@@ -704,7 +704,8 @@ test("fixture report surfaces quiet-pass rule coverage", async () => {
   assert.equal((structuralSlice?.fixtureReferences ?? 0) > 0, true);
   assert.equal((nodeSlice?.total ?? 0) >= 7, true);
   assert.equal((nodeSlice?.quietPassFixtures ?? 0) > 0, true);
-  assert.ok(result.curationNext.some((item) => item.area === "thin-rule-coverage" && item.count > 0));
+  assert.deepEqual(result.gaps.thinRuleCoverage, []);
+  assert.ok(result.curationNext.some((item) => item.area === "pass-case-coverage" && item.count > 0));
   assert.ok(result.curationNext.some((item) => item.area === "preset-real-world-curation" && item.presets?.length));
   assert.ok(result.gaps.quietPassRuleCoverage.some((rule) => rule.ruleId === "risky-domain" && rule.total === 5));
   assert.deepEqual(result.gaps.rulesWithoutQuietPassCoverage, []);

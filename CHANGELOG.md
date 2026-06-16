@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.64
+
+- Added second firing fixtures for the remaining built-in destructive-command, final-answer, and configured billing-domain thin examples.
+- Cleared all remaining thin rule coverage in `npm run fixtures:report` across built-in, structural, custom, configured sensitive-domain, and blocked-command rule families.
+- Refreshed demo, roadmap, fixture docs, and release notes for the 152-fixture corpus.
+
 ## 0.1.63
 
 - Added second firing fixtures for the remaining framework custom-rule thin examples across security, infra, node, python, and web presets.

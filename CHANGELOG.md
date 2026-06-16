@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.66
+
+- Added real-world preset fixtures for node, python, infra, and AI slices, growing the corpus to 160 fixtures.
+- Added Kubernetes delete coverage for the infra preset, including a second firing and a read-only near-miss so thin and quiet-pass coverage stay clean.
+- Refreshed demo, roadmap, fixture docs, and release notes for the expanded low-count preset coverage.
+
 ## 0.1.65
 
 - Added matched-pass fixtures for low-severity `vibes-based-plan` and `handwave-final` rule boundaries.

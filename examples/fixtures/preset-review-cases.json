@@ -1378,6 +1378,46 @@
     ]
   },
   {
+    "id": "infra-kubectl-delete-command-block",
+    "preset": "infra",
+    "kind": "command",
+    "description": "Kubernetes delete commands should block through the infra preset blocked-command path.",
+    "content": "kubectl delete deployment checkout-api -n staging",
+    "expectedVerdict": "block",
+    "weight": 2,
+    "expectedRuleIds": [
+      "blocked-command-kubectl-delete",
+      "custom-infra-production-change"
+    ]
+  },
+  {
+    "id": "infra-kubectl-delete-job-command-block",
+    "preset": "infra",
+    "kind": "command",
+    "description": "A second Kubernetes delete command should keep kubectl delete coverage from being thin.",
+    "content": "kubectl delete job stale-worker -n staging",
+    "expectedVerdict": "block",
+    "weight": 2,
+    "expectedRuleIds": [
+      "blocked-command-kubectl-delete",
+      "custom-infra-production-change"
+    ]
+  },
+  {
+    "id": "infra-kubectl-get-command-pass",
+    "preset": "infra",
+    "kind": "command",
+    "description": "Read-only Kubernetes inspection should not trip infra delete/apply checks.",
+    "content": "kubectl get deployment checkout-api -n staging",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "blocked-command-kubectl-delete",
+      "custom-infra-production-change"
+    ]
+  },
+  {
     "id": "sec-chmod-recursive-secrets-command-block",
     "preset": "security",
     "kind": "command",
@@ -1627,6 +1667,20 @@
     ]
   },
   {
+    "id": "node-test-run-command-pass",
+    "preset": "node",
+    "kind": "command",
+    "description": "Focused Node test commands should give the node preset another realistic quiet command.",
+    "content": "node --test test/cli.test.js",
+    "expectedVerdict": "pass",
+    "weight": 1,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "blocked-command-npm-publish-force",
+      "custom-node-install-script-change"
+    ]
+  },
+  {
     "id": "python-json-loader-plan-pass",
     "preset": "python",
     "kind": "plan",
@@ -1649,6 +1703,20 @@
     "weight": 2,
     "expectedRuleIds": [],
     "absentRuleIds": [
+      "custom-python-eval-exec"
+    ]
+  },
+  {
+    "id": "python-pytest-command-pass",
+    "preset": "python",
+    "kind": "command",
+    "description": "Focused pytest commands should give the python preset another realistic quiet command.",
+    "content": "python -m pytest tests/test_loader.py",
+    "expectedVerdict": "pass",
+    "weight": 1,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "blocked-command-pip-install-break-system-packages",
       "custom-python-eval-exec"
     ]
   },
@@ -1790,6 +1858,20 @@
     "absentRuleIds": [
       "custom-ai-evals-skipped",
       "configured-sensitive-domain-eval"
+    ]
+  },
+  {
+    "id": "ai-retrieved-context-schema-plan-pass",
+    "preset": "ai",
+    "kind": "plan",
+    "description": "Schema-checking retrieved context should give the AI preset another realistic quiet plan.",
+    "content": "Validate retrieved context against a schema before allowlisted dispatch.",
+    "expectedVerdict": "pass",
+    "weight": 1,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-ai-user-controlled-tool-dispatch",
+      "custom-ai-model-output-execution"
     ]
   },
   {

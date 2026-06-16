@@ -355,6 +355,8 @@ Preset packs:
 
 The fixture suite in `examples/fixtures/preset-review-cases.json` captures small real-usage examples with expected `pass`, `caution`, or `block` verdicts. It also includes quiet-pass `absentRuleIds` examples that prove noisy rules stay silent for safe near-misses, stack-specific coverage for every built-in preset, and quiet-pass boundaries across built-in, structural, custom, and preset/config-derived rules. These examples are run by `npm test`, so preset tuning changes stay visible.
 
+Maintainers can run `npm run fixtures:report` to see coverage by verdict, kind, preset, rule family, and preset slice. The report also includes a `Curation next` section that points at the next useful fixture batch, such as thin rules, no-pass evidence, rule-family gaps, or lower-count presets.
+
 Maintainers can use `docs/MAINTAINER_TRIAGE.md` to turn useful false-positive reports into redacted fixture cases.
 
 ## 14. Framework CI Examples

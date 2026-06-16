@@ -654,6 +654,27 @@ test("fixture report surfaces quiet-pass rule coverage", async () => {
       total: number;
       samples: Array<{ id: string; description: string }>;
     }>;
+    ruleFamilySlices: Array<{
+      family: string;
+      ruleCount: number;
+      fixtureReferences: number;
+      quietPassCases: number;
+      thinRules: Array<{ ruleId: string }>;
+    }>;
+    presetSlices: Array<{
+      preset: string;
+      total: number;
+      quietPassFixtures: number;
+      byKind: Record<string, number>;
+      byVerdict: Record<string, number>;
+    }>;
+    curationNext: Array<{
+      priority: string;
+      area: string;
+      count: number;
+      ruleIds?: string[];
+      presets?: Array<{ preset: string; total: number }>;
+    }>;
     gaps: {
       rulesWithoutQuietPassCoverage: Array<{ ruleId: string }>;
       thinRuleCoverage: Array<{ ruleId: string; quietPassCases: number }>;
@@ -662,16 +683,29 @@ test("fixture report surfaces quiet-pass rule coverage", async () => {
     };
   };
   const riskyDomain = result.quietPassRules.find((rule) => rule.ruleId === "risky-domain");
+  const builtInSlice = result.ruleFamilySlices.find((slice) => slice.family === "built-in");
+  const structuralSlice = result.ruleFamilySlices.find((slice) => slice.family === "structural");
+  const nodeSlice = result.presetSlices.find((slice) => slice.preset === "node");
   const thinPresetRulesWithoutQuietPass = result.gaps.thinRuleCoverage.filter((rule) =>
     /^(custom-|configured-sensitive-domain-|blocked-command-)/.test(rule.ruleId) && rule.quietPassCases === 0
   );
 
   assert.match(text.stdout, /Rules without quiet-pass coverage:/);
   assert.match(text.stdout, /Quiet-pass rule coverage:/);
+  assert.match(text.stdout, /By rule family:/);
+  assert.match(text.stdout, /Preset slices:/);
+  assert.match(text.stdout, /Curation next:/);
   assert.match(text.stdout, /risky-domain: [1-9][0-9]* quiet-pass fixture/);
   assert.equal(result.totalFixtures >= 125, true);
   assert.equal(riskyDomain?.total, 5);
   assert.equal((riskyDomain?.samples.length ?? 0) > 0, true);
+  assert.equal((builtInSlice?.ruleCount ?? 0) > 0, true);
+  assert.equal((builtInSlice?.quietPassCases ?? 0) > 0, true);
+  assert.equal((structuralSlice?.fixtureReferences ?? 0) > 0, true);
+  assert.equal((nodeSlice?.total ?? 0) >= 7, true);
+  assert.equal((nodeSlice?.quietPassFixtures ?? 0) > 0, true);
+  assert.ok(result.curationNext.some((item) => item.area === "thin-rule-coverage" && item.count > 0));
+  assert.ok(result.curationNext.some((item) => item.area === "preset-real-world-curation" && item.presets?.length));
   assert.ok(result.gaps.quietPassRuleCoverage.some((rule) => rule.ruleId === "risky-domain" && rule.total === 5));
   assert.deepEqual(result.gaps.rulesWithoutQuietPassCoverage, []);
   assert.deepEqual(result.gaps.presetKindGaps, []);

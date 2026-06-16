@@ -8,6 +8,18 @@ const allowedPresets = ["default", "node", "python", "web", "api", "infra", "ai"
 const allowedKinds = ["plan", "command", "diff", "final"];
 const allowedVerdicts = ["pass", "caution", "block"];
 const sampleLimit = 3;
+const structuralRuleIds = new Set([
+  "large-removal",
+  "missing-verification-step",
+  "wildcard-file-operation"
+]);
+const ruleFamilyOrder = [
+  "built-in",
+  "structural",
+  "custom",
+  "configured-sensitive-domain",
+  "blocked-command"
+];
 
 const args = new Set(process.argv.slice(2));
 const json = args.has("--json");
@@ -43,6 +55,7 @@ function buildFixtureReport(rawFixtures) {
   const byVerdict = zeroCounts(allowedVerdicts);
   const rules = new Map();
   const quietPassRules = new Map();
+  const presetSlices = new Map(allowedPresets.map((preset) => [preset, createPresetSlice(preset)]));
   const quietPassFixtures = [];
 
   let totalWeight = 0;
@@ -72,9 +85,24 @@ function buildFixtureReport(rawFixtures) {
       edgeCaseFixtures += 1;
     }
 
+    const presetSlice = presetSlices.get(preset) ?? createPresetSlice(preset);
+    presetSlice.total += 1;
+    presetSlice.weight += weight;
+    presetSlice.byKind[kind] = (presetSlice.byKind[kind] ?? 0) + 1;
+    presetSlice.byVerdict[verdict] = (presetSlice.byVerdict[verdict] ?? 0) + 1;
+    presetSlice.expectedRuleReferences += expectedRuleIds.length;
+    if (verdict === "pass") {
+      presetSlice.quietPassRuleReferences += absentRuleIds.length;
+    }
+    if (edgeCase) {
+      presetSlice.edgeCases += 1;
+    }
+
     if (verdict === "pass" && expectedRuleIds.length === 0) {
       quietPassFixtures.push(sample);
+      presetSlice.quietPassFixtures += 1;
     }
+    presetSlices.set(preset, presetSlice);
 
     if (verdict === "pass") {
       for (const ruleId of absentRuleIds) {
@@ -154,11 +182,14 @@ function buildFixtureReport(rawFixtures) {
       .sort((a, b) => a.total - b.total || a.ruleId.localeCompare(b.ruleId))
       .map(ruleGapSummary),
     presetKindGaps: presetKindGaps(rawFixtures),
-    quietPassRuleCoverage: quietPassRuleSummaries,
-    quietPassFixtures: quietPassFixtures
-      .slice()
-      .sort((a, b) => a.id.localeCompare(b.id))
+      quietPassRuleCoverage: quietPassRuleSummaries,
+      quietPassFixtures: quietPassFixtures
+        .slice()
+        .sort((a, b) => a.id.localeCompare(b.id))
   };
+  const ruleFamilySlices = buildRuleFamilySlices(ruleSummaries, quietPassRuleSummaries);
+  const presetSliceSummaries = buildPresetSlices(presetSlices);
+  const curationNext = buildCurationNext(gaps, ruleFamilySlices, presetSliceSummaries);
 
   return {
     totalFixtures: rawFixtures.length,
@@ -167,6 +198,9 @@ function buildFixtureReport(rawFixtures) {
     byVerdict: orderedCounts(byVerdict, allowedVerdicts),
     byKind: orderedCounts(byKind, allowedKinds),
     byPreset: orderedCounts(byPreset, allowedPresets),
+    ruleFamilySlices,
+    presetSlices: presetSliceSummaries,
+    curationNext,
     quietPassRules: quietPassRuleSummaries,
     rules: ruleSummaries,
     gaps
@@ -186,8 +220,16 @@ function renderFixtureReport(report) {
     `By kind: ${formatCounts(report.byKind)}`,
     `By preset: ${formatCounts(report.byPreset)}`,
     "",
-    "Rules without pass-case coverage:"
+    "By rule family:"
   ];
+
+  lines.push(...formatRuleFamilySlices(report.ruleFamilySlices));
+  lines.push("", "Preset slices:");
+  lines.push(...formatPresetSlices(report.presetSlices));
+  lines.push(
+    "",
+    "Rules without pass-case coverage:"
+  );
 
   lines.push(...formatRuleGaps(report.gaps.rulesWithoutPassCases));
   lines.push("", "Rules without quiet-pass coverage:");
@@ -200,6 +242,8 @@ function renderFixtureReport(report) {
   lines.push(...formatPresetKindGaps(report.gaps.presetKindGaps));
   lines.push("", "Quiet pass fixtures:");
   lines.push(...formatFixtureSamples(report.gaps.quietPassFixtures));
+  lines.push("", "Curation next:");
+  lines.push(...formatCurationNext(report.curationNext));
   lines.push(
     "",
     "Next:",
@@ -236,6 +280,39 @@ function createQuietPassEntry(ruleId) {
   };
 }
 
+function createPresetSlice(preset) {
+  return {
+    preset,
+    total: 0,
+    weight: 0,
+    edgeCases: 0,
+    quietPassFixtures: 0,
+    expectedRuleReferences: 0,
+    quietPassRuleReferences: 0,
+    byKind: zeroCounts(allowedKinds),
+    byVerdict: zeroCounts(allowedVerdicts)
+  };
+}
+
+function createRuleFamilySlice(family) {
+  return {
+    family,
+    ruleCount: 0,
+    ruleIds: [],
+    fixtureReferences: 0,
+    weight: 0,
+    passCases: 0,
+    cautionCases: 0,
+    blockCases: 0,
+    quietPassCases: 0,
+    quietPassWeight: 0,
+    rulesWithoutPassCases: [],
+    rulesWithoutQuietPassCoverage: [],
+    thinRules: [],
+    sampleRules: []
+  };
+}
+
 function fixtureWeight(rawWeight) {
   if (typeof rawWeight === "number" && rawWeight > 0 && Number.isFinite(rawWeight)) {
     return Math.max(1, Math.min(3, Math.round(rawWeight)));
@@ -254,6 +331,204 @@ function orderedCounts(counts, keys) {
     ordered[key] = value;
   }
   return ordered;
+}
+
+function ruleFamily(ruleId) {
+  if (ruleId.startsWith("blocked-command-")) {
+    return "blocked-command";
+  }
+
+  if (ruleId.startsWith("configured-sensitive-domain-")) {
+    return "configured-sensitive-domain";
+  }
+
+  if (ruleId.startsWith("custom-")) {
+    return "custom";
+  }
+
+  if (structuralRuleIds.has(ruleId)) {
+    return "structural";
+  }
+
+  return "built-in";
+}
+
+function buildRuleFamilySlices(ruleSummaries, quietPassRuleSummaries) {
+  const slices = new Map(ruleFamilyOrder.map((family) => [family, createRuleFamilySlice(family)]));
+
+  for (const entry of ruleSummaries) {
+    const family = ruleFamily(entry.ruleId);
+    const slice = slices.get(family) ?? createRuleFamilySlice(family);
+
+    slice.ruleCount += 1;
+    slice.ruleIds.push(entry.ruleId);
+    slice.fixtureReferences += entry.total;
+    slice.weight += entry.weight;
+    slice.passCases += entry.passCases;
+    slice.cautionCases += entry.cautionCases;
+    slice.blockCases += entry.blockCases;
+    if (entry.passCases === 0) {
+      slice.rulesWithoutPassCases.push(ruleGapSummary(entry));
+    }
+    if (entry.quietPassCases === 0) {
+      slice.rulesWithoutQuietPassCoverage.push(ruleGapSummary(entry));
+    }
+    if (entry.total < 2) {
+      slice.thinRules.push(ruleGapSummary(entry));
+    }
+    if (slice.sampleRules.length < sampleLimit) {
+      slice.sampleRules.push({
+        ruleId: entry.ruleId,
+        total: entry.total,
+        quietPassCases: entry.quietPassCases
+      });
+    }
+
+    slices.set(family, slice);
+  }
+
+  for (const entry of quietPassRuleSummaries) {
+    const family = ruleFamily(entry.ruleId);
+    const slice = slices.get(family) ?? createRuleFamilySlice(family);
+
+    slice.quietPassCases += entry.total;
+    slice.quietPassWeight += entry.weight;
+    slices.set(family, slice);
+  }
+
+  return sortRuleFamilies([...slices.values()])
+    .filter((entry) => entry.ruleCount > 0 || entry.quietPassCases > 0)
+    .map((entry) => ({
+      ...entry,
+      ruleIds: entry.ruleIds.slice().sort((a, b) => a.localeCompare(b)),
+      rulesWithoutPassCases: entry.rulesWithoutPassCases
+        .slice()
+        .sort((a, b) => b.total - a.total || a.ruleId.localeCompare(b.ruleId)),
+      rulesWithoutQuietPassCoverage: entry.rulesWithoutQuietPassCoverage
+        .slice()
+        .sort((a, b) => b.total - a.total || a.ruleId.localeCompare(b.ruleId)),
+      thinRules: entry.thinRules
+        .slice()
+        .sort((a, b) => a.total - b.total || a.ruleId.localeCompare(b.ruleId)),
+      sampleRules: entry.sampleRules
+        .slice()
+        .sort((a, b) => b.total - a.total || a.ruleId.localeCompare(b.ruleId))
+    }));
+}
+
+function buildPresetSlices(presetSlices) {
+  return [...presetSlices.values()]
+    .map((entry) => ({
+      preset: entry.preset,
+      total: entry.total,
+      weight: entry.weight,
+      edgeCases: entry.edgeCases,
+      quietPassFixtures: entry.quietPassFixtures,
+      expectedRuleReferences: entry.expectedRuleReferences,
+      quietPassRuleReferences: entry.quietPassRuleReferences,
+      byKind: orderedCounts(entry.byKind, allowedKinds),
+      byVerdict: orderedCounts(entry.byVerdict, allowedVerdicts)
+    }))
+    .sort((a, b) => presetOrder(a.preset) - presetOrder(b.preset) || a.preset.localeCompare(b.preset));
+}
+
+function buildCurationNext(gaps, ruleFamilySlices, presetSlices) {
+  const items = [];
+
+  if (gaps.presetKindGaps.length > 0) {
+    items.push({
+      priority: "high",
+      area: "preset-kind-gaps",
+      title: "Fill missing preset/review-kind combinations",
+      count: gaps.presetKindGaps.length,
+      details: gaps.presetKindGaps
+        .slice(0, 6)
+        .map((entry) => `${entry.preset}: ${entry.missingKinds.join(", ")}`)
+    });
+  }
+
+  if (gaps.rulesWithoutQuietPassCoverage.length > 0) {
+    items.push({
+      priority: "high",
+      area: "quiet-pass-gaps",
+      title: "Add safe near-miss fixtures for rules without quiet-pass coverage",
+      count: gaps.rulesWithoutQuietPassCoverage.length,
+      ruleIds: gaps.rulesWithoutQuietPassCoverage.slice(0, 8).map((entry) => entry.ruleId)
+    });
+  }
+
+  if (gaps.thinRuleCoverage.length > 0) {
+    items.push({
+      priority: "medium",
+      area: "thin-rule-coverage",
+      title: "Add a second example for rules with only one firing fixture",
+      count: gaps.thinRuleCoverage.length,
+      ruleIds: gaps.thinRuleCoverage.slice(0, 8).map((entry) => entry.ruleId)
+    });
+  }
+
+  if (gaps.rulesWithoutPassCases.length > 0) {
+    items.push({
+      priority: "medium",
+      area: "pass-case-coverage",
+      title: "Add benign or docs-only examples for rules with no pass-case evidence",
+      count: gaps.rulesWithoutPassCases.length,
+      ruleIds: gaps.rulesWithoutPassCases.slice(0, 8).map((entry) => entry.ruleId)
+    });
+  }
+
+  const thinFamilies = ruleFamilySlices
+    .filter((entry) => entry.thinRules.length > 0)
+    .map((entry) => ({
+      family: entry.family,
+      thinRules: entry.thinRules.length,
+      ruleIds: entry.thinRules.slice(0, 4).map((rule) => rule.ruleId)
+    }));
+
+  if (thinFamilies.length > 0) {
+    items.push({
+      priority: "low",
+      area: "rule-family-curation",
+      title: "Use rule-family slices to batch similar thin rules",
+      count: thinFamilies.reduce((total, entry) => total + entry.thinRules, 0),
+      families: thinFamilies
+    });
+  }
+
+  const lowerPresetSlices = presetSlices
+    .filter((entry) => entry.total > 0)
+    .slice()
+    .sort((a, b) => a.total - b.total || presetOrder(a.preset) - presetOrder(b.preset) || a.preset.localeCompare(b.preset))
+    .slice(0, 4)
+    .map((entry) => ({
+      preset: entry.preset,
+      total: entry.total,
+      quietPassFixtures: entry.quietPassFixtures
+    }));
+
+  items.push({
+    priority: "low",
+    area: "preset-real-world-curation",
+    title: "Collect real-world reports for the lowest-count preset slices",
+    count: lowerPresetSlices.length,
+    presets: lowerPresetSlices
+  });
+
+  return items;
+}
+
+function sortRuleFamilies(entries) {
+  return entries.sort((a, b) => ruleFamilyIndex(a.family) - ruleFamilyIndex(b.family) || a.family.localeCompare(b.family));
+}
+
+function ruleFamilyIndex(family) {
+  const index = ruleFamilyOrder.indexOf(family);
+  return index === -1 ? ruleFamilyOrder.length : index;
+}
+
+function presetOrder(preset) {
+  const index = allowedPresets.indexOf(preset);
+  return index === -1 ? allowedPresets.length : index;
 }
 
 function presetKindGaps(fixtures) {
@@ -294,6 +569,43 @@ function formatRuleGaps(entries) {
     .map((entry) => `- ${entry.ruleId}: ${entry.total} fixture(s), pass ${entry.passCases}, caution ${entry.cautionCases}, block ${entry.blockCases}, quiet-pass ${entry.quietPassCases}`);
 }
 
+function formatRuleFamilySlices(entries) {
+  if (entries.length === 0) {
+    return ["- none"];
+  }
+
+  return entries.map((entry) =>
+    [
+      `- ${entry.family}: ${entry.ruleCount} rule(s)`,
+      `${entry.fixtureReferences} fixture ref(s)`,
+      `pass ${entry.passCases}`,
+      `caution ${entry.cautionCases}`,
+      `block ${entry.blockCases}`,
+      `quiet-pass ${entry.quietPassCases}`,
+      `thin ${entry.thinRules.length}`
+    ].join(", ")
+  );
+}
+
+function formatPresetSlices(entries) {
+  if (entries.length === 0) {
+    return ["- none"];
+  }
+
+  return entries.map((entry) =>
+    [
+      `- ${entry.preset}: ${entry.total} fixture(s)`,
+      `weight ${entry.weight}`,
+      `pass ${entry.byVerdict.pass ?? 0}`,
+      `caution ${entry.byVerdict.caution ?? 0}`,
+      `block ${entry.byVerdict.block ?? 0}`,
+      `quiet-pass ${entry.quietPassFixtures}`,
+      `rule refs ${entry.expectedRuleReferences}`,
+      `absent refs ${entry.quietPassRuleReferences}`
+    ].join(", ")
+  );
+}
+
 function formatQuietPassRuleCoverage(entries) {
   if (entries.length === 0) {
     return ["- none"];
@@ -320,4 +632,35 @@ function formatFixtureSamples(entries) {
   return entries
     .slice(0, 8)
     .map((entry) => `- ${entry.id}: ${entry.description}`);
+}
+
+function formatCurationNext(entries) {
+  if (entries.length === 0) {
+    return ["- none"];
+  }
+
+  return entries.map((entry) => {
+    const details = formatCurationDetails(entry);
+    return `- ${entry.priority} ${entry.area}: ${entry.title} (${entry.count})${details}`;
+  });
+}
+
+function formatCurationDetails(entry) {
+  if (Array.isArray(entry.ruleIds) && entry.ruleIds.length > 0) {
+    return `: ${entry.ruleIds.join(", ")}`;
+  }
+
+  if (Array.isArray(entry.details) && entry.details.length > 0) {
+    return `: ${entry.details.join("; ")}`;
+  }
+
+  if (Array.isArray(entry.families) && entry.families.length > 0) {
+    return `: ${entry.families.map((family) => `${family.family} ${family.thinRules}`).join(", ")}`;
+  }
+
+  if (Array.isArray(entry.presets) && entry.presets.length > 0) {
+    return `: ${entry.presets.map((preset) => `${preset.preset} ${preset.total}`).join(", ")}`;
+  }
+
+  return "";
 }

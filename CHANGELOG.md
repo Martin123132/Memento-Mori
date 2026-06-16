@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.60
+
+- Added rule-family slices to `npm run fixtures:report` so maintainers can compare built-in, structural, custom, configured sensitive-domain, and blocked-command coverage.
+- Added preset slices and curation-next guidance to fixture report text and `--json` output.
+- Updated fixture-report tests and docs so the coverage dashboard stays useful as the fixture suite grows.
+
 ## 0.1.59
 
 - Added quiet-pass fixtures for remaining sparse built-in and structural rules including missing verification, confidence theater, TypeScript suppressions, large removals, wildcard file operations, destructive commands, and untested finals.

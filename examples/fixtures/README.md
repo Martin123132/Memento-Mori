@@ -48,4 +48,6 @@ Do not add secrets, private code, customer data, complete logs, or machine-speci
 
 `npm run fixtures:check` validates duplicate IDs, missing expected rule metadata, weak descriptions, unsafe-looking fixture content, and duplicate content before the fixture suite becomes tuning evidence.
 
-`npm run fixtures:report` summarizes coverage by rule, preset, review kind, verdict, and quiet-pass rule boundaries. Use it to find rules without pass-case coverage, rules without quiet-pass coverage, thin rule coverage, preset/kind gaps, and quiet pass fixtures.
+`npm run fixtures:report` summarizes coverage by rule, rule family, preset slice, review kind, verdict, and quiet-pass rule boundaries. Use it to find rules without pass-case coverage, rules without quiet-pass coverage, thin rule coverage, preset/kind gaps, quiet pass fixtures, and the next curation target.
+
+The `Curation next` section is a maintainer shortcut: start there when deciding whether the next fixture batch should focus on thin rules, no-pass evidence, a specific rule family, or lower-count presets. The `--json` output includes the same `ruleFamilySlices`, `presetSlices`, and `curationNext` fields for scripts.

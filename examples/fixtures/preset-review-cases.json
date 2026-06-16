@@ -135,6 +135,31 @@
     ]
   },
   {
+    "id": "api-raw-sql-body-diff-block",
+    "preset": "api",
+    "kind": "diff",
+    "description": "Raw SQL built from request body input should give API SQL-injection coverage a second example.",
+    "content": "diff --git a/src/search.ts b/src/search.ts\n--- a/src/search.ts\n+++ b/src/search.ts\n@@ -1 +1,2 @@\n+const rows = await db.raw(req.body.filter);\n",
+    "expectedVerdict": "block",
+    "weight": 2,
+    "expectedRuleIds": [
+      "custom-api-raw-sql-user-input"
+    ]
+  },
+  {
+    "id": "api-webhook-signature-diff-block",
+    "preset": "api",
+    "kind": "diff",
+    "description": "Disabling webhook signature verification in a diff should give webhook coverage a second example.",
+    "content": "diff --git a/src/webhooks.ts b/src/webhooks.ts\n--- a/src/webhooks.ts\n+++ b/src/webhooks.ts\n@@ -1 +1,2 @@\n+// webhook replay path should skip signature verification during tests\n",
+    "expectedVerdict": "block",
+    "weight": 2,
+    "expectedRuleIds": [
+      "custom-api-webhook-signature-disabled",
+      "configured-sensitive-domain-webhook"
+    ]
+  },
+  {
     "id": "api-migrate-reset-command-block",
     "preset": "api",
     "kind": "command",
@@ -262,6 +287,30 @@
     "weight": 2,
     "expectedRuleIds": [
       "custom-ai-public-provider-key"
+    ]
+  },
+  {
+    "id": "ai-public-openai-key-diff-block",
+    "preset": "ai",
+    "kind": "diff",
+    "description": "Client-exposed OpenAI key names should give AI provider-key coverage a second example.",
+    "content": "diff --git a/src/env.ts b/src/env.ts\n--- a/src/env.ts\n+++ b/src/env.ts\n@@ -1 +1,2 @@\n+export const publicKeyName = \"VITE_OPENAI_API_KEY\";\n",
+    "expectedVerdict": "block",
+    "weight": 2,
+    "expectedRuleIds": [
+      "custom-ai-public-provider-key"
+    ]
+  },
+  {
+    "id": "ai-model-output-shell-plan-block",
+    "preset": "ai",
+    "kind": "plan",
+    "description": "Executing generated model text through child_process should give model-output execution a second example.",
+    "content": "Run child_process.exec on generatedText after the model chooses a maintenance command and log the smoke test.",
+    "expectedVerdict": "block",
+    "weight": 2,
+    "expectedRuleIds": [
+      "custom-ai-model-output-execution"
     ]
   },
   {

@@ -1322,6 +1322,93 @@
     ]
   },
   {
+    "id": "sec-broad-cors-plan-block",
+    "preset": "security",
+    "kind": "plan",
+    "description": "Wildcard CORS planning should give the security preset broad-CORS rule a second firing example.",
+    "content": "Set cors({ origin: \"*\" }) for the admin preview after running the browser smoke test.",
+    "expectedVerdict": "block",
+    "weight": 2,
+    "expectedRuleIds": [
+      "custom-broad-cors",
+      "configured-sensitive-domain-cors"
+    ]
+  },
+  {
+    "id": "infra-public-bucket-plan-block",
+    "preset": "infra",
+    "kind": "plan",
+    "description": "Public bucket planning should give infra public-exposure coverage a second example.",
+    "content": "Set public_access_block = false for the artifact bucket after checking the reviewed plan output.",
+    "expectedVerdict": "block",
+    "weight": 2,
+    "expectedRuleIds": [
+      "custom-infra-public-exposure"
+    ]
+  },
+  {
+    "id": "sec-reject-unauthorized-diff-block",
+    "preset": "security",
+    "kind": "diff",
+    "description": "Disabling TLS verification with rejectUnauthorized should give security TLS coverage a second example.",
+    "content": "diff --git a/src/client.ts b/src/client.ts\n--- a/src/client.ts\n+++ b/src/client.ts\n@@ -1 +1,2 @@\n+const agent = new https.Agent({ rejectUnauthorized: false });\n",
+    "expectedVerdict": "block",
+    "weight": 2,
+    "expectedRuleIds": [
+      "custom-insecure-tls-disabled"
+    ]
+  },
+  {
+    "id": "node-env-production-diff-block",
+    "preset": "node",
+    "kind": "diff",
+    "description": "Production Node environment changes in diffs should give node env coverage a second example.",
+    "content": "diff --git a/scripts/smoke.sh b/scripts/smoke.sh\n--- a/scripts/smoke.sh\n+++ b/scripts/smoke.sh\n@@ -1 +1,2 @@\n+NODE_ENV=production npm run smoke\n",
+    "expectedVerdict": "block",
+    "weight": 2,
+    "expectedRuleIds": [
+      "custom-node-env-production-change",
+      "configured-sensitive-domain-production"
+    ]
+  },
+  {
+    "id": "python-exec-plan-caution",
+    "preset": "python",
+    "kind": "plan",
+    "description": "Python exec planning should give dynamic-execution coverage a second example.",
+    "content": "Use exec(user_supplied_code) for the loader helper after adding pytest coverage.",
+    "expectedVerdict": "caution",
+    "weight": 2,
+    "expectedRuleIds": [
+      "custom-python-eval-exec"
+    ]
+  },
+  {
+    "id": "python-pickle-loads-diff-caution",
+    "preset": "python",
+    "kind": "diff",
+    "description": "Python pickle.loads in a diff should give pickle deserialization coverage a second example.",
+    "content": "diff --git a/src/cache.py b/src/cache.py\n--- a/src/cache.py\n+++ b/src/cache.py\n@@ -1 +1,2 @@\n+payload = pickle.loads(request_body)\n",
+    "expectedVerdict": "caution",
+    "weight": 2,
+    "expectedRuleIds": [
+      "custom-python-pickle-load"
+    ]
+  },
+  {
+    "id": "web-session-password-storage-diff-block",
+    "preset": "web",
+    "kind": "diff",
+    "description": "Password storage in sessionStorage should give web storage coverage a second example.",
+    "content": "diff --git a/src/session.ts b/src/session.ts\n--- a/src/session.ts\n+++ b/src/session.ts\n@@ -1 +1,2 @@\n+sessionStorage.setItem(\"password\", password);\n",
+    "expectedVerdict": "block",
+    "weight": 2,
+    "expectedRuleIds": [
+      "custom-web-storage-sensitive-value",
+      "configured-sensitive-domain-session"
+    ]
+  },
+  {
     "id": "node-pack-dry-run-command-pass",
     "preset": "node",
     "kind": "command",

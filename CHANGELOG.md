@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.63
+
+- Added second firing fixtures for the remaining framework custom-rule thin examples across security, infra, node, python, and web presets.
+- Cleared custom-rule thin coverage in `npm run fixtures:report`, reducing total thin fixture coverage from 16 rules to 7.
+- Refreshed demo, roadmap, fixture docs, and release notes for the 145-fixture corpus.
+
 ## 0.1.62
 
 - Added second firing fixtures for the remaining AI/API custom-rule thin examples: model-output execution, public AI provider keys, raw SQL from request input, and disabled webhook signature checks.

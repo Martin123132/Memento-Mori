@@ -192,18 +192,18 @@ Project config: none loaded
 Fixture tuning evidence:
 Support: limited
 Confidence: medium
-Total fixtures checked: 138
-Weighted fixtures checked: 262.9
-Matching fixtures: 9
-Weighted matches: 19
+Total fixtures checked: 145
+Weighted fixtures checked: 276.9
+Matching fixtures: 10
+Weighted matches: 21
 Expected-match weight: 16
-Unexpected-match weight: 3
+Unexpected-match weight: 5
 Edge-case matches: 0
 Quiet-pass fixtures: 5
 Quiet-pass weight: 3.6
-By kind: command 0, plan 4, diff 4, final 1
-Fixture coverage: 9/138 (7.2% weighted)
-By verdict: pass 0, caution 3, block 6
+By kind: command 0, plan 4, diff 5, final 1
+Fixture coverage: 10/145 (7.6% weighted)
+By verdict: pass 0, caution 3, block 7
 Matched fixture samples:
   infra-public-ingress-block: Public ingress should block in low-risk-tolerance infra repos.
   node-plan-production-mode-block: Node production-mode planning should cover node-specific and sensitive-domain signals.
@@ -353,7 +353,7 @@ Preset packs:
 
 ## 13. Review Fixtures
 
-The fixture suite in `examples/fixtures/preset-review-cases.json` captures small real-usage examples with expected `pass`, `caution`, or `block` verdicts. It also includes quiet-pass `absentRuleIds` examples that prove noisy rules stay silent for safe near-misses, stack-specific coverage for every built-in preset, quiet-pass boundaries across built-in, structural, custom, and preset/config-derived rules, second firing examples for preset blocked-command rules, and second examples for AI/API custom rules. These examples are run by `npm test`, so preset tuning changes stay visible.
+The fixture suite in `examples/fixtures/preset-review-cases.json` captures small real-usage examples with expected `pass`, `caution`, or `block` verdicts. It also includes quiet-pass `absentRuleIds` examples that prove noisy rules stay silent for safe near-misses, stack-specific coverage for every built-in preset, quiet-pass boundaries across built-in, structural, custom, and preset/config-derived rules, second firing examples for preset blocked-command rules, and second examples for AI/API and framework custom rules. These examples are run by `npm test`, so preset tuning changes stay visible.
 
 Maintainers can run `npm run fixtures:report` to see coverage by verdict, kind, preset, rule family, and preset slice. The report also includes a `Curation next` section that points at the next useful fixture batch, such as thin rules, no-pass evidence, rule-family gaps, or lower-count presets.
 

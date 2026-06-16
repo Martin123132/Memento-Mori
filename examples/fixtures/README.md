@@ -18,6 +18,7 @@ Maintainer triage guidance lives in [docs/MAINTAINER_TRIAGE.md](../../docs/MAINT
 - Quiet-pass boundaries for built-in and structural rules such as missing verification, TypeScript suppressions, large removals, wildcard operations, destructive commands, and untested finals.
 - Second firing examples for preset blocked-command rules and high-value stack-specific sensitive-domain rules.
 - Second firing examples for AI and API custom rules around provider keys, model-output execution, raw SQL, and webhook signature checks.
+- Second firing examples for remaining framework custom rules across security, infra, node, python, and web presets.
 - Fixture metadata like `weight` and `edgeCase` to support precision-weighted tuning evidence.
 
 ## Local Check

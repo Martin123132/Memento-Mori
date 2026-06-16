@@ -192,8 +192,8 @@ Project config: none loaded
 Fixture tuning evidence:
 Support: limited
 Confidence: medium
-Total fixtures checked: 125
-Weighted fixtures checked: 236.9
+Total fixtures checked: 134
+Weighted fixtures checked: 254.9
 Matching fixtures: 9
 Weighted matches: 19
 Expected-match weight: 16
@@ -202,7 +202,7 @@ Edge-case matches: 0
 Quiet-pass fixtures: 5
 Quiet-pass weight: 3.6
 By kind: command 0, plan 4, diff 4, final 1
-Fixture coverage: 9/125 (8.0% weighted)
+Fixture coverage: 9/134 (7.5% weighted)
 By verdict: pass 0, caution 3, block 6
 Matched fixture samples:
   infra-public-ingress-block: Public ingress should block in low-risk-tolerance infra repos.
@@ -353,7 +353,7 @@ Preset packs:
 
 ## 13. Review Fixtures
 
-The fixture suite in `examples/fixtures/preset-review-cases.json` captures small real-usage examples with expected `pass`, `caution`, or `block` verdicts. It also includes quiet-pass `absentRuleIds` examples that prove noisy rules stay silent for safe near-misses, stack-specific coverage for every built-in preset, and quiet-pass boundaries across built-in, structural, custom, and preset/config-derived rules. These examples are run by `npm test`, so preset tuning changes stay visible.
+The fixture suite in `examples/fixtures/preset-review-cases.json` captures small real-usage examples with expected `pass`, `caution`, or `block` verdicts. It also includes quiet-pass `absentRuleIds` examples that prove noisy rules stay silent for safe near-misses, stack-specific coverage for every built-in preset, quiet-pass boundaries across built-in, structural, custom, and preset/config-derived rules, and second firing examples for preset blocked-command rules. These examples are run by `npm test`, so preset tuning changes stay visible.
 
 Maintainers can run `npm run fixtures:report` to see coverage by verdict, kind, preset, rule family, and preset slice. The report also includes a `Curation next` section that points at the next useful fixture batch, such as thin rules, no-pass evidence, rule-family gaps, or lower-count presets.
 

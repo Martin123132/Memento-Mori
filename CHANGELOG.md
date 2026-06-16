@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.61
+
+- Added a focused fixture curation batch based on `fixtures:report` curation-next guidance.
+- Added second firing examples for preset blocked-command rules covering npm publish, pip break-system installs, Prisma resets, Terraform destroy, and recursive chmod.
+- Added second examples for stack-specific CORS, unsafe HTML, IAM, npm publish, and postinstall sensitive-domain coverage, reducing thin fixture coverage from 37 rules to 21.
+
 ## 0.1.60
 
 - Added rule-family slices to `npm run fixtures:report` so maintainers can compare built-in, structural, custom, configured sensitive-domain, and blocked-command coverage.

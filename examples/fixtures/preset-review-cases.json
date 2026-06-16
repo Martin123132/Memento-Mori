@@ -1156,6 +1156,123 @@
     ]
   },
   {
+    "id": "node-publish-force-latest-command-block",
+    "preset": "node",
+    "kind": "command",
+    "description": "Forced latest-tag npm publishing should give the node blocked-command rule a second firing example.",
+    "content": "npm publish --force --tag latest",
+    "expectedVerdict": "block",
+    "weight": 2,
+    "expectedRuleIds": [
+      "blocked-command-npm-publish-force",
+      "configured-sensitive-domain-npm-publish"
+    ]
+  },
+  {
+    "id": "node-postinstall-audit-diff-block",
+    "preset": "node",
+    "kind": "diff",
+    "description": "Another postinstall script shape should keep node install-script coverage from being single-example.",
+    "content": "diff --git a/package.json b/package.json\n--- a/package.json\n+++ b/package.json\n@@ -3,6 +3,7 @@\n   \"scripts\": {\n+    \"postinstall\": \"node scripts/audit-install.js\",\n     \"test\": \"node --test\"\n   }\n",
+    "expectedVerdict": "block",
+    "weight": 2,
+    "expectedRuleIds": [
+      "package-install-script",
+      "custom-node-install-script-change",
+      "configured-sensitive-domain-postinstall"
+    ]
+  },
+  {
+    "id": "python-break-system-uvicorn-command-block",
+    "preset": "python",
+    "kind": "command",
+    "description": "A second break-system-packages command should keep python blocked-command coverage robust.",
+    "content": "python -m pip install --break-system-packages uvicorn",
+    "expectedVerdict": "block",
+    "weight": 2,
+    "expectedRuleIds": [
+      "blocked-command-pip-install-break-system-packages"
+    ]
+  },
+  {
+    "id": "api-migrate-reset-npx-command-block",
+    "preset": "api",
+    "kind": "command",
+    "description": "The Prisma reset command should still block when run through npx.",
+    "content": "npx prisma migrate reset --force",
+    "expectedVerdict": "block",
+    "weight": 2,
+    "expectedRuleIds": [
+      "blocked-command-prisma-migrate-reset-force"
+    ]
+  },
+  {
+    "id": "infra-destroy-auto-approve-command-block",
+    "preset": "infra",
+    "kind": "command",
+    "description": "Terraform destroy with auto-approve should give infra blocked-command coverage a second example.",
+    "content": "terraform destroy -auto-approve",
+    "expectedVerdict": "block",
+    "weight": 2,
+    "expectedRuleIds": [
+      "blocked-command-terraform-destroy"
+    ]
+  },
+  {
+    "id": "sec-chmod-recursive-secrets-command-block",
+    "preset": "security",
+    "kind": "command",
+    "description": "Another recursive chmod 777 command should cover the security preset blocked-command rule.",
+    "content": "chmod -R 777 ./secrets-backup",
+    "expectedVerdict": "block",
+    "weight": 2,
+    "expectedRuleIds": [
+      "blocked-command-chmod-r-777",
+      "chmod-777",
+      "configured-sensitive-domain-secrets"
+    ]
+  },
+  {
+    "id": "api-cors-plan-block",
+    "preset": "api",
+    "kind": "plan",
+    "description": "A plan-level wildcard CORS change should cover the API preset CORS sensitive-domain slice.",
+    "content": "Use cors({ origin: \"*\" }) for the browser client after running the API smoke test.",
+    "expectedVerdict": "block",
+    "weight": 2,
+    "expectedRuleIds": [
+      "custom-api-broad-cors",
+      "configured-sensitive-domain-cors"
+    ]
+  },
+  {
+    "id": "web-dangerously-html-diff-block",
+    "preset": "web",
+    "kind": "diff",
+    "description": "React dangerous HTML rendering should give web unsafe-HTML coverage a second diff-shaped example.",
+    "content": "diff --git a/src/RichText.tsx b/src/RichText.tsx\n--- a/src/RichText.tsx\n+++ b/src/RichText.tsx\n@@ -1 +1,2 @@\n+return <article dangerouslySetInnerHTML={{ __html: html }} />;\n",
+    "expectedVerdict": "block",
+    "weight": 2,
+    "expectedRuleIds": [
+      "custom-web-unsafe-html-injection",
+      "configured-sensitive-domain-dangerouslysetinnerhtml",
+      "configured-sensitive-domain-innerhtml"
+    ]
+  },
+  {
+    "id": "infra-iam-resource-wildcard-diff-block",
+    "preset": "infra",
+    "kind": "diff",
+    "description": "IAM wildcard resource changes should give infra IAM coverage a second diff-shaped example.",
+    "content": "diff --git a/infra/iam-policy.json b/infra/iam-policy.json\n--- a/infra/iam-policy.json\n+++ b/infra/iam-policy.json\n@@ -1 +1,2 @@\n+{ \"iam\": true, \"Resource\": \"*\" }\n",
+    "expectedVerdict": "block",
+    "weight": 2,
+    "expectedRuleIds": [
+      "custom-infra-iam-wildcard-permission",
+      "configured-sensitive-domain-iam"
+    ]
+  },
+  {
     "id": "node-pack-dry-run-command-pass",
     "preset": "node",
     "kind": "command",

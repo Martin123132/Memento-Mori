@@ -16,6 +16,7 @@ Maintainer triage guidance lives in [docs/MAINTAINER_TRIAGE.md](../../docs/MAINT
 - AI preset eval-skipping and model-output execution risks.
 - Quiet-pass boundaries for thin custom, configured sensitive-domain, and preset blocked-command rules.
 - Quiet-pass boundaries for built-in and structural rules such as missing verification, TypeScript suppressions, large removals, wildcard operations, destructive commands, and untested finals.
+- Second firing examples for preset blocked-command rules and high-value stack-specific sensitive-domain rules.
 - Fixture metadata like `weight` and `edgeCase` to support precision-weighted tuning evidence.
 
 ## Local Check

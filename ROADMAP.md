@@ -6,6 +6,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Recently Shipped
 
+- Curation-next fixture batch in v0.1.61 that removed blocked-command thin coverage, strengthened stack-specific sensitive-domain examples, and reduced total thin fixture coverage from 37 rules to 21.
 - Fixture report rule-family slices, preset slices, and curation-next guidance in v0.1.60 so maintainers can see which fixture areas need real-world examples next.
 - Quiet-pass boundaries for remaining sparse built-in and structural rules in v0.1.59 so the fixture report now has no rules without quiet-pass coverage.
 - Quiet-pass boundaries for thin custom/preset rules in v0.1.58 so preset blocked commands, sensitive-domain checks, and custom stack rules now have safe near-miss examples.
@@ -50,6 +51,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 ## Product Ideas
 
 - Add more framework-specific false-positive examples from real reports so tuning guidance keeps getting sharper.
+- Add another fixture precision batch for the remaining AI/API custom-rule thin examples surfaced by `fixtures:report`.
 - Add a Markdown export for fixture reports so maintainers can paste coverage snapshots into issues or release notes.
 
 ## Quality And Safety

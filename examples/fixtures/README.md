@@ -14,6 +14,7 @@ Maintainer triage guidance lives in [docs/MAINTAINER_TRIAGE.md](../../docs/MAINT
 - API preset CORS, raw SQL, webhook, and migration-command risks.
 - Infra preset public exposure, IAM wildcard, and destructive command risks.
 - AI preset eval-skipping and model-output execution risks.
+- AI preset user-controlled tool-dispatch risks and safe allowlist/schema boundaries.
 - Quiet-pass boundaries for thin custom, configured sensitive-domain, and preset blocked-command rules.
 - Quiet-pass boundaries for built-in and structural rules such as missing verification, TypeScript suppressions, large removals, wildcard operations, destructive commands, and untested finals.
 - Matched-pass examples for low-severity rules where a single finding should stay below caution.

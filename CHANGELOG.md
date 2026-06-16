@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.68
+
+- Added AI preset fixtures for user-controlled tool dispatch from request body and URL search parameter inputs.
+- Added quiet-pass AI near-misses for explicit tool allowlists and schema-validated model data, growing the corpus to 170 fixtures.
+- Refreshed demo, roadmap, fixture docs, and release notes for the AI tool-dispatch coverage pass.
+
 ## 0.1.67
 
 - Added six real-world quiet-pass fixtures for security, web, node, and python preset slices, growing the corpus to 166 fixtures.

@@ -2145,5 +2145,55 @@
       "custom-python-eval-exec",
       "custom-python-pickle-load"
     ]
+  },
+  {
+    "id": "ai-user-controlled-tool-diff-caution",
+    "preset": "ai",
+    "kind": "diff",
+    "description": "Tool dispatch from request body input should warn in AI preset repos.",
+    "content": "diff --git a/src/tools.ts b/src/tools.ts\n--- a/src/tools.ts\n+++ b/src/tools.ts\n@@ -1 +1,2 @@\n+const selectedTool = req.body.tool; await callTool(selectedTool, req.body.args);\n",
+    "expectedVerdict": "caution",
+    "weight": 2,
+    "expectedRuleIds": [
+      "custom-ai-user-controlled-tool-dispatch"
+    ]
+  },
+  {
+    "id": "ai-searchparams-tool-diff-caution",
+    "preset": "ai",
+    "kind": "diff",
+    "description": "Tool dispatch from URL search parameters should warn without an allowlist.",
+    "content": "diff --git a/src/tool-router.ts b/src/tool-router.ts\n--- a/src/tool-router.ts\n+++ b/src/tool-router.ts\n@@ -1 +1,2 @@\n+const toolName = searchParams.get(\"name\"); await callTool(toolName, {});\n",
+    "expectedVerdict": "caution",
+    "weight": 2,
+    "expectedRuleIds": [
+      "custom-ai-user-controlled-tool-dispatch"
+    ]
+  },
+  {
+    "id": "ai-tool-allowlist-diff-pass",
+    "preset": "ai",
+    "kind": "diff",
+    "description": "Explicit AI tool allowlists should not trip user-controlled dispatch checks.",
+    "content": "diff --git a/src/tools.ts b/src/tools.ts\n--- a/src/tools.ts\n+++ b/src/tools.ts\n@@ -1 +1,2 @@\n+const allowedTools = new Set([\"search_docs\", \"summarize\"]);\n",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-ai-user-controlled-tool-dispatch"
+    ]
+  },
+  {
+    "id": "ai-schema-validation-diff-pass",
+    "preset": "ai",
+    "kind": "diff",
+    "description": "Schema validation of model data should stay quiet around model-output execution checks.",
+    "content": "diff --git a/src/output.ts b/src/output.ts\n--- a/src/output.ts\n+++ b/src/output.ts\n@@ -1 +1,2 @@\n+const parsed = ResponseSchema.parse(responseJson);\n",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-ai-model-output-execution"
+    ]
   }
 ]

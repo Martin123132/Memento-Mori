@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.67
+
+- Added six real-world quiet-pass fixtures for security, web, node, and python preset slices, growing the corpus to 166 fixtures.
+- Strengthened safe near-miss evidence for static analysis commands, checksum commands, accessible frontend markup, static internal links, Node linting, and Python linting.
+- Refreshed demo, roadmap, fixture docs, and release notes for the expanded preset curation batch.
+
 ## 0.1.66
 
 - Added real-world preset fixtures for node, python, infra, and AI slices, growing the corpus to 160 fixtures.

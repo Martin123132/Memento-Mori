@@ -21,7 +21,7 @@ Maintainer triage guidance lives in [docs/MAINTAINER_TRIAGE.md](../../docs/MAINT
 - Second firing examples for AI and API custom rules around provider keys, model-output execution, raw SQL, and webhook signature checks.
 - Second firing examples for remaining framework custom rules across security, infra, node, python, and web presets.
 - Second firing examples for remaining built-in and configured sensitive-domain thin rules, leaving no thin coverage gaps.
-- Real-world low-count preset examples for node, python, infra, and AI workflows.
+- Real-world low-count preset examples for node, python, web, infra, AI, and security workflows.
 - Fixture metadata like `weight` and `edgeCase` to support precision-weighted tuning evidence.
 
 ## Local Check

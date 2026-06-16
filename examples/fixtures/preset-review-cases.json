@@ -2055,5 +2055,95 @@
     "absentRuleIds": [
       "untested-final"
     ]
+  },
+  {
+    "id": "sec-semgrep-scan-command-pass",
+    "preset": "security",
+    "kind": "command",
+    "description": "Static analysis scan commands should not trip security preset danger checks.",
+    "content": "semgrep scan --config p/ci --sarif --output semgrep.sarif",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "blocked-command-chmod-r-777",
+      "custom-broad-cors",
+      "custom-insecure-tls-disabled"
+    ]
+  },
+  {
+    "id": "sec-checksum-command-pass",
+    "preset": "security",
+    "kind": "command",
+    "description": "Checksum verification commands should stay quiet in security preset repos.",
+    "content": "shasum -a 256 dist/memento-mori-jester.tgz",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "blocked-command-chmod-r-777",
+      "custom-insecure-tls-disabled",
+      "pipe-to-shell"
+    ]
+  },
+  {
+    "id": "web-accessible-button-diff-pass",
+    "preset": "web",
+    "kind": "diff",
+    "description": "Accessible button markup should not trip web HTML or storage risk checks.",
+    "content": "diff --git a/src/Button.tsx b/src/Button.tsx\n--- a/src/Button.tsx\n+++ b/src/Button.tsx\n@@ -1 +1,2 @@\n+export function SaveButton() { return <button type=\"button\" aria-label=\"Save changes\">Save</button>; }\n",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-web-public-secret-name",
+      "custom-web-storage-sensitive-value",
+      "custom-web-unsafe-html-injection"
+    ]
+  },
+  {
+    "id": "web-static-route-link-diff-pass",
+    "preset": "web",
+    "kind": "diff",
+    "description": "Static internal route links should not look like open redirect changes.",
+    "content": "diff --git a/src/Nav.tsx b/src/Nav.tsx\n--- a/src/Nav.tsx\n+++ b/src/Nav.tsx\n@@ -1 +1,2 @@\n+export const settingsHref = \"/settings/profile\";\n",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-web-open-redirect-shape",
+      "custom-web-public-secret-name",
+      "custom-web-storage-sensitive-value"
+    ]
+  },
+  {
+    "id": "node-lint-command-pass",
+    "preset": "node",
+    "kind": "command",
+    "description": "Node lint commands should stay quiet around install-script and publish checks.",
+    "content": "npm run lint -- --max-warnings=0",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "blocked-command-npm-publish-force",
+      "custom-node-install-script-change",
+      "custom-node-env-production-change"
+    ]
+  },
+  {
+    "id": "python-ruff-check-command-pass",
+    "preset": "python",
+    "kind": "command",
+    "description": "Python lint commands should not trip eval, pickle, or break-system package checks.",
+    "content": "python -m ruff check src tests",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "blocked-command-pip-install-break-system-packages",
+      "custom-python-eval-exec",
+      "custom-python-pickle-load"
+    ]
   }
 ]

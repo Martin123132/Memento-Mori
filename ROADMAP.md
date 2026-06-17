@@ -6,6 +6,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Recently Shipped
 
+- Python/security fixture curation in v0.1.72, adding six quiet-pass examples for Bandit, pip-audit, coverage/pytest, Trivy, npm audit, and TLS verification-enabled diffs.
 - Node preset fixture curation in v0.1.71, adding six quiet-pass examples for npm audit/outdated/ci, development-mode Node commands, package export maps, and workspace test scripts, plus a repo-local X demo video asset.
 - Infra preset fixture curation in v0.1.70, adding six quiet-pass operational examples for read-only Kubernetes, Docker, Terraform linting, and public-IP hardening changes.
 - Node/python/security/web preset fixture curation in v0.1.69, adding eight quiet-pass real-world examples while keeping all fixture coverage gates clean.
@@ -60,7 +61,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Product Ideas
 
-- Collect real-world reports for the next lowest-count preset slices: python, security, then web.
+- Collect real-world reports for the next lowest-count preset slices: web, AI, API, then python.
 - Add more framework-specific false-positive examples from real reports so tuning guidance keeps getting sharper.
 - Add a Markdown export for fixture reports so maintainers can paste coverage snapshots into issues or release notes.
 

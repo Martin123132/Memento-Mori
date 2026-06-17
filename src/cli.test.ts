@@ -698,7 +698,7 @@ test("fixture report surfaces quiet-pass rule coverage", async () => {
   assert.match(text.stdout, /By rule family:/);
   assert.match(text.stdout, /Preset slices:/);
   assert.match(text.stdout, /Curation next:/);
-  assert.match(text.stdout, /risky-domain: [1-9][0-9]* quiet-pass fixture/);
+  assert.match(text.stdout, /Quiet-pass rule coverage:\n- [a-z0-9-]+: [1-9][0-9]* quiet-pass fixture/);
   assert.equal(result.totalFixtures >= 125, true);
   assert.equal(riskyDomain?.total, 5);
   assert.equal((riskyDomain?.samples.length ?? 0) > 0, true);

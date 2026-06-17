@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.72
+
+- Added six Python and security quiet-pass fixtures, growing the corpus to 196 fixtures.
+- Strengthened safe near-miss evidence for Python security scans, dependency audits, coverage runs, Trivy scans, npm audit checks, and explicitly enabled TLS verification.
+- Refreshed demo, roadmap, fixture docs, and release notes for the Python/security curation batch.
+
 ## 0.1.71
 
 - Added six Node quiet-pass fixtures, growing the corpus to 190 fixtures.

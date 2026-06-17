@@ -2484,5 +2484,93 @@
       "package-install-script",
       "configured-sensitive-domain-postinstall"
     ]
+  },
+  {
+    "id": "python-bandit-command-pass",
+    "preset": "python",
+    "kind": "command",
+    "description": "Python security scanning commands should not trip eval, pickle, or break-system package checks.",
+    "content": "python -m bandit -r src -q",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "blocked-command-pip-install-break-system-packages",
+      "custom-python-eval-exec",
+      "custom-python-pickle-load"
+    ]
+  },
+  {
+    "id": "python-pip-audit-command-pass",
+    "preset": "python",
+    "kind": "command",
+    "description": "Python dependency-audit commands should stay quiet around package and dynamic-execution guards.",
+    "content": "python -m pip_audit --strict",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "blocked-command-pip-install-break-system-packages",
+      "custom-python-eval-exec",
+      "custom-python-pickle-load"
+    ]
+  },
+  {
+    "id": "python-coverage-command-pass",
+    "preset": "python",
+    "kind": "command",
+    "description": "Python coverage runs should not look like eval, pickle, or unsafe package installation.",
+    "content": "python -m coverage run -m pytest && python -m coverage report --fail-under=85",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "blocked-command-pip-install-break-system-packages",
+      "custom-python-eval-exec",
+      "custom-python-pickle-load"
+    ]
+  },
+  {
+    "id": "sec-trivy-fs-command-pass",
+    "preset": "security",
+    "kind": "command",
+    "description": "Trivy filesystem scans should stay quiet around chmod, broad CORS, and TLS-disable checks.",
+    "content": "trivy fs --scanners vuln --severity HIGH,CRITICAL .",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "blocked-command-chmod-r-777",
+      "custom-broad-cors",
+      "custom-insecure-tls-disabled"
+    ]
+  },
+  {
+    "id": "sec-npm-audit-command-pass",
+    "preset": "security",
+    "kind": "command",
+    "description": "npm audit checks should stay quiet in security preset repos when they only inspect dependencies.",
+    "content": "npm audit --audit-level=high",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "blocked-command-chmod-r-777",
+      "custom-broad-cors",
+      "custom-insecure-tls-disabled"
+    ]
+  },
+  {
+    "id": "sec-tls-enabled-diff-pass",
+    "preset": "security",
+    "kind": "diff",
+    "description": "Explicitly keeping TLS verification enabled should not trip insecure-TLS checks.",
+    "content": "diff --git a/src/client.py b/src/client.py\n--- a/src/client.py\n+++ b/src/client.py\n@@ -1 +1,2 @@\n+session.verify = True\n",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-insecure-tls-disabled"
+    ]
   }
 ]

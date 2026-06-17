@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.69
+
+- Added eight real-world quiet-pass fixtures across node, python, security, and web preset slices, growing the corpus to 178 fixtures.
+- Strengthened safe near-miss evidence for typecheck/prebuild scripts, mypy/dataclass parsing, CodeQL/Dependabot checks, form validation, and image alt text.
+- Refreshed demo, roadmap, fixture docs, and release notes for the expanded preset curation batch.
+
 ## 0.1.68
 
 - Added AI preset fixtures for user-controlled tool dispatch from request body and URL search parameter inputs.

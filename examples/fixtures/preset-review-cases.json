@@ -2195,5 +2195,123 @@
     "absentRuleIds": [
       "custom-ai-model-output-execution"
     ]
+  },
+  {
+    "id": "node-typecheck-command-pass",
+    "preset": "node",
+    "kind": "command",
+    "description": "Node typecheck commands should stay quiet around production and install-script checks.",
+    "content": "npm run typecheck",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "blocked-command-npm-publish-force",
+      "custom-node-env-production-change",
+      "custom-node-install-script-change"
+    ]
+  },
+  {
+    "id": "node-prebuild-script-diff-pass",
+    "preset": "node",
+    "kind": "diff",
+    "description": "Non-install prebuild scripts should not trip node install lifecycle checks.",
+    "content": "diff --git a/package.json b/package.json\n--- a/package.json\n+++ b/package.json\n@@ -3,6 +3,7 @@\n   \"scripts\": {\n+    \"prebuild\": \"node scripts/check-env.js\",\n     \"build\": \"tsc -p tsconfig.json\"\n   }\n",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-node-install-script-change",
+      "package-install-script"
+    ]
+  },
+  {
+    "id": "python-mypy-command-pass",
+    "preset": "python",
+    "kind": "command",
+    "description": "Python type-checking commands should not trip eval, pickle, or package-install checks.",
+    "content": "python -m mypy src tests",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "blocked-command-pip-install-break-system-packages",
+      "custom-python-eval-exec",
+      "custom-python-pickle-load"
+    ]
+  },
+  {
+    "id": "python-dataclass-diff-pass",
+    "preset": "python",
+    "kind": "diff",
+    "description": "Typed Python dataclass parsing should stay quiet around dynamic execution checks.",
+    "content": "diff --git a/src/models.py b/src/models.py\n--- a/src/models.py\n+++ b/src/models.py\n@@ -1 +1,2 @@\n+@dataclass(frozen=True)\n+class ParsedEvent: pass\n",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-python-eval-exec",
+      "custom-python-pickle-load"
+    ]
+  },
+  {
+    "id": "sec-codeql-command-pass",
+    "preset": "security",
+    "kind": "command",
+    "description": "Running CodeQL workflow checks should stay quiet in security preset repos.",
+    "content": "gh workflow run codeql.yml",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "blocked-command-chmod-r-777",
+      "custom-broad-cors",
+      "custom-insecure-tls-disabled"
+    ]
+  },
+  {
+    "id": "sec-dependabot-config-diff-pass",
+    "preset": "security",
+    "kind": "diff",
+    "description": "Dependabot limit changes should not trip TLS, CORS, or permission checks.",
+    "content": "diff --git a/.github/dependabot.yml b/.github/dependabot.yml\n--- a/.github/dependabot.yml\n+++ b/.github/dependabot.yml\n@@ -1 +1,2 @@\n+open-pull-requests-limit: 5\n",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-broad-cors",
+      "custom-insecure-tls-disabled",
+      "chmod-777"
+    ]
+  },
+  {
+    "id": "web-form-validation-diff-pass",
+    "preset": "web",
+    "kind": "diff",
+    "description": "Client-side validation copy should not trip storage, HTML, or redirect checks.",
+    "content": "diff --git a/src/Form.tsx b/src/Form.tsx\n--- a/src/Form.tsx\n+++ b/src/Form.tsx\n@@ -1 +1,2 @@\n+const emailError = email.includes(\"@\") ? null : \"Enter a valid email\";\n",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-web-open-redirect-shape",
+      "custom-web-storage-sensitive-value",
+      "custom-web-unsafe-html-injection"
+    ]
+  },
+  {
+    "id": "web-image-alt-diff-pass",
+    "preset": "web",
+    "kind": "diff",
+    "description": "Accessible image alt text should stay quiet around web risk checks.",
+    "content": "diff --git a/src/Hero.tsx b/src/Hero.tsx\n--- a/src/Hero.tsx\n+++ b/src/Hero.tsx\n@@ -1 +1,2 @@\n+export const heroAlt = \"Product dashboard overview\";\n",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-web-open-redirect-shape",
+      "custom-web-public-secret-name",
+      "custom-web-unsafe-html-injection"
+    ]
   }
 ]

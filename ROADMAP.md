@@ -6,6 +6,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Recently Shipped
 
+- Infra preset fixture curation in v0.1.70, adding six quiet-pass operational examples for read-only Kubernetes, Docker, Terraform linting, and public-IP hardening changes.
 - Node/python/security/web preset fixture curation in v0.1.69, adding eight quiet-pass real-world examples while keeping all fixture coverage gates clean.
 - AI tool-dispatch fixture curation in v0.1.68, adding request-body and URL-parameter caution examples plus allowlist/schema quiet-pass boundaries.
 - Security/web/node/python preset fixture curation in v0.1.67, adding real-world quiet-pass examples while keeping thin, quiet-pass, feasible pass-case, and preset-kind gaps at zero.
@@ -58,7 +59,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Product Ideas
 
-- Collect real-world reports for the next lowest-count preset slices: infra first, then node, python, and security.
+- Collect real-world reports for the next lowest-count preset slices: node, python, security, then web.
 - Add more framework-specific false-positive examples from real reports so tuning guidance keeps getting sharper.
 - Add a Markdown export for fixture reports so maintainers can paste coverage snapshots into issues or release notes.
 

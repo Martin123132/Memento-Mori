@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.70
+
+- Added six infra quiet-pass fixtures, growing the corpus to 184 fixtures.
+- Strengthened safe near-miss evidence for read-only Kubernetes inspection, Docker disk usage, Terraform linting, and disabling public IP assignment.
+- Refreshed demo, roadmap, fixture docs, and release notes for the infra-focused curation batch.
+
 ## 0.1.69
 
 - Added eight real-world quiet-pass fixtures across node, python, security, and web preset slices, growing the corpus to 178 fixtures.

@@ -2313,5 +2313,87 @@
       "custom-web-public-secret-name",
       "custom-web-unsafe-html-injection"
     ]
+  },
+  {
+    "id": "infra-kubectl-diff-command-pass",
+    "preset": "infra",
+    "kind": "command",
+    "description": "Read-only Kubernetes diff commands should not trip delete or apply-style infra checks.",
+    "content": "kubectl diff -f k8s/deployment.yaml",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "blocked-command-kubectl-delete",
+      "custom-infra-production-change"
+    ]
+  },
+  {
+    "id": "infra-kubectl-logs-command-pass",
+    "preset": "infra",
+    "kind": "command",
+    "description": "Kubernetes log inspection should stay quiet around destructive infra commands.",
+    "content": "kubectl logs deployment/api --tail=100",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "blocked-command-kubectl-delete",
+      "custom-infra-production-change"
+    ]
+  },
+  {
+    "id": "infra-docker-system-df-command-pass",
+    "preset": "infra",
+    "kind": "command",
+    "description": "Docker disk-usage inspection should not trip destructive prune checks.",
+    "content": "docker system df",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-infra-production-change"
+    ]
+  },
+  {
+    "id": "infra-kubectl-describe-command-pass",
+    "preset": "infra",
+    "kind": "command",
+    "description": "Kubernetes describe commands should stay quiet around delete checks.",
+    "content": "kubectl describe deployment api",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "blocked-command-kubectl-delete",
+      "custom-infra-production-change"
+    ]
+  },
+  {
+    "id": "infra-tflint-command-pass",
+    "preset": "infra",
+    "kind": "command",
+    "description": "Terraform linting commands should not trip terraform destroy checks.",
+    "content": "tflint --chdir=infra",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "blocked-command-terraform-destroy",
+      "custom-infra-production-change"
+    ]
+  },
+  {
+    "id": "infra-public-ip-disabled-diff-pass",
+    "preset": "infra",
+    "kind": "diff",
+    "description": "Disabling automatic public IP assignment should stay quiet around public exposure checks.",
+    "content": "diff --git a/infra/network.tf b/infra/network.tf\n--- a/infra/network.tf\n+++ b/infra/network.tf\n@@ -1 +1,2 @@\n+map_public_ip_on_launch = false\n",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-infra-public-exposure"
+    ]
   }
 ]

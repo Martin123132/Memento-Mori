@@ -4,6 +4,13 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.71
+
+- Added six Node quiet-pass fixtures, growing the corpus to 190 fixtures.
+- Strengthened safe near-miss evidence for npm audit/outdated/ci, development-mode Node commands, package export maps, and workspace test scripts.
+- Added a repo-local X demo video asset under `promo/x-demo-v0.1.70` while keeping it outside the npm package.
+- Refreshed demo, roadmap, fixture docs, and release notes for the Node-focused curation batch.
+
 ## 0.1.70
 
 - Added six infra quiet-pass fixtures, growing the corpus to 184 fixtures.

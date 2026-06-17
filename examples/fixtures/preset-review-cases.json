@@ -2395,5 +2395,94 @@
     "absentRuleIds": [
       "custom-infra-public-exposure"
     ]
+  },
+  {
+    "id": "node-npm-audit-command-pass",
+    "preset": "node",
+    "kind": "command",
+    "description": "npm audit commands should stay quiet around publish, production, and install-script checks.",
+    "content": "npm audit --audit-level=high",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "blocked-command-npm-publish-force",
+      "custom-node-env-production-change",
+      "custom-node-install-script-change"
+    ]
+  },
+  {
+    "id": "node-npm-outdated-command-pass",
+    "preset": "node",
+    "kind": "command",
+    "description": "npm outdated inspection should not look like forced publishing or install-script changes.",
+    "content": "npm outdated --long",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "blocked-command-npm-publish-force",
+      "custom-node-env-production-change",
+      "custom-node-install-script-change"
+    ]
+  },
+  {
+    "id": "node-npm-ci-ignore-scripts-command-pass",
+    "preset": "node",
+    "kind": "command",
+    "description": "Installing locked dependencies with scripts disabled should stay quiet for node preset guards.",
+    "content": "npm ci --ignore-scripts",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "blocked-command-npm-publish-force",
+      "custom-node-env-production-change",
+      "custom-node-install-script-change"
+    ]
+  },
+  {
+    "id": "node-env-development-command-pass",
+    "preset": "node",
+    "kind": "command",
+    "description": "Development-mode Node commands should not trip production-mode checks.",
+    "content": "NODE_ENV=development npm test",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-node-env-production-change",
+      "configured-sensitive-domain-production"
+    ]
+  },
+  {
+    "id": "node-package-exports-diff-pass",
+    "preset": "node",
+    "kind": "diff",
+    "description": "Package export map additions should not be mistaken for install lifecycle scripts.",
+    "content": "diff --git a/package.json b/package.json\n--- a/package.json\n+++ b/package.json\n@@ -1,5 +1,6 @@\n {\n+  \"exports\": \"./dist/index.js\",\n   \"type\": \"module\"\n }\n",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-node-install-script-change",
+      "package-install-script",
+      "configured-sensitive-domain-postinstall"
+    ]
+  },
+  {
+    "id": "node-workspace-test-script-diff-pass",
+    "preset": "node",
+    "kind": "diff",
+    "description": "Workspace test scripts should not trip install lifecycle script checks.",
+    "content": "diff --git a/package.json b/package.json\n--- a/package.json\n+++ b/package.json\n@@ -3,6 +3,7 @@\n   \"scripts\": {\n+    \"test:packages\": \"npm -ws test\",\n     \"test\": \"node --test\"\n   }\n",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-node-install-script-change",
+      "package-install-script",
+      "configured-sensitive-domain-postinstall"
+    ]
   }
 ]

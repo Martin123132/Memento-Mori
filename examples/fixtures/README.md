@@ -25,6 +25,7 @@ Maintainer triage guidance lives in [docs/MAINTAINER_TRIAGE.md](../../docs/MAINT
 - Real-world low-count preset examples for node, python, web, infra, AI, and security workflows.
 - Quiet-pass examples for typechecking, prebuild scripts, mypy, dataclass parsing, CodeQL, Dependabot limits, form validation, and accessibility copy.
 - Quiet-pass examples for read-only Kubernetes inspection, Docker disk usage, Terraform linting, and public-IP hardening changes.
+- Quiet-pass examples for npm audit/outdated/ci, development-mode Node commands, package export maps, and workspace test scripts.
 - Fixture metadata like `weight` and `edgeCase` to support precision-weighted tuning evidence.
 
 ## Local Check

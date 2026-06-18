@@ -11,6 +11,7 @@ npm.cmd run production:check
 npm.cmd run fixtures:check
 npm.cmd run fixtures:report
 npm.cmd run fixtures:report -- --json
+npm.cmd run fixtures:report -- --markdown
 npm.cmd run pack:dry
 git diff --check
 ```

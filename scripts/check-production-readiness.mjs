@@ -94,6 +94,7 @@ requireText("README.md", /false-positive/i, "false-positive support guidance");
 requireText("README.md", /MAINTAINER_TRIAGE\.md/, "maintainer triage guide link");
 requireText("README.md", /fixtures:check/, "fixture authoring check guidance");
 requireText("README.md", /fixtures:report/, "fixture coverage report guidance");
+requireText("README.md", /fixtures:report -- --markdown/, "Markdown fixture report guidance");
 requireText("README.md", /License: PolyForm Noncommercial/, "the noncommercial license badge");
 requireText("docs/PRODUCTION_READINESS.md", /npm package/i, "npm package readiness");
 requireText("docs/PRODUCTION_READINESS.md", /GitHub Action/i, "GitHub Action readiness");
@@ -106,6 +107,7 @@ requireText("docs/PRODUCTION_READINESS.md", /issue templates/i, "issue template 
 requireText("docs/PRODUCTION_READINESS.md", /MAINTAINER_TRIAGE\.md/, "maintainer triage readiness");
 requireText("docs/PRODUCTION_READINESS.md", /fixtures:check/, "fixture authoring check readiness");
 requireText("docs/PRODUCTION_READINESS.md", /fixtures:report/, "fixture coverage report readiness");
+requireText("docs/PRODUCTION_READINESS.md", /fixtures:report -- --markdown/, "Markdown fixture report readiness");
 requireText("docs/PRODUCTION_READINESS.md", /quiet-pass/, "quiet-pass fixture readiness");
 requireText("docs/CLI.md", /jester doctor --json/, "doctor JSON CLI docs");
 requireText("docs/CLI.md", /quiet-pass fixture/, "quiet-pass fixture CLI docs");
@@ -118,6 +120,7 @@ requireText("examples/fixtures/README.md", /MAINTAINER_TRIAGE\.md/, "maintainer 
 requireText("examples/fixtures/README.md", /Adding A Fixture From A Report/, "fixture report conversion guidance");
 requireText("examples/fixtures/README.md", /fixtures:check/, "fixture authoring check guidance");
 requireText("examples/fixtures/README.md", /fixtures:report/, "fixture coverage report guidance");
+requireText("examples/fixtures/README.md", /fixtures:report -- --markdown/, "Markdown fixture report guidance");
 requireText("scripts/check-fixtures.mjs", /duplicated/, "duplicate fixture id check");
 requireText("scripts/check-fixtures.mjs", /unsafeContentPatterns/, "unsafe fixture content checks");
 forbidText("scripts/check-fixtures.mjs", /src\/config\.ts|src\/types\.ts/, "source-only fixture validator dependencies");
@@ -125,6 +128,7 @@ requireText("scripts/report-fixtures.mjs", /rulesWithoutPassCases/, "rules witho
 requireText("scripts/report-fixtures.mjs", /rulesWithoutQuietPassCoverage/, "rules without quiet-pass coverage report");
 requireText("scripts/report-fixtures.mjs", /quietPassRuleCoverage/, "quiet-pass rule coverage report");
 requireText("scripts/report-fixtures.mjs", /presetKindGaps/, "preset and kind gap report");
+requireText("scripts/report-fixtures.mjs", /--markdown/, "Markdown fixture report output");
 forbidText("scripts/report-fixtures.mjs", /src\/config\.ts|src\/types\.ts/, "source-only fixture report dependencies");
 requireText("package.json", /"fixtures:check": "node scripts\/check-fixtures\.mjs"/, "fixture authoring check script");
 requireText("package.json", /"fixtures:report": "node scripts\/report-fixtures\.mjs"/, "fixture coverage report script");

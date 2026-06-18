@@ -38,6 +38,7 @@ npm.cmd test
 npm.cmd run fixtures:check
 npm.cmd run fixtures:report
 npm.cmd run fixtures:report -- --json
+npm.cmd run fixtures:report -- --markdown
 ```
 
 For one-off manual review, paste a fixture `content` value into:
@@ -63,4 +64,4 @@ Do not add secrets, private code, customer data, complete logs, or machine-speci
 
 `npm run fixtures:report` summarizes coverage by rule, rule family, preset slice, review kind, verdict, and quiet-pass rule boundaries. Use it to find rules without pass-case coverage, pass-eligible rules without pass-case coverage, rules without quiet-pass coverage, thin rule coverage, preset/kind gaps, quiet pass fixtures, and the next curation target.
 
-The `Curation next` section is a maintainer shortcut: start there when deciding whether the next fixture batch should focus on thin rules, feasible pass-case evidence, a specific rule family, or lower-count presets. The `--json` output includes the same `ruleFamilySlices`, `presetSlices`, `passEligibleRulesWithoutPassCases`, and `curationNext` fields for scripts.
+The `Curation next` section is a maintainer shortcut: start there when deciding whether the next fixture batch should focus on thin rules, feasible pass-case evidence, a specific rule family, or lower-count presets. The `--json` output includes the same `ruleFamilySlices`, `presetSlices`, `passEligibleRulesWithoutPassCases`, and `curationNext` fields for scripts. The `--markdown` output renders the same snapshot as paste-ready Markdown tables for release notes, GitHub issues, or maintainer updates.

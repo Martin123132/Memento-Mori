@@ -647,6 +647,10 @@ test("fixture report surfaces quiet-pass rule coverage", async () => {
     "scripts/report-fixtures.mjs",
     "--json"
   ]);
+  const markdown = await execFileAsync(process.execPath, [
+    "scripts/report-fixtures.mjs",
+    "--markdown"
+  ]);
   const result = JSON.parse(json.stdout) as {
     totalFixtures: number;
     quietPassRules: Array<{
@@ -699,6 +703,11 @@ test("fixture report surfaces quiet-pass rule coverage", async () => {
   assert.match(text.stdout, /Preset slices:/);
   assert.match(text.stdout, /Curation next:/);
   assert.match(text.stdout, /Quiet-pass rule coverage:\n- [a-z0-9-]+: [1-9][0-9]* quiet-pass fixture/);
+  assert.match(markdown.stdout, /^# Fixture Coverage Report/);
+  assert.match(markdown.stdout, /\| Metric \| Value \|/);
+  assert.match(markdown.stdout, /\| Preset \| Fixtures \| Weight \| Pass \| Caution \| Block \| Quiet Pass \| Rule Refs \| Absent Refs \|/);
+  assert.match(markdown.stdout, /## Curation Next/);
+  assert.match(markdown.stdout, /npm run fixtures:report -- --markdown/);
   assert.equal(result.totalFixtures >= 125, true);
   assert.equal(riskyDomain?.total, 5);
   assert.equal((riskyDomain?.samples.length ?? 0) > 0, true);

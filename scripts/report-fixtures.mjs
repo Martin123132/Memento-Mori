@@ -33,6 +33,12 @@ const ruleFamilyOrder = [
 
 const args = new Set(process.argv.slice(2));
 const json = args.has("--json");
+const markdown = args.has("--markdown");
+
+if (json && markdown) {
+  process.stderr.write("Use only one output format: --json or --markdown.\n");
+  process.exit(1);
+}
 
 function read(path) {
   return readFileSync(join(root, path), "utf8");
@@ -55,6 +61,8 @@ const report = buildFixtureReport(fixtures);
 
 if (json) {
   process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
+} else if (markdown) {
+  process.stdout.write(renderFixtureReportMarkdown(report));
 } else {
   process.stdout.write(renderFixtureReport(report));
 }
@@ -267,6 +275,91 @@ function renderFixtureReport(report) {
     "  npm run fixtures:report -- --json",
     "  node .\\dist\\cli.js tune coverage"
   );
+
+  return `${lines.join("\n")}\n`;
+}
+
+function renderFixtureReportMarkdown(report) {
+  const lines = [
+    "# Fixture Coverage Report",
+    "",
+    "Generated from `examples/fixtures/preset-review-cases.json`.",
+    "",
+    "## Summary",
+    "",
+    "| Metric | Value |",
+    "| --- | ---: |",
+    `| Fixtures | ${report.totalFixtures} |`,
+    `| Weighted fixtures | ${report.totalWeight} |`,
+    `| Edge-case fixtures | ${report.edgeCaseFixtures} |`,
+    `| Rules covered by expectedRuleIds | ${report.rules.length} |`,
+    "",
+    "## Counts",
+    "",
+    "### By Verdict",
+    "",
+    ...formatMarkdownCountTable("Verdict", report.byVerdict),
+    "",
+    "### By Kind",
+    "",
+    ...formatMarkdownCountTable("Kind", report.byKind),
+    "",
+    "### By Preset",
+    "",
+    ...formatMarkdownCountTable("Preset", report.byPreset),
+    "",
+    "## Rule Family Slices",
+    "",
+    ...formatMarkdownRuleFamilyTable(report.ruleFamilySlices),
+    "",
+    "## Preset Slices",
+    "",
+    ...formatMarkdownPresetTable(report.presetSlices),
+    "",
+    "## Gaps",
+    "",
+    "### Rules Without Pass-Case Coverage",
+    "",
+    ...formatMarkdownRuleGapList(report.gaps.rulesWithoutPassCases),
+    "",
+    "### Pass-Eligible Rules Without Pass-Case Coverage",
+    "",
+    ...formatMarkdownRuleGapList(report.gaps.passEligibleRulesWithoutPassCases),
+    "",
+    "### Rules Without Quiet-Pass Coverage",
+    "",
+    ...formatMarkdownRuleGapList(report.gaps.rulesWithoutQuietPassCoverage),
+    "",
+    "### Thin Rule Coverage",
+    "",
+    ...formatMarkdownRuleGapList(report.gaps.thinRuleCoverage),
+    "",
+    "### Preset/Kind Gaps",
+    "",
+    ...formatMarkdownPresetKindGaps(report.gaps.presetKindGaps),
+    "",
+    "## Quiet-Pass Rule Coverage",
+    "",
+    ...formatMarkdownQuietPassTable(report.gaps.quietPassRuleCoverage),
+    "",
+    "## Quiet-Pass Fixture Samples",
+    "",
+    ...formatMarkdownFixtureSamples(report.gaps.quietPassFixtures),
+    "",
+    "## Curation Next",
+    "",
+    ...formatMarkdownCurationNext(report.curationNext),
+    "",
+    "## Next Commands",
+    "",
+    "```powershell",
+    "npm run fixtures:check",
+    "npm run fixtures:report",
+    "npm run fixtures:report -- --json",
+    "npm run fixtures:report -- --markdown",
+    "node .\\dist\\cli.js tune coverage",
+    "```"
+  ];
 
   return `${lines.join("\n")}\n`;
 }
@@ -573,6 +666,141 @@ function formatCounts(counts) {
   return Object.entries(counts)
     .map(([key, value]) => `${key} ${value}`)
     .join(", ");
+}
+
+function formatMarkdownCountTable(label, counts) {
+  return [
+    `| ${label} | Count |`,
+    "| --- | ---: |",
+    ...Object.entries(counts).map(([key, value]) => `| ${markdownCell(key)} | ${value} |`)
+  ];
+}
+
+function formatMarkdownRuleFamilyTable(entries) {
+  if (entries.length === 0) {
+    return ["None."];
+  }
+
+  return [
+    "| Family | Rules | Fixture Refs | Pass | Caution | Block | Quiet Pass | Thin |",
+    "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
+    ...entries.map((entry) =>
+      [
+        markdownCell(entry.family),
+        entry.ruleCount,
+        entry.fixtureReferences,
+        entry.passCases,
+        entry.cautionCases,
+        entry.blockCases,
+        entry.quietPassCases,
+        entry.thinRules.length
+      ].join(" | ")
+    ).map((row) => `| ${row} |`)
+  ];
+}
+
+function formatMarkdownPresetTable(entries) {
+  if (entries.length === 0) {
+    return ["None."];
+  }
+
+  return [
+    "| Preset | Fixtures | Weight | Pass | Caution | Block | Quiet Pass | Rule Refs | Absent Refs |",
+    "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
+    ...entries.map((entry) =>
+      [
+        markdownCell(entry.preset),
+        entry.total,
+        entry.weight,
+        entry.byVerdict.pass ?? 0,
+        entry.byVerdict.caution ?? 0,
+        entry.byVerdict.block ?? 0,
+        entry.quietPassFixtures,
+        entry.expectedRuleReferences,
+        entry.quietPassRuleReferences
+      ].join(" | ")
+    ).map((row) => `| ${row} |`)
+  ];
+}
+
+function formatMarkdownRuleGapList(entries) {
+  if (entries.length === 0) {
+    return ["None."];
+  }
+
+  return entries
+    .slice(0, 12)
+    .map((entry) => `- \`${entry.ruleId}\`: ${entry.total} fixture(s), pass ${entry.passCases}, caution ${entry.cautionCases}, block ${entry.blockCases}, quiet-pass ${entry.quietPassCases}`);
+}
+
+function formatMarkdownPresetKindGaps(entries) {
+  if (entries.length === 0) {
+    return ["None."];
+  }
+
+  return entries.map((entry) => `- \`${entry.preset}\`: ${entry.missingKinds.map((kind) => `\`${kind}\``).join(", ")}`);
+}
+
+function formatMarkdownQuietPassTable(entries) {
+  if (entries.length === 0) {
+    return ["None."];
+  }
+
+  return [
+    "| Rule | Quiet-Pass Fixtures | Weight |",
+    "| --- | ---: | ---: |",
+    ...entries
+      .slice(0, 12)
+      .map((entry) => `| \`${markdownCell(entry.ruleId)}\` | ${entry.total} | ${entry.weight} |`)
+  ];
+}
+
+function formatMarkdownFixtureSamples(entries) {
+  if (entries.length === 0) {
+    return ["None."];
+  }
+
+  return entries
+    .slice(0, 8)
+    .map((entry) => `- \`${entry.id}\`: ${markdownCell(entry.description)}`);
+}
+
+function formatMarkdownCurationNext(entries) {
+  if (entries.length === 0) {
+    return ["None."];
+  }
+
+  return [
+    "| Priority | Area | Count | Details |",
+    "| --- | --- | ---: | --- |",
+    ...entries.map((entry) =>
+      `| ${markdownCell(entry.priority)} | ${markdownCell(entry.area)} | ${entry.count} | ${markdownCell(markdownCurationDetails(entry))} |`
+    )
+  ];
+}
+
+function markdownCurationDetails(entry) {
+  if (Array.isArray(entry.ruleIds) && entry.ruleIds.length > 0) {
+    return entry.ruleIds.join(", ");
+  }
+
+  if (Array.isArray(entry.details) && entry.details.length > 0) {
+    return entry.details.join("; ");
+  }
+
+  if (Array.isArray(entry.families) && entry.families.length > 0) {
+    return entry.families.map((family) => `${family.family} ${family.thinRules}`).join(", ");
+  }
+
+  if (Array.isArray(entry.presets) && entry.presets.length > 0) {
+    return entry.presets.map((preset) => `${preset.preset} ${preset.total}`).join(", ");
+  }
+
+  return "";
+}
+
+function markdownCell(value) {
+  return String(value).replace(/\|/g, "\\|").replace(/\r?\n/g, " ");
 }
 
 function formatRuleGaps(entries) {

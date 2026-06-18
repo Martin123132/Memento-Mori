@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.75
+
+- Added `npm run fixtures:report -- --markdown` for paste-ready fixture coverage snapshots.
+- Added Markdown tables for totals, counts, rule-family slices, preset slices, gaps, quiet-pass coverage, curation-next guidance, and next commands.
+- Updated maintainer docs, release docs, and production-readiness checks for the Markdown fixture report export.
+
 ## 0.1.74
 
 - Added six API quiet-pass fixtures, growing the corpus to 208 fixtures.

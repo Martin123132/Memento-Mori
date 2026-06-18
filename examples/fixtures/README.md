@@ -27,6 +27,7 @@ Maintainer triage guidance lives in [docs/MAINTAINER_TRIAGE.md](../../docs/MAINT
 - Quiet-pass examples for read-only Kubernetes inspection, Docker disk usage, Terraform linting, and public-IP hardening changes.
 - Quiet-pass examples for npm audit/outdated/ci, development-mode Node commands, package export maps, and workspace test scripts.
 - Quiet-pass examples for Bandit, pip-audit, coverage/pytest, Trivy filesystem scans, npm audit, and TLS verification-enabled diffs.
+- Quiet-pass examples for safe text rendering, allowlisted target paths, public analytics IDs, model-check commands, tool allowlist checks, and public model-name config.
 - Fixture metadata like `weight` and `edgeCase` to support precision-weighted tuning evidence.
 
 ## Local Check

@@ -2572,5 +2572,86 @@
     "absentRuleIds": [
       "custom-insecure-tls-disabled"
     ]
+  },
+  {
+    "id": "web-textcontent-render-diff-pass",
+    "preset": "web",
+    "kind": "diff",
+    "description": "TextContent rendering should stay quiet around unsafe HTML injection checks.",
+    "content": "diff --git a/src/render.ts b/src/render.ts\n--- a/src/render.ts\n+++ b/src/render.ts\n@@ -1 +1,2 @@\n+element.textContent = displayMessage;\n",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-web-unsafe-html-injection",
+      "configured-sensitive-domain-dangerouslysetinnerhtml",
+      "configured-sensitive-domain-innerhtml"
+    ]
+  },
+  {
+    "id": "web-allowlisted-target-path-diff-pass",
+    "preset": "web",
+    "kind": "diff",
+    "description": "Allowlisted target paths should not look like open redirect-shaped changes.",
+    "content": "diff --git a/src/navigation.ts b/src/navigation.ts\n--- a/src/navigation.ts\n+++ b/src/navigation.ts\n@@ -1 +1,2 @@\n+const targetPath = allowedPaths.has(candidatePath) ? candidatePath : \"/dashboard\";\n",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-web-open-redirect-shape"
+    ]
+  },
+  {
+    "id": "web-public-analytics-env-command-pass",
+    "preset": "web",
+    "kind": "command",
+    "description": "Public analytics identifiers should not trip frontend secret-name checks.",
+    "content": "echo NEXT_PUBLIC_ANALYTICS_ID",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-web-public-secret-name"
+    ]
+  },
+  {
+    "id": "ai-model-check-command-pass",
+    "preset": "ai",
+    "kind": "command",
+    "description": "Model behavior check commands should not look like skipped AI safety checks.",
+    "content": "npm run model-checks -- --scenario safe-tool-routing",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-ai-evals-skipped"
+    ]
+  },
+  {
+    "id": "ai-tool-allowlist-command-pass",
+    "preset": "ai",
+    "kind": "command",
+    "description": "Tool allowlist checks should not trip user-controlled tool dispatch rules.",
+    "content": "node scripts/check-tool-allowlist.mjs",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-ai-user-controlled-tool-dispatch"
+    ]
+  },
+  {
+    "id": "ai-public-model-env-diff-pass",
+    "preset": "ai",
+    "kind": "diff",
+    "description": "Public model-name config should not be mistaken for client-exposed provider keys.",
+    "content": "diff --git a/src/config.ts b/src/config.ts\n--- a/src/config.ts\n+++ b/src/config.ts\n@@ -1 +1,2 @@\n+export const NEXT_PUBLIC_OPENAI_MODEL = \"gpt-4.1-mini\";\n",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-ai-public-provider-key",
+      "secret-material"
+    ]
   }
 ]

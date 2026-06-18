@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.73
+
+- Added six web and AI quiet-pass fixtures, growing the corpus to 202 fixtures.
+- Strengthened safe near-miss evidence for safe text rendering, allowlisted target paths, public analytics IDs, model-check commands, tool allowlist checks, and public model-name config.
+- Refreshed demo, roadmap, fixture docs, and release notes for the web/AI curation batch.
+
 ## 0.1.72
 
 - Added six Python and security quiet-pass fixtures, growing the corpus to 196 fixtures.

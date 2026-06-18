@@ -29,6 +29,7 @@ Maintainer triage guidance lives in [docs/MAINTAINER_TRIAGE.md](../../docs/MAINT
 - Quiet-pass examples for Bandit, pip-audit, coverage/pytest, Trivy filesystem scans, npm audit, and TLS verification-enabled diffs.
 - Quiet-pass examples for safe text rendering, allowlisted target paths, public analytics IDs, model-check commands, tool allowlist checks, and public model-name config.
 - Quiet-pass examples for API schema parsing, query-builder filters, enabled rate limiting, read-only Prisma migration diffs, signed-webhook docs, and OpenAPI schema docs.
+- Quiet-pass examples for Pydantic parsing, Pyright checks, SBOM generation, vulnerability-report docs, escaped React rendering, session-cookie docs, model regression checks, and static action allowlists.
 - Fixture metadata like `weight` and `edgeCase` to support precision-weighted tuning evidence.
 
 ## Local Check

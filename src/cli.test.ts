@@ -709,7 +709,7 @@ test("fixture report surfaces quiet-pass rule coverage", async () => {
   assert.match(markdown.stdout, /## Curation Next/);
   assert.match(markdown.stdout, /npm run fixtures:report -- --markdown/);
   assert.equal(result.totalFixtures >= 125, true);
-  assert.equal(riskyDomain?.total, 5);
+  assert.equal(riskyDomain?.total, 6);
   assert.equal((riskyDomain?.samples.length ?? 0) > 0, true);
   assert.equal((builtInSlice?.ruleCount ?? 0) > 0, true);
   assert.equal((builtInSlice?.quietPassCases ?? 0) > 0, true);
@@ -720,7 +720,7 @@ test("fixture report surfaces quiet-pass rule coverage", async () => {
   assert.deepEqual(result.gaps.passEligibleRulesWithoutPassCases, []);
   assert.equal(result.curationNext.some((item) => item.area === "pass-case-coverage"), false);
   assert.ok(result.curationNext.some((item) => item.area === "preset-real-world-curation" && item.presets?.length));
-  assert.ok(result.gaps.quietPassRuleCoverage.some((rule) => rule.ruleId === "risky-domain" && rule.total === 5));
+  assert.ok(result.gaps.quietPassRuleCoverage.some((rule) => rule.ruleId === "risky-domain" && rule.total === 6));
   assert.deepEqual(result.gaps.rulesWithoutQuietPassCoverage, []);
   assert.deepEqual(result.gaps.presetKindGaps, []);
   assert.deepEqual(thinPresetRulesWithoutQuietPass, []);

@@ -2737,5 +2737,127 @@
     "absentRuleIds": [
       "configured-sensitive-domain-openapi"
     ]
+  },
+  {
+    "id": "python-pydantic-parse-diff-pass",
+    "preset": "python",
+    "kind": "diff",
+    "description": "Pydantic model validation should stay quiet around Python dynamic execution checks.",
+    "content": "diff --git a/app/settings.py b/app/settings.py\n--- a/app/settings.py\n+++ b/app/settings.py\n@@ -1 +1,2 @@\n+settings = SettingsModel.model_validate(raw_settings)\n",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-python-eval-exec",
+      "custom-python-pickle-load"
+    ]
+  },
+  {
+    "id": "python-pyright-command-pass",
+    "preset": "python",
+    "kind": "command",
+    "description": "Python type-check commands should not trip eval, pickle, or unsafe package checks.",
+    "content": "python -m pyright app tests",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "blocked-command-pip-install-break-system-packages",
+      "custom-python-eval-exec",
+      "custom-python-pickle-load"
+    ]
+  },
+  {
+    "id": "sec-sbom-command-pass",
+    "preset": "security",
+    "kind": "command",
+    "description": "SBOM generation commands should stay quiet around security preset danger checks.",
+    "content": "syft dir:. -o cyclonedx-json > sbom.json",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "blocked-command-chmod-r-777",
+      "custom-broad-cors",
+      "custom-insecure-tls-disabled",
+      "secret-material"
+    ]
+  },
+  {
+    "id": "sec-vulnerability-report-docs-pass",
+    "preset": "security",
+    "kind": "diff",
+    "description": "Docs for vulnerability reports should stay quiet when they only say not to paste sensitive material.",
+    "content": "diff --git a/docs/VULNERABILITY_REPORTS.md b/docs/VULNERABILITY_REPORTS.md\n--- a/docs/VULNERABILITY_REPORTS.md\n+++ b/docs/VULNERABILITY_REPORTS.md\n@@ -1 +1,2 @@\n+Ask reporters to redact tokens, private keys, and exploit logs before filing public issues.\n",
+    "expectedVerdict": "pass",
+    "edgeCase": true,
+    "weight": 1,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "configured-sensitive-domain-token",
+      "configured-sensitive-domain-private-key",
+      "secret-material"
+    ]
+  },
+  {
+    "id": "web-react-escaped-output-diff-pass",
+    "preset": "web",
+    "kind": "diff",
+    "description": "Escaped React text rendering should not trip unsafe HTML injection checks.",
+    "content": "diff --git a/src/components/UserName.tsx b/src/components/UserName.tsx\n--- a/src/components/UserName.tsx\n+++ b/src/components/UserName.tsx\n@@ -1 +1,2 @@\n+return <span>{displayName}</span>;\n",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-web-unsafe-html-injection",
+      "configured-sensitive-domain-dangerouslysetinnerhtml",
+      "configured-sensitive-domain-innerhtml"
+    ]
+  },
+  {
+    "id": "web-session-cookie-docs-pass",
+    "preset": "web",
+    "kind": "diff",
+    "description": "Docs-only browser session guidance should not trip storage, redirect, or cookie noise.",
+    "content": "diff --git a/docs/WEB_SESSIONS.md b/docs/WEB_SESSIONS.md\n--- a/docs/WEB_SESSIONS.md\n+++ b/docs/WEB_SESSIONS.md\n@@ -1 +1,2 @@\n+Prefer httpOnly cookies for sessions and keep redirects limited to same-origin paths.\n",
+    "expectedVerdict": "pass",
+    "edgeCase": true,
+    "weight": 1,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "configured-sensitive-domain-cookies",
+      "configured-sensitive-domain-redirect",
+      "configured-sensitive-domain-session",
+      "custom-web-open-redirect-shape",
+      "custom-web-storage-sensitive-value",
+      "risky-domain"
+    ]
+  },
+  {
+    "id": "ai-model-regression-command-pass",
+    "preset": "ai",
+    "kind": "command",
+    "description": "Running model regression checks should not look like skipped AI safety checks.",
+    "content": "npm run model:checks -- --suite prompt-regression",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-ai-evals-skipped"
+    ]
+  },
+  {
+    "id": "ai-tool-registry-allowlist-diff-pass",
+    "preset": "ai",
+    "kind": "diff",
+    "description": "Static action allowlists should not trip user-controlled dispatch checks.",
+    "content": "diff --git a/src/actions/registry.ts b/src/actions/registry.ts\n--- a/src/actions/registry.ts\n+++ b/src/actions/registry.ts\n@@ -1 +1,2 @@\n+export const allowedActions = new Set([\"search_docs\", \"summarize_ticket\"]);\n",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-ai-user-controlled-tool-dispatch",
+      "custom-ai-model-output-execution"
+    ]
   }
 ]

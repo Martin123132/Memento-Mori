@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.74
+
+- Added six API quiet-pass fixtures, growing the corpus to 208 fixtures.
+- Strengthened safe near-miss evidence for schema parsing, query-builder filters, enabled rate limiting, read-only Prisma migration diffs, signed-webhook docs, and OpenAPI schema docs.
+- Refreshed demo, roadmap, fixture docs, and release notes for the API curation batch.
+
 ## 0.1.73
 
 - Added six web and AI quiet-pass fixtures, growing the corpus to 202 fixtures.

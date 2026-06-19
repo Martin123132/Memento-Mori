@@ -12,7 +12,7 @@ It roasts the reasoning, not the human.
 
 [![Memento Mori Jester terminal demo](docs/demo-terminal.svg)](docs/DEMO.md)
 
-See the full [demo transcript](docs/DEMO.md).
+See the full [demo transcript](docs/DEMO.md), or use the [promo/share kit](promo) for X post copy, stills, and a 30-second demo script.
 
 ## Start Here
 
@@ -426,6 +426,7 @@ More setup examples:
 - [MCP Tool Reference](docs/MCP_TOOLS.md)
 - [GitHub Actions](docs/GITHUB_ACTIONS.md)
 - [Demo Script](docs/DEMO.md)
+- [Promo Share Kit](promo)
 - [Examples](examples)
 - [Preset Example Packs](examples/presets)
 - [Review Fixtures](examples/fixtures)

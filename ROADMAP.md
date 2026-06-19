@@ -6,6 +6,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Recently Shipped
 
+- Promo/share kit in v0.1.77, adding X post copy, a short demo script, a posting checklist, and still images from the existing demo video.
 - Real-world preset quiet-pass curation in v0.1.76, adding eight safe examples across python, security, web, and AI workflows while keeping fixture coverage gaps clean.
 - Markdown fixture report export in v0.1.75 for paste-ready coverage snapshots in release notes, GitHub issues, and maintainer updates.
 - API fixture curation in v0.1.74, adding six quiet-pass examples for schema parsing, query-builder filters, enabled rate limiting, read-only Prisma migration diffs, signed-webhook docs, and OpenAPI schema docs.
@@ -67,7 +68,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 - Collect real-world reports for the next lowest-count preset slices now highlighted by `fixtures:report`.
 - Add more framework-specific false-positive examples from real reports so tuning guidance keeps getting sharper.
-- Add a promo/share kit with X post copy, still images, and a simple sharing checklist.
+- Add a fresh demo render that reflects the latest release number and fixture totals.
 
 ## Quality And Safety
 

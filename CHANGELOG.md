@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.77
+
+- Added a repo-local promo/share kit with X post copy, a 30-second demo script, posting checklist, and asset guidance.
+- Added four vertical still images extracted from the existing X demo video for single-post and thread use.
+- Linked the promo kit from the README while keeping `promo/` outside the npm package.
+
 ## 0.1.76
 
 - Added eight real-world quiet-pass fixtures across python, security, web, and AI preset slices, growing the corpus to 216 fixtures.

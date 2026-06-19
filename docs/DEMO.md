@@ -189,20 +189,37 @@ Source: built-in
 Kinds: plan, command, diff, final
 Project config: none loaded
 
+Why it exists:
+Auth, billing, production, migrations, and similar domains have outsized user or business impact.
+
+When it may be noisy:
+It can be noisy in docs, release notes, or rule text that merely mentions a sensitive word.
+
+Safer move:
+Add targeted tests, a manual verification note, or a rollback path for the sensitive area.
+
+Recommendation:
+If repeated hits are harmless for this repo, disable the rule and validate the config.
+
+Before muting:
+- Confirm the latest hit is harmless, documentation-only, example-only, or already covered by another guard.
+- Prefer fixing the risky change or adding verification when the rule found real risk.
+- Prefer muting only after repeated false positives in this repo.
+
 Fixture tuning evidence:
 Support: limited
 Confidence: medium
-Total fixtures checked: 208
-Weighted fixtures checked: 399.2
+Total fixtures checked: 216
+Weighted fixtures checked: 412.5
 Matching fixtures: 11
 Weighted matches: 23
 Expected-match weight: 18
 Unexpected-match weight: 5
 Edge-case matches: 0
-Quiet-pass fixtures: 5
-Quiet-pass weight: 3.6
+Quiet-pass fixtures: 6
+Quiet-pass weight: 4.25
 By kind: command 0, plan 5, diff 5, final 1
-Fixture coverage: 11/208 (5.8% weighted)
+Fixture coverage: 11/216 (5.6% weighted)
 By verdict: pass 0, caution 3, block 8
 Matched fixture samples:
   infra-public-ingress-block: Public ingress should block in low-risk-tolerance infra repos.
@@ -216,9 +233,6 @@ Quiet-pass fixture samples:
   sec-final-dependency-notes-pass: A verified dependency-note final answer should give the security preset a quiet final case.
   universal-risky-domain-docs-pass: Documentation-only sensitive-domain vocabulary should stay quiet when no code behavior changes.
   web-docs-only-browser-storage-pass: Docs-only web guidance should not warn just because it mentions browser storage or redirects.
-
-When it may be noisy:
-It can be noisy in docs, release notes, or rule text that merely mentions a sensitive word.
 
 Commands:
   jester rule risky-domain

@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.78
+
+- Added a refreshed HyperFrames X demo render under `promo/x-demo-v0.1.78` with current version and fixture-evidence numbers.
+- Updated the promo share-kit stills from the fresh render so public images show `v0.1.78`, 216 fixtures, and 6 quiet-pass examples.
+- Updated promo docs, demo transcript, roadmap, and release notes while keeping `promo/` outside the npm package.
+
 ## 0.1.77
 
 - Added a repo-local promo/share kit with X post copy, a 30-second demo script, posting checklist, and asset guidance.

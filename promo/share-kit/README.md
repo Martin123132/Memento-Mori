@@ -10,7 +10,7 @@ Use these assets when posting Memento Mori Jester on X, GitHub, or a project upd
 | [stills/02-command-block.jpg](stills/02-command-block.jpg) | Show the core safety hook | Vertical terminal-style graphic showing a blocked `git reset --hard` review. |
 | [stills/03-tuning-evidence.jpg](stills/03-tuning-evidence.jpg) | Explain false-positive tuning | Vertical terminal-style graphic showing fixture-backed tuning evidence. |
 | [stills/04-try-it.jpg](stills/04-try-it.jpg) | Default image for a single X post | Vertical terminal-style CTA for Memento Mori Jester with the `npx` start command. |
-| [../x-demo-v0.1.70/renders/memento-mori-jester-x-demo-v0.1.70.mp4](../x-demo-v0.1.70/renders/memento-mori-jester-x-demo-v0.1.70.mp4) | Main X video | Vertical demo video showing Memento Mori Jester reviewing commands, plans, and tuning evidence. |
+| [../x-demo-v0.1.78/renders/memento-mori-jester-x-demo-v0.1.78.mp4](../x-demo-v0.1.78/renders/memento-mori-jester-x-demo-v0.1.78.mp4) | Main X video | Vertical demo video showing Memento Mori Jester reviewing commands, plans, and tuning evidence. |
 
 ## Recommended Single Post
 

@@ -4,7 +4,7 @@ This folder contains repo-local marketing assets for sharing Memento Mori Jester
 
 ## Use First
 
-- Final vertical demo video: [x-demo-v0.1.70/renders/memento-mori-jester-x-demo-v0.1.70.mp4](x-demo-v0.1.70/renders/memento-mori-jester-x-demo-v0.1.70.mp4)
+- Final vertical demo video: [x-demo-v0.1.78/renders/memento-mori-jester-x-demo-v0.1.78.mp4](x-demo-v0.1.78/renders/memento-mori-jester-x-demo-v0.1.78.mp4)
 - Share kit: [share-kit](share-kit)
 - Recommended still for X: [share-kit/stills/04-try-it.jpg](share-kit/stills/04-try-it.jpg)
 - Short demo script: [share-kit/demo-script.md](share-kit/demo-script.md)
@@ -30,6 +30,7 @@ This folder contains repo-local marketing assets for sharing Memento Mori Jester
 
 ## Asset Notes
 
-- The video source folder keeps its original `v0.1.70` name because that was the first rendered promo asset.
+- Use `x-demo-v0.1.78` for current promo posts.
+- `x-demo-v0.1.70` is kept as the original archived render.
 - Use `@latest` in public copy so the command always points at the newest npm release.
 - Do not add `promo/` to `package.json` `files`; these assets are for GitHub and social sharing, not npm distribution.

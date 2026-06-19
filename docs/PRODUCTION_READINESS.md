@@ -9,6 +9,7 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 - GitHub Releases and npm publishing are automated from annotated `v*` tags through GitHub Actions trusted publishing.
 - CI runs tests and a package dry run on every push to `main` and pull request.
 - The local playground, GitHub Action, MCP setup snippets, preset examples, fixtures, and release notes ship in the npm package.
+- Repo-local promo assets stay outside the npm package, but `npm run promo:check` keeps the current demo video, stills, docs, and fixture evidence numbers aligned.
 
 ## npm Package
 
@@ -54,6 +55,7 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 - `docs/MAINTAINER_TRIAGE.md` explains how to turn useful false-positive reports into fixture coverage before changing rule logic.
 - `npm run fixtures:check` validates fixture IDs, metadata, unsafe-looking content, duplicate content, and explicit expected/absent rule intent.
 - `npm run fixtures:report` shows fixture coverage by rule, rule family, preset slice, kind, verdict, quiet-pass rule boundaries, and feasible pass-case gaps so maintainers can pick the next fixture target; `npm run fixtures:report -- --markdown` produces a paste-ready maintainer snapshot.
+- `npm run promo:check` verifies current repo-local promo assets against the current fixture evidence before maintainers post or refresh the demo.
 - npm publish has a manual workflow fallback, but the normal release path is tag-driven trusted publishing.
 
 ## Static Guard
@@ -69,6 +71,7 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 - maintainer triage docs exist and link noisy-rule reports back to fixture coverage.
 - fixture authoring checks are wired into `npm test`.
 - fixture coverage reports are wired into `npm test`.
+- promo freshness checks are wired into `npm test`.
 
 `npm test` runs this check after the TypeScript build and unit tests.
 

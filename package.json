@@ -1,6 +1,6 @@
 {
   "name": "memento-mori-jester",
-  "version": "0.1.78",
+  "version": "0.1.79",
   "description": "A local court-jester sidecar for AI coding agents: review plans, commands, diffs, and final claims before they get too pleased with themselves.",
   "type": "module",
   "repository": {
@@ -40,12 +40,13 @@
     "build": "tsc -p tsconfig.json",
     "start": "node dist/server.js",
     "start:mcp": "node dist/server.js",
-    "test": "npm run build && node scripts/run-tests.mjs && npm run fixtures:check && npm run fixtures:report && npm run production:check",
+    "test": "npm run build && node scripts/run-tests.mjs && npm run fixtures:check && npm run fixtures:report && npm run promo:check && npm run production:check",
     "doctor": "node dist/cli.js doctor",
     "demo:svg": "node scripts/render-demo-svg.mjs",
     "demo:svg:check": "node scripts/render-demo-svg.mjs --check",
     "fixtures:check": "node scripts/check-fixtures.mjs",
     "fixtures:report": "node scripts/report-fixtures.mjs",
+    "promo:check": "node scripts/check-promo-freshness.mjs",
     "production:check": "node scripts/check-production-readiness.mjs",
     "pack:dry": "npm pack --dry-run",
     "prepare": "npm run build",

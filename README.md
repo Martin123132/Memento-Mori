@@ -503,6 +503,7 @@ Use the false-positive template for noisy cautions or blocks. Include `jester su
 Maintainers can use [docs/MAINTAINER_TRIAGE.md](docs/MAINTAINER_TRIAGE.md) to turn useful false-positive reports into redacted fixtures.
 Run `npm run fixtures:check` before merging fixture changes; it catches duplicate IDs, missing rule metadata, weak descriptions, unsafe-looking content, and duplicate content.
 Run `npm run fixtures:report` to see fixture coverage by rule, rule family, preset slice, kind, verdict, quiet-pass boundaries, feasible pass-case gaps, and curation-next guidance before choosing the next fixture. Use `npm run fixtures:report -- --markdown` when you want a paste-ready summary for release notes or GitHub issues.
+Run `npm run promo:check` after editing promo assets; it checks the current demo video, stills, docs, and fixture evidence numbers stay in sync.
 
 For vulnerabilities, private code exposure, or credential-handling concerns, follow [SECURITY.md](SECURITY.md) instead of opening a public issue with sensitive details.
 
@@ -512,6 +513,7 @@ Release checklist:
 
 ```powershell
 npm.cmd test
+npm.cmd run promo:check
 npm.cmd run production:check
 npm.cmd run pack:dry
 git tag -a v0.1.x -m "Memento Mori Jester v0.1.x"

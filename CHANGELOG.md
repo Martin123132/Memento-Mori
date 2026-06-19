@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.79
+
+- Added `npm run promo:check` to verify the current repo-local promo video, stills, docs, and fixture evidence numbers stay aligned.
+- Wired promo freshness validation into `npm test` and the production-readiness guard.
+- Updated release, readiness, roadmap, and promo docs with the new maintainer check.
+
 ## 0.1.78
 
 - Added a refreshed HyperFrames X demo render under `promo/x-demo-v0.1.78` with current version and fixture-evidence numbers.

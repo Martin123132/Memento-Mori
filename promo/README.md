@@ -33,4 +33,6 @@ This folder contains repo-local marketing assets for sharing Memento Mori Jester
 - Use `x-demo-v0.1.78` for current promo posts.
 - `x-demo-v0.1.70` is kept as the original archived render.
 - Use `@latest` in public copy so the command always points at the newest npm release.
+- Run `npm run promo:check` from the repo root after editing promo assets or fixture numbers.
+- Run `npm run promo:check -- --require-package-version` only after intentionally refreshing the demo to the current package version.
 - Do not add `promo/` to `package.json` `files`; these assets are for GitHub and social sharing, not npm distribution.

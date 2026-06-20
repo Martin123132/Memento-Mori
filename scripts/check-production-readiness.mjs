@@ -65,6 +65,7 @@ for (const path of [
   `docs/RELEASE_NOTES_${tag}.md`,
   "action.yml",
   "scripts/check-promo-freshness.mjs",
+  "scripts/render-social-card.mjs",
   "scripts/check-fixtures.mjs",
   "scripts/report-fixtures.mjs",
   ".github/ISSUE_TEMPLATE/bug_report.yml",
@@ -133,11 +134,14 @@ requireText("scripts/report-fixtures.mjs", /--markdown/, "Markdown fixture repor
 forbidText("scripts/report-fixtures.mjs", /src\/config\.ts|src\/types\.ts/, "source-only fixture report dependencies");
 requireText("package.json", /"fixtures:check": "node scripts\/check-fixtures\.mjs"/, "fixture authoring check script");
 requireText("package.json", /"fixtures:report": "node scripts\/report-fixtures\.mjs"/, "fixture coverage report script");
+requireText("package.json", /"promo:card": "node scripts\/render-social-card\.mjs"/, "social card render script");
+requireText("package.json", /"promo:card:check": "node scripts\/render-social-card\.mjs --check"/, "social card stale check script");
 requireText("package.json", /"promo:check": "node scripts\/check-promo-freshness\.mjs"/, "promo freshness check script");
 requireText("package.json", /npm run fixtures:check/, "fixture authoring check in npm test");
 requireText("package.json", /npm run fixtures:report/, "fixture coverage report in npm test");
 requireText("package.json", /npm run promo:check/, "promo freshness check in npm test");
 requireText("scripts/check-promo-freshness.mjs", /--require-package-version/, "optional strict package-version promo check");
+requireText("scripts/check-promo-freshness.mjs", /social-card\.svg/, "social-card freshness check");
 requireText("SECURITY.md", /doctor --json/, "doctor JSON redaction guidance");
 requireText("SECURITY.md", /security\/advisories\/new/, "private vulnerability report link");
 requireText(".github/ISSUE_TEMPLATE/bug_report.yml", /doctor --json/, "doctor JSON support prompt");

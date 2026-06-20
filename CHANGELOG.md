@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.80
+
+- Added a deterministic `promo/share-kit/social-card.svg` for GitHub, X, and project-update link previews.
+- Added `npm run promo:card` and `npm run promo:card:check` to regenerate or verify the social card.
+- Extended promo freshness checks and docs so the social card stays part of the maintainer release flow.
+
 ## 0.1.79
 
 - Added `npm run promo:check` to verify the current repo-local promo video, stills, docs, and fixture evidence numbers stay aligned.

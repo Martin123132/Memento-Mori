@@ -117,6 +117,7 @@ const demoDir = `promo/${demoId}`;
 const demoVideoPath = linkedTarget ? `promo/${linkedTarget}` : "";
 const fixtureTotal = Array.isArray(fixtures) ? fixtures.length : 0;
 const riskyEvidence = loadRiskyDomainEvidence();
+const socialCardPath = "promo/share-kit/social-card.svg";
 
 if (requirePackageVersion && packageJson.version !== promoVersion) {
   failures.push(`Current promo version v${promoVersion} should match package.json ${packageJson.version} when --require-package-version is used.`);
@@ -133,6 +134,11 @@ if (promoVersion !== "unknown") {
   for (const still of ["01-opener.jpg", "02-command-block.jpg", "03-tuning-evidence.jpg", "04-try-it.jpg"]) {
     requireFile(`promo/share-kit/stills/${still}`, `share-kit still ${still}`, 50_000);
   }
+  requireFile(socialCardPath, "social preview card", 2_000);
+  requireText(socialCardPath, /width="1200" height="630"/, "1200x630 social-card dimensions");
+  requireText(socialCardPath, /Memento Mori Jester/, "product name");
+  requireText(socialCardPath, /npx -y memento-mori-jester@latest start/, "start command");
+  requireText("promo/share-kit/README.md", /social-card\.svg/, "social-card asset row");
 
   try {
     const demoPackage = readJson(`${demoDir}/package.json`);

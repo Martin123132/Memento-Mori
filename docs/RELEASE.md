@@ -12,6 +12,7 @@ npm.cmd run fixtures:check
 npm.cmd run fixtures:report
 npm.cmd run fixtures:report -- --json
 npm.cmd run fixtures:report -- --markdown
+npm.cmd run promo:card:check
 npm.cmd run promo:check
 npm.cmd run pack:dry
 git diff --check

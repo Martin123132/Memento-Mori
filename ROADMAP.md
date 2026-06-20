@@ -6,6 +6,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Recently Shipped
 
+- Social preview card in v0.1.80, adding a deterministic 1200x630 promo card plus generation and freshness checks.
 - Promo freshness check in v0.1.79, verifying the current demo video, share-kit stills, docs, and fixture evidence numbers before public posting.
 - Fresh demo render in v0.1.78, updating the repo-local X video and share-kit stills to current version and fixture totals.
 - Promo/share kit in v0.1.77, adding X post copy, a short demo script, a posting checklist, and still images from the existing demo video.
@@ -70,7 +71,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 - Collect real-world reports for the next lowest-count preset slices now highlighted by `fixtures:report`.
 - Add more framework-specific false-positive examples from real reports so tuning guidance keeps getting sharper.
-- Add a lightweight social preview card or landing-page still for GitHub and X link previews.
+- Add a small web landing page that reuses the existing demo, social card, and start command.
 
 ## Quality And Safety
 

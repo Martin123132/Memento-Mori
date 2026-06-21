@@ -7,6 +7,7 @@ This folder contains repo-local marketing assets for sharing Memento Mori Jester
 - Final vertical demo video: [x-demo-v0.1.78/renders/memento-mori-jester-x-demo-v0.1.78.mp4](x-demo-v0.1.78/renders/memento-mori-jester-x-demo-v0.1.78.mp4)
 - Share kit: [share-kit](share-kit)
 - Social preview card: [share-kit/social-card.svg](share-kit/social-card.svg)
+- Repo-local landing page: [../site/index.html](../site/index.html)
 - Recommended still for X: [share-kit/stills/04-try-it.jpg](share-kit/stills/04-try-it.jpg)
 - Short demo script: [share-kit/demo-script.md](share-kit/demo-script.md)
 - X post copy: [share-kit/x-posts.md](share-kit/x-posts.md)

@@ -10,6 +10,7 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 - CI runs tests and a package dry run on every push to `main` and pull request.
 - The local playground, GitHub Action, MCP setup snippets, preset examples, fixtures, and release notes ship in the npm package.
 - Repo-local promo assets stay outside the npm package, but `npm run promo:check` keeps the current demo video, stills, social card, docs, and fixture evidence numbers aligned.
+- The repo-local landing page stays outside the npm package, but `npm run site:check` keeps its start command and public links aligned.
 
 ## npm Package
 
@@ -43,6 +44,7 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 
 - `README.md` leads with a no-write first run, project bootstrap, agent setup, and optional hooks/CI.
 - `docs/GETTING_STARTED.md`, `docs/CLI.md`, `docs/RELEASE.md`, and `docs/TRUSTED_PUBLISHING.md` cover the core adoption and release paths.
+- `site/index.html` gives maintainers a static one-page share surface that reuses the demo, social card, start command, and public links.
 - Every public release has matching `CHANGELOG.md` notes and `docs/RELEASE_NOTES_vX.Y.Z.md`.
 
 ## Support And Recovery
@@ -56,6 +58,7 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 - `npm run fixtures:check` validates fixture IDs, metadata, unsafe-looking content, duplicate content, and explicit expected/absent rule intent.
 - `npm run fixtures:report` shows fixture coverage by rule, rule family, preset slice, kind, verdict, quiet-pass rule boundaries, and feasible pass-case gaps so maintainers can pick the next fixture target; `npm run fixtures:report -- --markdown` produces a paste-ready maintainer snapshot.
 - `npm run promo:card` regenerates the deterministic social preview card, and `npm run promo:check` verifies current repo-local promo assets against the current fixture evidence before maintainers post or refresh the demo.
+- `npm run site:check` verifies the static landing page before maintainers post or host it.
 - npm publish has a manual workflow fallback, but the normal release path is tag-driven trusted publishing.
 
 ## Static Guard
@@ -72,6 +75,7 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 - fixture authoring checks are wired into `npm test`.
 - fixture coverage reports are wired into `npm test`.
 - promo freshness checks are wired into `npm test`.
+- site checks are wired into `npm test`.
 
 `npm test` runs this check after the TypeScript build and unit tests.
 

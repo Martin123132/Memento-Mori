@@ -13,6 +13,7 @@ It roasts the reasoning, not the human.
 [![Memento Mori Jester terminal demo](docs/demo-terminal.svg)](docs/DEMO.md)
 
 See the full [demo transcript](docs/DEMO.md), or use the [promo/share kit](promo) for X post copy, stills, and a 30-second demo script.
+There is also a lightweight repo-local [landing page](site/index.html) for sharing the project in one screen.
 
 ## Start Here
 
@@ -505,6 +506,7 @@ Run `npm run fixtures:check` before merging fixture changes; it catches duplicat
 Run `npm run fixtures:report` to see fixture coverage by rule, rule family, preset slice, kind, verdict, quiet-pass boundaries, feasible pass-case gaps, and curation-next guidance before choosing the next fixture. Use `npm run fixtures:report -- --markdown` when you want a paste-ready summary for release notes or GitHub issues.
 Run `npm run promo:card` to regenerate the repo-local social preview card after changing its copy or design.
 Run `npm run promo:check` after editing promo assets; it checks the current demo video, stills, docs, and fixture evidence numbers stay in sync.
+Run `npm run site:check` after editing the repo-local landing page; it verifies the start command, demo links, social card, repo, release, and npm links.
 
 For vulnerabilities, private code exposure, or credential-handling concerns, follow [SECURITY.md](SECURITY.md) instead of opening a public issue with sensitive details.
 

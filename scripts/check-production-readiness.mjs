@@ -66,6 +66,7 @@ for (const path of [
   "action.yml",
   "scripts/check-promo-freshness.mjs",
   "scripts/render-social-card.mjs",
+  "scripts/check-site.mjs",
   "scripts/check-fixtures.mjs",
   "scripts/report-fixtures.mjs",
   ".github/ISSUE_TEMPLATE/bug_report.yml",
@@ -79,7 +80,8 @@ for (const path of [
   "examples/github-code-scanning.yml",
   "examples/ci/README.md",
   "examples/presets/README.md",
-  "examples/fixtures/preset-review-cases.json"
+  "examples/fixtures/preset-review-cases.json",
+  "site/index.html"
 ]) {
   requireFile(path);
 }
@@ -137,11 +139,16 @@ requireText("package.json", /"fixtures:report": "node scripts\/report-fixtures\.
 requireText("package.json", /"promo:card": "node scripts\/render-social-card\.mjs"/, "social card render script");
 requireText("package.json", /"promo:card:check": "node scripts\/render-social-card\.mjs --check"/, "social card stale check script");
 requireText("package.json", /"promo:check": "node scripts\/check-promo-freshness\.mjs"/, "promo freshness check script");
+requireText("package.json", /"site:check": "node scripts\/check-site\.mjs"/, "site check script");
 requireText("package.json", /npm run fixtures:check/, "fixture authoring check in npm test");
 requireText("package.json", /npm run fixtures:report/, "fixture coverage report in npm test");
 requireText("package.json", /npm run promo:check/, "promo freshness check in npm test");
+requireText("package.json", /npm run site:check/, "site check in npm test");
 requireText("scripts/check-promo-freshness.mjs", /--require-package-version/, "optional strict package-version promo check");
 requireText("scripts/check-promo-freshness.mjs", /social-card\.svg/, "social-card freshness check");
+requireText("scripts/check-site.mjs", /site\/index\.html/, "site index check");
+requireText("site/index.html", /npx -y memento-mori-jester@latest start/, "site start command");
+requireText("site/index.html", /promo\/share-kit\/social-card\.svg/, "site social card");
 requireText("SECURITY.md", /doctor --json/, "doctor JSON redaction guidance");
 requireText("SECURITY.md", /security\/advisories\/new/, "private vulnerability report link");
 requireText(".github/ISSUE_TEMPLATE/bug_report.yml", /doctor --json/, "doctor JSON support prompt");

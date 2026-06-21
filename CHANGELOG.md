@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.81
+
+- Added a lightweight repo-local landing page under `site/index.html` that reuses the social card, demo video, start command, and public project links.
+- Added `npm run site:check` and wired it into `npm test` and production-readiness checks.
+- Updated README, promo docs, release docs, roadmap, and release notes for the new share page.
+
 ## 0.1.80
 
 - Added a deterministic `promo/share-kit/social-card.svg` for GitHub, X, and project-update link previews.

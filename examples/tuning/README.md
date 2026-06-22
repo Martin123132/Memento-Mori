@@ -4,6 +4,8 @@ These small recipes pair the [Framework Tuning Examples](../../docs/FRAMEWORK_TU
 
 The machine-readable source is [framework-tuning-cookbook.json](framework-tuning-cookbook.json). It is checked by `npm run framework:tuning:check`, so recipe commands and fixture IDs stay aligned with the public guide and fixture suite.
 
+Run `npm run framework:tuning:doctor` after `npm run build` when you want a consumer-style smoke check. It generates temporary preset configs with the built CLI, runs every cookbook `jester tune <rule-id> --json` command, validates the JSON advice shape, and confirms each recipe's fixture IDs are present in the packaged fixture suite.
+
 ## Recipes
 
 | Recipe | Stack | Preset | Tune commands | Fixture examples |
@@ -21,3 +23,9 @@ The machine-readable source is [framework-tuning-cookbook.json](framework-tuning
 3. Compare `fixtureEvidence.quietPassFixtures` and sample fixture descriptions with the local hit.
 4. If the local case is safe but missing from the fixture suite, add a redacted pass fixture before loosening a rule.
 5. If the local case includes a real secret, destructive command, broad permission, skipped eval, or user-controlled execution path, fix the change instead of muting the rule.
+
+Maintainer smoke check:
+
+```powershell
+npm.cmd run framework:tuning:doctor
+```

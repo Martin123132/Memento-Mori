@@ -2,7 +2,7 @@
 
 Use this when a rule is noisy in a real project and you want the smallest evidence-backed next step before muting it.
 
-For copy-pasteable recipes, see [examples/tuning](../examples/tuning). The machine-readable cookbook is [framework-tuning-cookbook.json](../examples/tuning/framework-tuning-cookbook.json), and `npm run framework:tuning:check` keeps it aligned with this guide and the fixture suite.
+For copy-pasteable recipes, see [examples/tuning](../examples/tuning). The machine-readable cookbook is [framework-tuning-cookbook.json](../examples/tuning/framework-tuning-cookbook.json). `npm run framework:tuning:check` keeps it aligned with this guide and the fixture suite, while `npm run framework:tuning:doctor` runs the cookbook's tune commands through the built CLI with temporary preset configs.
 
 Start with the rule that actually fired:
 

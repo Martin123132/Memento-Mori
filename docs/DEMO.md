@@ -382,10 +382,11 @@ The cookbook maps recipe IDs such as `next-vite-public-config`, `terraform-kuber
 Maintainers can run:
 
 ```powershell
+npm.cmd run framework:tuning:doctor
 npm.cmd run framework:tuning:check
 ```
 
-That validates [framework-tuning-cookbook.json](../examples/tuning/framework-tuning-cookbook.json) against this guide, the cookbook README, and `examples/fixtures/preset-review-cases.json`.
+The doctor runs every cookbook tune command through the built CLI with temporary preset configs. The check validates [framework-tuning-cookbook.json](../examples/tuning/framework-tuning-cookbook.json) against this guide, the cookbook README, and `examples/fixtures/preset-review-cases.json`.
 
 ## 15. Framework CI Examples
 

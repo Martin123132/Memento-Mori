@@ -315,7 +315,7 @@ jester tune coverage --json
 
 `jester tune coverage` shows the fixture support and confidence signal for every rule, including suggested next actions such as adding coverage, reviewing surprise matches, checking quiet-pass boundaries, or leaving a healthy signal alone.
 
-For stack-shaped noise, see [Framework Tuning Examples](docs/FRAMEWORK_TUNING.md). It maps common Next.js, Vite React, FastAPI, Terraform/Kubernetes, security-scan, and AI/MCP false-positive reports to the `jester tune <rule>` command and fixture IDs worth checking first. The checked [framework tuning cookbook](examples/tuning) turns those rows into copy-paste recipes and a machine-readable JSON file.
+For stack-shaped noise, see [Framework Tuning Examples](docs/FRAMEWORK_TUNING.md). It maps common Next.js, Vite React, FastAPI, Terraform/Kubernetes, security-scan, and AI/MCP false-positive reports to the `jester tune <rule>` command and fixture IDs worth checking first. The checked [framework tuning cookbook](examples/tuning) turns those rows into copy-paste recipes and a machine-readable JSON file, and `npm run framework:tuning:doctor` proves those recipes execute through the built CLI.
 
 Disable a noisy rule by adding its id to `disabledRules` in `jester.config.json`:
 

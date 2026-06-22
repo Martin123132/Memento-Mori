@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.84
+
+- Added `npm run framework:tuning:doctor`, a consumer-style smoke check that generates temporary preset configs and runs every cookbook `jester tune <rule-id> --json` command through the built CLI.
+- Wired the tuning doctor into `npm test` and the production-readiness guard.
+- Updated framework tuning docs, cookbook docs, release docs, demo docs, and README guidance for the new doctor check.
+
 ## 0.1.83
 
 - Added `examples/tuning/framework-tuning-cookbook.json`, a small checked cookbook that maps framework-shaped noisy-rule reports to exact `jester tune <rule> --json` commands and fixture IDs.

@@ -6,6 +6,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Recently Shipped
 
+- Framework tuning doctor in v0.1.84, proving cookbook recipes execute through the built CLI with generated preset configs before release.
 - Framework tuning cookbook in v0.1.83, adding checked copy-paste recipes and a machine-readable JSON map for stack-shaped noisy-rule reports.
 - Framework tuning examples and quiet-pass fixture curation in v0.1.82, adding six safe real-world examples plus a guide for framework-shaped noisy-rule reports.
 - Repo-local landing page in v0.1.81, adding a static one-page share surface plus deterministic link checks.

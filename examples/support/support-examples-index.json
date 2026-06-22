@@ -1,0 +1,106 @@
+{
+  "title": "Support Examples Index",
+  "artifacts": [
+    {
+      "id": "lifecycle-map",
+      "label": "Support Lifecycle Map",
+      "file": "examples/support/support-lifecycle-map.md",
+      "source": "examples/support/support-lifecycle-map.json",
+      "useWhen": "Use when you need the shortest scan of the support path before reading detailed checklists.",
+      "requiredMarkers": [
+        "report -> triage -> response -> closeout -> prioritization -> backlog-record -> backlog-review",
+        "SECURITY.md",
+        "npm run support:check"
+      ],
+      "publicSafe": true,
+      "synthetic": false
+    },
+    {
+      "id": "blank-worksheet",
+      "label": "Support Lifecycle Worksheet",
+      "file": "examples/support/support-lifecycle-worksheet.md",
+      "source": "examples/support/support-lifecycle-worksheet.json",
+      "useWhen": "Use during an active review of one public support report when each stage needs concrete fields to record.",
+      "requiredMarkers": [
+        "stage checklist",
+        "record fields",
+        "stop conditions",
+        "SECURITY.md",
+        "npm run support:check"
+      ],
+      "publicSafe": true,
+      "synthetic": false
+    },
+    {
+      "id": "filled-synthetic-example",
+      "label": "Filled Support Lifecycle Worksheet Example",
+      "file": "examples/support/support-lifecycle-filled-example.md",
+      "source": "examples/support/support-lifecycle-filled-example.json",
+      "useWhen": "Use when comparing an active report with one completed synthetic docs-example path from report through backlog review.",
+      "requiredMarkers": [
+        "synthetic-report-gallery-docs-example",
+        "placeholder links",
+        "privacy review notes",
+        "SECURITY.md",
+        "npm run support:check"
+      ],
+      "publicSafe": true,
+      "synthetic": true
+    }
+  ],
+  "quickPath": [
+    {
+      "stage": "report",
+      "artifact": "examples/reports/feedback-template.md",
+      "maintainerQuestion": "Is the report redacted, minimal, and safe to discuss publicly?",
+      "record": ["source issue", "package version", "sanitized summary", "safe to discuss publicly"]
+    },
+    {
+      "stage": "triage",
+      "artifact": "examples/support/triage-playbook.json",
+      "maintainerQuestion": "Is this expected docs behavior, fixture backlog, or rule-review work?",
+      "record": ["selected outcome", "rule id or report id", "why the outcome fits"]
+    },
+    {
+      "stage": "response",
+      "artifact": "examples/support/response-snippets.json",
+      "maintainerQuestion": "Which checked public-safe reply should go back to the reporter?",
+      "record": ["snippet id", "next command", "public-safe follow-up link"]
+    },
+    {
+      "stage": "closeout",
+      "artifact": "examples/support/closeout-checklist.json",
+      "maintainerQuestion": "Did the immediate support decision ship, queue, or open follow-up?",
+      "record": ["closeout id", "decision status", "follow-up link placeholder"]
+    },
+    {
+      "stage": "prioritization",
+      "artifact": "examples/support/outcome-prioritization.json",
+      "maintainerQuestion": "Is the follow-up low-priority docs, medium fixture work, or high rule review?",
+      "record": ["priority", "minimum evidence", "not enough evidence guardrail"]
+    },
+    {
+      "stage": "backlog-record",
+      "artifact": "examples/support/backlog-records.json",
+      "maintainerQuestion": "Is there a public-safe backlog artifact with evidence and checks?",
+      "record": ["backlog record id", "backlog type", "next action", "required checks"]
+    },
+    {
+      "stage": "backlog-review",
+      "artifact": "examples/support/backlog-review.json",
+      "maintainerQuestion": "Does the item remain active, or should it close with no action?",
+      "record": ["review decision", "review cadence", "next action", "checks run"]
+    }
+  ],
+  "requiredPublicSafeMarkers": [
+    "synthetic examples are labelled synthetic",
+    "placeholder links are used for public issue and follow-up links",
+    "SECURITY.md redirects sensitive reports away from public issues",
+    "no secrets, private code, private paths, customer data, full logs, unredacted SARIF, package publishing credentials, MCP data exposure, or exploitable security details"
+  ],
+  "requiredChecks": [
+    "npm run support:check",
+    "npm run production:check"
+  ],
+  "privacyGuardrail": "Keep support examples public-safe: label synthetic material, use placeholders, avoid secrets and private details, and route credential exposure, package publishing compromise, MCP data exposure, command execution risk, or exploitable security details through SECURITY.md."
+}

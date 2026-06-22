@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.101
+
+- Added a checked public-safe support examples index so maintainers can choose between the lifecycle map, blank worksheet, and filled synthetic example.
+- Added `support-examples-index.json` plus `npm run support:check` and production-readiness coverage so use-cases, public-safe markers, stage path, and required checks stay aligned.
+- Updated README, maintainer triage docs, support examples, production-readiness docs, roadmap, and release notes for the support examples manifest.
+
 ## 0.1.100
 
 - Added a checked synthetic filled support lifecycle worksheet example showing one `docs-example` report through report, triage, response, closeout, prioritization, backlog record, and backlog review.

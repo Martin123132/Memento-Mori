@@ -36,6 +36,8 @@ const supportFiles = [
   "examples/support/README.md",
   "examples/support/response-snippets.md",
   "examples/support/response-snippets.json",
+  "examples/support/support-examples-index.md",
+  "examples/support/support-examples-index.json",
   "examples/support/support-lifecycle-map.md",
   "examples/support/support-lifecycle-map.json",
   "examples/support/support-lifecycle-worksheet.md",
@@ -96,6 +98,8 @@ requireText("examples/reports/README.md", /examples\/support|Maintainer Triage P
 requireText("examples/support/README.md", /Maintainer Triage Playbook/, "maintainer playbook heading");
 requireText("examples/support/README.md", /backlog-review\.md/, "support backlog review link");
 requireText("examples/support/README.md", /backlog-records\.md/, "support backlog records link");
+requireText("examples/support/README.md", /support-examples-index\.md/, "support examples index link");
+requireText("examples/support/README.md", /support-examples-index\.json/, "support examples index JSON link");
 requireText("examples/support/README.md", /support-lifecycle-map\.md/, "support lifecycle map link");
 requireText("examples/support/README.md", /support-lifecycle-worksheet\.md/, "support lifecycle worksheet link");
 requireText("examples/support/README.md", /support-lifecycle-filled-example\.md/, "filled lifecycle worksheet example link");
@@ -130,8 +134,25 @@ requireText("examples/support/closeout-checklist.md", /SECURITY\.md/, "closeout 
 requireText("examples/support/closeout-checklist.json", /docs-clarification-closeout/, "docs closeout record");
 requireText("examples/support/closeout-checklist.json", /fixture-backlog-closeout/, "fixture closeout record");
 requireText("examples/support/closeout-checklist.json", /rule-review-closeout/, "rule-review closeout record");
+requireText("examples/support/support-examples-index.md", /Support Examples Index/, "support examples index heading");
+requireText("examples/support/support-examples-index.md", /support-examples-index\.json/, "support examples index JSON link");
+requireText("examples/support/support-examples-index.md", /support-lifecycle-map\.md/, "support examples index map link");
+requireText("examples/support/support-examples-index.md", /support-lifecycle-worksheet\.md/, "support examples index worksheet link");
+requireText("examples/support/support-examples-index.md", /support-lifecycle-filled-example\.md/, "support examples index filled example link");
+requireText("examples/support/support-examples-index.md", /Quick Maintainer Path/, "support examples index quick path");
+requireText("examples/support/support-examples-index.md", /report/, "support examples index report stage");
+requireText("examples/support/support-examples-index.md", /backlog-review/, "support examples index backlog review stage");
+requireText("examples/support/support-examples-index.md", /synthetic-report-gallery-docs-example/, "support examples index synthetic marker");
+requireText("examples/support/support-examples-index.md", /SECURITY\.md/, "support examples index security redirect");
+requireText("examples/support/support-examples-index.md", /npm run support:check/, "support examples index support check");
+requireText("examples/support/support-examples-index.json", /Support Examples Index/, "support examples index JSON title");
+requireText("examples/support/support-examples-index.json", /support-lifecycle-map\.md/, "support examples index JSON map link");
+requireText("examples/support/support-examples-index.json", /support-lifecycle-worksheet\.md/, "support examples index JSON worksheet link");
+requireText("examples/support/support-examples-index.json", /support-lifecycle-filled-example\.md/, "support examples index JSON filled example link");
+requireText("examples/support/support-examples-index.json", /synthetic-report-gallery-docs-example/, "support examples index JSON synthetic marker");
 requireText("examples/support/support-lifecycle-map.md", /Support Lifecycle Map/, "support lifecycle map heading");
 requireText("examples/support/support-lifecycle-map.md", /support-lifecycle-map\.json/, "support lifecycle map JSON link");
+requireText("examples/support/support-lifecycle-map.md", /support-examples-index\.md/, "support examples index link");
 requireText("examples/support/support-lifecycle-map.md", /support-lifecycle-worksheet\.md/, "support lifecycle worksheet link");
 requireText("examples/support/support-lifecycle-map.md", /support-lifecycle-filled-example\.md/, "filled lifecycle worksheet example link");
 requireText("examples/support/support-lifecycle-map.md", /report\s*\n\s*-> triage\s*\n\s*-> response\s*\n\s*-> closeout\s*\n\s*-> prioritization\s*\n\s*-> backlog-record\s*\n\s*-> backlog-review/, "support lifecycle compact flow");
@@ -148,6 +169,7 @@ requireText("examples/support/support-lifecycle-map.json", /backlog-review/, "su
 requireText("examples/support/support-lifecycle-map.json", /closed-no-action/, "support lifecycle map closed no-action fallback");
 requireText("examples/support/support-lifecycle-worksheet.md", /Support Lifecycle Worksheet/, "support lifecycle worksheet heading");
 requireText("examples/support/support-lifecycle-worksheet.md", /support-lifecycle-worksheet\.json/, "support lifecycle worksheet JSON link");
+requireText("examples/support/support-lifecycle-worksheet.md", /support-examples-index\.md/, "support examples index link");
 requireText("examples/support/support-lifecycle-worksheet.md", /support-lifecycle-filled-example\.md/, "filled lifecycle worksheet example link");
 requireText("examples/support/support-lifecycle-worksheet.md", /support lifecycle map/, "support lifecycle worksheet map link");
 requireText("examples/support/support-lifecycle-worksheet.md", /## Report/, "worksheet report stage");
@@ -186,6 +208,8 @@ requireText("examples/support/support-lifecycle-filled-example.json", /synthetic
 requireText("examples/support/support-lifecycle-filled-example.json", /docs-example/, "filled worksheet docs outcome");
 requireText("examples/support/support-lifecycle-filled-example.json", /remains-docs-clarification/, "filled worksheet review decision");
 requireText("examples/support/support-lifecycle.md", /Support Lifecycle Overview/, "support lifecycle heading");
+requireText("examples/support/support-lifecycle.md", /support-examples-index\.md/, "support examples index link");
+requireText("examples/support/support-lifecycle.md", /support-examples-index\.json/, "support examples index JSON link");
 requireText("examples/support/support-lifecycle.md", /support-lifecycle-map\.md/, "support lifecycle map link");
 requireText("examples/support/support-lifecycle.md", /support-lifecycle-worksheet\.md/, "support lifecycle worksheet link");
 requireText("examples/support/support-lifecycle.md", /support-lifecycle-worksheet\.json/, "support lifecycle worksheet JSON link");
@@ -272,6 +296,7 @@ requireText("examples/support/response-snippets.json", /rule-review-candidate-re
 requireText("docs/MAINTAINER_TRIAGE.md", /feedback-template\.md/, "feedback template triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /report_gallery_feedback\.yml/, "report gallery issue template triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /examples\/support/, "maintainer playbook triage link");
+requireText("docs/MAINTAINER_TRIAGE.md", /support-examples-index\.md/, "support examples index triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /support-lifecycle-map\.md/, "support lifecycle map triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /support-lifecycle-worksheet\.md/, "support lifecycle worksheet triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /support-lifecycle-filled-example\.md/, "filled lifecycle worksheet example triage link");
@@ -287,6 +312,7 @@ requireText("docs/MAINTAINER_TRIAGE.md", /rule-review-candidate/, "rule review t
 requireText("docs/MAINTAINER_TRIAGE.md", /npm(?:\.cmd)? run support:check/, "support checker triage command");
 requireText("docs/PRODUCTION_READINESS.md", /support:check/, "support checker readiness");
 requireText("README.md", /feedback-template\.md/, "feedback template README link");
+requireText("README.md", /support-examples-index\.md/, "support examples index README link");
 requireText("README.md", /support-lifecycle-map\.md/, "support lifecycle map README link");
 requireText("README.md", /support-lifecycle-worksheet\.md/, "support lifecycle worksheet README link");
 requireText("README.md", /support-lifecycle-filled-example\.md/, "filled lifecycle worksheet example README link");
@@ -305,6 +331,7 @@ requireText("package.json", /npm run support:check/, "support checker in npm tes
 checkTriagePlaybook();
 checkResponseSnippets();
 checkCloseoutChecklist();
+checkSupportExamplesIndex();
 checkSupportLifecycleWorksheet();
 checkSupportLifecycleFilledExample();
 checkSupportLifecycleMap();
@@ -904,6 +931,142 @@ function checkSupportLifecycleWorksheet() {
         failures.push(`${path}.requiredChecks should include ${check}.`);
       }
     }
+  }
+}
+
+function checkSupportExamplesIndex() {
+  const path = "examples/support/support-examples-index.json";
+  const index = readJson(path);
+  if (!index) {
+    return;
+  }
+
+  const expectedArtifacts = [
+    {
+      id: "lifecycle-map",
+      file: "examples/support/support-lifecycle-map.md",
+      source: "examples/support/support-lifecycle-map.json",
+      synthetic: false,
+      markers: ["report -> triage -> response -> closeout -> prioritization -> backlog-record -> backlog-review", "SECURITY.md", "npm run support:check"]
+    },
+    {
+      id: "blank-worksheet",
+      file: "examples/support/support-lifecycle-worksheet.md",
+      source: "examples/support/support-lifecycle-worksheet.json",
+      synthetic: false,
+      markers: ["stage checklist", "record fields", "stop conditions", "SECURITY.md", "npm run support:check"]
+    },
+    {
+      id: "filled-synthetic-example",
+      file: "examples/support/support-lifecycle-filled-example.md",
+      source: "examples/support/support-lifecycle-filled-example.json",
+      synthetic: true,
+      markers: ["synthetic-report-gallery-docs-example", "placeholder links", "privacy review notes", "SECURITY.md", "npm run support:check"]
+    }
+  ];
+  const expectedStageIds = ["report", "triage", "response", "closeout", "prioritization", "backlog-record", "backlog-review"];
+  const expectedStageArtifacts = [
+    "examples/reports/feedback-template.md",
+    "examples/support/triage-playbook.json",
+    "examples/support/response-snippets.json",
+    "examples/support/closeout-checklist.json",
+    "examples/support/outcome-prioritization.json",
+    "examples/support/backlog-records.json",
+    "examples/support/backlog-review.json"
+  ];
+
+  if (index.title !== "Support Examples Index") {
+    failures.push(`${path}.title should be Support Examples Index.`);
+  }
+
+  if (!Array.isArray(index.artifacts) || index.artifacts.length !== expectedArtifacts.length) {
+    failures.push(`${path}.artifacts should contain exactly three indexed support artifacts.`);
+  } else {
+    for (const [indexPosition, artifact] of index.artifacts.entries()) {
+      const expected = expectedArtifacts[indexPosition];
+      if (artifact?.id !== expected.id) {
+        failures.push(`${path}.artifacts[${indexPosition}].id should be ${expected.id}.`);
+      }
+
+      if (artifact?.file !== expected.file) {
+        failures.push(`${path}.artifacts[${indexPosition}].file should be ${expected.file}.`);
+      }
+
+      if (artifact?.source !== expected.source) {
+        failures.push(`${path}.artifacts[${indexPosition}].source should be ${expected.source}.`);
+      }
+
+      if (artifact?.publicSafe !== true) {
+        failures.push(`${path}.artifacts[${indexPosition}].publicSafe should be true.`);
+      }
+
+      if (artifact?.synthetic !== expected.synthetic) {
+        failures.push(`${path}.artifacts[${indexPosition}].synthetic should be ${expected.synthetic}.`);
+      }
+
+      if (typeof artifact?.useWhen !== "string" || artifact.useWhen.length < 60) {
+        failures.push(`${path}.artifacts[${indexPosition}].useWhen should explain when maintainers use this artifact.`);
+      }
+
+      if (!Array.isArray(artifact?.requiredMarkers)) {
+        failures.push(`${path}.artifacts[${indexPosition}].requiredMarkers should be an array.`);
+      } else {
+        const markerText = artifact.requiredMarkers.join("\n");
+        for (const marker of expected.markers) {
+          if (!markerText.includes(marker)) {
+            failures.push(`${path}.artifacts[${indexPosition}].requiredMarkers should include ${marker}.`);
+          }
+        }
+      }
+    }
+  }
+
+  if (!Array.isArray(index.quickPath) || index.quickPath.length !== expectedStageIds.length) {
+    failures.push(`${path}.quickPath should contain seven lifecycle stages.`);
+  } else {
+    for (const [stageIndex, stage] of index.quickPath.entries()) {
+      if (stage?.stage !== expectedStageIds[stageIndex]) {
+        failures.push(`${path}.quickPath[${stageIndex}].stage should be ${expectedStageIds[stageIndex]}.`);
+      }
+
+      if (stage?.artifact !== expectedStageArtifacts[stageIndex]) {
+        failures.push(`${path}.quickPath[${stageIndex}].artifact should be ${expectedStageArtifacts[stageIndex]}.`);
+      }
+
+      if (typeof stage?.maintainerQuestion !== "string" || stage.maintainerQuestion.length < 35) {
+        failures.push(`${path}.quickPath[${stageIndex}].maintainerQuestion should be useful.`);
+      }
+
+      if (!Array.isArray(stage?.record) || stage.record.length < 3) {
+        failures.push(`${path}.quickPath[${stageIndex}].record should include at least three fields.`);
+      }
+    }
+  }
+
+  if (!Array.isArray(index.requiredPublicSafeMarkers) || index.requiredPublicSafeMarkers.length < 4) {
+    failures.push(`${path}.requiredPublicSafeMarkers should include at least four public-safe markers.`);
+  } else {
+    const markerText = index.requiredPublicSafeMarkers.join("\n");
+    for (const marker of ["synthetic", "placeholder", "SECURITY.md", "no secrets"]) {
+      if (!markerText.includes(marker)) {
+        failures.push(`${path}.requiredPublicSafeMarkers should include ${marker}.`);
+      }
+    }
+  }
+
+  const requiredChecks = ["npm run support:check", "npm run production:check"];
+  if (!Array.isArray(index.requiredChecks)) {
+    failures.push(`${path}.requiredChecks should be an array.`);
+  } else {
+    for (const check of requiredChecks) {
+      if (!index.requiredChecks.includes(check)) {
+        failures.push(`${path}.requiredChecks should include ${check}.`);
+      }
+    }
+  }
+
+  if (typeof index.privacyGuardrail !== "string" || !/synthetic|placeholder|secrets|private|SECURITY\.md|exploitable/i.test(index.privacyGuardrail)) {
+    failures.push(`${path}.privacyGuardrail should include public-safe support guidance.`);
   }
 }
 

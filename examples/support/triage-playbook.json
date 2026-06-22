@@ -1,0 +1,96 @@
+[
+  {
+    "id": "gallery-expected-block-docs",
+    "source": "report-gallery-feedback",
+    "nearestReportExample": "destructive-command-summary",
+    "sanitizedReport": {
+      "version": "latest",
+      "kind": "command",
+      "command": "jester summary --kind command \"git reset --hard\"",
+      "observed": [
+        "Verdict: BLOCK",
+        "destructive-git-history",
+        "Suggested next: jester tune destructive-git-history"
+      ],
+      "question": "I expected this to warn, not block, because I only wanted to see the summary output."
+    },
+    "firstResponse": "Thanks. This looks like expected behavior for the destructive-command summary example: the command is intentionally blocked so the gallery can show a high-signal report. Please share redacted `jester doctor --json` output only if your local output differs from the checked example.",
+    "classification": {
+      "labels": ["docs"],
+      "decision": "expected-behavior-docs-example",
+      "rationale": "The reported command matches a checked gallery example and does not indicate a rule bug."
+    },
+    "maintainerChecks": [
+      "npm run reports:check",
+      "npm run support:check"
+    ],
+    "followUpOutcome": {
+      "type": "docs-example",
+      "action": "Clarify the report gallery row or README wording if multiple adopters expect a non-blocking example."
+    }
+  },
+  {
+    "id": "false-positive-fixture-backlog",
+    "source": "false-positive",
+    "nearestReportExample": "none",
+    "sanitizedReport": {
+      "version": "latest",
+      "kind": "diff",
+      "ruleId": "custom-web-storage-sensitive-value",
+      "command": "jester summary --kind diff <redacted-diff>",
+      "observed": [
+        "Verdict: BLOCK",
+        "custom-web-storage-sensitive-value",
+        "localStorage theme preference"
+      ],
+      "question": "This looks like a theme preference, not a token or password."
+    },
+    "firstResponse": "Thanks. Please keep the diff minimal and redacted, then include `jester tune custom-web-storage-sensitive-value --json` and redacted `jester doctor --json` output. If the reduced example only stores a non-sensitive preference, this should become a quiet-pass fixture candidate before any rule change.",
+    "classification": {
+      "labels": ["false-positive", "rules"],
+      "decision": "fixture-backlog",
+      "rationale": "The report describes a plausible safe boundary, but maintainers need a minimized redacted reproduction before changing matching behavior."
+    },
+    "maintainerChecks": [
+      "npm run fixtures:check",
+      "npm run fixtures:report",
+      "npm run support:check"
+    ],
+    "followUpOutcome": {
+      "type": "fixture-backlog",
+      "action": "Add a quiet-pass fixture with `absentRuleIds` for the noisy rule if the sanitized reproduction is valid and not already covered."
+    }
+  },
+  {
+    "id": "repeated-risky-domain-rule-review",
+    "source": "false-positive",
+    "nearestReportExample": "none",
+    "sanitizedReport": {
+      "version": "latest",
+      "kind": "plan",
+      "ruleId": "risky-domain",
+      "command": "jester summary --kind plan \"Update auth docs and verify links\"",
+      "observed": [
+        "Verdict: CAUTION",
+        "risky-domain",
+        "High-risk domain touched"
+      ],
+      "question": "The plan is documentation-only, but the rule still cautions because it mentions auth."
+    },
+    "firstResponse": "Thanks. This may be expected caution for plan text, but repeated reports can justify a rule-review candidate. Please share redacted `jester doctor --json` output, redacted `jester tune risky-domain --json` output, and the smallest plan text that reproduces the surprise. Do not paste private project details.",
+    "classification": {
+      "labels": ["false-positive", "rules"],
+      "decision": "rule-review-candidate",
+      "rationale": "One report is not enough to loosen a broad domain rule, but repeated sanitized reports may show the guidance or matching boundary needs review."
+    },
+    "maintainerChecks": [
+      "npm run fixtures:report -- --markdown",
+      "node .\\dist\\cli.js tune risky-domain --json",
+      "npm run support:check"
+    ],
+    "followUpOutcome": {
+      "type": "rule-review-candidate",
+      "action": "Collect at least two sanitized examples and compare fixture evidence before changing rule guidance or matching."
+    }
+  }
+]

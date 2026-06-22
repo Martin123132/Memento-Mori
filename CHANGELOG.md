@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.90
+
+- Added `examples/support`, a checked maintainer triage playbook for sanitized report-gallery and false-positive reports.
+- Extended `npm run support:check` and production-readiness checks so the playbook keeps public-safe examples, first responses, classifications, and follow-up outcomes aligned.
+- Updated README, report docs, maintainer triage docs, release docs, production-readiness docs, roadmap, and release notes for deterministic support handling.
+
 ## 0.1.89
 
 - Added a report-gallery feedback issue template for public-safe reports about confusing or stale checked examples, and strengthened false-positive reports with version and redacted `doctor --json` prompts.

@@ -30,6 +30,8 @@ If a report-gallery example is confusing, stale, or does not match what you see 
 
 The useful public details are the package version, nearest gallery example, a sanitized command summary, a few relevant output lines, and redacted `doctor --json` output. Do not paste secrets, private repository code, customer data, full CI logs, unredacted SARIF, or private paths.
 
+Maintainers should handle those reports with the checked [Maintainer Triage Playbook](../support), which shows first responses, classifications, and follow-up outcomes for docs examples, fixture backlog items, and rule-review candidates.
+
 Maintainers can keep this support path aligned with:
 
 ```powershell

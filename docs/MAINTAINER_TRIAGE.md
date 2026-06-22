@@ -21,6 +21,8 @@ For users who just need to understand what a healthy report looks like, point th
 
 For users who say a gallery report is confusing, stale, or hard to compare with their local output, point them at [examples/reports/feedback-template.md](../examples/reports/feedback-template.md) or the GitHub [report gallery feedback issue template](../.github/ISSUE_TEMPLATE/report_gallery_feedback.yml). It asks for the nearest checked example, sanitized command and output summaries, version, and redacted diagnostics without asking for private code.
 
+When a report has enough public-safe detail to triage, compare it with the checked [support triage playbook](../examples/support). The playbook walks sanitized report-gallery and false-positive reports through first response, classification, and a follow-up outcome.
+
 Do not ask users to paste secrets, private code, customer data, live credentials, complete CI logs, or unredacted SARIF. If the report involves credential exposure, command execution, unexpected network access, private code disclosure, package publishing, or MCP data exposure, route it through [SECURITY.md](../SECURITY.md).
 
 ## Triage Labels
@@ -56,6 +58,12 @@ Use report-gallery feedback when the issue is about understanding installed-pack
 - a new stable output fragment in `report-gallery.json`,
 - a small docs update,
 - or a redacted fixture only if the report exposes a reusable rule boundary.
+
+Use the playbook outcomes consistently:
+
+- `docs-example`: the behavior is expected but the report or wording is unclear.
+- `fixture-backlog`: the reduced report looks safe and should become a pass or quiet-pass fixture.
+- `rule-review-candidate`: repeated sanitized reports suggest guidance or matching may need review, but not from a single report.
 
 After editing report support docs or issue templates, run:
 

@@ -93,6 +93,8 @@ for (const path of [
   "examples/reports/README.md",
   "examples/reports/feedback-template.md",
   "examples/reports/report-gallery.json",
+  "examples/support/README.md",
+  "examples/support/triage-playbook.json",
   "examples/presets/README.md",
   "examples/tuning/README.md",
   "examples/tuning/framework-tuning-cookbook.json",
@@ -121,6 +123,7 @@ requireText("README.md", /adoption-smoke\.yml/, "adoption smoke CI link");
 requireText("README.md", /consumer-quickstart/, "consumer quickstart smoke link");
 requireText("README.md", /examples\/reports/, "report gallery link");
 requireText("README.md", /feedback-template\.md/, "report gallery feedback template link");
+requireText("README.md", /examples\/support/, "support triage playbook link");
 requireText("README.md", /report gallery feedback/i, "report gallery feedback guidance");
 requireText("README.md", /License: PolyForm Noncommercial/, "the noncommercial license badge");
 requireText("docs/PRODUCTION_READINESS.md", /npm package/i, "npm package readiness");
@@ -141,6 +144,7 @@ requireText("docs/PRODUCTION_READINESS.md", /adoption-smoke\.yml/, "adoption smo
 requireText("docs/PRODUCTION_READINESS.md", /consumer:quickstart:check/, "consumer quickstart smoke readiness");
 requireText("docs/PRODUCTION_READINESS.md", /reports:check/, "report gallery readiness");
 requireText("docs/PRODUCTION_READINESS.md", /support:check/, "support triage readiness");
+requireText("docs/PRODUCTION_READINESS.md", /examples\/support/, "support triage playbook readiness");
 requireText("docs/PRODUCTION_READINESS.md", /quiet-pass/, "quiet-pass fixture readiness");
 requireText("docs/CLI.md", /jester doctor --json/, "doctor JSON CLI docs");
 requireText("docs/CLI.md", /quiet-pass fixture/, "quiet-pass fixture CLI docs");
@@ -164,6 +168,10 @@ requireText("docs/MAINTAINER_TRIAGE.md", /expectedRuleIds/, "fixture expected ru
 requireText("docs/MAINTAINER_TRIAGE.md", /absentRuleIds/, "fixture absent rule guidance");
 requireText("docs/MAINTAINER_TRIAGE.md", /feedback-template\.md/, "report gallery feedback template link");
 requireText("docs/MAINTAINER_TRIAGE.md", /report_gallery_feedback\.yml/, "report gallery issue template link");
+requireText("docs/MAINTAINER_TRIAGE.md", /examples\/support/, "support triage playbook link");
+requireText("docs/MAINTAINER_TRIAGE.md", /docs-example/, "docs example triage outcome");
+requireText("docs/MAINTAINER_TRIAGE.md", /fixture-backlog/, "fixture backlog triage outcome");
+requireText("docs/MAINTAINER_TRIAGE.md", /rule-review-candidate/, "rule review triage outcome");
 requireText("docs/MAINTAINER_TRIAGE.md", /support:check/, "support triage check guidance");
 requireText("examples/fixtures/README.md", /MAINTAINER_TRIAGE\.md/, "maintainer triage link");
 requireText("examples/fixtures/README.md", /Adding A Fixture From A Report/, "fixture report conversion guidance");
@@ -181,6 +189,7 @@ requireText("examples/consumer-quickstart/package.json", /framework:tuning:docto
 requireText("examples/reports/README.md", /report-gallery\.json/, "report gallery JSON link");
 requireText("examples/reports/README.md", /feedback-template\.md/, "report gallery feedback template link");
 requireText("examples/reports/README.md", /report_gallery_feedback\.yml/, "report gallery issue template link");
+requireText("examples/reports/README.md", /examples\/support|Maintainer Triage Playbook/i, "support triage playbook link");
 requireText("examples/reports/README.md", /npm run reports:check/, "report gallery check command");
 requireText("examples/reports/README.md", /npm run support:check/, "support triage check command");
 requireText("examples/reports/report-gallery.json", /fresh-install-doctor/, "fresh install doctor report");
@@ -191,6 +200,13 @@ requireText("examples/reports/feedback-template.md", /summary --kind command "gi
 requireText("examples/reports/feedback-template.md", /tune <rule-id> --json/, "feedback template tune diagnostics");
 requireText("examples/reports/feedback-template.md", /Privacy Checklist/, "feedback template privacy checklist");
 requireText("examples/reports/feedback-template.md", /SECURITY\.md/, "feedback template security redirect");
+requireText("examples/support/README.md", /triage-playbook\.json/, "support triage playbook JSON link");
+requireText("examples/support/README.md", /docs-example/, "support triage docs outcome");
+requireText("examples/support/README.md", /fixture-backlog/, "support triage fixture outcome");
+requireText("examples/support/README.md", /rule-review-candidate/, "support triage rule-review outcome");
+requireText("examples/support/triage-playbook.json", /gallery-expected-block-docs/, "support triage docs example");
+requireText("examples/support/triage-playbook.json", /false-positive-fixture-backlog/, "support triage fixture example");
+requireText("examples/support/triage-playbook.json", /repeated-risky-domain-rule-review/, "support triage rule-review example");
 requireText("examples/tuning/README.md", /framework-tuning-cookbook\.json/, "framework tuning cookbook JSON link");
 requireText("examples/tuning/README.md", /framework:tuning:doctor/, "framework tuning doctor guidance");
 requireText("examples/tuning/README.md", /jester tune <rule-id> --json|jester tune [a-z0-9-]+ --json/, "framework tuning command guidance");
@@ -223,6 +239,7 @@ requireText("scripts/check-report-gallery.mjs", /memento-mori-jester@latest/, "r
 requireText("scripts/check-report-gallery.mjs", /destructive-command-summary/, "report gallery summary guard");
 requireText("scripts/check-support-triage.mjs", /report_gallery_feedback\.yml/, "support triage issue template guard");
 requireText("scripts/check-support-triage.mjs", /feedback-template\.md/, "support triage feedback template guard");
+requireText("scripts/check-support-triage.mjs", /triage-playbook\.json/, "support triage playbook guard");
 requireText("scripts/check-support-triage.mjs", /unsafeContentPatterns/, "support triage unsafe content checks");
 requireText("package.json", /"fixtures:check": "node scripts\/check-fixtures\.mjs"/, "fixture authoring check script");
 requireText("package.json", /"fixtures:report": "node scripts\/report-fixtures\.mjs"/, "fixture coverage report script");

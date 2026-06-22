@@ -30,7 +30,7 @@ Move the current changelog bullets into a matching version section and add `docs
 ## 2. Tag And Push
 
 ```powershell
-git add package.json package-lock.json CHANGELOG.md docs/RELEASE_NOTES_v0.1.x.md docs/PRODUCTION_READINESS.md docs/MAINTAINER_TRIAGE.md docs/FRAMEWORK_TUNING.md docs/GITHUB_ACTIONS.md examples/ci examples/consumer-quickstart examples/reports examples/tuning scripts/check-ci-adoption.mjs scripts/check-consumer-quickstart.mjs scripts/check-report-gallery.mjs scripts/check-support-triage.mjs scripts/check-framework-tuning.mjs scripts/doctor-framework-tuning.mjs SECURITY.md .github/ISSUE_TEMPLATE
+git add package.json package-lock.json CHANGELOG.md docs/RELEASE_NOTES_v0.1.x.md docs/PRODUCTION_READINESS.md docs/MAINTAINER_TRIAGE.md docs/FRAMEWORK_TUNING.md docs/GITHUB_ACTIONS.md examples/ci examples/consumer-quickstart examples/reports examples/support examples/tuning scripts/check-ci-adoption.mjs scripts/check-consumer-quickstart.mjs scripts/check-report-gallery.mjs scripts/check-support-triage.mjs scripts/check-framework-tuning.mjs scripts/doctor-framework-tuning.mjs SECURITY.md .github/ISSUE_TEMPLATE
 git commit -m "Release v0.1.x"
 git tag -a v0.1.x -m "Memento Mori Jester v0.1.x"
 git push origin main

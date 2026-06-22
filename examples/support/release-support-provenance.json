@@ -1,0 +1,46 @@
+{
+  "title": "Release Support Provenance Gate",
+  "postPublishRequired": true,
+  "packageName": "memento-mori-jester",
+  "registryVersionCommand": "npm view memento-mori-jester version --silent",
+  "installCommand": "npm install --save-dev memento-mori-jester@latest --ignore-scripts --no-audit --no-fund",
+  "verifyCommand": "npm explore memento-mori-jester -- npm run pack:contents:check",
+  "sourceNote": "examples/support/installed-package-support.json",
+  "packageRelativeArtifacts": [
+    "examples/support/installed-package-support.md",
+    "examples/support/support-examples-index.md",
+    "examples/support/support-examples-quickstart.md",
+    "examples/support/support-lifecycle-map.md",
+    "examples/support/support-lifecycle-worksheet.md",
+    "examples/support/support-lifecycle-filled-example.md"
+  ],
+  "recordFields": [
+    "package version",
+    "GitHub Release URL",
+    "npm registry version",
+    "installed-package verification command",
+    "package-relative support artifacts checked",
+    "repo-only paths confirmed absent or not required",
+    "privacy scan result"
+  ],
+  "repoOnlyPathsNotRequired": [
+    "promo/",
+    "site/",
+    ".github/",
+    "private/",
+    "secrets/",
+    "internal/",
+    "node_modules/",
+    "coverage/",
+    "tmp/",
+    "temp/",
+    ".env",
+    ".npmrc"
+  ],
+  "requiredChecks": [
+    "npm run support:check",
+    "npm run pack:contents:check",
+    "npm run production:check"
+  ],
+  "privacyGuardrail": "Release support provenance must stay public-safe: record package-relative artifacts and command results only, avoid secrets and private details, and route credential exposure, package publishing compromise, MCP data exposure, command execution risk, or exploitable security details through SECURITY.md."
+}

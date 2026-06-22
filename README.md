@@ -76,7 +76,7 @@ For trust-building output examples, see [examples/reports](examples/reports). `n
 
 If one of those reports is confusing or stale, use the public-safe [report gallery feedback template](examples/reports/feedback-template.md). It asks for version, nearest gallery example, sanitized command/output summaries, and redacted diagnostics without private repo code or secrets.
 
-Maintainers can use the checked [support examples quickstart](examples/support/support-examples-quickstart.md), [support examples index](examples/support/support-examples-index.md), [installed-package support note](examples/support/installed-package-support.md), [support lifecycle map](examples/support/support-lifecycle-map.md), [support lifecycle worksheet](examples/support/support-lifecycle-worksheet.md), synthetic [filled worksheet example](examples/support/support-lifecycle-filled-example.md), [support lifecycle overview](examples/support/support-lifecycle.md), [outcome prioritization guide](examples/support/outcome-prioritization.md), [support backlog records](examples/support/backlog-records.md), [support backlog review](examples/support/backlog-review.md), [support triage playbook](examples/support), [response snippets](examples/support/response-snippets.md), and [support closeout checklist](examples/support/closeout-checklist.md) to turn sanitized reports into a docs example, fixture backlog item, or rule-review candidate without changing behavior first.
+Maintainers can use the checked [support examples quickstart](examples/support/support-examples-quickstart.md), [support examples index](examples/support/support-examples-index.md), [installed-package support note](examples/support/installed-package-support.md), [release support provenance gate](examples/support/release-support-provenance.md), [support lifecycle map](examples/support/support-lifecycle-map.md), [support lifecycle worksheet](examples/support/support-lifecycle-worksheet.md), synthetic [filled worksheet example](examples/support/support-lifecycle-filled-example.md), [support lifecycle overview](examples/support/support-lifecycle.md), [outcome prioritization guide](examples/support/outcome-prioritization.md), [support backlog records](examples/support/backlog-records.md), [support backlog review](examples/support/backlog-review.md), [support triage playbook](examples/support), [response snippets](examples/support/response-snippets.md), and [support closeout checklist](examples/support/closeout-checklist.md) to turn sanitized reports into a docs example, fixture backlog item, or rule-review candidate without changing behavior first.
 
 Expected vibe:
 
@@ -453,6 +453,7 @@ More setup examples:
 - [Support Examples Quickstart](examples/support/support-examples-quickstart.md)
 - [Support Examples Index](examples/support/support-examples-index.md)
 - [Installed Package Support Examples](examples/support/installed-package-support.md)
+- [Release Support Provenance Gate](examples/support/release-support-provenance.md)
 - [Support Lifecycle Map](examples/support/support-lifecycle-map.md)
 - [Support Lifecycle Worksheet](examples/support/support-lifecycle-worksheet.md)
 - [Filled Support Lifecycle Worksheet Example](examples/support/support-lifecycle-filled-example.md)
@@ -487,6 +488,7 @@ Framework CI examples:
 - [Support Examples Quickstart](examples/support/support-examples-quickstart.md)
 - [Support Examples Index](examples/support/support-examples-index.md)
 - [Installed Package Support Examples](examples/support/installed-package-support.md)
+- [Release Support Provenance Gate](examples/support/release-support-provenance.md)
 - [Support Lifecycle Map](examples/support/support-lifecycle-map.md)
 - [Support Lifecycle Worksheet](examples/support/support-lifecycle-worksheet.md)
 - [Filled Support Lifecycle Worksheet Example](examples/support/support-lifecycle-filled-example.md)
@@ -553,11 +555,11 @@ Maintainers can use [docs/MAINTAINER_TRIAGE.md](docs/MAINTAINER_TRIAGE.md) to tu
 Run `npm run fixtures:check` before merging fixture changes; it catches duplicate IDs, missing rule metadata, weak descriptions, unsafe-looking content, and duplicate content.
 Run `npm run fixtures:report` to see fixture coverage by rule, rule family, preset slice, kind, verdict, quiet-pass boundaries, feasible pass-case gaps, and curation-next guidance before choosing the next fixture. Use `npm run fixtures:report -- --markdown` when you want a paste-ready summary for release notes or GitHub issues.
 Run `npm run reports:check` after editing [examples/reports](examples/reports); it verifies the public report gallery against an installed package in a temporary consumer project.
-Run `npm run support:check` after editing issue templates, support docs, the report gallery feedback path, the [support examples quickstart](examples/support/support-examples-quickstart.md), [support examples index](examples/support/support-examples-index.md), [installed-package support note](examples/support/installed-package-support.md), [support lifecycle map](examples/support/support-lifecycle-map.md), [support lifecycle worksheet](examples/support/support-lifecycle-worksheet.md), [filled worksheet example](examples/support/support-lifecycle-filled-example.md), [support lifecycle overview](examples/support/support-lifecycle.md), [outcome prioritization guide](examples/support/outcome-prioritization.md), [support backlog records](examples/support/backlog-records.md), [support backlog review](examples/support/backlog-review.md), [support triage playbook](examples/support), [response snippets](examples/support/response-snippets.md), or [support closeout checklist](examples/support/closeout-checklist.md); it verifies the public templates ask for useful redacted context without inviting secrets or private code.
+Run `npm run support:check` after editing issue templates, support docs, the report gallery feedback path, the [support examples quickstart](examples/support/support-examples-quickstart.md), [support examples index](examples/support/support-examples-index.md), [installed-package support note](examples/support/installed-package-support.md), [release support provenance gate](examples/support/release-support-provenance.md), [support lifecycle map](examples/support/support-lifecycle-map.md), [support lifecycle worksheet](examples/support/support-lifecycle-worksheet.md), [filled worksheet example](examples/support/support-lifecycle-filled-example.md), [support lifecycle overview](examples/support/support-lifecycle.md), [outcome prioritization guide](examples/support/outcome-prioritization.md), [support backlog records](examples/support/backlog-records.md), [support backlog review](examples/support/backlog-review.md), [support triage playbook](examples/support), [response snippets](examples/support/response-snippets.md), or [support closeout checklist](examples/support/closeout-checklist.md); it verifies the public templates ask for useful redacted context without inviting secrets or private code.
 Run `npm run promo:card` to regenerate the repo-local social preview card after changing its copy or design.
 Run `npm run promo:check` after editing promo assets; it checks the current demo video, stills, docs, and fixture evidence numbers stay in sync.
 Run `npm run site:check` after editing the repo-local landing page; it verifies the start command, demo links, social card, repo, release, and npm links.
-Run `npm run pack:contents:check` when package contents change; it verifies the dry-run package includes the support examples index, quickstart, lifecycle map, blank worksheet, and filled synthetic example, while excluding repo-local promo, site, private, cache, and credential-shaped files.
+Run `npm run pack:contents:check` when package contents change; it verifies the dry-run package includes the installed-package support note, release support provenance gate, support examples index, quickstart, lifecycle map, blank worksheet, and filled synthetic example, while excluding repo-local promo, site, private, cache, and credential-shaped files.
 
 For vulnerabilities, private code exposure, or credential-handling concerns, follow [SECURITY.md](SECURITY.md) instead of opening a public issue with sensitive details.
 
@@ -579,6 +581,12 @@ git push origin v0.1.x
 ```
 
 Pushing a `v*` tag creates the GitHub Release and publishes the matching package version to npm through trusted publishing.
+
+After npm publish, use the [release support provenance gate](examples/support/release-support-provenance.md) to record the registry version, GitHub Release URL, installed-package verification command, package-relative support artifacts, repo-only path exclusions, and privacy scan result. The installed-package verification command is:
+
+```powershell
+npm.cmd explore memento-mori-jester -- npm run pack:contents:check
+```
 
 The production readiness bar is documented in [docs/PRODUCTION_READINESS.md](docs/PRODUCTION_READINESS.md).
 

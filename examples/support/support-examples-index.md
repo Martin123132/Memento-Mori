@@ -2,7 +2,7 @@
 
 This public-safe index tells maintainers which checked support artifact to use during a report review. It keeps the compact map, blank worksheet, and filled synthetic example together so a support issue can move from first report to backlog review without guessing.
 
-The checked source is [support-examples-index.json](support-examples-index.json). For live handoffs, use the checked [support examples quickstart](support-examples-quickstart.md). For installed-package provenance, use [installed-package-support.md](installed-package-support.md). This index points at the [support lifecycle map](support-lifecycle-map.md), [support lifecycle worksheet](support-lifecycle-worksheet.md), and [filled lifecycle worksheet example](support-lifecycle-filled-example.md).
+The checked source is [support-examples-index.json](support-examples-index.json). For live handoffs, use the checked [support examples quickstart](support-examples-quickstart.md). For installed-package provenance, use [installed-package-support.md](installed-package-support.md). For release closeout, use [release-support-provenance.md](release-support-provenance.md). This index points at the [support lifecycle map](support-lifecycle-map.md), [support lifecycle worksheet](support-lifecycle-worksheet.md), and [filled lifecycle worksheet example](support-lifecycle-filled-example.md).
 
 ## 60-Second Handoff
 
@@ -11,6 +11,10 @@ Use [support-examples-quickstart.md](support-examples-quickstart.md) when an inc
 ## Installed Package Provenance
 
 Use [installed-package-support.md](installed-package-support.md) when proving these examples from the npm package. It uses `npm explore memento-mori-jester -- npm run pack:contents:check`, package-relative `examples/support/` paths, and no repo-only `promo/`, `site/`, `.github/`, private, secret, internal, cache, or credential-shaped paths.
+
+## Release Closeout Gate
+
+Use [release-support-provenance.md](release-support-provenance.md) after npm publish. It requires maintainers to record the registry version, GitHub Release URL, installed-package verification command, package-relative support artifacts, repo-only path exclusions, and privacy scan result.
 
 ## Which Artifact To Use
 

@@ -93,6 +93,14 @@ npm.cmd run support:check
 npm.cmd run pack:contents:check
 ```
 
+After npm publish, run the checked [release support provenance gate](../examples/support/release-support-provenance.md) from an installed package context and record the registry version, GitHub Release URL, installed-package verification command, package-relative support artifacts, repo-only path exclusions, and privacy scan result:
+
+```powershell
+npm.cmd explore memento-mori-jester -- npm run pack:contents:check
+```
+
+The release closeout must not depend on repo-only `promo/`, `site/`, `.github/`, private, secret, internal, cache, or credential-shaped files.
+
 ## 4. MCP Copy-Paste
 
 The lowest-friction config uses `npx`:

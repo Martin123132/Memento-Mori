@@ -18,6 +18,8 @@ const requiredPackageFiles = [
   `docs/RELEASE_NOTES_v${packageJson.version}.md`,
   "examples/support/installed-package-support.md",
   "examples/support/installed-package-support.json",
+  "examples/support/release-support-provenance.md",
+  "examples/support/release-support-provenance.json",
   "examples/support/support-examples-index.md",
   "examples/support/support-examples-index.json",
   "examples/support/support-examples-quickstart.md",
@@ -38,6 +40,8 @@ const requiredPackageFiles = [
 const requiredSupportFiles = [
   "examples/support/installed-package-support.md",
   "examples/support/installed-package-support.json",
+  "examples/support/release-support-provenance.md",
+  "examples/support/release-support-provenance.json",
   "examples/support/support-examples-index.md",
   "examples/support/support-examples-index.json",
   "examples/support/support-examples-quickstart.md",
@@ -112,6 +116,7 @@ for (const path of requiredSupportFiles) {
 }
 
 checkInstalledPackageSupport();
+checkReleaseSupportProvenance();
 
 if (failures.length > 0) {
   console.error("Package contents check failed:");
@@ -119,6 +124,66 @@ if (failures.length > 0) {
     console.error(`- ${failure}`);
   }
   process.exit(1);
+}
+
+function checkReleaseSupportProvenance() {
+  const path = "examples/support/release-support-provenance.json";
+  if (!existsSync(join(root, path))) {
+    return;
+  }
+
+  const gate = readJson(path);
+  const expectedArtifacts = [
+    "examples/support/installed-package-support.md",
+    "examples/support/support-examples-index.md",
+    "examples/support/support-examples-quickstart.md",
+    "examples/support/support-lifecycle-map.md",
+    "examples/support/support-lifecycle-worksheet.md",
+    "examples/support/support-lifecycle-filled-example.md"
+  ];
+  const expectedRepoOnlyPaths = ["promo/", "site/", ".github/", "private/", "secrets/", "internal/"];
+
+  if (gate.packageName !== packageJson.name) {
+    failures.push(`${path}.packageName should be ${packageJson.name}.`);
+  }
+
+  if (gate.postPublishRequired !== true) {
+    failures.push(`${path}.postPublishRequired should be true.`);
+  }
+
+  if (gate.registryVersionCommand !== "npm view memento-mori-jester version --silent") {
+    failures.push(`${path}.registryVersionCommand should check the npm registry version.`);
+  }
+
+  if (gate.verifyCommand !== "npm explore memento-mori-jester -- npm run pack:contents:check") {
+    failures.push(`${path}.verifyCommand should run the package contents check through npm explore.`);
+  }
+
+  if (!Array.isArray(gate.packageRelativeArtifacts) || gate.packageRelativeArtifacts.join("|") !== expectedArtifacts.join("|")) {
+    failures.push(`${path}.packageRelativeArtifacts should list the release support package artifacts in order.`);
+  } else {
+    for (const artifact of gate.packageRelativeArtifacts) {
+      if (!files.has(artifact)) {
+        failures.push(`${path}.packageRelativeArtifacts references ${artifact}, but it is not in the package dry run.`);
+      }
+    }
+  }
+
+  if (!Array.isArray(gate.repoOnlyPathsNotRequired)) {
+    failures.push(`${path}.repoOnlyPathsNotRequired should be an array.`);
+  } else {
+    for (const repoOnlyPath of expectedRepoOnlyPaths) {
+      if (!gate.repoOnlyPathsNotRequired.includes(repoOnlyPath)) {
+        failures.push(`${path}.repoOnlyPathsNotRequired should include ${repoOnlyPath}.`);
+      }
+
+      for (const file of files) {
+        if (file.startsWith(repoOnlyPath)) {
+          failures.push(`${path}.repoOnlyPathsNotRequired lists ${repoOnlyPath}, but ${file} is present in the package dry run.`);
+        }
+      }
+    }
+  }
 }
 
 console.log("Package contents check passed.");

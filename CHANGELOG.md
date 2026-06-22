@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.105
+
+- Added a checked `release-support-provenance.md/json` gate so maintainers record installed-package support verification after npm publish.
+- Extended the support examples index, `npm run support:check`, `npm run pack:contents:check`, and production-readiness checks so release closeout records package-relative artifacts without repo-only promo, site, private, cache, or credential-shaped paths.
+- Updated README, release docs, maintainer triage docs, production-readiness docs, roadmap, and release notes for the post-publish support provenance gate.
+
 ## 0.1.104
 
 - Added checked `installed-package-support.md/json` notes so maintainers can verify and use support examples from the npm package rather than a repo checkout.

@@ -35,6 +35,8 @@ const supportFiles = [
   "examples/support/installed-package-support.json",
   "examples/support/outcome-prioritization.md",
   "examples/support/outcome-prioritization.json",
+  "examples/support/release-support-provenance.md",
+  "examples/support/release-support-provenance.json",
   "examples/support/README.md",
   "examples/support/response-snippets.md",
   "examples/support/response-snippets.json",
@@ -104,6 +106,8 @@ requireText("examples/support/README.md", /backlog-review\.md/, "support backlog
 requireText("examples/support/README.md", /backlog-records\.md/, "support backlog records link");
 requireText("examples/support/README.md", /installed-package-support\.md/, "installed package support link");
 requireText("examples/support/README.md", /installed-package-support\.json/, "installed package support JSON link");
+requireText("examples/support/README.md", /release-support-provenance\.md/, "release support provenance link");
+requireText("examples/support/README.md", /release-support-provenance\.json/, "release support provenance JSON link");
 requireText("examples/support/README.md", /support-examples-quickstart\.md/, "support examples quickstart link");
 requireText("examples/support/README.md", /support-examples-quickstart\.json/, "support examples quickstart JSON link");
 requireText("examples/support/README.md", /support-examples-index\.md/, "support examples index link");
@@ -156,6 +160,21 @@ requireText("examples/support/installed-package-support.json", /Installed Packag
 requireText("examples/support/installed-package-support.json", /memento-mori-jester/, "installed package support package name");
 requireText("examples/support/installed-package-support.json", /pack:contents:check/, "installed package contents check");
 requireText("examples/support/installed-package-support.json", /support-examples-index\.md/, "installed package JSON support index path");
+requireText("examples/support/release-support-provenance.md", /Release Support Provenance Gate/, "release support provenance heading");
+requireText("examples/support/release-support-provenance.md", /release-support-provenance\.json/, "release support provenance JSON link");
+requireText("examples/support/release-support-provenance.md", /npm view memento-mori-jester version --silent/, "release support registry version command");
+requireText("examples/support/release-support-provenance.md", /npm explore memento-mori-jester -- npm run pack:contents:check/, "release support installed package verify command");
+requireText("examples/support/release-support-provenance.md", /examples\/support\/installed-package-support\.md/, "release support installed package artifact");
+requireText("examples/support/release-support-provenance.md", /examples\/support\/support-examples-index\.md/, "release support index artifact");
+requireText("examples/support/release-support-provenance.md", /repo-only `promo\/`, `site\/`, `\.github\/`/, "release support repo-only exclusions");
+requireText("examples/support/release-support-provenance.md", /GitHub Release URL/, "release support GitHub Release record field");
+requireText("examples/support/release-support-provenance.md", /privacy scan result/i, "release support privacy scan record field");
+requireText("examples/support/release-support-provenance.md", /SECURITY\.md/, "release support security redirect");
+requireText("examples/support/release-support-provenance.json", /Release Support Provenance Gate/, "release support provenance JSON title");
+requireText("examples/support/release-support-provenance.json", /postPublishRequired/, "release support post-publish gate");
+requireText("examples/support/release-support-provenance.json", /registryVersionCommand/, "release support registry command JSON");
+requireText("examples/support/release-support-provenance.json", /packageRelativeArtifacts/, "release support package-relative artifacts JSON");
+requireText("examples/support/release-support-provenance.json", /repoOnlyPathsNotRequired/, "release support repo-only exclusions JSON");
 requireText("examples/support/support-examples-quickstart.md", /Support Examples Quickstart/, "support examples quickstart heading");
 requireText("examples/support/support-examples-quickstart.md", /support-examples-quickstart\.json/, "support examples quickstart JSON link");
 requireText("examples/support/support-examples-quickstart.md", /60-Second Path/, "support examples quickstart path");
@@ -180,6 +199,8 @@ requireText("examples/support/support-examples-index.md", /support-examples-inde
 requireText("examples/support/support-examples-index.md", /support-examples-quickstart\.md/, "support examples quickstart link");
 requireText("examples/support/support-examples-index.md", /installed-package-support\.md/, "installed package support link");
 requireText("examples/support/support-examples-index.md", /Installed Package Provenance/, "installed package provenance section");
+requireText("examples/support/support-examples-index.md", /release-support-provenance\.md/, "release support provenance link");
+requireText("examples/support/support-examples-index.md", /Release Closeout Gate/, "release support closeout section");
 requireText("examples/support/support-examples-index.md", /60-Second Handoff/, "support examples index handoff section");
 requireText("examples/support/support-examples-index.md", /support-lifecycle-map\.md/, "support examples index map link");
 requireText("examples/support/support-examples-index.md", /support-lifecycle-worksheet\.md/, "support examples index worksheet link");
@@ -195,6 +216,8 @@ requireText("examples/support/support-examples-index.json", /support-examples-qu
 requireText("examples/support/support-examples-index.json", /support-examples-quickstart\.json/, "support examples index JSON quickstart source");
 requireText("examples/support/support-examples-index.json", /installed-package-support\.md/, "installed package support JSON link");
 requireText("examples/support/support-examples-index.json", /pack:contents:check/, "installed package support JSON verify command");
+requireText("examples/support/support-examples-index.json", /releaseProvenanceGate/, "release support provenance gate JSON");
+requireText("examples/support/support-examples-index.json", /release-support-provenance\.md/, "release support provenance JSON link");
 requireText("examples/support/support-examples-index.json", /support-lifecycle-map\.md/, "support examples index JSON map link");
 requireText("examples/support/support-examples-index.json", /support-lifecycle-worksheet\.md/, "support examples index JSON worksheet link");
 requireText("examples/support/support-examples-index.json", /support-lifecycle-filled-example\.md/, "support examples index JSON filled example link");
@@ -382,6 +405,7 @@ requireText("package.json", /npm run support:check/, "support checker in npm tes
 checkTriagePlaybook();
 checkResponseSnippets();
 checkCloseoutChecklist();
+checkReleaseSupportProvenance();
 checkInstalledPackageSupport();
 checkSupportExamplesQuickstart();
 checkSupportExamplesIndex();
@@ -1015,6 +1039,23 @@ function checkSupportExamplesIndex() {
     ".env",
     ".npmrc"
   ];
+  const expectedReleaseRecordFields = [
+    "package version",
+    "GitHub Release URL",
+    "npm registry version",
+    "installed-package verification command",
+    "package-relative support artifacts checked",
+    "repo-only paths confirmed absent or not required",
+    "privacy scan result"
+  ];
+  const expectedReleaseArtifacts = [
+    "examples/support/installed-package-support.md",
+    "examples/support/support-examples-index.md",
+    "examples/support/support-examples-quickstart.md",
+    "examples/support/support-lifecycle-map.md",
+    "examples/support/support-lifecycle-worksheet.md",
+    "examples/support/support-lifecycle-filled-example.md"
+  ];
   const expectedArtifacts = [
     {
       id: "lifecycle-map",
@@ -1121,6 +1162,34 @@ function checkSupportExamplesIndex() {
         failures.push(`${path}.installedPackageProvenance.repoOnlyPathsNotRequired should include ${repoOnlyPath}.`);
       }
     }
+  }
+
+  if (index.releaseProvenanceGate?.file !== "examples/support/release-support-provenance.md") {
+    failures.push(`${path}.releaseProvenanceGate.file should point at examples/support/release-support-provenance.md.`);
+  }
+
+  if (index.releaseProvenanceGate?.source !== "examples/support/release-support-provenance.json") {
+    failures.push(`${path}.releaseProvenanceGate.source should point at examples/support/release-support-provenance.json.`);
+  }
+
+  if (index.releaseProvenanceGate?.verifyCommand !== "npm explore memento-mori-jester -- npm run pack:contents:check") {
+    failures.push(`${path}.releaseProvenanceGate.verifyCommand should run the package contents check through npm explore.`);
+  }
+
+  if (index.releaseProvenanceGate?.publicSafe !== true) {
+    failures.push(`${path}.releaseProvenanceGate should be publicSafe.`);
+  }
+
+  if (typeof index.releaseProvenanceGate?.useWhen !== "string" || index.releaseProvenanceGate.useWhen.length < 80) {
+    failures.push(`${path}.releaseProvenanceGate.useWhen should explain post-publish release closeout use.`);
+  }
+
+  if (!Array.isArray(index.releaseProvenanceGate?.recordFields) || index.releaseProvenanceGate.recordFields.join("|") !== expectedReleaseRecordFields.join("|")) {
+    failures.push(`${path}.releaseProvenanceGate.recordFields should list the release closeout fields in order.`);
+  }
+
+  if (!Array.isArray(index.releaseProvenanceGate?.packageRelativeArtifacts) || index.releaseProvenanceGate.packageRelativeArtifacts.join("|") !== expectedReleaseArtifacts.join("|")) {
+    failures.push(`${path}.releaseProvenanceGate.packageRelativeArtifacts should list the package support artifacts in order.`);
   }
 
   if (!Array.isArray(index.artifacts) || index.artifacts.length !== expectedArtifacts.length) {
@@ -1333,6 +1402,113 @@ function checkInstalledPackageSupport() {
 
   if (typeof note.privacyGuardrail !== "string" || !/package-relative|secrets|private|SECURITY\.md|MCP|exploitable/i.test(note.privacyGuardrail)) {
     failures.push(`${path}.privacyGuardrail should include installed-package public-safe guidance.`);
+  }
+}
+
+function checkReleaseSupportProvenance() {
+  const path = "examples/support/release-support-provenance.json";
+  const gate = readJson(path);
+  if (!gate) {
+    return;
+  }
+
+  const expectedArtifacts = [
+    "examples/support/installed-package-support.md",
+    "examples/support/support-examples-index.md",
+    "examples/support/support-examples-quickstart.md",
+    "examples/support/support-lifecycle-map.md",
+    "examples/support/support-lifecycle-worksheet.md",
+    "examples/support/support-lifecycle-filled-example.md"
+  ];
+  const expectedRecordFields = [
+    "package version",
+    "GitHub Release URL",
+    "npm registry version",
+    "installed-package verification command",
+    "package-relative support artifacts checked",
+    "repo-only paths confirmed absent or not required",
+    "privacy scan result"
+  ];
+  const expectedRepoOnlyPaths = [
+    "promo/",
+    "site/",
+    ".github/",
+    "private/",
+    "secrets/",
+    "internal/",
+    "node_modules/",
+    "coverage/",
+    "tmp/",
+    "temp/",
+    ".env",
+    ".npmrc"
+  ];
+
+  if (gate.title !== "Release Support Provenance Gate") {
+    failures.push(`${path}.title should be Release Support Provenance Gate.`);
+  }
+
+  if (gate.postPublishRequired !== true) {
+    failures.push(`${path}.postPublishRequired should be true.`);
+  }
+
+  if (gate.packageName !== "memento-mori-jester") {
+    failures.push(`${path}.packageName should be memento-mori-jester.`);
+  }
+
+  if (gate.registryVersionCommand !== "npm view memento-mori-jester version --silent") {
+    failures.push(`${path}.registryVersionCommand should check the npm registry version.`);
+  }
+
+  if (gate.installCommand !== "npm install --save-dev memento-mori-jester@latest --ignore-scripts --no-audit --no-fund") {
+    failures.push(`${path}.installCommand should install latest into a throwaway project without scripts, audit, or fund output.`);
+  }
+
+  if (gate.verifyCommand !== "npm explore memento-mori-jester -- npm run pack:contents:check") {
+    failures.push(`${path}.verifyCommand should run the package contents check through npm explore.`);
+  }
+
+  if (gate.sourceNote !== "examples/support/installed-package-support.json") {
+    failures.push(`${path}.sourceNote should point at examples/support/installed-package-support.json.`);
+  }
+
+  if (!Array.isArray(gate.packageRelativeArtifacts) || gate.packageRelativeArtifacts.join("|") !== expectedArtifacts.join("|")) {
+    failures.push(`${path}.packageRelativeArtifacts should list the release support package artifacts in order.`);
+  } else {
+    for (const artifact of gate.packageRelativeArtifacts) {
+      if (/^(?:promo|site|\.github|private|secrets?|internal)\//i.test(artifact)) {
+        failures.push(`${path}.packageRelativeArtifacts should not reference repo-only path ${artifact}.`);
+      }
+    }
+  }
+
+  if (!Array.isArray(gate.recordFields) || gate.recordFields.join("|") !== expectedRecordFields.join("|")) {
+    failures.push(`${path}.recordFields should list the public-safe release closeout fields in order.`);
+  }
+
+  if (!Array.isArray(gate.repoOnlyPathsNotRequired)) {
+    failures.push(`${path}.repoOnlyPathsNotRequired should be an array.`);
+  } else {
+    for (const repoOnlyPath of expectedRepoOnlyPaths) {
+      if (!gate.repoOnlyPathsNotRequired.includes(repoOnlyPath)) {
+        failures.push(`${path}.repoOnlyPathsNotRequired should include ${repoOnlyPath}.`);
+      }
+    }
+  }
+
+  const requiredChecks = ["npm run support:check", "npm run pack:contents:check", "npm run production:check"];
+  if (!Array.isArray(gate.requiredChecks)) {
+    failures.push(`${path}.requiredChecks should be an array.`);
+  } else {
+    for (const check of requiredChecks) {
+      if (!gate.requiredChecks.includes(check)) {
+        failures.push(`${path}.requiredChecks should include ${check}.`);
+      }
+    }
+  }
+
+  if (typeof gate.privacyGuardrail !== "string" || !/package-relative|secrets|private|SECURITY\.md|MCP|exploitable/i.test(gate.privacyGuardrail)) {
+    failures.push(`${path}.privacyGuardrail should include public-safe release provenance guidance.`);
   }
 }
 

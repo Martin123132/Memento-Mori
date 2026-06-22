@@ -46,6 +46,31 @@
     ],
     "publicSafe": true
   },
+  "releaseProvenanceGate": {
+    "label": "Release Support Provenance Gate",
+    "file": "examples/support/release-support-provenance.md",
+    "source": "examples/support/release-support-provenance.json",
+    "useWhen": "Use after npm publish succeeds so the release closeout records installed-package support verification from package-relative artifacts.",
+    "verifyCommand": "npm explore memento-mori-jester -- npm run pack:contents:check",
+    "recordFields": [
+      "package version",
+      "GitHub Release URL",
+      "npm registry version",
+      "installed-package verification command",
+      "package-relative support artifacts checked",
+      "repo-only paths confirmed absent or not required",
+      "privacy scan result"
+    ],
+    "packageRelativeArtifacts": [
+      "examples/support/installed-package-support.md",
+      "examples/support/support-examples-index.md",
+      "examples/support/support-examples-quickstart.md",
+      "examples/support/support-lifecycle-map.md",
+      "examples/support/support-lifecycle-worksheet.md",
+      "examples/support/support-lifecycle-filled-example.md"
+    ],
+    "publicSafe": true
+  },
   "artifacts": [
     {
       "id": "lifecycle-map",

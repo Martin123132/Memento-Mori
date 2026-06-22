@@ -1,0 +1,96 @@
+[
+  {
+    "id": "next-vite-public-config",
+    "stack": "Next.js / Vite React",
+    "preset": "web",
+    "when": "Public-but-non-secret frontend names or harmless workspace commands look similar to browser secret or install-script risks.",
+    "commands": [
+      "jester tune custom-web-public-secret-name --json",
+      "jester tune custom-node-install-script-change --json"
+    ],
+    "fixtures": [
+      "web-public-analytics-env-command-pass",
+      "node-next-lint-command-pass"
+    ],
+    "next": [
+      "Compare fixtureEvidence.quietPassFixtures with the redacted local hit.",
+      "Prefer a local disabledRules entry only after repeated harmless hits in the same repo."
+    ]
+  },
+  {
+    "id": "fastapi-python-execution-boundary",
+    "stack": "FastAPI / Python",
+    "preset": "python",
+    "when": "Typed dependency injection, schema parsing, or locked dependency sync is mistaken for dynamic execution or unsafe deserialization.",
+    "commands": [
+      "jester tune custom-python-eval-exec --json",
+      "jester tune custom-python-pickle-load --json"
+    ],
+    "fixtures": [
+      "python-fastapi-dependency-diff-pass",
+      "python-pydantic-parse-diff-pass",
+      "python-uv-sync-frozen-command-pass"
+    ],
+    "next": [
+      "Compare the local change with the safe FastAPI and Pydantic fixture descriptions first.",
+      "Add a redacted pass fixture before loosening Python execution or pickle-shaped rules."
+    ]
+  },
+  {
+    "id": "terraform-kubernetes-docs-only",
+    "stack": "Terraform / Kubernetes / Helm",
+    "preset": "infra",
+    "when": "Docs-only infrastructure guidance mentions Terraform, Helm, or other sensitive infra words without changing deploy behavior.",
+    "commands": [
+      "jester tune risky-domain --json",
+      "jester tune configured-sensitive-domain-terraform --json"
+    ],
+    "fixtures": [
+      "infra-terraform-plan-docs-pass",
+      "infra-helm-values-docs-pass",
+      "infra-kubectl-describe-command-pass"
+    ],
+    "next": [
+      "Check that the local hit is documentation-only before muting broad sensitive-domain noise.",
+      "Keep destructive command, IAM widening, public exposure, and deploy-changing rules active."
+    ]
+  },
+  {
+    "id": "security-scan-reporting",
+    "stack": "Security scanning",
+    "preset": "security",
+    "when": "Redacted scanner output, SBOM generation, or reporting docs look like exposed secret material or skipped verification.",
+    "commands": [
+      "jester tune secret-material --json",
+      "jester tune custom-insecure-tls-disabled --json"
+    ],
+    "fixtures": [
+      "sec-gitleaks-redacted-command-pass",
+      "sec-sbom-command-pass",
+      "sec-vulnerability-report-docs-pass"
+    ],
+    "next": [
+      "Verify the report uses placeholders or scanner-generated summaries rather than live tokens.",
+      "If a real credential appears, rotate it and treat the Jester hit as correct."
+    ]
+  },
+  {
+    "id": "ai-mcp-tooling",
+    "stack": "AI / MCP tools",
+    "preset": "ai",
+    "when": "Static allowlists, model checks, or public model names are mistaken for unsafe tool dispatch, skipped evals, or provider keys.",
+    "commands": [
+      "jester tune custom-ai-user-controlled-tool-dispatch --json",
+      "jester tune custom-ai-public-provider-key --json"
+    ],
+    "fixtures": [
+      "ai-tool-registry-allowlist-diff-pass",
+      "ai-model-regression-command-pass",
+      "ai-public-model-env-diff-pass"
+    ],
+    "next": [
+      "Compare the local tool path with the allowlist fixture before changing an AI preset rule.",
+      "Keep concrete model-output execution and client-exposed provider-key hits treated as dangerous."
+    ]
+  }
+]

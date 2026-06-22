@@ -373,6 +373,20 @@ Maintainers can run `npm run fixtures:report` to see coverage by verdict, kind, 
 
 Maintainers can use `docs/MAINTAINER_TRIAGE.md` to turn useful false-positive reports into redacted fixture cases.
 
-## 14. Framework CI Examples
+## 14. Framework Tuning Cookbook
+
+For real repos with stack-shaped noisy rules, use [docs/FRAMEWORK_TUNING.md](FRAMEWORK_TUNING.md) and the checked cookbook in [examples/tuning](../examples/tuning).
+
+The cookbook maps recipe IDs such as `next-vite-public-config`, `terraform-kubernetes-docs-only`, and `ai-mcp-tooling` to the exact `jester tune <rule-id> --json` commands and fixture IDs worth comparing first.
+
+Maintainers can run:
+
+```powershell
+npm.cmd run framework:tuning:check
+```
+
+That validates [framework-tuning-cookbook.json](../examples/tuning/framework-tuning-cookbook.json) against this guide, the cookbook README, and `examples/fixtures/preset-review-cases.json`.
+
+## 15. Framework CI Examples
 
 The workflow examples in `examples/ci` show copy-paste GitHub Actions setups for Next.js, Vite React, Express API, FastAPI, Terraform/Kubernetes, and AI MCP repos. Each workflow uploads SARIF and writes the readable Jester job summary.

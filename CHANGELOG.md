@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.83
+
+- Added `examples/tuning/framework-tuning-cookbook.json`, a small checked cookbook that maps framework-shaped noisy-rule reports to exact `jester tune <rule> --json` commands and fixture IDs.
+- Added `examples/tuning/README.md` and linked it from README, CLI docs, getting-started docs, demo docs, and the framework tuning guide.
+- Added `npm run framework:tuning:check` and wired it into `npm test` and production-readiness checks so cookbook recipes stay aligned with docs and fixtures.
+
 ## 0.1.82
 
 - Added six real-world quiet-pass fixtures for FastAPI dependency injection, frozen `uv` syncs, docs-only Terraform and Helm guidance, redacted Gitleaks scans, and Next.js workspace linting.

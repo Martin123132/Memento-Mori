@@ -52,12 +52,13 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 - Package metadata points bug reports at the GitHub issues page.
 - `jester doctor --json`, `jester config validate`, and `jester rules` are the first troubleshooting commands.
 - `jester tune`, `jester tune coverage`, and the fixture suite give maintainers a way to inspect noisy rules before changing defaults.
-- [FRAMEWORK_TUNING.md](FRAMEWORK_TUNING.md) maps common stack-specific false-positive reports to the relevant `jester tune <rule-id>` evidence and fixture IDs.
+- [FRAMEWORK_TUNING.md](FRAMEWORK_TUNING.md) maps common stack-specific false-positive reports to the relevant `jester tune <rule-id>` evidence and fixture IDs, while [examples/tuning](../examples/tuning) provides checked copy-paste recipes.
 - GitHub issue templates collect bug reports, false-positive reports, and feature requests with the diagnostic context maintainers need.
 - `SECURITY.md` routes vulnerability reports away from public issues and asks for redacted diagnostics.
 - `docs/MAINTAINER_TRIAGE.md` explains how to turn useful false-positive reports into fixture coverage before changing rule logic.
 - `npm run fixtures:check` validates fixture IDs, metadata, unsafe-looking content, duplicate content, and explicit expected/absent rule intent.
 - `npm run fixtures:report` shows fixture coverage by rule, rule family, preset slice, kind, verdict, quiet-pass rule boundaries, and feasible pass-case gaps so maintainers can pick the next fixture target; `npm run fixtures:report -- --markdown` produces a paste-ready maintainer snapshot.
+- `npm run framework:tuning:check` keeps the framework tuning guide, cookbook JSON, cookbook README, and fixture IDs aligned.
 - `npm run promo:card` regenerates the deterministic social preview card, and `npm run promo:check` verifies current repo-local promo assets against the current fixture evidence before maintainers post or refresh the demo.
 - `npm run site:check` verifies the static landing page before maintainers post or host it.
 - npm publish has a manual workflow fallback, but the normal release path is tag-driven trusted publishing.
@@ -75,6 +76,7 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 - maintainer triage docs exist and link noisy-rule reports back to fixture coverage.
 - fixture authoring checks are wired into `npm test`.
 - fixture coverage reports are wired into `npm test`.
+- framework tuning cookbook checks are wired into `npm test`.
 - promo freshness checks are wired into `npm test`.
 - site checks are wired into `npm test`.
 

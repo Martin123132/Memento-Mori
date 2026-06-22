@@ -68,6 +68,7 @@ for (const path of [
   "scripts/check-promo-freshness.mjs",
   "scripts/render-social-card.mjs",
   "scripts/check-site.mjs",
+  "scripts/check-framework-tuning.mjs",
   "scripts/check-fixtures.mjs",
   "scripts/report-fixtures.mjs",
   ".github/ISSUE_TEMPLATE/bug_report.yml",
@@ -81,6 +82,8 @@ for (const path of [
   "examples/github-code-scanning.yml",
   "examples/ci/README.md",
   "examples/presets/README.md",
+  "examples/tuning/README.md",
+  "examples/tuning/framework-tuning-cookbook.json",
   "examples/fixtures/preset-review-cases.json",
   "site/index.html"
 ]) {
@@ -101,6 +104,7 @@ requireText("README.md", /fixtures:check/, "fixture authoring check guidance");
 requireText("README.md", /fixtures:report/, "fixture coverage report guidance");
 requireText("README.md", /fixtures:report -- --markdown/, "Markdown fixture report guidance");
 requireText("README.md", /FRAMEWORK_TUNING\.md/, "framework tuning guide link");
+requireText("README.md", /examples\/tuning/, "framework tuning cookbook link");
 requireText("README.md", /License: PolyForm Noncommercial/, "the noncommercial license badge");
 requireText("docs/PRODUCTION_READINESS.md", /npm package/i, "npm package readiness");
 requireText("docs/PRODUCTION_READINESS.md", /GitHub Action/i, "GitHub Action readiness");
@@ -114,14 +118,17 @@ requireText("docs/PRODUCTION_READINESS.md", /MAINTAINER_TRIAGE\.md/, "maintainer
 requireText("docs/PRODUCTION_READINESS.md", /fixtures:check/, "fixture authoring check readiness");
 requireText("docs/PRODUCTION_READINESS.md", /fixtures:report/, "fixture coverage report readiness");
 requireText("docs/PRODUCTION_READINESS.md", /fixtures:report -- --markdown/, "Markdown fixture report readiness");
+requireText("docs/PRODUCTION_READINESS.md", /framework:tuning:check/, "framework tuning cookbook readiness");
 requireText("docs/PRODUCTION_READINESS.md", /quiet-pass/, "quiet-pass fixture readiness");
 requireText("docs/CLI.md", /jester doctor --json/, "doctor JSON CLI docs");
 requireText("docs/CLI.md", /quiet-pass fixture/, "quiet-pass fixture CLI docs");
 requireText("docs/CLI.md", /FRAMEWORK_TUNING\.md/, "framework tuning CLI link");
+requireText("docs/CLI.md", /examples\/tuning/, "framework tuning cookbook CLI link");
 requireText("docs/FRAMEWORK_TUNING.md", /Next\.js/, "Next.js framework tuning example");
 requireText("docs/FRAMEWORK_TUNING.md", /FastAPI/, "FastAPI framework tuning example");
 requireText("docs/FRAMEWORK_TUNING.md", /Terraform/, "Terraform framework tuning example");
 requireText("docs/FRAMEWORK_TUNING.md", /jester tune <rule-id> --json/, "framework tuning command guidance");
+requireText("docs/FRAMEWORK_TUNING.md", /framework-tuning-cookbook\.json/, "framework tuning cookbook JSON link");
 requireText("docs/MAINTAINER_TRIAGE.md", /doctor --json/, "doctor JSON triage prompt");
 requireText("docs/MAINTAINER_TRIAGE.md", /tune <rule-id> --json/, "tune JSON triage prompt");
 requireText("docs/MAINTAINER_TRIAGE.md", /preset-review-cases\.json/, "fixture suite link");
@@ -132,6 +139,10 @@ requireText("examples/fixtures/README.md", /Adding A Fixture From A Report/, "fi
 requireText("examples/fixtures/README.md", /fixtures:check/, "fixture authoring check guidance");
 requireText("examples/fixtures/README.md", /fixtures:report/, "fixture coverage report guidance");
 requireText("examples/fixtures/README.md", /fixtures:report -- --markdown/, "Markdown fixture report guidance");
+requireText("examples/tuning/README.md", /framework-tuning-cookbook\.json/, "framework tuning cookbook JSON link");
+requireText("examples/tuning/README.md", /jester tune <rule-id> --json|jester tune [a-z0-9-]+ --json/, "framework tuning command guidance");
+requireText("examples/tuning/framework-tuning-cookbook.json", /next-vite-public-config/, "Next/Vite tuning recipe");
+requireText("examples/tuning/framework-tuning-cookbook.json", /ai-mcp-tooling/, "AI/MCP tuning recipe");
 requireText("scripts/check-fixtures.mjs", /duplicated/, "duplicate fixture id check");
 requireText("scripts/check-fixtures.mjs", /unsafeContentPatterns/, "unsafe fixture content checks");
 forbidText("scripts/check-fixtures.mjs", /src\/config\.ts|src\/types\.ts/, "source-only fixture validator dependencies");
@@ -141,14 +152,19 @@ requireText("scripts/report-fixtures.mjs", /quietPassRuleCoverage/, "quiet-pass 
 requireText("scripts/report-fixtures.mjs", /presetKindGaps/, "preset and kind gap report");
 requireText("scripts/report-fixtures.mjs", /--markdown/, "Markdown fixture report output");
 forbidText("scripts/report-fixtures.mjs", /src\/config\.ts|src\/types\.ts/, "source-only fixture report dependencies");
+requireText("scripts/check-framework-tuning.mjs", /framework-tuning-cookbook\.json/, "framework tuning cookbook check");
+requireText("scripts/check-framework-tuning.mjs", /preset-review-cases\.json/, "framework tuning fixture alignment");
+requireText("scripts/check-framework-tuning.mjs", /unsafeContentPatterns/, "unsafe tuning content checks");
 requireText("package.json", /"fixtures:check": "node scripts\/check-fixtures\.mjs"/, "fixture authoring check script");
 requireText("package.json", /"fixtures:report": "node scripts\/report-fixtures\.mjs"/, "fixture coverage report script");
+requireText("package.json", /"framework:tuning:check": "node scripts\/check-framework-tuning\.mjs"/, "framework tuning cookbook check script");
 requireText("package.json", /"promo:card": "node scripts\/render-social-card\.mjs"/, "social card render script");
 requireText("package.json", /"promo:card:check": "node scripts\/render-social-card\.mjs --check"/, "social card stale check script");
 requireText("package.json", /"promo:check": "node scripts\/check-promo-freshness\.mjs"/, "promo freshness check script");
 requireText("package.json", /"site:check": "node scripts\/check-site\.mjs"/, "site check script");
 requireText("package.json", /npm run fixtures:check/, "fixture authoring check in npm test");
 requireText("package.json", /npm run fixtures:report/, "fixture coverage report in npm test");
+requireText("package.json", /npm run framework:tuning:check/, "framework tuning cookbook check in npm test");
 requireText("package.json", /npm run promo:check/, "promo freshness check in npm test");
 requireText("package.json", /npm run site:check/, "site check in npm test");
 requireText("scripts/check-promo-freshness.mjs", /--require-package-version/, "optional strict package-version promo check");

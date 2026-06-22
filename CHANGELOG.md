@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.85
+
+- Added `examples/ci/adoption-smoke.yml`, a read-only GitHub Actions recipe for checking `doctor`, `summary`, and packaged framework tuning cookbook commands in real repos.
+- Added `npm run ci:adoption:check` to keep the adoption smoke workflow and docs aligned with current commands and safety expectations.
+- Updated README, GitHub Actions docs, CI examples, release docs, production-readiness docs, roadmap, and release notes for the new adoption path.
+
 ## 0.1.84
 
 - Added `npm run framework:tuning:doctor`, a consumer-style smoke check that generates temporary preset configs and runs every cookbook `jester tune <rule-id> --json` command through the built CLI.

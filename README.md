@@ -68,6 +68,8 @@ npx -y memento-mori-jester@latest github-action --write
 
 The generated workflow uploads SARIF for code scanning and adds a readable Jester summary to the GitHub Actions run.
 
+For a first read-only CI smoke, copy [examples/ci/adoption-smoke.yml](examples/ci/adoption-smoke.yml). It runs `doctor`, `summary --kind command "git reset --hard"`, and the published package's `framework:tuning:doctor` without requiring code-scanning permissions.
+
 Expected vibe:
 
 ```text
@@ -436,6 +438,7 @@ More setup examples:
 - [Preset Example Packs](examples/presets)
 - [Review Fixtures](examples/fixtures)
 - [Framework CI Examples](examples/ci)
+- [Adoption Smoke CI](examples/ci/adoption-smoke.yml)
 - [Security Policy](SECURITY.md)
 - [Maintainer Triage](docs/MAINTAINER_TRIAGE.md)
 - [Changelog](CHANGELOG.md)
@@ -453,6 +456,7 @@ Preset example packs:
 
 Framework CI examples:
 
+- [Adoption Smoke CI](examples/ci/adoption-smoke.yml)
 - [Next.js CI](examples/ci/nextjs.yml)
 - [Vite React CI](examples/ci/vite-react.yml)
 - [Express API CI](examples/ci/express-api.yml)

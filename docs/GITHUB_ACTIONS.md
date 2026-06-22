@@ -20,6 +20,21 @@ The generated workflow reviews pull request diffs, writes `jester.sarif`, upload
 
 This repository dogfoods that generated workflow in [.github/workflows/memento-mori.yml](../.github/workflows/memento-mori.yml).
 
+## Adoption Smoke Workflow
+
+Use [examples/ci/adoption-smoke.yml](../examples/ci/adoption-smoke.yml) when you want a first read-only CI check before enabling SARIF/code scanning.
+
+It runs:
+
+```powershell
+npx -y memento-mori-jester@latest doctor
+npx -y memento-mori-jester@latest summary --kind command "git reset --hard"
+npm run framework:tuning:check
+npm run framework:tuning:doctor
+```
+
+The workflow downloads the published npm tarball into a temporary directory before running the framework tuning checks, so it verifies package contents rather than relying on this repository checkout.
+
 ## Composite Action
 
 This repo can be used directly as a GitHub Action:

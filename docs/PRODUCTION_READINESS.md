@@ -26,6 +26,7 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 - Action inputs cover `fail-on`, `subject`, `config`, `no-config`, `format`, `output-file`, and `summary`.
 - SARIF output and GitHub step summaries remain separate so users can enable readable summaries without new GitHub write permissions.
 - Example workflows in `examples/` and `examples/ci/` stay aligned with the action shape.
+- `examples/ci/adoption-smoke.yml` gives new repos a read-only smoke workflow for `doctor`, `summary`, and packaged framework tuning checks before code scanning is enabled.
 
 ## MCP And Agent Setup
 
@@ -79,6 +80,7 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 - fixture coverage reports are wired into `npm test`.
 - framework tuning cookbook checks are wired into `npm test`.
 - framework tuning cookbook doctor checks are wired into `npm test`.
+- CI adoption example checks are wired into `npm test`.
 - promo freshness checks are wired into `npm test`.
 - site checks are wired into `npm test`.
 

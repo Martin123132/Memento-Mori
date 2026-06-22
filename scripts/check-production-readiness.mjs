@@ -70,6 +70,7 @@ for (const path of [
   "scripts/check-site.mjs",
   "scripts/check-framework-tuning.mjs",
   "scripts/doctor-framework-tuning.mjs",
+  "scripts/check-ci-adoption.mjs",
   "scripts/check-fixtures.mjs",
   "scripts/report-fixtures.mjs",
   ".github/ISSUE_TEMPLATE/bug_report.yml",
@@ -82,6 +83,7 @@ for (const path of [
   "examples/github-action.yml",
   "examples/github-code-scanning.yml",
   "examples/ci/README.md",
+  "examples/ci/adoption-smoke.yml",
   "examples/presets/README.md",
   "examples/tuning/README.md",
   "examples/tuning/framework-tuning-cookbook.json",
@@ -106,6 +108,7 @@ requireText("README.md", /fixtures:report/, "fixture coverage report guidance");
 requireText("README.md", /fixtures:report -- --markdown/, "Markdown fixture report guidance");
 requireText("README.md", /FRAMEWORK_TUNING\.md/, "framework tuning guide link");
 requireText("README.md", /examples\/tuning/, "framework tuning cookbook link");
+requireText("README.md", /adoption-smoke\.yml/, "adoption smoke CI link");
 requireText("README.md", /License: PolyForm Noncommercial/, "the noncommercial license badge");
 requireText("docs/PRODUCTION_READINESS.md", /npm package/i, "npm package readiness");
 requireText("docs/PRODUCTION_READINESS.md", /GitHub Action/i, "GitHub Action readiness");
@@ -121,6 +124,7 @@ requireText("docs/PRODUCTION_READINESS.md", /fixtures:report/, "fixture coverage
 requireText("docs/PRODUCTION_READINESS.md", /fixtures:report -- --markdown/, "Markdown fixture report readiness");
 requireText("docs/PRODUCTION_READINESS.md", /framework:tuning:check/, "framework tuning cookbook readiness");
 requireText("docs/PRODUCTION_READINESS.md", /framework:tuning:doctor/, "framework tuning cookbook doctor readiness");
+requireText("docs/PRODUCTION_READINESS.md", /adoption-smoke\.yml/, "adoption smoke CI readiness");
 requireText("docs/PRODUCTION_READINESS.md", /quiet-pass/, "quiet-pass fixture readiness");
 requireText("docs/CLI.md", /jester doctor --json/, "doctor JSON CLI docs");
 requireText("docs/CLI.md", /quiet-pass fixture/, "quiet-pass fixture CLI docs");
@@ -133,6 +137,9 @@ requireText("docs/FRAMEWORK_TUNING.md", /Terraform/, "Terraform framework tuning
 requireText("docs/FRAMEWORK_TUNING.md", /jester tune <rule-id> --json/, "framework tuning command guidance");
 requireText("docs/FRAMEWORK_TUNING.md", /framework-tuning-cookbook\.json/, "framework tuning cookbook JSON link");
 requireText("docs/FRAMEWORK_TUNING.md", /framework:tuning:doctor/, "framework tuning doctor guidance");
+requireText("docs/GITHUB_ACTIONS.md", /adoption-smoke\.yml/, "adoption smoke GitHub Actions docs");
+requireText("docs/GITHUB_ACTIONS.md", /summary --kind command "git reset --hard"/, "adoption summary smoke docs");
+requireText("docs/GITHUB_ACTIONS.md", /framework:tuning:doctor/, "adoption framework tuning doctor docs");
 requireText("docs/MAINTAINER_TRIAGE.md", /doctor --json/, "doctor JSON triage prompt");
 requireText("docs/MAINTAINER_TRIAGE.md", /tune <rule-id> --json/, "tune JSON triage prompt");
 requireText("docs/MAINTAINER_TRIAGE.md", /preset-review-cases\.json/, "fixture suite link");
@@ -143,6 +150,10 @@ requireText("examples/fixtures/README.md", /Adding A Fixture From A Report/, "fi
 requireText("examples/fixtures/README.md", /fixtures:check/, "fixture authoring check guidance");
 requireText("examples/fixtures/README.md", /fixtures:report/, "fixture coverage report guidance");
 requireText("examples/fixtures/README.md", /fixtures:report -- --markdown/, "Markdown fixture report guidance");
+requireText("examples/ci/README.md", /adoption-smoke\.yml/, "adoption smoke CI index link");
+requireText("examples/ci/adoption-smoke.yml", /npx -y memento-mori-jester@latest doctor/, "adoption smoke doctor command");
+requireText("examples/ci/adoption-smoke.yml", /summary --kind command "git reset --hard"/, "adoption smoke summary command");
+requireText("examples/ci/adoption-smoke.yml", /framework:tuning:doctor/, "adoption smoke tuning doctor command");
 requireText("examples/tuning/README.md", /framework-tuning-cookbook\.json/, "framework tuning cookbook JSON link");
 requireText("examples/tuning/README.md", /framework:tuning:doctor/, "framework tuning doctor guidance");
 requireText("examples/tuning/README.md", /jester tune <rule-id> --json|jester tune [a-z0-9-]+ --json/, "framework tuning command guidance");
@@ -164,10 +175,14 @@ requireText("scripts/doctor-framework-tuning.mjs", /dist.*cli\.js|cliPath/, "bui
 requireText("scripts/doctor-framework-tuning.mjs", /config.*init|config", "init"/, "generated preset config doctor");
 requireText("scripts/doctor-framework-tuning.mjs", /tune.*--json|tune", ruleId, "--json"/, "tune JSON doctor command");
 forbidText("scripts/doctor-framework-tuning.mjs", /src\/config\.ts|src\/types\.ts/, "source-only framework tuning doctor dependencies");
+requireText("scripts/check-ci-adoption.mjs", /adoption-smoke\.yml/, "adoption smoke checker target");
+requireText("scripts/check-ci-adoption.mjs", /pull_request_target/, "adoption smoke unsafe trigger guard");
+requireText("scripts/check-ci-adoption.mjs", /framework:tuning:doctor/, "adoption smoke tuning doctor guard");
 requireText("package.json", /"fixtures:check": "node scripts\/check-fixtures\.mjs"/, "fixture authoring check script");
 requireText("package.json", /"fixtures:report": "node scripts\/report-fixtures\.mjs"/, "fixture coverage report script");
 requireText("package.json", /"framework:tuning:check": "node scripts\/check-framework-tuning\.mjs"/, "framework tuning cookbook check script");
 requireText("package.json", /"framework:tuning:doctor": "node scripts\/doctor-framework-tuning\.mjs"/, "framework tuning cookbook doctor script");
+requireText("package.json", /"ci:adoption:check": "node scripts\/check-ci-adoption\.mjs"/, "CI adoption check script");
 requireText("package.json", /"promo:card": "node scripts\/render-social-card\.mjs"/, "social card render script");
 requireText("package.json", /"promo:card:check": "node scripts\/render-social-card\.mjs --check"/, "social card stale check script");
 requireText("package.json", /"promo:check": "node scripts\/check-promo-freshness\.mjs"/, "promo freshness check script");
@@ -176,6 +191,7 @@ requireText("package.json", /npm run fixtures:check/, "fixture authoring check i
 requireText("package.json", /npm run fixtures:report/, "fixture coverage report in npm test");
 requireText("package.json", /npm run framework:tuning:check/, "framework tuning cookbook check in npm test");
 requireText("package.json", /npm run framework:tuning:doctor/, "framework tuning cookbook doctor in npm test");
+requireText("package.json", /npm run ci:adoption:check/, "CI adoption check in npm test");
 requireText("package.json", /npm run promo:check/, "promo freshness check in npm test");
 requireText("package.json", /npm run site:check/, "site check in npm test");
 requireText("scripts/check-promo-freshness.mjs", /--require-package-version/, "optional strict package-version promo check");

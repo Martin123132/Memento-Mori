@@ -1,0 +1,42 @@
+name: Memento Mori Jester Adoption Smoke
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  adoption-smoke:
+    name: Adoption smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Jester doctor
+        run: npx -y memento-mori-jester@latest doctor
+
+      - name: Command summary smoke
+        run: npx -y memento-mori-jester@latest summary --kind command "git reset --hard"
+
+      - name: Framework tuning cookbook smoke
+        shell: bash
+        run: |
+          set -euo pipefail
+          workdir="$(mktemp -d)"
+          trap 'rm -rf "$workdir"' EXIT
+          npm pack memento-mori-jester@latest --pack-destination "$workdir" --silent
+          tar -xzf "$workdir"/memento-mori-jester-*.tgz -C "$workdir"
+          npm install --omit=dev --ignore-scripts --prefix "$workdir/package"
+          npm run framework:tuning:check --prefix "$workdir/package"
+          npm run framework:tuning:doctor --prefix "$workdir/package"

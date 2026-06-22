@@ -28,6 +28,9 @@ jobs:
       - name: Install
         run: npm ci
 
+      - name: Audit
+        run: npm run audit:high
+
       - name: Verify tag matches package version
         if: startsWith(github.ref, 'refs/tags/')
         run: |

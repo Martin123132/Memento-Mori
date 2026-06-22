@@ -4,6 +4,8 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+- Added a checked high-severity npm audit gate so CI and publish workflows fail before dependency advisories reach a release.
+
 ## 0.1.106
 
 - Added checked `post-release-evidence-ledger.md/json` so maintainers can keep GitHub Release URL, npm version, workflow statuses, public `npx` smokes, installed-package provenance result, tarball file count, and private-ish path exclusion summary reviewable after publish.

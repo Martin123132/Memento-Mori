@@ -59,8 +59,9 @@
     "production:check": "node scripts/check-production-readiness.mjs",
     "pack:contents:check": "node scripts/check-package-contents.mjs",
     "pack:dry": "npm pack --dry-run && npm run pack:contents:check",
+    "audit:high": "npm audit --audit-level=high",
     "prepare": "npm run build",
-    "prepublishOnly": "npm test && npm run pack:dry"
+    "prepublishOnly": "npm run audit:high && npm test && npm run pack:dry"
   },
   "keywords": [
     "mcp",

@@ -7,6 +7,7 @@ This project publishes GitHub Releases and npm packages from `v*` tags.
 ```powershell
 npm.cmd version 0.1.x --no-git-tag-version
 npm.cmd test
+npm.cmd run audit:high
 npm.cmd run production:check
 npm.cmd run fixtures:check
 npm.cmd run fixtures:report

@@ -19,8 +19,9 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 - `package-lock.json` version matches `package.json`.
 - `npm run pack:dry` confirms the package includes `dist`, `docs`, `examples`, `scripts`, `README.md`, `CHANGELOG.md`, `ROADMAP.md`, and `LICENSE`, then runs `npm run pack:contents:check`.
 - `npm run pack:contents:check` verifies the dry-run package includes the installed-package support note, release support provenance gate, post-release evidence ledger, support examples index, quickstart, lifecycle map, blank worksheet, and filled synthetic example, and excludes repo-local promo, site, private, cache, GitHub workflow, and credential-shaped files.
+- `npm run audit:high` fails CI and publish attempts when npm reports high or critical dependency advisories.
 - `SECURITY.md` ships with the package so vulnerability reporting guidance is visible from the repository and npm tarball.
-- `prepublishOnly` runs tests and a package dry run for local publish attempts.
+- `prepublishOnly` runs the high-severity audit, tests, and a package dry run for local publish attempts.
 
 ## GitHub Action
 
@@ -73,6 +74,7 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 - `npm run promo:card` regenerates the deterministic social preview card, and `npm run promo:check` verifies current repo-local promo assets against the current fixture evidence before maintainers post or refresh the demo.
 - `npm run site:check` verifies the static landing page before maintainers post or host it.
 - `npm run pack:contents:check` verifies the npm package surface keeps the support examples manifest files, installed-package provenance note, release support provenance gate, and post-release evidence ledger available while excluding repo-only or private-ish paths.
+- `npm run audit:high` keeps the checked dependency tree clear of high and critical npm advisories before maintainers publish.
 - npm publish has a manual workflow fallback, but the normal release path is tag-driven trusted publishing.
 
 ## Static Guard
@@ -82,6 +84,7 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 - current version release notes and changelog section exist,
 - package metadata and public package files are present,
 - CI, release, publish, and composite action workflows use the expected runtime and steps,
+- high-severity npm audit checks are wired into CI, publish, and local prepublish attempts,
 - onboarding docs mention the important adoption paths,
 - production readiness documentation covers package, GitHub Action, MCP, git hooks, docs, and support,
 - `SECURITY.md` and GitHub issue templates exist and ask for the right diagnostics.

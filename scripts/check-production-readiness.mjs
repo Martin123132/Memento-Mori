@@ -205,6 +205,7 @@ requireText("docs/PRODUCTION_READINESS.md", /pack:contents:check/, "package cont
 requireText("docs/PRODUCTION_READINESS.md", /support examples manifest/i, "support examples manifest package readiness");
 requireText("docs/PRODUCTION_READINESS.md", /release support provenance/i, "release support provenance readiness");
 requireText("docs/PRODUCTION_READINESS.md", /post-release evidence ledger/i, "post-release evidence ledger readiness");
+requireText("docs/PRODUCTION_READINESS.md", /audit:high/, "high-severity audit readiness");
 requireText("docs/PRODUCTION_READINESS.md", /quiet-pass/, "quiet-pass fixture readiness");
 requireText("docs/CLI.md", /jester doctor --json/, "doctor JSON CLI docs");
 requireText("docs/CLI.md", /quiet-pass fixture/, "quiet-pass fixture CLI docs");
@@ -511,6 +512,8 @@ requireText("package.json", /"reports:check": "node scripts\/check-report-galler
 requireText("package.json", /"support:check": "node scripts\/check-support-triage\.mjs"/, "support triage check script");
 requireText("package.json", /"pack:contents:check": "node scripts\/check-package-contents\.mjs"/, "package contents check script");
 requireText("package.json", /"pack:dry": "npm pack --dry-run && npm run pack:contents:check"/, "package dry run contents guard");
+requireText("package.json", /"audit:high": "npm audit --audit-level=high"/, "high-severity audit script");
+requireText("package.json", /"prepublishOnly": "npm run audit:high && npm test && npm run pack:dry"/, "high-severity audit in prepublishOnly");
 requireText("package.json", /"promo:card": "node scripts\/render-social-card\.mjs"/, "social card render script");
 requireText("package.json", /"promo:card:check": "node scripts\/render-social-card\.mjs --check"/, "social card stale check script");
 requireText("package.json", /"promo:check": "node scripts\/check-promo-freshness\.mjs"/, "promo freshness check script");
@@ -568,6 +571,7 @@ if (packageJson.publishConfig?.access !== "public") {
 requireText(".github/workflows/ci.yml", /actions\/checkout@v6/, "checkout@v6");
 requireText(".github/workflows/ci.yml", /actions\/setup-node@v6/, "setup-node@v6");
 requireText(".github/workflows/ci.yml", /node-version:\s*24/, "Node 24");
+requireText(".github/workflows/ci.yml", /npm run audit:high/, "high-severity npm audit");
 requireText(".github/workflows/ci.yml", /npm test/, "npm test");
 requireText(".github/workflows/ci.yml", /npm run pack:dry/, "package dry run");
 
@@ -575,6 +579,7 @@ requireText(".github/workflows/npm-publish.yml", /tags:\s*\n\s*-\s*"v\*"/, "tag-
 requireText(".github/workflows/npm-publish.yml", /workflow_dispatch/, "manual publish fallback");
 requireText(".github/workflows/npm-publish.yml", /id-token:\s*write/, "trusted publishing id-token permission");
 requireText(".github/workflows/npm-publish.yml", /Verify tag matches package version/, "tag/package version guard");
+requireText(".github/workflows/npm-publish.yml", /npm run audit:high/, "high-severity npm audit before publish");
 requireText(".github/workflows/npm-publish.yml", /npm run pack:dry/, "package dry run before publish");
 requireText(".github/workflows/npm-publish.yml", /npm publish/, "npm publish step");
 

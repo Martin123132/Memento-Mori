@@ -98,6 +98,8 @@ for (const path of [
   "examples/support/closeout-checklist.json",
   "examples/support/response-snippets.md",
   "examples/support/response-snippets.json",
+  "examples/support/support-lifecycle.md",
+  "examples/support/support-lifecycle.json",
   "examples/support/triage-playbook.json",
   "examples/presets/README.md",
   "examples/tuning/README.md",
@@ -130,6 +132,7 @@ requireText("README.md", /feedback-template\.md/, "report gallery feedback templ
 requireText("README.md", /examples\/support/, "support triage playbook link");
 requireText("README.md", /response-snippets\.md/, "support response snippets link");
 requireText("README.md", /closeout-checklist\.md/, "support closeout checklist link");
+requireText("README.md", /support-lifecycle\.md/, "support lifecycle overview link");
 requireText("README.md", /report gallery feedback/i, "report gallery feedback guidance");
 requireText("README.md", /License: PolyForm Noncommercial/, "the noncommercial license badge");
 requireText("docs/PRODUCTION_READINESS.md", /npm package/i, "npm package readiness");
@@ -153,6 +156,7 @@ requireText("docs/PRODUCTION_READINESS.md", /support:check/, "support triage rea
 requireText("docs/PRODUCTION_READINESS.md", /examples\/support/, "support triage playbook readiness");
 requireText("docs/PRODUCTION_READINESS.md", /response snippets/i, "support response snippets readiness");
 requireText("docs/PRODUCTION_READINESS.md", /closeout checklist/i, "support closeout checklist readiness");
+requireText("docs/PRODUCTION_READINESS.md", /support lifecycle overview/i, "support lifecycle overview readiness");
 requireText("docs/PRODUCTION_READINESS.md", /quiet-pass/, "quiet-pass fixture readiness");
 requireText("docs/CLI.md", /jester doctor --json/, "doctor JSON CLI docs");
 requireText("docs/CLI.md", /quiet-pass fixture/, "quiet-pass fixture CLI docs");
@@ -179,6 +183,7 @@ requireText("docs/MAINTAINER_TRIAGE.md", /report_gallery_feedback\.yml/, "report
 requireText("docs/MAINTAINER_TRIAGE.md", /examples\/support/, "support triage playbook link");
 requireText("docs/MAINTAINER_TRIAGE.md", /response-snippets\.md/, "support response snippets link");
 requireText("docs/MAINTAINER_TRIAGE.md", /closeout-checklist\.md/, "support closeout checklist link");
+requireText("docs/MAINTAINER_TRIAGE.md", /support-lifecycle\.md/, "support lifecycle overview link");
 requireText("docs/MAINTAINER_TRIAGE.md", /docs-example/, "docs example triage outcome");
 requireText("docs/MAINTAINER_TRIAGE.md", /fixture-backlog/, "fixture backlog triage outcome");
 requireText("docs/MAINTAINER_TRIAGE.md", /rule-review-candidate/, "rule review triage outcome");
@@ -213,6 +218,7 @@ requireText("examples/reports/feedback-template.md", /SECURITY\.md/, "feedback t
 requireText("examples/support/README.md", /triage-playbook\.json/, "support triage playbook JSON link");
 requireText("examples/support/README.md", /response-snippets\.md/, "support response snippets link");
 requireText("examples/support/README.md", /closeout-checklist\.md/, "support closeout checklist link");
+requireText("examples/support/README.md", /support-lifecycle\.md/, "support lifecycle overview link");
 requireText("examples/support/README.md", /docs-example/, "support triage docs outcome");
 requireText("examples/support/README.md", /fixture-backlog/, "support triage fixture outcome");
 requireText("examples/support/README.md", /rule-review-candidate/, "support triage rule-review outcome");
@@ -232,6 +238,15 @@ requireText("examples/support/closeout-checklist.md", /candidate-opened/, "suppo
 requireText("examples/support/closeout-checklist.json", /docs-clarification-closeout/, "support docs closeout record");
 requireText("examples/support/closeout-checklist.json", /fixture-backlog-closeout/, "support fixture closeout record");
 requireText("examples/support/closeout-checklist.json", /rule-review-closeout/, "support rule-review closeout record");
+requireText("examples/support/support-lifecycle.md", /Support Lifecycle Overview/, "support lifecycle heading");
+requireText("examples/support/support-lifecycle.md", /support-lifecycle\.json/, "support lifecycle JSON link");
+requireText("examples/support/support-lifecycle.md", /report -> triage -> response -> closeout/, "support lifecycle flow");
+requireText("examples/support/support-lifecycle.md", /docs-example/, "support lifecycle docs outcome");
+requireText("examples/support/support-lifecycle.md", /fixture-backlog/, "support lifecycle fixture outcome");
+requireText("examples/support/support-lifecycle.md", /rule-review-candidate/, "support lifecycle rule-review outcome");
+requireText("examples/support/support-lifecycle.json", /docs-example-response/, "support lifecycle docs response");
+requireText("examples/support/support-lifecycle.json", /fixture-backlog-response/, "support lifecycle fixture response");
+requireText("examples/support/support-lifecycle.json", /rule-review-candidate-response/, "support lifecycle rule-review response");
 requireText("examples/tuning/README.md", /framework-tuning-cookbook\.json/, "framework tuning cookbook JSON link");
 requireText("examples/tuning/README.md", /framework:tuning:doctor/, "framework tuning doctor guidance");
 requireText("examples/tuning/README.md", /jester tune <rule-id> --json|jester tune [a-z0-9-]+ --json/, "framework tuning command guidance");
@@ -267,6 +282,7 @@ requireText("scripts/check-support-triage.mjs", /feedback-template\.md/, "suppor
 requireText("scripts/check-support-triage.mjs", /triage-playbook\.json/, "support triage playbook guard");
 requireText("scripts/check-support-triage.mjs", /response-snippets\.json/, "support response snippets guard");
 requireText("scripts/check-support-triage.mjs", /closeout-checklist\.json/, "support closeout checklist guard");
+requireText("scripts/check-support-triage.mjs", /support-lifecycle\.json/, "support lifecycle overview guard");
 requireText("scripts/check-support-triage.mjs", /unsafeContentPatterns/, "support triage unsafe content checks");
 requireText("package.json", /"fixtures:check": "node scripts\/check-fixtures\.mjs"/, "fixture authoring check script");
 requireText("package.json", /"fixtures:report": "node scripts\/report-fixtures\.mjs"/, "fixture coverage report script");

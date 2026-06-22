@@ -1,0 +1,95 @@
+[
+  {
+    "outcome": "docs-example",
+    "title": "Expected behavior needs clearer wording",
+    "stages": [
+      {
+        "id": "report",
+        "artifact": "examples/reports/feedback-template.md",
+        "reference": "report-gallery-feedback",
+        "purpose": "Collect the nearest checked report example, sanitized output summary, and redacted diagnostics."
+      },
+      {
+        "id": "triage",
+        "artifact": "examples/support/triage-playbook.json",
+        "reference": "gallery-expected-block-docs",
+        "purpose": "Classify the report as expected behavior that can be clarified in docs or report examples."
+      },
+      {
+        "id": "response",
+        "artifact": "examples/support/response-snippets.json",
+        "reference": "docs-example-response",
+        "purpose": "Reply with public-safe wording and ask for redacted diagnostics only if local output differs."
+      },
+      {
+        "id": "closeout",
+        "artifact": "examples/support/closeout-checklist.json",
+        "reference": "docs-clarification-closeout",
+        "purpose": "Record whether the docs clarification shipped or is queued, then link the public-safe follow-up."
+      }
+    ],
+    "requiredChecks": ["npm run reports:check", "npm run support:check"]
+  },
+  {
+    "outcome": "fixture-backlog",
+    "title": "Plausible false-positive boundary needs fixture evidence",
+    "stages": [
+      {
+        "id": "report",
+        "artifact": "examples/reports/feedback-template.md",
+        "reference": "false-positive",
+        "purpose": "Collect the smallest sanitized reproduction, redacted doctor output, and tune evidence."
+      },
+      {
+        "id": "triage",
+        "artifact": "examples/support/triage-playbook.json",
+        "reference": "false-positive-fixture-backlog",
+        "purpose": "Classify the report as a safe boundary candidate before changing rule behavior."
+      },
+      {
+        "id": "response",
+        "artifact": "examples/support/response-snippets.json",
+        "reference": "fixture-backlog-response",
+        "purpose": "Tell the reporter that a pass or quiet-pass fixture should prove the boundary first."
+      },
+      {
+        "id": "closeout",
+        "artifact": "examples/support/closeout-checklist.json",
+        "reference": "fixture-backlog-closeout",
+        "purpose": "Record that a redacted fixture backlog item exists and the rule remains unchanged."
+      }
+    ],
+    "requiredChecks": ["npm run fixtures:check", "npm run fixtures:report", "npm run support:check"]
+  },
+  {
+    "outcome": "rule-review-candidate",
+    "title": "Repeated sanitized surprises need rule review",
+    "stages": [
+      {
+        "id": "report",
+        "artifact": "examples/reports/feedback-template.md",
+        "reference": "false-positive",
+        "purpose": "Collect repeated sanitized examples, redacted doctor output, and tune fixture evidence."
+      },
+      {
+        "id": "triage",
+        "artifact": "examples/support/triage-playbook.json",
+        "reference": "repeated-risky-domain-rule-review",
+        "purpose": "Classify repeated reports as a candidate for guidance or matching review."
+      },
+      {
+        "id": "response",
+        "artifact": "examples/support/response-snippets.json",
+        "reference": "rule-review-candidate-response",
+        "purpose": "Explain that maintainers need multiple sanitized examples before changing guidance or matching."
+      },
+      {
+        "id": "closeout",
+        "artifact": "examples/support/closeout-checklist.json",
+        "reference": "rule-review-closeout",
+        "purpose": "Record that a rule-review candidate was opened and fixture evidence will be compared."
+      }
+    ],
+    "requiredChecks": ["npm run fixtures:report -- --markdown", "npm run support:check"]
+  }
+]

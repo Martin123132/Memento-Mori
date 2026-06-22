@@ -2,6 +2,8 @@
 
 This playbook shows how to handle sanitized adopter reports without turning every surprise into an immediate rule change. It pairs with [docs/MAINTAINER_TRIAGE.md](../../docs/MAINTAINER_TRIAGE.md), the [report gallery feedback template](../reports/feedback-template.md), and the GitHub issue templates.
 
+Start with the checked [support lifecycle overview](support-lifecycle.md) when you need the whole path in one place. The lifecycle source is [support-lifecycle.json](support-lifecycle.json).
+
 The checked source is [triage-playbook.json](triage-playbook.json). Use [response-snippets.md](response-snippets.md) for copy-paste replies after a report is classified. The snippet source is [response-snippets.json](response-snippets.json). Use [closeout-checklist.md](closeout-checklist.md) to record what happened after the response. The closeout source is [closeout-checklist.json](closeout-checklist.json).
 
 | ID | Source | Classification | Follow-up |
@@ -26,7 +28,7 @@ The checked source is [triage-playbook.json](triage-playbook.json). Use [respons
 
 ## Checks
 
-Run this after editing support docs, issue templates, the playbook, response snippets, or closeout checklist:
+Run this after editing support docs, issue templates, the lifecycle overview, the playbook, response snippets, or closeout checklist:
 
 ```powershell
 npm run support:check

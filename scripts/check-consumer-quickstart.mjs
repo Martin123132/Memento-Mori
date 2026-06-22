@@ -170,12 +170,10 @@ function packLocalPackage(destination) {
 function installPackageSpec(consumerDir, spec) {
   const packagePath = join(consumerDir, "package.json");
   const packageJson = JSON.parse(readFileSync(packagePath, "utf8"));
-  packageJson.devDependencies = {
-    "memento-mori-jester": spec
-  };
+  delete packageJson.devDependencies;
   writeFileSync(packagePath, `${JSON.stringify(packageJson, null, 2)}\n`);
 
-  runNpm(["install", "--ignore-scripts", "--no-audit", "--no-fund"], { cwd: consumerDir });
+  runNpm(["install", "--save-dev", spec, "--ignore-scripts", "--no-audit", "--no-fund"], { cwd: consumerDir });
 }
 
 function runNpm(commandArgs, options = {}) {

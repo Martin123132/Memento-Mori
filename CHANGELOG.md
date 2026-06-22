@@ -4,6 +4,11 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.87
+
+- Fixed `npm run consumer:quickstart:check -- --package memento-mori-jester@latest` so registry package specs install through `npm install --save-dev <spec>` in the temporary consumer project.
+- Verified both local packed-package and published-package consumer quickstart smoke modes after the v0.1.86 release.
+
 ## 0.1.86
 
 - Added `examples/consumer-quickstart`, a minimal installed-project fixture for proving the first `doctor`, `summary`, and framework tuning commands from a consumer repo.

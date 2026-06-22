@@ -6,6 +6,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Recently Shipped
 
+- Checked package contents support manifest smoke in v0.1.103, proving dry-run packages include the support examples index, quickstart, lifecycle map, blank worksheet, and filled synthetic example while excluding repo-local/private-ish files.
 - Checked support examples quickstart in v0.1.102, giving maintainers a 60-second handoff path from incoming report to map, worksheet, synthetic example, backlog record, and backlog review.
 - Checked support examples index in v0.1.101, telling maintainers when to use the lifecycle map, blank worksheet, and filled synthetic example.
 - Checked filled support lifecycle worksheet example in v0.1.100, showing a synthetic `docs-example` report through report, triage, response, closeout, prioritization, backlog record, and backlog review.

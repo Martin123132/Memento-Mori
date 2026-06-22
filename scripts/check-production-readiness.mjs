@@ -72,6 +72,7 @@ for (const path of [
   "scripts/doctor-framework-tuning.mjs",
   "scripts/check-ci-adoption.mjs",
   "scripts/check-consumer-quickstart.mjs",
+  "scripts/check-package-contents.mjs",
   "scripts/check-report-gallery.mjs",
   "scripts/check-support-triage.mjs",
   "scripts/check-fixtures.mjs",
@@ -157,6 +158,7 @@ requireText("README.md", /support-lifecycle\.md/, "support lifecycle overview li
 requireText("README.md", /outcome-prioritization\.md/, "support outcome prioritization link");
 requireText("README.md", /backlog-review\.md/, "support backlog review link");
 requireText("README.md", /backlog-records\.md/, "support backlog records link");
+requireText("README.md", /pack:contents:check/, "package contents check guidance");
 requireText("README.md", /report gallery feedback/i, "report gallery feedback guidance");
 requireText("README.md", /License: PolyForm Noncommercial/, "the noncommercial license badge");
 requireText("docs/PRODUCTION_READINESS.md", /npm package/i, "npm package readiness");
@@ -189,6 +191,8 @@ requireText("docs/PRODUCTION_READINESS.md", /filled worksheet example/i, "filled
 requireText("docs/PRODUCTION_READINESS.md", /outcome prioritization guide/i, "support outcome prioritization readiness");
 requireText("docs/PRODUCTION_READINESS.md", /backlog review/i, "support backlog review readiness");
 requireText("docs/PRODUCTION_READINESS.md", /backlog records/i, "support backlog records readiness");
+requireText("docs/PRODUCTION_READINESS.md", /pack:contents:check/, "package contents check readiness");
+requireText("docs/PRODUCTION_READINESS.md", /support examples manifest/i, "support examples manifest package readiness");
 requireText("docs/PRODUCTION_READINESS.md", /quiet-pass/, "quiet-pass fixture readiness");
 requireText("docs/CLI.md", /jester doctor --json/, "doctor JSON CLI docs");
 requireText("docs/CLI.md", /quiet-pass fixture/, "quiet-pass fixture CLI docs");
@@ -434,6 +438,12 @@ requireText("scripts/check-ci-adoption.mjs", /framework:tuning:doctor/, "adoptio
 requireText("scripts/check-consumer-quickstart.mjs", /consumer-quickstart/, "consumer quickstart checker target");
 requireText("scripts/check-consumer-quickstart.mjs", /memento-mori-jester@latest/, "consumer quickstart registry verification option");
 requireText("scripts/check-consumer-quickstart.mjs", /framework:tuning:doctor/, "consumer quickstart tuning doctor guard");
+requireText("scripts/check-package-contents.mjs", /support-examples-index\.md/, "package contents support examples index guard");
+requireText("scripts/check-package-contents.mjs", /support-examples-quickstart\.md/, "package contents support examples quickstart guard");
+requireText("scripts/check-package-contents.mjs", /support-lifecycle-map\.md/, "package contents support lifecycle map guard");
+requireText("scripts/check-package-contents.mjs", /support-lifecycle-worksheet\.md/, "package contents support lifecycle worksheet guard");
+requireText("scripts/check-package-contents.mjs", /support-lifecycle-filled-example\.md/, "package contents filled worksheet example guard");
+requireText("scripts/check-package-contents.mjs", /promo|site|private|credential/, "package contents forbidden file guard");
 requireText("scripts/check-report-gallery.mjs", /report-gallery\.json/, "report gallery checker target");
 requireText("scripts/check-report-gallery.mjs", /memento-mori-jester@latest/, "report gallery registry verification option");
 requireText("scripts/check-report-gallery.mjs", /destructive-command-summary/, "report gallery summary guard");
@@ -460,6 +470,8 @@ requireText("package.json", /"ci:adoption:check": "node scripts\/check-ci-adopti
 requireText("package.json", /"consumer:quickstart:check": "node scripts\/check-consumer-quickstart\.mjs"/, "consumer quickstart check script");
 requireText("package.json", /"reports:check": "node scripts\/check-report-gallery\.mjs"/, "report gallery check script");
 requireText("package.json", /"support:check": "node scripts\/check-support-triage\.mjs"/, "support triage check script");
+requireText("package.json", /"pack:contents:check": "node scripts\/check-package-contents\.mjs"/, "package contents check script");
+requireText("package.json", /"pack:dry": "npm pack --dry-run && npm run pack:contents:check"/, "package dry run contents guard");
 requireText("package.json", /"promo:card": "node scripts\/render-social-card\.mjs"/, "social card render script");
 requireText("package.json", /"promo:card:check": "node scripts\/render-social-card\.mjs --check"/, "social card stale check script");
 requireText("package.json", /"promo:check": "node scripts\/check-promo-freshness\.mjs"/, "promo freshness check script");
@@ -474,6 +486,7 @@ requireText("package.json", /npm run reports:check/, "report gallery check in np
 requireText("package.json", /npm run support:check/, "support triage check in npm test");
 requireText("package.json", /npm run promo:check/, "promo freshness check in npm test");
 requireText("package.json", /npm run site:check/, "site check in npm test");
+requireText("package.json", /npm run pack:contents:check/, "package contents check in npm test");
 requireText("scripts/check-promo-freshness.mjs", /--require-package-version/, "optional strict package-version promo check");
 requireText("scripts/check-promo-freshness.mjs", /social-card\.svg/, "social-card freshness check");
 requireText("scripts/check-site.mjs", /site\/index\.html/, "site index check");

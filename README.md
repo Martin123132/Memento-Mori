@@ -555,6 +555,7 @@ Run `npm run support:check` after editing issue templates, support docs, the rep
 Run `npm run promo:card` to regenerate the repo-local social preview card after changing its copy or design.
 Run `npm run promo:check` after editing promo assets; it checks the current demo video, stills, docs, and fixture evidence numbers stay in sync.
 Run `npm run site:check` after editing the repo-local landing page; it verifies the start command, demo links, social card, repo, release, and npm links.
+Run `npm run pack:contents:check` when package contents change; it verifies the dry-run package includes the support examples index, quickstart, lifecycle map, blank worksheet, and filled synthetic example, while excluding repo-local promo, site, private, cache, and credential-shaped files.
 
 For vulnerabilities, private code exposure, or credential-handling concerns, follow [SECURITY.md](SECURITY.md) instead of opening a public issue with sensitive details.
 
@@ -568,6 +569,7 @@ npm.cmd run consumer:quickstart:check
 npm.cmd run reports:check
 npm.cmd run promo:check
 npm.cmd run production:check
+npm.cmd run pack:contents:check
 npm.cmd run pack:dry
 git tag -a v0.1.x -m "Memento Mori Jester v0.1.x"
 git push origin main

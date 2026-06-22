@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.103
+
+- Added `npm run pack:contents:check` to verify dry-run package contents include the support examples index, quickstart, lifecycle map, blank worksheet, and filled synthetic example.
+- Wired `pack:dry` and `npm test` through the package contents smoke so release dry runs also exclude repo-local promo, site, private, cache, GitHub workflow, and credential-shaped files.
+- Updated README, release docs, production-readiness docs, roadmap, and release notes for the package surface guard.
+
 ## 0.1.102
 
 - Added a checked public-safe support examples quickstart for a 60-second maintainer handoff from incoming report to lifecycle map, blank worksheet, filled synthetic example, backlog record, and backlog review.

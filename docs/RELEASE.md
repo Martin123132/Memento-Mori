@@ -21,6 +21,7 @@ npm.cmd run support:check
 npm.cmd run promo:card:check
 npm.cmd run promo:check
 npm.cmd run site:check
+npm.cmd run pack:contents:check
 npm.cmd run pack:dry
 git diff --check
 ```
@@ -89,6 +90,7 @@ npx.cmd -y memento-mori-jester@latest config validate --config jester-security.c
 npm.cmd run consumer:quickstart:check -- --package memento-mori-jester@latest
 npm.cmd run reports:check -- --package memento-mori-jester@latest
 npm.cmd run support:check
+npm.cmd run pack:contents:check
 ```
 
 ## 4. MCP Copy-Paste

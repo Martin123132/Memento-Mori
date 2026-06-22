@@ -9,6 +9,7 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 - GitHub Releases and npm publishing are automated from annotated `v*` tags through GitHub Actions trusted publishing.
 - CI runs tests and a package dry run on every push to `main` and pull request.
 - The local playground, GitHub Action, MCP setup snippets, preset examples, fixtures, and release notes ship in the npm package.
+- Package dry runs include a support examples manifest smoke so the index, quickstart, lifecycle map, blank worksheet, and filled synthetic example keep shipping from the tarball.
 - Repo-local promo assets stay outside the npm package, but `npm run promo:check` keeps the current demo video, stills, social card, docs, and fixture evidence numbers aligned.
 - The repo-local landing page stays outside the npm package, but `npm run site:check` keeps its start command and public links aligned.
 
@@ -16,7 +17,8 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 
 - `package.json` includes repository, homepage, bugs, binaries, exports, public package files, and public publish access.
 - `package-lock.json` version matches `package.json`.
-- `npm run pack:dry` confirms the package includes `dist`, `docs`, `examples`, `scripts`, `README.md`, `CHANGELOG.md`, `ROADMAP.md`, and `LICENSE`.
+- `npm run pack:dry` confirms the package includes `dist`, `docs`, `examples`, `scripts`, `README.md`, `CHANGELOG.md`, `ROADMAP.md`, and `LICENSE`, then runs `npm run pack:contents:check`.
+- `npm run pack:contents:check` verifies the dry-run package includes the support examples index, quickstart, lifecycle map, blank worksheet, and filled synthetic example, and excludes repo-local promo, site, private, cache, GitHub workflow, and credential-shaped files.
 - `SECURITY.md` ships with the package so vulnerability reporting guidance is visible from the repository and npm tarball.
 - `prepublishOnly` runs tests and a package dry run for local publish attempts.
 
@@ -70,6 +72,7 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 - `npm run support:check` verifies issue templates, support docs, the report gallery feedback template, support examples quickstart, support examples index, support lifecycle map, support lifecycle worksheet, filled worksheet example, support lifecycle overview, outcome prioritization guide, backlog records, backlog review checklist, maintainer triage playbook, response snippets, and closeout checklist stay public-safe and ask for useful redacted context.
 - `npm run promo:card` regenerates the deterministic social preview card, and `npm run promo:check` verifies current repo-local promo assets against the current fixture evidence before maintainers post or refresh the demo.
 - `npm run site:check` verifies the static landing page before maintainers post or host it.
+- `npm run pack:contents:check` verifies the npm package surface keeps the support examples manifest files available while excluding repo-only or private-ish paths.
 - npm publish has a manual workflow fallback, but the normal release path is tag-driven trusted publishing.
 
 ## Static Guard
@@ -93,6 +96,7 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 - support triage checks are wired into `npm test`.
 - promo freshness checks are wired into `npm test`.
 - site checks are wired into `npm test`.
+- package contents checks are wired into `npm test` and `npm run pack:dry`.
 
 `npm test` runs this check after the TypeScript build and unit tests.
 

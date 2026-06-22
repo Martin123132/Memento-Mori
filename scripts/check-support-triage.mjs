@@ -26,6 +26,8 @@ const supportFiles = [
   "examples/reports/feedback-template.md",
   "examples/reports/README.md",
   "examples/support/README.md",
+  "examples/support/response-snippets.md",
+  "examples/support/response-snippets.json",
   "examples/support/triage-playbook.json",
   "docs/MAINTAINER_TRIAGE.md",
   "docs/PRODUCTION_READINESS.md",
@@ -77,6 +79,7 @@ requireText("examples/reports/README.md", /examples\/support|Maintainer Triage P
 
 requireText("examples/support/README.md", /Maintainer Triage Playbook/, "maintainer playbook heading");
 requireText("examples/support/README.md", /triage-playbook\.json/, "maintainer playbook JSON link");
+requireText("examples/support/README.md", /response-snippets\.md/, "maintainer response snippets link");
 requireText("examples/support/README.md", /gallery-expected-block-docs/, "docs example playbook case");
 requireText("examples/support/README.md", /false-positive-fixture-backlog/, "fixture backlog playbook case");
 requireText("examples/support/README.md", /repeated-risky-domain-rule-review/, "rule review playbook case");
@@ -87,10 +90,22 @@ requireText("examples/support/README.md", /fixture-backlog/, "fixture backlog ou
 requireText("examples/support/README.md", /rule-review-candidate/, "rule review outcome");
 requireText("examples/support/README.md", /SECURITY\.md/, "security redirect");
 requireText("examples/support/README.md", /npm run support:check/, "support checker command");
+requireText("examples/support/response-snippets.md", /Maintainer Response Snippets/, "response snippets heading");
+requireText("examples/support/response-snippets.md", /response-snippets\.json/, "response snippets JSON link");
+requireText("examples/support/response-snippets.md", /docs-example/, "docs response outcome");
+requireText("examples/support/response-snippets.md", /fixture-backlog/, "fixture backlog response outcome");
+requireText("examples/support/response-snippets.md", /rule-review-candidate/, "rule review response outcome");
+requireText("examples/support/response-snippets.md", /jester doctor --json/, "doctor JSON response prompt");
+requireText("examples/support/response-snippets.md", /jester tune <rule-id> --json/, "tune JSON response prompt");
+requireText("examples/support/response-snippets.md", /npm run support:check/, "support checker response command");
+requireText("examples/support/response-snippets.json", /docs-example-response/, "docs response snippet");
+requireText("examples/support/response-snippets.json", /fixture-backlog-response/, "fixture response snippet");
+requireText("examples/support/response-snippets.json", /rule-review-candidate-response/, "rule review response snippet");
 
 requireText("docs/MAINTAINER_TRIAGE.md", /feedback-template\.md/, "feedback template triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /report_gallery_feedback\.yml/, "report gallery issue template triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /examples\/support/, "maintainer playbook triage link");
+requireText("docs/MAINTAINER_TRIAGE.md", /response-snippets\.md/, "maintainer response snippets triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /docs-example/, "docs example triage outcome");
 requireText("docs/MAINTAINER_TRIAGE.md", /fixture-backlog/, "fixture backlog triage outcome");
 requireText("docs/MAINTAINER_TRIAGE.md", /rule-review-candidate/, "rule review triage outcome");
@@ -98,12 +113,14 @@ requireText("docs/MAINTAINER_TRIAGE.md", /npm(?:\.cmd)? run support:check/, "sup
 requireText("docs/PRODUCTION_READINESS.md", /support:check/, "support checker readiness");
 requireText("README.md", /feedback-template\.md/, "feedback template README link");
 requireText("README.md", /examples\/support/, "maintainer triage playbook README link");
+requireText("README.md", /response-snippets\.md/, "maintainer response snippets README link");
 requireText("README.md", /report gallery feedback/i, "report gallery feedback guidance");
 
 requireText("package.json", /"support:check": "node scripts\/check-support-triage\.mjs"/, "support checker script");
 requireText("package.json", /npm run support:check/, "support checker in npm test");
 
 checkTriagePlaybook();
+checkResponseSnippets();
 
 if (failures.length > 0) {
   console.error("Support triage check failed:");
@@ -229,6 +246,80 @@ function checkTriagePlaybook() {
 
     if (typeof entry.followUpOutcome?.action !== "string" || entry.followUpOutcome.action.length < 30) {
       failures.push(`${entry.id}.followUpOutcome.action should describe the maintainer action.`);
+    }
+  }
+}
+
+function checkResponseSnippets() {
+  const path = "examples/support/response-snippets.json";
+  const snippets = readJson(path);
+  if (!snippets) {
+    return;
+  }
+
+  if (!Array.isArray(snippets) || snippets.length !== 3) {
+    failures.push(`${path} should contain exactly three maintainer response snippets.`);
+    return;
+  }
+
+  const expected = [
+    { id: "docs-example-response", outcome: "docs-example", checks: ["npm run reports:check", "npm run support:check"] },
+    { id: "fixture-backlog-response", outcome: "fixture-backlog", checks: ["npm run fixtures:check", "npm run fixtures:report", "npm run support:check"] },
+    { id: "rule-review-candidate-response", outcome: "rule-review-candidate", checks: ["npm run fixtures:report -- --markdown", "npm run support:check"] }
+  ];
+  const seenIds = new Set();
+
+  for (const [index, snippet] of snippets.entries()) {
+    const expectedSnippet = expected[index];
+    if (snippet?.id !== expectedSnippet.id) {
+      failures.push(`${path} entry ${index + 1} should have id ${expectedSnippet.id}.`);
+      continue;
+    }
+
+    if (seenIds.has(snippet.id)) {
+      failures.push(`${path} has duplicate id ${snippet.id}.`);
+    }
+    seenIds.add(snippet.id);
+
+    if (snippet.outcome !== expectedSnippet.outcome) {
+      failures.push(`${snippet.id}.outcome should be ${expectedSnippet.outcome}.`);
+    }
+
+    if (typeof snippet.title !== "string" || snippet.title.length < 10) {
+      failures.push(`${snippet.id}.title should be a useful string.`);
+    }
+
+    if (typeof snippet.useWhen !== "string" || snippet.useWhen.length < 30) {
+      failures.push(`${snippet.id}.useWhen should explain when to use the response.`);
+    }
+
+    if (!Array.isArray(snippet.labels) || snippet.labels.length === 0) {
+      failures.push(`${snippet.id}.labels should be a non-empty array.`);
+    }
+
+    if (!Array.isArray(snippet.body) || snippet.body.length !== 3) {
+      failures.push(`${snippet.id}.body should contain exactly three response paragraphs.`);
+      continue;
+    }
+
+    const bodyText = snippet.body.join("\n");
+    if (!bodyText.includes("doctor --json")) {
+      failures.push(`${snippet.id}.body should ask for or mention redacted doctor --json diagnostics.`);
+    }
+
+    if (!/secret|private|redacted/i.test(bodyText)) {
+      failures.push(`${snippet.id}.body should include privacy or redaction guidance.`);
+    }
+
+    if (!Array.isArray(snippet.requiredChecks)) {
+      failures.push(`${snippet.id}.requiredChecks should be an array.`);
+      continue;
+    }
+
+    for (const check of expectedSnippet.checks) {
+      if (!snippet.requiredChecks.includes(check)) {
+        failures.push(`${snippet.id}.requiredChecks should include ${check}.`);
+      }
     }
   }
 }

@@ -1,0 +1,41 @@
+[
+  {
+    "id": "docs-example-response",
+    "outcome": "docs-example",
+    "title": "Expected behavior, docs clarification",
+    "useWhen": "A sanitized report matches checked behavior, but the user expected different wording or severity.",
+    "labels": ["docs"],
+    "body": [
+      "Thanks for the report. This looks like expected behavior for the checked example, but the wording can be clearer.",
+      "Please do not paste private repo code, full logs, secrets, or private paths. If your local output differs from the checked example, share redacted `jester doctor --json` output and the smallest sanitized command summary.",
+      "Maintainer next step: update the report gallery wording or docs example, then run `npm run reports:check` and `npm run support:check`."
+    ],
+    "requiredChecks": ["npm run reports:check", "npm run support:check"]
+  },
+  {
+    "id": "fixture-backlog-response",
+    "outcome": "fixture-backlog",
+    "title": "Plausible false positive, fixture backlog",
+    "useWhen": "A sanitized false-positive report describes a safe boundary that should be protected before changing rule behavior.",
+    "labels": ["false-positive", "rules"],
+    "body": [
+      "Thanks, this looks like a plausible safe boundary. Please keep the reproduction minimal and redacted, then share `jester tune <rule-id> --json`, redacted `jester doctor --json`, and the smallest command, plan, diff, or final-answer text that reproduces the result.",
+      "We will not loosen the rule from one report. If the reduced example is valid, the next step is a pass or quiet-pass fixture with `expectedRuleIds` or `absentRuleIds`.",
+      "Maintainer next step: add the fixture backlog item, then run `npm run fixtures:check`, `npm run fixtures:report`, and `npm run support:check`."
+    ],
+    "requiredChecks": ["npm run fixtures:check", "npm run fixtures:report", "npm run support:check"]
+  },
+  {
+    "id": "rule-review-candidate-response",
+    "outcome": "rule-review-candidate",
+    "title": "Repeated surprise, rule review candidate",
+    "useWhen": "A report may be expected on its own, but repeated sanitized reports suggest the rule guidance or matching boundary may need review.",
+    "labels": ["false-positive", "rules"],
+    "body": [
+      "Thanks. This may be expected caution for now, but repeated sanitized reports can become a rule-review candidate.",
+      "Please share redacted `jester doctor --json`, redacted `jester tune <rule-id> --json`, and the smallest public-safe input that reproduces the surprise. Do not paste secrets, private project details, full logs, or private paths.",
+      "Maintainer next step: collect at least two sanitized examples, compare `fixtureEvidence`, and only then decide whether this is docs, fixture backlog, guidance, or rule-matching work."
+    ],
+    "requiredChecks": ["npm run fixtures:report -- --markdown", "npm run support:check"]
+  }
+]

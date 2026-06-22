@@ -2,7 +2,7 @@
 
 This playbook shows how to handle sanitized adopter reports without turning every surprise into an immediate rule change. It pairs with [docs/MAINTAINER_TRIAGE.md](../../docs/MAINTAINER_TRIAGE.md), the [report gallery feedback template](../reports/feedback-template.md), and the GitHub issue templates.
 
-The checked source is [triage-playbook.json](triage-playbook.json). It covers three common support outcomes:
+The checked source is [triage-playbook.json](triage-playbook.json). Use [response-snippets.md](response-snippets.md) for copy-paste replies after a report is classified. The snippet source is [response-snippets.json](response-snippets.json).
 
 | ID | Source | Classification | Follow-up |
 | --- | --- | --- | --- |
@@ -21,10 +21,11 @@ The checked source is [triage-playbook.json](triage-playbook.json). It covers th
    - `fixture-backlog`: add a pass or quiet-pass fixture before changing behavior.
    - `rule-review-candidate`: collect repeated sanitized reports before changing guidance or matching.
 6. Close with the next command the user can run.
+7. Use the matching response snippet so replies stay public-safe and consistent.
 
 ## Checks
 
-Run this after editing support docs, issue templates, or the playbook:
+Run this after editing support docs, issue templates, the playbook, or response snippets:
 
 ```powershell
 npm run support:check

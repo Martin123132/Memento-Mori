@@ -6,6 +6,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Recently Shipped
 
+- Checked maintainer response snippets in v0.1.91, adding public-safe reply templates for docs examples, fixture backlog items, and rule-review candidates.
 - Checked maintainer triage playbook in v0.1.90, showing how sanitized reports become docs examples, fixture backlog items, or rule-review candidates.
 - Checked adopter feedback path in v0.1.89, adding a report-gallery issue template, package-shipped feedback template, and support triage guard.
 - Checked report gallery in v0.1.88, proving fresh `doctor`, destructive-command `summary`, and blocked-command reports from an installed consumer project.
@@ -80,7 +81,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 ## Product Ideas
 
 - Collect real-world reports and fold the strongest redacted cases into more framework tuning cookbook recipes.
-- Use repeated playbook outcomes to prioritize the next redacted fixture or report-gallery update.
+- Use repeated playbook outcomes and response snippets to prioritize the next redacted fixture or report-gallery update.
 - Add a hosted-page option or GitHub Pages instructions once the static page has settled.
 
 ## Quality And Safety

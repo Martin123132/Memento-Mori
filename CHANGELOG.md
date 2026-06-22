@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.91
+
+- Added checked public-safe maintainer response snippets for `docs-example`, `fixture-backlog`, and `rule-review-candidate` support outcomes.
+- Extended `npm run support:check` and production-readiness checks so response snippets stay aligned with the checked triage playbook.
+- Updated README, maintainer triage docs, support examples, production-readiness docs, roadmap, and release notes for lower-friction support replies.
+
 ## 0.1.90
 
 - Added `examples/support`, a checked maintainer triage playbook for sanitized report-gallery and false-positive reports.

@@ -47,7 +47,7 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 - `README.md` leads with a no-write first run, project bootstrap, agent setup, and optional hooks/CI.
 - `docs/GETTING_STARTED.md`, `docs/CLI.md`, `docs/RELEASE.md`, and `docs/TRUSTED_PUBLISHING.md` cover the core adoption and release paths.
 - `examples/reports` provides checked, public-safe report examples for fresh install diagnostics, summary output, blocked command reviews, and report-gallery feedback.
-- `examples/support` provides a checked support lifecycle overview, outcome prioritization guide, backlog records, backlog review checklist, maintainer triage playbook, response snippets, and closeout checklist for first response, classification, follow-up outcomes, public-safe decision records, backlog prioritization, backlog artifacts, and aging review from sanitized support reports.
+- `examples/support` provides a checked support lifecycle overview covering report, triage, response, closeout, prioritization, backlog record, and backlog review, plus the supporting outcome prioritization guide, backlog records, backlog review checklist, maintainer triage playbook, response snippets, and closeout checklist.
 - `site/index.html` gives maintainers a static one-page share surface that reuses the demo, social card, start command, and public links.
 - Every public release has matching `CHANGELOG.md` notes and `docs/RELEASE_NOTES_vX.Y.Z.md`.
 

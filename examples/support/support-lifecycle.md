@@ -3,18 +3,18 @@
 This index shows the public-safe support path at a glance:
 
 ```text
-report -> triage -> response -> closeout
+report -> triage -> response -> closeout -> prioritization -> backlog-record -> backlog-review
 ```
 
-The checked source is [support-lifecycle.json](support-lifecycle.json). It ties together the [report gallery feedback template](../reports/feedback-template.md), [triage playbook](triage-playbook.json), [response snippets](response-snippets.md), and [closeout checklist](closeout-checklist.md).
+The checked source is [support-lifecycle.json](support-lifecycle.json). It ties together the [report gallery feedback template](../reports/feedback-template.md), [triage playbook](triage-playbook.json), [response snippets](response-snippets.md), [closeout checklist](closeout-checklist.md), [outcome prioritization guide](outcome-prioritization.md), [backlog records](backlog-records.md), and [backlog review checklist](backlog-review.md).
 
 ## Outcomes
 
-| Outcome | Report | Triage | Response | Closeout |
-| --- | --- | --- | --- | --- |
-| `docs-example` | `report-gallery-feedback` | `gallery-expected-block-docs` | `docs-example-response` | `docs-clarification-closeout` |
-| `fixture-backlog` | `false-positive` | `false-positive-fixture-backlog` | `fixture-backlog-response` | `fixture-backlog-closeout` |
-| `rule-review-candidate` | `false-positive` | `repeated-risky-domain-rule-review` | `rule-review-candidate-response` | `rule-review-closeout` |
+| Outcome | Report | Triage | Response | Closeout | Prioritization | Backlog Record | Backlog Review |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `docs-example` | `report-gallery-feedback` | `gallery-expected-block-docs` | `docs-example-response` | `docs-clarification-closeout` | `docs-example` | `docs-clarification-backlog-record` | `docs-clarification-review` |
+| `fixture-backlog` | `false-positive` | `false-positive-fixture-backlog` | `fixture-backlog-response` | `fixture-backlog-closeout` | `fixture-backlog` | `fixture-backlog-record` | `fixture-backlog-review` |
+| `rule-review-candidate` | `false-positive` | `repeated-risky-domain-rule-review` | `rule-review-candidate-response` | `rule-review-closeout` | `rule-review-candidate` | `rule-review-candidate-backlog-record` | `rule-review-candidate-review` |
 
 ## Audit Checklist
 
@@ -24,6 +24,9 @@ For each public support issue, confirm:
 - the triage outcome is one of `docs-example`, `fixture-backlog`, or `rule-review-candidate`,
 - the response snippet matches the chosen outcome,
 - the closeout record says whether the docs clarification shipped or queued, fixture backlog was created, or rule-review candidate was opened,
+- the prioritization record says whether follow-up is low-priority docs, medium-priority fixture backlog, or high-priority rule review,
+- the backlog record captures the public-safe follow-up artifact without changing rule behavior first,
+- the backlog review keeps the item active as docs, fixture, or rule-review work only while evidence still holds, otherwise it closes as `closed-no-action`,
 - no secrets, private code, private paths, customer data, full logs, unredacted SARIF, or exploitable security details appear in the public record.
 
 ## Checks

@@ -120,19 +120,26 @@ requireText("examples/support/closeout-checklist.json", /fixture-backlog-closeou
 requireText("examples/support/closeout-checklist.json", /rule-review-closeout/, "rule-review closeout record");
 requireText("examples/support/support-lifecycle.md", /Support Lifecycle Overview/, "support lifecycle heading");
 requireText("examples/support/support-lifecycle.md", /support-lifecycle\.json/, "support lifecycle JSON link");
-requireText("examples/support/support-lifecycle.md", /report -> triage -> response -> closeout/, "support lifecycle flow");
+requireText("examples/support/support-lifecycle.md", /report -> triage -> response -> closeout -> prioritization -> backlog-record -> backlog-review/, "support lifecycle flow");
 requireText("examples/support/support-lifecycle.md", /report gallery feedback template/, "report feedback lifecycle link");
 requireText("examples/support/support-lifecycle.md", /triage playbook/, "triage lifecycle link");
 requireText("examples/support/support-lifecycle.md", /response snippets/, "response lifecycle link");
 requireText("examples/support/support-lifecycle.md", /closeout checklist/, "closeout lifecycle link");
+requireText("examples/support/support-lifecycle.md", /outcome prioritization guide/, "prioritization lifecycle link");
+requireText("examples/support/support-lifecycle.md", /backlog records/, "backlog records lifecycle link");
+requireText("examples/support/support-lifecycle.md", /backlog review checklist/, "backlog review lifecycle link");
 requireText("examples/support/support-lifecycle.md", /docs-example/, "docs lifecycle outcome");
 requireText("examples/support/support-lifecycle.md", /fixture-backlog/, "fixture lifecycle outcome");
 requireText("examples/support/support-lifecycle.md", /rule-review-candidate/, "rule-review lifecycle outcome");
+requireText("examples/support/support-lifecycle.md", /closed-no-action/, "closed no-action lifecycle review");
 requireText("examples/support/support-lifecycle.md", /doctor --json/, "doctor JSON lifecycle prompt");
 requireText("examples/support/support-lifecycle.md", /SECURITY\.md/, "lifecycle security redirect");
 requireText("examples/support/support-lifecycle.json", /docs-example-response/, "docs lifecycle response");
 requireText("examples/support/support-lifecycle.json", /fixture-backlog-response/, "fixture lifecycle response");
 requireText("examples/support/support-lifecycle.json", /rule-review-candidate-response/, "rule-review lifecycle response");
+requireText("examples/support/support-lifecycle.json", /outcome-prioritization\.json/, "lifecycle prioritization artifact");
+requireText("examples/support/support-lifecycle.json", /backlog-records\.json/, "lifecycle backlog records artifact");
+requireText("examples/support/support-lifecycle.json", /backlog-review\.json/, "lifecycle backlog review artifact");
 requireText("examples/support/outcome-prioritization.md", /Support Outcome Prioritization/, "support outcome prioritization heading");
 requireText("examples/support/outcome-prioritization.md", /outcome-prioritization\.json/, "support prioritization JSON link");
 requireText("examples/support/outcome-prioritization.md", /support lifecycle overview/, "support lifecycle prioritization link");
@@ -534,26 +541,53 @@ function checkSupportLifecycle() {
   const expected = [
     {
       outcome: "docs-example",
-      stageReferences: ["report-gallery-feedback", "gallery-expected-block-docs", "docs-example-response", "docs-clarification-closeout"],
+      stageReferences: [
+        "report-gallery-feedback",
+        "gallery-expected-block-docs",
+        "docs-example-response",
+        "docs-clarification-closeout",
+        "docs-example",
+        "docs-clarification-backlog-record",
+        "docs-clarification-review"
+      ],
       checks: ["npm run reports:check", "npm run support:check"]
     },
     {
       outcome: "fixture-backlog",
-      stageReferences: ["false-positive", "false-positive-fixture-backlog", "fixture-backlog-response", "fixture-backlog-closeout"],
+      stageReferences: [
+        "false-positive",
+        "false-positive-fixture-backlog",
+        "fixture-backlog-response",
+        "fixture-backlog-closeout",
+        "fixture-backlog",
+        "fixture-backlog-record",
+        "fixture-backlog-review"
+      ],
       checks: ["npm run fixtures:check", "npm run fixtures:report", "npm run support:check"]
     },
     {
       outcome: "rule-review-candidate",
-      stageReferences: ["false-positive", "repeated-risky-domain-rule-review", "rule-review-candidate-response", "rule-review-closeout"],
+      stageReferences: [
+        "false-positive",
+        "repeated-risky-domain-rule-review",
+        "rule-review-candidate-response",
+        "rule-review-closeout",
+        "rule-review-candidate",
+        "rule-review-candidate-backlog-record",
+        "rule-review-candidate-review"
+      ],
       checks: ["npm run fixtures:report -- --markdown", "npm run support:check"]
     }
   ];
-  const expectedStageIds = ["report", "triage", "response", "closeout"];
+  const expectedStageIds = ["report", "triage", "response", "closeout", "prioritization", "backlog-record", "backlog-review"];
   const expectedArtifacts = [
     "examples/reports/feedback-template.md",
     "examples/support/triage-playbook.json",
     "examples/support/response-snippets.json",
-    "examples/support/closeout-checklist.json"
+    "examples/support/closeout-checklist.json",
+    "examples/support/outcome-prioritization.json",
+    "examples/support/backlog-records.json",
+    "examples/support/backlog-review.json"
   ];
   const seenOutcomes = new Set();
 
@@ -573,8 +607,8 @@ function checkSupportLifecycle() {
       failures.push(`${entry.outcome}.title should explain the lifecycle outcome.`);
     }
 
-    if (!Array.isArray(entry.stages) || entry.stages.length !== 4) {
-      failures.push(`${entry.outcome}.stages should contain report, triage, response, and closeout.`);
+    if (!Array.isArray(entry.stages) || entry.stages.length !== 7) {
+      failures.push(`${entry.outcome}.stages should contain report, triage, response, closeout, prioritization, backlog-record, and backlog-review.`);
       continue;
     }
 

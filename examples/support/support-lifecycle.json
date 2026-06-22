@@ -26,6 +26,24 @@
         "artifact": "examples/support/closeout-checklist.json",
         "reference": "docs-clarification-closeout",
         "purpose": "Record whether the docs clarification shipped or is queued, then link the public-safe follow-up."
+      },
+      {
+        "id": "prioritization",
+        "artifact": "examples/support/outcome-prioritization.json",
+        "reference": "docs-example",
+        "purpose": "Confirm the follow-up is low-priority docs clarification before opening a backlog record."
+      },
+      {
+        "id": "backlog-record",
+        "artifact": "examples/support/backlog-records.json",
+        "reference": "docs-clarification-backlog-record",
+        "purpose": "Record the public-safe docs backlog artifact and the checks needed after copy changes."
+      },
+      {
+        "id": "backlog-review",
+        "artifact": "examples/support/backlog-review.json",
+        "reference": "docs-clarification-review",
+        "purpose": "Revisit whether the docs backlog item remains active or should close with no action."
       }
     ],
     "requiredChecks": ["npm run reports:check", "npm run support:check"]
@@ -57,6 +75,24 @@
         "artifact": "examples/support/closeout-checklist.json",
         "reference": "fixture-backlog-closeout",
         "purpose": "Record that a redacted fixture backlog item exists and the rule remains unchanged."
+      },
+      {
+        "id": "prioritization",
+        "artifact": "examples/support/outcome-prioritization.json",
+        "reference": "fixture-backlog",
+        "purpose": "Confirm the follow-up is medium-priority fixture backlog before changing any matcher."
+      },
+      {
+        "id": "backlog-record",
+        "artifact": "examples/support/backlog-records.json",
+        "reference": "fixture-backlog-record",
+        "purpose": "Record the public-safe fixture backlog artifact and the expected pass or quiet-pass boundary."
+      },
+      {
+        "id": "backlog-review",
+        "artifact": "examples/support/backlog-review.json",
+        "reference": "fixture-backlog-review",
+        "purpose": "Revisit whether the fixture backlog item remains active or is already covered elsewhere."
       }
     ],
     "requiredChecks": ["npm run fixtures:check", "npm run fixtures:report", "npm run support:check"]
@@ -88,6 +124,24 @@
         "artifact": "examples/support/closeout-checklist.json",
         "reference": "rule-review-closeout",
         "purpose": "Record that a rule-review candidate was opened and fixture evidence will be compared."
+      },
+      {
+        "id": "prioritization",
+        "artifact": "examples/support/outcome-prioritization.json",
+        "reference": "rule-review-candidate",
+        "purpose": "Confirm the follow-up is high-priority rule review backed by repeated sanitized reports."
+      },
+      {
+        "id": "backlog-record",
+        "artifact": "examples/support/backlog-records.json",
+        "reference": "rule-review-candidate-backlog-record",
+        "purpose": "Record the public-safe rule-review backlog artifact and the fixture evidence to compare."
+      },
+      {
+        "id": "backlog-review",
+        "artifact": "examples/support/backlog-review.json",
+        "reference": "rule-review-candidate-review",
+        "purpose": "Revisit whether repeated evidence still warrants rule review before any behavior change."
       }
     ],
     "requiredChecks": ["npm run fixtures:report -- --markdown", "npm run support:check"]

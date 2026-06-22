@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.97
+
+- Extended the checked support lifecycle overview so it now covers report, triage, response, closeout, prioritization, backlog record, and backlog review stages.
+- Updated `support-lifecycle.json`, `npm run support:check`, and production-readiness checks so every support outcome points at the full checked artifact chain.
+- Refreshed support docs, maintainer triage docs, production-readiness docs, roadmap, and release notes for the full lifecycle index.
+
 ## 0.1.96
 
 - Added a checked public-safe support backlog review checklist for deciding whether backlog records remain docs clarifications, fixture backlog items, rule-review candidates, or close with no action.

@@ -1,0 +1,90 @@
+[
+  {
+    "id": "docs-clarification-review",
+    "sourceRecord": "docs-clarification-backlog-record",
+    "reviewDecision": "remains-docs-clarification",
+    "outcome": "docs-example",
+    "cadence": "Review before a docs release or when the linked report-gallery example changes.",
+    "decisionCriteria": [
+      "The nearest checked report or docs page is still confusing for a fresh reader.",
+      "Observed output still matches current behavior and differs only in wording/context.",
+      "No rule behavior change is needed before clearer wording is tried."
+    ],
+    "nextAction": "Keep the backlog item as a docs clarification and run the report/support checks after editing copy.",
+    "requiredChecks": [
+      "npm run reports:check",
+      "npm run support:check"
+    ],
+    "privacyReview": [
+      "No secrets, private code, private paths, customer data, full logs, or unredacted SARIF are included.",
+      "Any stale private project names are replaced with placeholders before the review is recorded.",
+      "Sensitive reports are routed to SECURITY.md instead of public backlog review notes."
+    ]
+  },
+  {
+    "id": "fixture-backlog-review",
+    "sourceRecord": "fixture-backlog-record",
+    "reviewDecision": "remains-fixture-backlog",
+    "outcome": "fixture-backlog",
+    "cadence": "Review before a fixture curation batch or when similar false-positive reports arrive.",
+    "decisionCriteria": [
+      "The smallest sanitized reproduction still describes a safe boundary worth preserving.",
+      "The rule id and redacted `jester tune <rule-id> --json` evidence still point at the same rule.",
+      "No existing pass or quiet-pass fixture now covers the same boundary."
+    ],
+    "nextAction": "Keep the item as fixture backlog and add or update the redacted fixture before changing rule behavior.",
+    "requiredChecks": [
+      "npm run fixtures:check",
+      "npm run fixtures:report",
+      "npm run support:check"
+    ],
+    "privacyReview": [
+      "No secrets, private code, private paths, customer data, full logs, or unredacted SARIF are included.",
+      "The reproduction still uses placeholders such as <repo>, <path>, or <redacted>.",
+      "Sensitive reports are routed to SECURITY.md instead of public backlog review notes."
+    ]
+  },
+  {
+    "id": "rule-review-candidate-review",
+    "sourceRecord": "rule-review-candidate-backlog-record",
+    "reviewDecision": "remains-rule-review-candidate",
+    "outcome": "rule-review-candidate",
+    "cadence": "Review before changing guidance or matching, and whenever another sanitized report is linked.",
+    "decisionCriteria": [
+      "At least two sanitized reports or checked examples still point at the same rule boundary.",
+      "Fixture report or tune evidence still shows why docs clarification or a single fixture item is not enough.",
+      "The candidate still avoids changing matching without supporting fixtures around the boundary."
+    ],
+    "nextAction": "Keep the item as a rule-review candidate and compare current fixture evidence before any behavior change.",
+    "requiredChecks": [
+      "npm run fixtures:report -- --markdown",
+      "npm run support:check"
+    ],
+    "privacyReview": [
+      "No secrets, private code, private paths, customer data, full logs, or unredacted SARIF are included.",
+      "Repeated examples are summarized without exposing private project details.",
+      "Sensitive reports are routed to SECURITY.md instead of public backlog review notes."
+    ]
+  },
+  {
+    "id": "closed-no-action-review",
+    "sourceRecord": "<backlog-record-id>",
+    "reviewDecision": "closed-no-action",
+    "outcome": "closed-no-action",
+    "cadence": "Review when evidence is stale, duplicated, no longer reproduces, or has already been resolved elsewhere.",
+    "decisionCriteria": [
+      "The report no longer reproduces on the current package or is already covered by a checked docs/fixture/rule-review artifact.",
+      "The remaining evidence is too thin, private, or security-sensitive for a public backlog item.",
+      "Closing the item will not hide a known regression because current checks still pass."
+    ],
+    "nextAction": "Close the public backlog item with a short no-action note, link the replacement artifact if one exists, and keep sensitive details out of the thread.",
+    "requiredChecks": [
+      "npm run support:check"
+    ],
+    "privacyReview": [
+      "No secrets, private code, private paths, customer data, full logs, or unredacted SARIF are included.",
+      "The closeout note uses placeholders instead of private project names or paths.",
+      "Sensitive reports are routed to SECURITY.md instead of public backlog review notes."
+    ]
+  }
+]

@@ -2,9 +2,9 @@
 
 This playbook shows how to handle sanitized adopter reports without turning every surprise into an immediate rule change. It pairs with [docs/MAINTAINER_TRIAGE.md](../../docs/MAINTAINER_TRIAGE.md), the [report gallery feedback template](../reports/feedback-template.md), and the GitHub issue templates.
 
-Start with the checked [support lifecycle overview](support-lifecycle.md) when you need the whole path in one place. The lifecycle source is [support-lifecycle.json](support-lifecycle.json). Use [outcome-prioritization.md](outcome-prioritization.md) after closeout to decide whether follow-up work should become docs, fixture backlog, or rule-review work. Use [backlog-records.md](backlog-records.md) to turn that decision into a public-safe backlog artifact.
+Start with the checked [support lifecycle overview](support-lifecycle.md) when you need the whole path in one place. The lifecycle source is [support-lifecycle.json](support-lifecycle.json). Use [outcome-prioritization.md](outcome-prioritization.md) after closeout to decide whether follow-up work should become docs, fixture backlog, or rule-review work. Use [backlog-records.md](backlog-records.md) to turn that decision into a public-safe backlog artifact, then use [backlog-review.md](backlog-review.md) to decide whether the item stays active or closes with no action.
 
-The checked source is [triage-playbook.json](triage-playbook.json). Use [response-snippets.md](response-snippets.md) for copy-paste replies after a report is classified. The snippet source is [response-snippets.json](response-snippets.json). Use [closeout-checklist.md](closeout-checklist.md) to record what happened after the response. The closeout source is [closeout-checklist.json](closeout-checklist.json). The backlog source is [backlog-records.json](backlog-records.json).
+The checked source is [triage-playbook.json](triage-playbook.json). Use [response-snippets.md](response-snippets.md) for copy-paste replies after a report is classified. The snippet source is [response-snippets.json](response-snippets.json). Use [closeout-checklist.md](closeout-checklist.md) to record what happened after the response. The closeout source is [closeout-checklist.json](closeout-checklist.json). The backlog source is [backlog-records.json](backlog-records.json). The review source is [backlog-review.json](backlog-review.json).
 
 | ID | Source | Classification | Follow-up |
 | --- | --- | --- | --- |
@@ -26,10 +26,11 @@ The checked source is [triage-playbook.json](triage-playbook.json). Use [respons
 7. Use the matching response snippet so replies stay public-safe and consistent.
 8. Record the closeout with the matching checklist entry: docs clarification shipped or queued, fixture backlog created, or rule-review candidate opened.
 9. If follow-up work remains, create the matching backlog record: docs clarification, fixture backlog item, or rule-review candidate.
+10. Review backlog records over time as `remains-docs-clarification`, `remains-fixture-backlog`, `remains-rule-review-candidate`, or `closed-no-action`.
 
 ## Checks
 
-Run this after editing support docs, issue templates, the lifecycle overview, outcome prioritization, backlog records, the playbook, response snippets, or closeout checklist:
+Run this after editing support docs, issue templates, the lifecycle overview, outcome prioritization, backlog records, backlog review, the playbook, response snippets, or closeout checklist:
 
 ```powershell
 npm run support:check

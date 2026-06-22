@@ -25,6 +25,8 @@ const supportFiles = [
   ".github/ISSUE_TEMPLATE/config.yml",
   "examples/reports/feedback-template.md",
   "examples/reports/README.md",
+  "examples/support/backlog-review.md",
+  "examples/support/backlog-review.json",
   "examples/support/backlog-records.md",
   "examples/support/backlog-records.json",
   "examples/support/closeout-checklist.md",
@@ -86,6 +88,7 @@ requireText("examples/reports/README.md", /npm run support:check/, "support chec
 requireText("examples/reports/README.md", /examples\/support|Maintainer Triage Playbook/i, "maintainer triage playbook link");
 
 requireText("examples/support/README.md", /Maintainer Triage Playbook/, "maintainer playbook heading");
+requireText("examples/support/README.md", /backlog-review\.md/, "support backlog review link");
 requireText("examples/support/README.md", /backlog-records\.md/, "support backlog records link");
 requireText("examples/support/README.md", /support-lifecycle\.md/, "support lifecycle overview link");
 requireText("examples/support/README.md", /outcome-prioritization\.md/, "support outcome prioritization link");
@@ -159,6 +162,22 @@ requireText("examples/support/backlog-records.md", /npm run support:check/, "sup
 requireText("examples/support/backlog-records.json", /docs-clarification-backlog-record/, "docs backlog record JSON");
 requireText("examples/support/backlog-records.json", /fixture-backlog-record/, "fixture backlog record JSON");
 requireText("examples/support/backlog-records.json", /rule-review-candidate-backlog-record/, "rule-review backlog record JSON");
+requireText("examples/support/backlog-review.md", /Support Backlog Review/, "support backlog review heading");
+requireText("examples/support/backlog-review.md", /backlog-review\.json/, "support backlog review JSON link");
+requireText("examples/support/backlog-review.md", /backlog-records\.md/, "support backlog records review link");
+requireText("examples/support/backlog-review.md", /outcome-prioritization\.md/, "support prioritization review link");
+requireText("examples/support/backlog-review.md", /support lifecycle overview/, "support lifecycle review link");
+requireText("examples/support/backlog-review.md", /remains-docs-clarification/, "docs clarification review decision");
+requireText("examples/support/backlog-review.md", /remains-fixture-backlog/, "fixture backlog review decision");
+requireText("examples/support/backlog-review.md", /remains-rule-review-candidate/, "rule-review review decision");
+requireText("examples/support/backlog-review.md", /closed-no-action/, "closed no-action review decision");
+requireText("examples/support/backlog-review.md", /jester tune <rule-id> --json|fixture evidence|quiet-pass fixture/, "review fixture evidence guidance");
+requireText("examples/support/backlog-review.md", /SECURITY\.md/, "review security redirect");
+requireText("examples/support/backlog-review.md", /npm run support:check/, "support checker review command");
+requireText("examples/support/backlog-review.json", /docs-clarification-review/, "docs review record JSON");
+requireText("examples/support/backlog-review.json", /fixture-backlog-review/, "fixture review record JSON");
+requireText("examples/support/backlog-review.json", /rule-review-candidate-review/, "rule-review review record JSON");
+requireText("examples/support/backlog-review.json", /closed-no-action-review/, "closed no-action review record JSON");
 requireText("examples/support/response-snippets.md", /Maintainer Response Snippets/, "response snippets heading");
 requireText("examples/support/response-snippets.md", /response-snippets\.json/, "response snippets JSON link");
 requireText("examples/support/response-snippets.md", /docs-example/, "docs response outcome");
@@ -176,6 +195,7 @@ requireText("docs/MAINTAINER_TRIAGE.md", /report_gallery_feedback\.yml/, "report
 requireText("docs/MAINTAINER_TRIAGE.md", /examples\/support/, "maintainer playbook triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /support-lifecycle\.md/, "support lifecycle triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /outcome-prioritization\.md/, "support prioritization triage link");
+requireText("docs/MAINTAINER_TRIAGE.md", /backlog-review\.md/, "support backlog review triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /backlog-records\.md/, "support backlog records triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /closeout-checklist\.md/, "support closeout checklist triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /response-snippets\.md/, "maintainer response snippets triage link");
@@ -187,6 +207,7 @@ requireText("docs/PRODUCTION_READINESS.md", /support:check/, "support checker re
 requireText("README.md", /feedback-template\.md/, "feedback template README link");
 requireText("README.md", /support-lifecycle\.md/, "support lifecycle README link");
 requireText("README.md", /outcome-prioritization\.md/, "support prioritization README link");
+requireText("README.md", /backlog-review\.md/, "support backlog review README link");
 requireText("README.md", /backlog-records\.md/, "support backlog records README link");
 requireText("README.md", /closeout-checklist\.md/, "support closeout checklist README link");
 requireText("README.md", /examples\/support/, "maintainer triage playbook README link");
@@ -202,6 +223,7 @@ checkCloseoutChecklist();
 checkSupportLifecycle();
 checkOutcomePrioritization();
 checkBacklogRecords();
+checkBacklogReview();
 
 if (failures.length > 0) {
   console.error("Support triage check failed:");
@@ -804,6 +826,119 @@ function checkBacklogRecords() {
     for (const check of expectedRecord.checks) {
       if (!record.requiredChecks.includes(check)) {
         failures.push(`${record.id}.requiredChecks should include ${check}.`);
+      }
+    }
+  }
+}
+
+function checkBacklogReview() {
+  const path = "examples/support/backlog-review.json";
+  const reviews = readJson(path);
+  if (!reviews) {
+    return;
+  }
+
+  if (!Array.isArray(reviews) || reviews.length !== 4) {
+    failures.push(`${path} should contain exactly four support backlog review decisions.`);
+    return;
+  }
+
+  const expected = [
+    {
+      id: "docs-clarification-review",
+      sourceRecord: "docs-clarification-backlog-record",
+      reviewDecision: "remains-docs-clarification",
+      outcome: "docs-example",
+      checks: ["npm run reports:check", "npm run support:check"],
+      criteria: ["nearest checked report", "Observed output", "No rule behavior change"]
+    },
+    {
+      id: "fixture-backlog-review",
+      sourceRecord: "fixture-backlog-record",
+      reviewDecision: "remains-fixture-backlog",
+      outcome: "fixture-backlog",
+      checks: ["npm run fixtures:check", "npm run fixtures:report", "npm run support:check"],
+      criteria: ["smallest sanitized reproduction", "jester tune <rule-id> --json", "pass or quiet-pass fixture"]
+    },
+    {
+      id: "rule-review-candidate-review",
+      sourceRecord: "rule-review-candidate-backlog-record",
+      reviewDecision: "remains-rule-review-candidate",
+      outcome: "rule-review-candidate",
+      checks: ["npm run fixtures:report -- --markdown", "npm run support:check"],
+      criteria: ["At least two sanitized", "Fixture report or tune evidence", "supporting fixtures"]
+    },
+    {
+      id: "closed-no-action-review",
+      sourceRecord: "<backlog-record-id>",
+      reviewDecision: "closed-no-action",
+      outcome: "closed-no-action",
+      checks: ["npm run support:check"],
+      criteria: ["no longer reproduces", "private, or security-sensitive", "current checks still pass"]
+    }
+  ];
+  const seenIds = new Set();
+
+  for (const [index, review] of reviews.entries()) {
+    const expectedReview = expected[index];
+    if (review?.id !== expectedReview.id) {
+      failures.push(`${path} entry ${index + 1} should have id ${expectedReview.id}.`);
+      continue;
+    }
+
+    if (seenIds.has(review.id)) {
+      failures.push(`${path} has duplicate id ${review.id}.`);
+    }
+    seenIds.add(review.id);
+
+    if (review.sourceRecord !== expectedReview.sourceRecord) {
+      failures.push(`${review.id}.sourceRecord should be ${expectedReview.sourceRecord}.`);
+    }
+
+    if (review.reviewDecision !== expectedReview.reviewDecision) {
+      failures.push(`${review.id}.reviewDecision should be ${expectedReview.reviewDecision}.`);
+    }
+
+    if (review.outcome !== expectedReview.outcome) {
+      failures.push(`${review.id}.outcome should be ${expectedReview.outcome}.`);
+    }
+
+    if (typeof review.cadence !== "string" || review.cadence.length < 40) {
+      failures.push(`${review.id}.cadence should explain when to review the backlog item.`);
+    }
+
+    if (typeof review.nextAction !== "string" || review.nextAction.length < 50) {
+      failures.push(`${review.id}.nextAction should describe the maintainer action.`);
+    }
+
+    if (!Array.isArray(review.decisionCriteria) || review.decisionCriteria.length !== 3) {
+      failures.push(`${review.id}.decisionCriteria should contain exactly three criteria.`);
+    } else {
+      const criteriaText = review.decisionCriteria.join("\n");
+      for (const expectedCriterion of expectedReview.criteria) {
+        if (!criteriaText.includes(expectedCriterion)) {
+          failures.push(`${review.id}.decisionCriteria should include ${expectedCriterion}.`);
+        }
+      }
+    }
+
+    if (!Array.isArray(review.privacyReview) || review.privacyReview.length !== 3) {
+      failures.push(`${review.id}.privacyReview should contain exactly three privacy checks.`);
+    } else {
+      const privacyText = review.privacyReview.join("\n");
+      if (!/secret|private|SECURITY\.md|redacted|placeholder/i.test(privacyText)) {
+        failures.push(`${review.id}.privacyReview should include privacy and security routing guidance.`);
+      }
+    }
+
+    if (!Array.isArray(review.requiredChecks)) {
+      failures.push(`${review.id}.requiredChecks should be an array.`);
+      continue;
+    }
+
+    for (const check of expectedReview.checks) {
+      if (!review.requiredChecks.includes(check)) {
+        failures.push(`${review.id}.requiredChecks should include ${check}.`);
       }
     }
   }

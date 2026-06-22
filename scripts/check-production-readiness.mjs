@@ -94,6 +94,8 @@ for (const path of [
   "examples/reports/feedback-template.md",
   "examples/reports/report-gallery.json",
   "examples/support/README.md",
+  "examples/support/backlog-review.md",
+  "examples/support/backlog-review.json",
   "examples/support/backlog-records.md",
   "examples/support/backlog-records.json",
   "examples/support/closeout-checklist.md",
@@ -138,6 +140,7 @@ requireText("README.md", /response-snippets\.md/, "support response snippets lin
 requireText("README.md", /closeout-checklist\.md/, "support closeout checklist link");
 requireText("README.md", /support-lifecycle\.md/, "support lifecycle overview link");
 requireText("README.md", /outcome-prioritization\.md/, "support outcome prioritization link");
+requireText("README.md", /backlog-review\.md/, "support backlog review link");
 requireText("README.md", /backlog-records\.md/, "support backlog records link");
 requireText("README.md", /report gallery feedback/i, "report gallery feedback guidance");
 requireText("README.md", /License: PolyForm Noncommercial/, "the noncommercial license badge");
@@ -164,6 +167,7 @@ requireText("docs/PRODUCTION_READINESS.md", /response snippets/i, "support respo
 requireText("docs/PRODUCTION_READINESS.md", /closeout checklist/i, "support closeout checklist readiness");
 requireText("docs/PRODUCTION_READINESS.md", /support lifecycle overview/i, "support lifecycle overview readiness");
 requireText("docs/PRODUCTION_READINESS.md", /outcome prioritization guide/i, "support outcome prioritization readiness");
+requireText("docs/PRODUCTION_READINESS.md", /backlog review/i, "support backlog review readiness");
 requireText("docs/PRODUCTION_READINESS.md", /backlog records/i, "support backlog records readiness");
 requireText("docs/PRODUCTION_READINESS.md", /quiet-pass/, "quiet-pass fixture readiness");
 requireText("docs/CLI.md", /jester doctor --json/, "doctor JSON CLI docs");
@@ -193,6 +197,7 @@ requireText("docs/MAINTAINER_TRIAGE.md", /response-snippets\.md/, "support respo
 requireText("docs/MAINTAINER_TRIAGE.md", /closeout-checklist\.md/, "support closeout checklist link");
 requireText("docs/MAINTAINER_TRIAGE.md", /support-lifecycle\.md/, "support lifecycle overview link");
 requireText("docs/MAINTAINER_TRIAGE.md", /outcome-prioritization\.md/, "support outcome prioritization link");
+requireText("docs/MAINTAINER_TRIAGE.md", /backlog-review\.md/, "support backlog review link");
 requireText("docs/MAINTAINER_TRIAGE.md", /backlog-records\.md/, "support backlog records link");
 requireText("docs/MAINTAINER_TRIAGE.md", /docs-example/, "docs example triage outcome");
 requireText("docs/MAINTAINER_TRIAGE.md", /fixture-backlog/, "fixture backlog triage outcome");
@@ -230,6 +235,7 @@ requireText("examples/support/README.md", /response-snippets\.md/, "support resp
 requireText("examples/support/README.md", /closeout-checklist\.md/, "support closeout checklist link");
 requireText("examples/support/README.md", /support-lifecycle\.md/, "support lifecycle overview link");
 requireText("examples/support/README.md", /outcome-prioritization\.md/, "support outcome prioritization link");
+requireText("examples/support/README.md", /backlog-review\.md/, "support backlog review link");
 requireText("examples/support/README.md", /backlog-records\.md/, "support backlog records link");
 requireText("examples/support/README.md", /docs-example/, "support triage docs outcome");
 requireText("examples/support/README.md", /fixture-backlog/, "support triage fixture outcome");
@@ -278,6 +284,17 @@ requireText("examples/support/backlog-records.md", /SECURITY\.md/, "support back
 requireText("examples/support/backlog-records.json", /docs-clarification-backlog-record/, "support docs backlog record JSON");
 requireText("examples/support/backlog-records.json", /fixture-backlog-record/, "support fixture backlog record JSON");
 requireText("examples/support/backlog-records.json", /rule-review-candidate-backlog-record/, "support rule-review backlog record JSON");
+requireText("examples/support/backlog-review.md", /Support Backlog Review/, "support backlog review heading");
+requireText("examples/support/backlog-review.md", /backlog-review\.json/, "support backlog review JSON link");
+requireText("examples/support/backlog-review.md", /remains-docs-clarification/, "support docs backlog review decision");
+requireText("examples/support/backlog-review.md", /remains-fixture-backlog/, "support fixture backlog review decision");
+requireText("examples/support/backlog-review.md", /remains-rule-review-candidate/, "support rule-review backlog review decision");
+requireText("examples/support/backlog-review.md", /closed-no-action/, "support closed no-action review decision");
+requireText("examples/support/backlog-review.md", /SECURITY\.md/, "support backlog review security redirect");
+requireText("examples/support/backlog-review.json", /docs-clarification-review/, "support docs backlog review JSON");
+requireText("examples/support/backlog-review.json", /fixture-backlog-review/, "support fixture backlog review JSON");
+requireText("examples/support/backlog-review.json", /rule-review-candidate-review/, "support rule-review backlog review JSON");
+requireText("examples/support/backlog-review.json", /closed-no-action-review/, "support closed no-action review JSON");
 requireText("examples/tuning/README.md", /framework-tuning-cookbook\.json/, "framework tuning cookbook JSON link");
 requireText("examples/tuning/README.md", /framework:tuning:doctor/, "framework tuning doctor guidance");
 requireText("examples/tuning/README.md", /jester tune <rule-id> --json|jester tune [a-z0-9-]+ --json/, "framework tuning command guidance");
@@ -316,6 +333,7 @@ requireText("scripts/check-support-triage.mjs", /closeout-checklist\.json/, "sup
 requireText("scripts/check-support-triage.mjs", /support-lifecycle\.json/, "support lifecycle overview guard");
 requireText("scripts/check-support-triage.mjs", /outcome-prioritization\.json/, "support outcome prioritization guard");
 requireText("scripts/check-support-triage.mjs", /backlog-records\.json/, "support backlog records guard");
+requireText("scripts/check-support-triage.mjs", /backlog-review\.json/, "support backlog review guard");
 requireText("scripts/check-support-triage.mjs", /unsafeContentPatterns/, "support triage unsafe content checks");
 requireText("package.json", /"fixtures:check": "node scripts\/check-fixtures\.mjs"/, "fixture authoring check script");
 requireText("package.json", /"fixtures:report": "node scripts\/report-fixtures\.mjs"/, "fixture coverage report script");

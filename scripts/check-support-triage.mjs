@@ -38,6 +38,8 @@ const supportFiles = [
   "examples/support/response-snippets.json",
   "examples/support/support-lifecycle-map.md",
   "examples/support/support-lifecycle-map.json",
+  "examples/support/support-lifecycle-worksheet.md",
+  "examples/support/support-lifecycle-worksheet.json",
   "examples/support/support-lifecycle.md",
   "examples/support/support-lifecycle.json",
   "examples/support/triage-playbook.json",
@@ -93,8 +95,10 @@ requireText("examples/support/README.md", /Maintainer Triage Playbook/, "maintai
 requireText("examples/support/README.md", /backlog-review\.md/, "support backlog review link");
 requireText("examples/support/README.md", /backlog-records\.md/, "support backlog records link");
 requireText("examples/support/README.md", /support-lifecycle-map\.md/, "support lifecycle map link");
+requireText("examples/support/README.md", /support-lifecycle-worksheet\.md/, "support lifecycle worksheet link");
 requireText("examples/support/README.md", /support-lifecycle\.md/, "support lifecycle overview link");
 requireText("examples/support/README.md", /support-lifecycle-map\.json/, "support lifecycle map JSON link");
+requireText("examples/support/README.md", /support-lifecycle-worksheet\.json/, "support lifecycle worksheet JSON link");
 requireText("examples/support/README.md", /outcome-prioritization\.md/, "support outcome prioritization link");
 requireText("examples/support/README.md", /closeout-checklist\.md/, "support closeout checklist link");
 requireText("examples/support/README.md", /triage-playbook\.json/, "maintainer playbook JSON link");
@@ -124,6 +128,7 @@ requireText("examples/support/closeout-checklist.json", /fixture-backlog-closeou
 requireText("examples/support/closeout-checklist.json", /rule-review-closeout/, "rule-review closeout record");
 requireText("examples/support/support-lifecycle-map.md", /Support Lifecycle Map/, "support lifecycle map heading");
 requireText("examples/support/support-lifecycle-map.md", /support-lifecycle-map\.json/, "support lifecycle map JSON link");
+requireText("examples/support/support-lifecycle-map.md", /support-lifecycle-worksheet\.md/, "support lifecycle worksheet link");
 requireText("examples/support/support-lifecycle-map.md", /report\s*\n\s*-> triage\s*\n\s*-> response\s*\n\s*-> closeout\s*\n\s*-> prioritization\s*\n\s*-> backlog-record\s*\n\s*-> backlog-review/, "support lifecycle compact flow");
 requireText("examples/support/support-lifecycle-map.md", /Maintainer question/, "support lifecycle map scan questions");
 requireText("examples/support/support-lifecycle-map.md", /docs-clarification-backlog-record/, "docs backlog map record");
@@ -136,8 +141,28 @@ requireText("examples/support/support-lifecycle-map.json", /Support Lifecycle Ma
 requireText("examples/support/support-lifecycle-map.json", /backlog-record/, "support lifecycle map backlog-record stage");
 requireText("examples/support/support-lifecycle-map.json", /backlog-review/, "support lifecycle map backlog-review stage");
 requireText("examples/support/support-lifecycle-map.json", /closed-no-action/, "support lifecycle map closed no-action fallback");
+requireText("examples/support/support-lifecycle-worksheet.md", /Support Lifecycle Worksheet/, "support lifecycle worksheet heading");
+requireText("examples/support/support-lifecycle-worksheet.md", /support-lifecycle-worksheet\.json/, "support lifecycle worksheet JSON link");
+requireText("examples/support/support-lifecycle-worksheet.md", /support lifecycle map/, "support lifecycle worksheet map link");
+requireText("examples/support/support-lifecycle-worksheet.md", /## Report/, "worksheet report stage");
+requireText("examples/support/support-lifecycle-worksheet.md", /## Triage/, "worksheet triage stage");
+requireText("examples/support/support-lifecycle-worksheet.md", /## Response/, "worksheet response stage");
+requireText("examples/support/support-lifecycle-worksheet.md", /## Closeout/, "worksheet closeout stage");
+requireText("examples/support/support-lifecycle-worksheet.md", /## Prioritization/, "worksheet prioritization stage");
+requireText("examples/support/support-lifecycle-worksheet.md", /## Backlog Record/, "worksheet backlog record stage");
+requireText("examples/support/support-lifecycle-worksheet.md", /## Backlog Review/, "worksheet backlog review stage");
+requireText("examples/support/support-lifecycle-worksheet.md", /Record:/, "worksheet record fields");
+requireText("examples/support/support-lifecycle-worksheet.md", /Stop and route through|Stop if/, "worksheet stop conditions");
+requireText("examples/support/support-lifecycle-worksheet.md", /SECURITY\.md/, "worksheet security redirect");
+requireText("examples/support/support-lifecycle-worksheet.md", /npm run support:check/, "support checker worksheet command");
+requireText("examples/support/support-lifecycle-worksheet.json", /Support Lifecycle Worksheet/, "support lifecycle worksheet JSON title");
+requireText("examples/support/support-lifecycle-worksheet.json", /support-lifecycle-map\.json/, "worksheet source map");
+requireText("examples/support/support-lifecycle-worksheet.json", /docs-example/, "worksheet docs outcome");
+requireText("examples/support/support-lifecycle-worksheet.json", /closed-no-action/, "worksheet closed no-action outcome");
 requireText("examples/support/support-lifecycle.md", /Support Lifecycle Overview/, "support lifecycle heading");
 requireText("examples/support/support-lifecycle.md", /support-lifecycle-map\.md/, "support lifecycle map link");
+requireText("examples/support/support-lifecycle.md", /support-lifecycle-worksheet\.md/, "support lifecycle worksheet link");
+requireText("examples/support/support-lifecycle.md", /support-lifecycle-worksheet\.json/, "support lifecycle worksheet JSON link");
 requireText("examples/support/support-lifecycle.md", /support-lifecycle\.json/, "support lifecycle JSON link");
 requireText("examples/support/support-lifecycle.md", /report -> triage -> response -> closeout -> prioritization -> backlog-record -> backlog-review/, "support lifecycle flow");
 requireText("examples/support/support-lifecycle.md", /report gallery feedback template/, "report feedback lifecycle link");
@@ -220,6 +245,7 @@ requireText("docs/MAINTAINER_TRIAGE.md", /feedback-template\.md/, "feedback temp
 requireText("docs/MAINTAINER_TRIAGE.md", /report_gallery_feedback\.yml/, "report gallery issue template triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /examples\/support/, "maintainer playbook triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /support-lifecycle-map\.md/, "support lifecycle map triage link");
+requireText("docs/MAINTAINER_TRIAGE.md", /support-lifecycle-worksheet\.md/, "support lifecycle worksheet triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /support-lifecycle\.md/, "support lifecycle triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /outcome-prioritization\.md/, "support prioritization triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /backlog-review\.md/, "support backlog review triage link");
@@ -233,6 +259,7 @@ requireText("docs/MAINTAINER_TRIAGE.md", /npm(?:\.cmd)? run support:check/, "sup
 requireText("docs/PRODUCTION_READINESS.md", /support:check/, "support checker readiness");
 requireText("README.md", /feedback-template\.md/, "feedback template README link");
 requireText("README.md", /support-lifecycle-map\.md/, "support lifecycle map README link");
+requireText("README.md", /support-lifecycle-worksheet\.md/, "support lifecycle worksheet README link");
 requireText("README.md", /support-lifecycle\.md/, "support lifecycle README link");
 requireText("README.md", /outcome-prioritization\.md/, "support prioritization README link");
 requireText("README.md", /backlog-review\.md/, "support backlog review README link");
@@ -248,6 +275,7 @@ requireText("package.json", /npm run support:check/, "support checker in npm tes
 checkTriagePlaybook();
 checkResponseSnippets();
 checkCloseoutChecklist();
+checkSupportLifecycleWorksheet();
 checkSupportLifecycleMap();
 checkSupportLifecycle();
 checkOutcomePrioritization();
@@ -759,6 +787,89 @@ function checkSupportLifecycleMap() {
   } else {
     for (const check of requiredChecks) {
       if (!map.requiredChecks.includes(check)) {
+        failures.push(`${path}.requiredChecks should include ${check}.`);
+      }
+    }
+  }
+}
+
+function checkSupportLifecycleWorksheet() {
+  const path = "examples/support/support-lifecycle-worksheet.json";
+  const worksheet = readJson(path);
+  if (!worksheet) {
+    return;
+  }
+
+  const expectedStageIds = ["report", "triage", "response", "closeout", "prioritization", "backlog-record", "backlog-review"];
+  const expectedArtifacts = [
+    "examples/reports/feedback-template.md",
+    "examples/support/triage-playbook.json",
+    "examples/support/response-snippets.json",
+    "examples/support/closeout-checklist.json",
+    "examples/support/outcome-prioritization.json",
+    "examples/support/backlog-records.json",
+    "examples/support/backlog-review.json"
+  ];
+  const expectedOutcomes = ["docs-example", "fixture-backlog", "rule-review-candidate", "closed-no-action"];
+
+  if (worksheet.title !== "Support Lifecycle Worksheet") {
+    failures.push(`${path}.title should be Support Lifecycle Worksheet.`);
+  }
+
+  if (worksheet.sourceMap !== "examples/support/support-lifecycle-map.json") {
+    failures.push(`${path}.sourceMap should point at examples/support/support-lifecycle-map.json.`);
+  }
+
+  if (!Array.isArray(worksheet.flow) || worksheet.flow.join("|") !== expectedStageIds.join("|")) {
+    failures.push(`${path}.flow should contain the support lifecycle order.`);
+  }
+
+  if (!Array.isArray(worksheet.stages) || worksheet.stages.length !== expectedStageIds.length) {
+    failures.push(`${path}.stages should contain seven lifecycle checklist stages.`);
+  } else {
+    for (const [index, stage] of worksheet.stages.entries()) {
+      if (stage?.id !== expectedStageIds[index]) {
+        failures.push(`${path}.stages[${index}].id should be ${expectedStageIds[index]}.`);
+      }
+
+      if (stage?.artifact !== expectedArtifacts[index]) {
+        failures.push(`${path}.stages[${index}].artifact should be ${expectedArtifacts[index]}.`);
+      }
+
+      if (!Array.isArray(stage?.checklist) || stage.checklist.length !== 3) {
+        failures.push(`${path}.stages[${index}].checklist should contain exactly three checklist items.`);
+      } else {
+        for (const [itemIndex, item] of stage.checklist.entries()) {
+          if (typeof item !== "string" || item.length < 35) {
+            failures.push(`${path}.stages[${index}].checklist[${itemIndex}] should be a useful maintainer check.`);
+          }
+        }
+      }
+
+      if (!Array.isArray(stage?.record) || stage.record.length < 3) {
+        failures.push(`${path}.stages[${index}].record should name at least three fields to record.`);
+      }
+
+      if (typeof stage?.stopIf !== "string" || !/private|secret|SECURITY\.md|sensitive|exploit/i.test(stage.stopIf)) {
+        failures.push(`${path}.stages[${index}].stopIf should include public-safe stop guidance.`);
+      }
+    }
+  }
+
+  if (!Array.isArray(worksheet.outcomes) || worksheet.outcomes.join("|") !== expectedOutcomes.join("|")) {
+    failures.push(`${path}.outcomes should include docs-example, fixture-backlog, rule-review-candidate, and closed-no-action.`);
+  }
+
+  if (typeof worksheet.privacyGuardrail !== "string" || !/secrets|private|customer data|SECURITY\.md|exploitable/i.test(worksheet.privacyGuardrail)) {
+    failures.push(`${path}.privacyGuardrail should include public-safe support guidance.`);
+  }
+
+  const requiredChecks = ["npm run support:check", "npm run production:check"];
+  if (!Array.isArray(worksheet.requiredChecks)) {
+    failures.push(`${path}.requiredChecks should be an array.`);
+  } else {
+    for (const check of requiredChecks) {
+      if (!worksheet.requiredChecks.includes(check)) {
         failures.push(`${path}.requiredChecks should include ${check}.`);
       }
     }

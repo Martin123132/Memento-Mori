@@ -1,0 +1,98 @@
+{
+  "title": "Support Lifecycle Worksheet",
+  "sourceMap": "examples/support/support-lifecycle-map.json",
+  "flow": [
+    "report",
+    "triage",
+    "response",
+    "closeout",
+    "prioritization",
+    "backlog-record",
+    "backlog-review"
+  ],
+  "stages": [
+    {
+      "id": "report",
+      "artifact": "examples/reports/feedback-template.md",
+      "checklist": [
+        "Confirm the issue uses a redacted report, false-positive, bug, or report-gallery feedback template.",
+        "Confirm the report includes a package version, nearest checked example or minimal input, and redacted doctor --json output when useful.",
+        "Confirm no secrets, private code, private paths, customer data, full logs, unredacted SARIF, or exploitable details are present."
+      ],
+      "record": ["source issue", "package version", "sanitized summary", "safe to discuss publicly"],
+      "stopIf": "The report includes sensitive material or exploitable detail; route through SECURITY.md instead of the public lifecycle."
+    },
+    {
+      "id": "triage",
+      "artifact": "examples/support/triage-playbook.json",
+      "checklist": [
+        "Reproduce or compare the smallest public-safe summary against latest or local main.",
+        "Identify whether the report is expected docs behavior, a plausible fixture boundary, or a repeated rule-review pattern.",
+        "Choose exactly one lifecycle outcome: docs-example, fixture-backlog, or rule-review-candidate."
+      ],
+      "record": ["selected outcome", "rule id or report id", "why the outcome fits"],
+      "stopIf": "The report cannot be reproduced or reduced without private material."
+    },
+    {
+      "id": "response",
+      "artifact": "examples/support/response-snippets.json",
+      "checklist": [
+        "Pick the matching checked response snippet for the selected outcome.",
+        "Ask only for redacted diagnostics such as doctor --json, summary, or tune <rule-id> --json.",
+        "Give the reporter one next command or one public-safe follow-up link."
+      ],
+      "record": ["snippet id", "next command", "public-safe follow-up link"],
+      "stopIf": "The response would require secrets, private repo code, full logs, or private paths."
+    },
+    {
+      "id": "closeout",
+      "artifact": "examples/support/closeout-checklist.json",
+      "checklist": [
+        "Record whether the docs clarification shipped or queued, fixture backlog was created, or rule-review candidate was opened.",
+        "Link only public-safe artifacts, placeholders, or sanitized issue references.",
+        "Keep rule behavior unchanged unless a separate checked rule-review change exists."
+      ],
+      "record": ["closeout id", "decision status", "follow-up link placeholder"],
+      "stopIf": "The closeout cannot explain the decision without private context."
+    },
+    {
+      "id": "prioritization",
+      "artifact": "examples/support/outcome-prioritization.json",
+      "checklist": [
+        "Use the outcome prioritization guide to set low, medium, or high priority.",
+        "Confirm the minimum evidence threshold for the selected outcome is met.",
+        "Confirm there is enough public-safe evidence before opening follow-up work."
+      ],
+      "record": ["priority", "minimum evidence", "not enough evidence guardrail"],
+      "stopIf": "The priority depends on private reports that cannot be summarized safely."
+    },
+    {
+      "id": "backlog-record",
+      "artifact": "examples/support/backlog-records.json",
+      "checklist": [
+        "Create a public-safe backlog record only after closeout and prioritization agree.",
+        "Include the source closeout, public title, public summary, expected next action, and required checks.",
+        "Include privacy review notes showing the artifact is redacted and safe to keep public."
+      ],
+      "record": ["backlog record id", "backlog type", "next action", "required checks"],
+      "stopIf": "The backlog item would reveal private code, customer data, or a live exploit path."
+    },
+    {
+      "id": "backlog-review",
+      "artifact": "examples/support/backlog-review.json",
+      "checklist": [
+        "Revisit whether the item remains docs clarification, fixture backlog, or rule-review candidate.",
+        "Close as closed-no-action when evidence is stale, duplicated, private, security-sensitive, or already resolved.",
+        "Confirm current checks still pass before keeping or closing the item."
+      ],
+      "record": ["review decision", "review cadence", "next action", "checks run"],
+      "stopIf": "The review uncovers sensitive details that belong in the private security flow."
+    }
+  ],
+  "outcomes": ["docs-example", "fixture-backlog", "rule-review-candidate", "closed-no-action"],
+  "privacyGuardrail": "Do not paste secrets, private code, private paths, customer data, full logs, unredacted SARIF, package publishing credentials, MCP data exposure, or exploitable security details into the public worksheet.",
+  "requiredChecks": [
+    "npm run support:check",
+    "npm run production:check"
+  ]
+}

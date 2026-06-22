@@ -2,7 +2,7 @@
 
 This is the compact public-safe map for maintainers who need the whole support chain without reading every checklist first.
 
-The checked source is [support-lifecycle-map.json](support-lifecycle-map.json). Use the full [support lifecycle overview](support-lifecycle.md) when you need the outcome table and per-stage artifact references.
+The checked source is [support-lifecycle-map.json](support-lifecycle-map.json). Use the [support lifecycle worksheet](support-lifecycle-worksheet.md) during an active review, and use the full [support lifecycle overview](support-lifecycle.md) when you need the outcome table and per-stage artifact references.
 
 ```text
 report

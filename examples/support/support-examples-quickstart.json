@@ -1,0 +1,104 @@
+{
+  "title": "Support Examples Quickstart",
+  "sourceIndex": "examples/support/support-examples-index.json",
+  "duration": "60 seconds",
+  "steps": [
+    {
+      "id": "check-public-safety",
+      "timebox": "0-10s",
+      "action": "Check whether the incoming report is public-safe before using the public lifecycle.",
+      "artifact": "examples/reports/feedback-template.md",
+      "decision": "If the report has secrets, private code, private paths, full logs, or exploitable details, stop and route through SECURITY.md.",
+      "requiredMarkers": ["redacted report", "SECURITY.md", "no secrets"]
+    },
+    {
+      "id": "scan-lifecycle-map",
+      "timebox": "10-20s",
+      "action": "Scan the lifecycle shape before opening detailed checklists.",
+      "artifact": "examples/support/support-lifecycle-map.md",
+      "decision": "Confirm the report can move through report, triage, response, closeout, prioritization, backlog record, and backlog review.",
+      "requiredMarkers": ["report -> triage -> response -> closeout -> prioritization -> backlog-record -> backlog-review", "SECURITY.md"]
+    },
+    {
+      "id": "open-blank-worksheet",
+      "timebox": "20-35s",
+      "action": "Open the blank worksheet for the active public report.",
+      "artifact": "examples/support/support-lifecycle-worksheet.md",
+      "decision": "Record stage fields, checklist answers, and stop conditions for the active report.",
+      "requiredMarkers": ["record fields", "stop conditions", "npm run support:check"]
+    },
+    {
+      "id": "compare-filled-example",
+      "timebox": "35-45s",
+      "action": "Compare against the completed synthetic docs-example path.",
+      "artifact": "examples/support/support-lifecycle-filled-example.md",
+      "decision": "Use synthetic-report-gallery-docs-example only as a public-safe shape, not as user evidence.",
+      "requiredMarkers": ["synthetic-report-gallery-docs-example", "placeholder links", "privacy review notes"]
+    },
+    {
+      "id": "record-backlog",
+      "timebox": "45-55s",
+      "action": "Create or skip the public-safe backlog record after closeout and prioritization.",
+      "artifact": "examples/support/backlog-records.md",
+      "decision": "Create a backlog artifact only when closeout and prioritization agree and public-safe evidence exists.",
+      "requiredMarkers": ["docs-clarification-backlog-record", "fixture-backlog-record", "rule-review-candidate-backlog-record"]
+    },
+    {
+      "id": "schedule-backlog-review",
+      "timebox": "55-60s",
+      "action": "Schedule or record the backlog review decision.",
+      "artifact": "examples/support/backlog-review.md",
+      "decision": "Keep the item active only while public evidence still holds; otherwise close as closed-no-action.",
+      "requiredMarkers": ["remains-docs-clarification", "remains-fixture-backlog", "remains-rule-review-candidate", "closed-no-action"]
+    }
+  ],
+  "lifecyclePrompts": [
+    {
+      "stage": "report",
+      "ask": "Is it redacted, minimal, and safe to discuss publicly?",
+      "artifact": "examples/reports/feedback-template.md"
+    },
+    {
+      "stage": "triage",
+      "ask": "Is this docs clarification, fixture backlog, or rule-review work?",
+      "artifact": "examples/support/triage-playbook.json"
+    },
+    {
+      "stage": "response",
+      "ask": "Which checked reply gives one next command or safe link?",
+      "artifact": "examples/support/response-snippets.json"
+    },
+    {
+      "stage": "closeout",
+      "ask": "Was the immediate support decision recorded?",
+      "artifact": "examples/support/closeout-checklist.json"
+    },
+    {
+      "stage": "prioritization",
+      "ask": "Is follow-up low, medium, or high priority?",
+      "artifact": "examples/support/outcome-prioritization.json"
+    },
+    {
+      "stage": "backlog-record",
+      "ask": "Is there a redacted backlog artifact with required checks?",
+      "artifact": "examples/support/backlog-records.json"
+    },
+    {
+      "stage": "backlog-review",
+      "ask": "Does the item remain active or close with no action?",
+      "artifact": "examples/support/backlog-review.json"
+    }
+  ],
+  "publicSafeHandoffRules": [
+    "Treat this quickstart as a routing card, not a place to paste report details.",
+    "Keep examples synthetic or placeholder-based.",
+    "Use only sanitized summaries, redacted diagnostics, and public issue links.",
+    "Do not include secrets, private code, private paths, customer data, full logs, unredacted SARIF, package publishing credentials, MCP data exposure, or exploitable security details.",
+    "Route sensitive reports through SECURITY.md."
+  ],
+  "requiredChecks": [
+    "npm run support:check",
+    "npm run production:check"
+  ],
+  "privacyGuardrail": "Keep the quickstart public-safe and synthetic: use placeholders, avoid secrets and private details, and route credential exposure, package publishing compromise, MCP data exposure, command execution risk, or exploitable security details through SECURITY.md."
+}

@@ -1,5 +1,22 @@
 {
   "title": "Support Examples Index",
+  "handoffCard": {
+    "label": "Support Examples Quickstart",
+    "file": "examples/support/support-examples-quickstart.md",
+    "source": "examples/support/support-examples-quickstart.json",
+    "useWhen": "Use during a live maintainer handoff when an incoming report needs a 60-second route to the right support artifacts.",
+    "requiredMarkers": [
+      "60 seconds",
+      "support-lifecycle-map.md",
+      "support-lifecycle-worksheet.md",
+      "support-lifecycle-filled-example.md",
+      "backlog-records.md",
+      "backlog-review.md",
+      "SECURITY.md"
+    ],
+    "publicSafe": true,
+    "synthetic": true
+  },
   "artifacts": [
     {
       "id": "lifecycle-map",

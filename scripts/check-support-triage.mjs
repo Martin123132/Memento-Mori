@@ -36,6 +36,8 @@ const supportFiles = [
   "examples/support/README.md",
   "examples/support/response-snippets.md",
   "examples/support/response-snippets.json",
+  "examples/support/support-examples-quickstart.md",
+  "examples/support/support-examples-quickstart.json",
   "examples/support/support-examples-index.md",
   "examples/support/support-examples-index.json",
   "examples/support/support-lifecycle-map.md",
@@ -98,6 +100,8 @@ requireText("examples/reports/README.md", /examples\/support|Maintainer Triage P
 requireText("examples/support/README.md", /Maintainer Triage Playbook/, "maintainer playbook heading");
 requireText("examples/support/README.md", /backlog-review\.md/, "support backlog review link");
 requireText("examples/support/README.md", /backlog-records\.md/, "support backlog records link");
+requireText("examples/support/README.md", /support-examples-quickstart\.md/, "support examples quickstart link");
+requireText("examples/support/README.md", /support-examples-quickstart\.json/, "support examples quickstart JSON link");
 requireText("examples/support/README.md", /support-examples-index\.md/, "support examples index link");
 requireText("examples/support/README.md", /support-examples-index\.json/, "support examples index JSON link");
 requireText("examples/support/README.md", /support-lifecycle-map\.md/, "support lifecycle map link");
@@ -134,8 +138,29 @@ requireText("examples/support/closeout-checklist.md", /SECURITY\.md/, "closeout 
 requireText("examples/support/closeout-checklist.json", /docs-clarification-closeout/, "docs closeout record");
 requireText("examples/support/closeout-checklist.json", /fixture-backlog-closeout/, "fixture closeout record");
 requireText("examples/support/closeout-checklist.json", /rule-review-closeout/, "rule-review closeout record");
+requireText("examples/support/support-examples-quickstart.md", /Support Examples Quickstart/, "support examples quickstart heading");
+requireText("examples/support/support-examples-quickstart.md", /support-examples-quickstart\.json/, "support examples quickstart JSON link");
+requireText("examples/support/support-examples-quickstart.md", /60-Second Path/, "support examples quickstart path");
+requireText("examples/support/support-examples-quickstart.md", /support-lifecycle-map\.md/, "support examples quickstart map link");
+requireText("examples/support/support-examples-quickstart.md", /support-lifecycle-worksheet\.md/, "support examples quickstart worksheet link");
+requireText("examples/support/support-examples-quickstart.md", /support-lifecycle-filled-example\.md/, "support examples quickstart filled example link");
+requireText("examples/support/support-examples-quickstart.md", /backlog-records\.md/, "support examples quickstart backlog record link");
+requireText("examples/support/support-examples-quickstart.md", /backlog-review\.md/, "support examples quickstart backlog review link");
+requireText("examples/support/support-examples-quickstart.md", /0-10s/, "support examples quickstart first timebox");
+requireText("examples/support/support-examples-quickstart.md", /55-60s/, "support examples quickstart final timebox");
+requireText("examples/support/support-examples-quickstart.md", /synthetic-report-gallery-docs-example/, "support examples quickstart synthetic marker");
+requireText("examples/support/support-examples-quickstart.md", /SECURITY\.md/, "support examples quickstart security redirect");
+requireText("examples/support/support-examples-quickstart.md", /npm run support:check/, "support examples quickstart support check");
+requireText("examples/support/support-examples-quickstart.json", /Support Examples Quickstart/, "support examples quickstart JSON title");
+requireText("examples/support/support-examples-quickstart.json", /support-examples-index\.json/, "support examples quickstart source index");
+requireText("examples/support/support-examples-quickstart.json", /support-lifecycle-map\.md/, "support examples quickstart JSON map link");
+requireText("examples/support/support-examples-quickstart.json", /support-lifecycle-worksheet\.md/, "support examples quickstart JSON worksheet link");
+requireText("examples/support/support-examples-quickstart.json", /support-lifecycle-filled-example\.md/, "support examples quickstart JSON filled example link");
+requireText("examples/support/support-examples-quickstart.json", /closed-no-action/, "support examples quickstart JSON closed no-action");
 requireText("examples/support/support-examples-index.md", /Support Examples Index/, "support examples index heading");
 requireText("examples/support/support-examples-index.md", /support-examples-index\.json/, "support examples index JSON link");
+requireText("examples/support/support-examples-index.md", /support-examples-quickstart\.md/, "support examples quickstart link");
+requireText("examples/support/support-examples-index.md", /60-Second Handoff/, "support examples index handoff section");
 requireText("examples/support/support-examples-index.md", /support-lifecycle-map\.md/, "support examples index map link");
 requireText("examples/support/support-examples-index.md", /support-lifecycle-worksheet\.md/, "support examples index worksheet link");
 requireText("examples/support/support-examples-index.md", /support-lifecycle-filled-example\.md/, "support examples index filled example link");
@@ -146,6 +171,8 @@ requireText("examples/support/support-examples-index.md", /synthetic-report-gall
 requireText("examples/support/support-examples-index.md", /SECURITY\.md/, "support examples index security redirect");
 requireText("examples/support/support-examples-index.md", /npm run support:check/, "support examples index support check");
 requireText("examples/support/support-examples-index.json", /Support Examples Index/, "support examples index JSON title");
+requireText("examples/support/support-examples-index.json", /support-examples-quickstart\.md/, "support examples index JSON quickstart link");
+requireText("examples/support/support-examples-index.json", /support-examples-quickstart\.json/, "support examples index JSON quickstart source");
 requireText("examples/support/support-examples-index.json", /support-lifecycle-map\.md/, "support examples index JSON map link");
 requireText("examples/support/support-examples-index.json", /support-lifecycle-worksheet\.md/, "support examples index JSON worksheet link");
 requireText("examples/support/support-examples-index.json", /support-lifecycle-filled-example\.md/, "support examples index JSON filled example link");
@@ -296,6 +323,7 @@ requireText("examples/support/response-snippets.json", /rule-review-candidate-re
 requireText("docs/MAINTAINER_TRIAGE.md", /feedback-template\.md/, "feedback template triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /report_gallery_feedback\.yml/, "report gallery issue template triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /examples\/support/, "maintainer playbook triage link");
+requireText("docs/MAINTAINER_TRIAGE.md", /support-examples-quickstart\.md/, "support examples quickstart triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /support-examples-index\.md/, "support examples index triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /support-lifecycle-map\.md/, "support lifecycle map triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /support-lifecycle-worksheet\.md/, "support lifecycle worksheet triage link");
@@ -312,6 +340,7 @@ requireText("docs/MAINTAINER_TRIAGE.md", /rule-review-candidate/, "rule review t
 requireText("docs/MAINTAINER_TRIAGE.md", /npm(?:\.cmd)? run support:check/, "support checker triage command");
 requireText("docs/PRODUCTION_READINESS.md", /support:check/, "support checker readiness");
 requireText("README.md", /feedback-template\.md/, "feedback template README link");
+requireText("README.md", /support-examples-quickstart\.md/, "support examples quickstart README link");
 requireText("README.md", /support-examples-index\.md/, "support examples index README link");
 requireText("README.md", /support-lifecycle-map\.md/, "support lifecycle map README link");
 requireText("README.md", /support-lifecycle-worksheet\.md/, "support lifecycle worksheet README link");
@@ -331,6 +360,7 @@ requireText("package.json", /npm run support:check/, "support checker in npm tes
 checkTriagePlaybook();
 checkResponseSnippets();
 checkCloseoutChecklist();
+checkSupportExamplesQuickstart();
 checkSupportExamplesIndex();
 checkSupportLifecycleWorksheet();
 checkSupportLifecycleFilledExample();
@@ -974,9 +1004,45 @@ function checkSupportExamplesIndex() {
     "examples/support/backlog-records.json",
     "examples/support/backlog-review.json"
   ];
+  const expectedHandoffMarkers = [
+    "60 seconds",
+    "support-lifecycle-map.md",
+    "support-lifecycle-worksheet.md",
+    "support-lifecycle-filled-example.md",
+    "backlog-records.md",
+    "backlog-review.md",
+    "SECURITY.md"
+  ];
 
   if (index.title !== "Support Examples Index") {
     failures.push(`${path}.title should be Support Examples Index.`);
+  }
+
+  if (index.handoffCard?.file !== "examples/support/support-examples-quickstart.md") {
+    failures.push(`${path}.handoffCard.file should point at examples/support/support-examples-quickstart.md.`);
+  }
+
+  if (index.handoffCard?.source !== "examples/support/support-examples-quickstart.json") {
+    failures.push(`${path}.handoffCard.source should point at examples/support/support-examples-quickstart.json.`);
+  }
+
+  if (index.handoffCard?.publicSafe !== true || index.handoffCard?.synthetic !== true) {
+    failures.push(`${path}.handoffCard should be publicSafe and synthetic.`);
+  }
+
+  if (typeof index.handoffCard?.useWhen !== "string" || index.handoffCard.useWhen.length < 60) {
+    failures.push(`${path}.handoffCard.useWhen should explain when maintainers use the quickstart.`);
+  }
+
+  if (!Array.isArray(index.handoffCard?.requiredMarkers)) {
+    failures.push(`${path}.handoffCard.requiredMarkers should be an array.`);
+  } else {
+    const markerText = index.handoffCard.requiredMarkers.join("\n");
+    for (const marker of expectedHandoffMarkers) {
+      if (!markerText.includes(marker)) {
+        failures.push(`${path}.handoffCard.requiredMarkers should include ${marker}.`);
+      }
+    }
   }
 
   if (!Array.isArray(index.artifacts) || index.artifacts.length !== expectedArtifacts.length) {
@@ -1067,6 +1133,127 @@ function checkSupportExamplesIndex() {
 
   if (typeof index.privacyGuardrail !== "string" || !/synthetic|placeholder|secrets|private|SECURITY\.md|exploitable/i.test(index.privacyGuardrail)) {
     failures.push(`${path}.privacyGuardrail should include public-safe support guidance.`);
+  }
+}
+
+function checkSupportExamplesQuickstart() {
+  const path = "examples/support/support-examples-quickstart.json";
+  const quickstart = readJson(path);
+  if (!quickstart) {
+    return;
+  }
+
+  const expectedSteps = [
+    { id: "check-public-safety", timebox: "0-10s", artifact: "examples/reports/feedback-template.md", markers: ["redacted report", "SECURITY.md", "no secrets"] },
+    { id: "scan-lifecycle-map", timebox: "10-20s", artifact: "examples/support/support-lifecycle-map.md", markers: ["report -> triage -> response -> closeout -> prioritization -> backlog-record -> backlog-review", "SECURITY.md"] },
+    { id: "open-blank-worksheet", timebox: "20-35s", artifact: "examples/support/support-lifecycle-worksheet.md", markers: ["record fields", "stop conditions", "npm run support:check"] },
+    { id: "compare-filled-example", timebox: "35-45s", artifact: "examples/support/support-lifecycle-filled-example.md", markers: ["synthetic-report-gallery-docs-example", "placeholder links", "privacy review notes"] },
+    { id: "record-backlog", timebox: "45-55s", artifact: "examples/support/backlog-records.md", markers: ["docs-clarification-backlog-record", "fixture-backlog-record", "rule-review-candidate-backlog-record"] },
+    { id: "schedule-backlog-review", timebox: "55-60s", artifact: "examples/support/backlog-review.md", markers: ["remains-docs-clarification", "remains-fixture-backlog", "remains-rule-review-candidate", "closed-no-action"] }
+  ];
+  const expectedStageIds = ["report", "triage", "response", "closeout", "prioritization", "backlog-record", "backlog-review"];
+  const expectedStageArtifacts = [
+    "examples/reports/feedback-template.md",
+    "examples/support/triage-playbook.json",
+    "examples/support/response-snippets.json",
+    "examples/support/closeout-checklist.json",
+    "examples/support/outcome-prioritization.json",
+    "examples/support/backlog-records.json",
+    "examples/support/backlog-review.json"
+  ];
+
+  if (quickstart.title !== "Support Examples Quickstart") {
+    failures.push(`${path}.title should be Support Examples Quickstart.`);
+  }
+
+  if (quickstart.sourceIndex !== "examples/support/support-examples-index.json") {
+    failures.push(`${path}.sourceIndex should point at examples/support/support-examples-index.json.`);
+  }
+
+  if (quickstart.duration !== "60 seconds") {
+    failures.push(`${path}.duration should be 60 seconds.`);
+  }
+
+  if (!Array.isArray(quickstart.steps) || quickstart.steps.length !== expectedSteps.length) {
+    failures.push(`${path}.steps should contain six timeboxed handoff steps.`);
+  } else {
+    for (const [index, step] of quickstart.steps.entries()) {
+      const expected = expectedSteps[index];
+      if (step?.id !== expected.id) {
+        failures.push(`${path}.steps[${index}].id should be ${expected.id}.`);
+      }
+
+      if (step?.timebox !== expected.timebox) {
+        failures.push(`${path}.steps[${index}].timebox should be ${expected.timebox}.`);
+      }
+
+      if (step?.artifact !== expected.artifact) {
+        failures.push(`${path}.steps[${index}].artifact should be ${expected.artifact}.`);
+      }
+
+      if (typeof step?.action !== "string" || step.action.length < 35) {
+        failures.push(`${path}.steps[${index}].action should be useful.`);
+      }
+
+      if (typeof step?.decision !== "string" || step.decision.length < 45) {
+        failures.push(`${path}.steps[${index}].decision should explain the maintainer decision.`);
+      }
+
+      if (!Array.isArray(step?.requiredMarkers)) {
+        failures.push(`${path}.steps[${index}].requiredMarkers should be an array.`);
+      } else {
+        const markerText = step.requiredMarkers.join("\n");
+        for (const marker of expected.markers) {
+          if (!markerText.includes(marker)) {
+            failures.push(`${path}.steps[${index}].requiredMarkers should include ${marker}.`);
+          }
+        }
+      }
+    }
+  }
+
+  if (!Array.isArray(quickstart.lifecyclePrompts) || quickstart.lifecyclePrompts.length !== expectedStageIds.length) {
+    failures.push(`${path}.lifecyclePrompts should contain seven lifecycle prompts.`);
+  } else {
+    for (const [index, prompt] of quickstart.lifecyclePrompts.entries()) {
+      if (prompt?.stage !== expectedStageIds[index]) {
+        failures.push(`${path}.lifecyclePrompts[${index}].stage should be ${expectedStageIds[index]}.`);
+      }
+
+      if (prompt?.artifact !== expectedStageArtifacts[index]) {
+        failures.push(`${path}.lifecyclePrompts[${index}].artifact should be ${expectedStageArtifacts[index]}.`);
+      }
+
+      if (typeof prompt?.ask !== "string" || prompt.ask.length < 30) {
+        failures.push(`${path}.lifecyclePrompts[${index}].ask should be a useful prompt.`);
+      }
+    }
+  }
+
+  if (!Array.isArray(quickstart.publicSafeHandoffRules) || quickstart.publicSafeHandoffRules.length < 5) {
+    failures.push(`${path}.publicSafeHandoffRules should include at least five public-safe rules.`);
+  } else {
+    const rulesText = quickstart.publicSafeHandoffRules.join("\n");
+    for (const marker of ["synthetic", "placeholder", "redacted", "secrets", "SECURITY.md"]) {
+      if (!rulesText.includes(marker)) {
+        failures.push(`${path}.publicSafeHandoffRules should include ${marker}.`);
+      }
+    }
+  }
+
+  const requiredChecks = ["npm run support:check", "npm run production:check"];
+  if (!Array.isArray(quickstart.requiredChecks)) {
+    failures.push(`${path}.requiredChecks should be an array.`);
+  } else {
+    for (const check of requiredChecks) {
+      if (!quickstart.requiredChecks.includes(check)) {
+        failures.push(`${path}.requiredChecks should include ${check}.`);
+      }
+    }
+  }
+
+  if (typeof quickstart.privacyGuardrail !== "string" || !/synthetic|placeholder|secrets|private|SECURITY\.md|exploitable/i.test(quickstart.privacyGuardrail)) {
+    failures.push(`${path}.privacyGuardrail should include public-safe handoff guidance.`);
   }
 }
 

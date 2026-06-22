@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.102
+
+- Added a checked public-safe support examples quickstart for a 60-second maintainer handoff from incoming report to lifecycle map, blank worksheet, filled synthetic example, backlog record, and backlog review.
+- Added `support-examples-quickstart.json` plus `npm run support:check` and production-readiness coverage so timeboxed steps, lifecycle prompts, public-safe handoff rules, and required checks stay aligned.
+- Updated README, maintainer triage docs, support examples, production-readiness docs, roadmap, and release notes for the quickstart handoff card.
+
 ## 0.1.101
 
 - Added a checked public-safe support examples index so maintainers can choose between the lifecycle map, blank worksheet, and filled synthetic example.

@@ -2,7 +2,7 @@
 
 This playbook shows how to handle sanitized adopter reports without turning every surprise into an immediate rule change. It pairs with [docs/MAINTAINER_TRIAGE.md](../../docs/MAINTAINER_TRIAGE.md), the [report gallery feedback template](../reports/feedback-template.md), and the GitHub issue templates.
 
-The checked source is [triage-playbook.json](triage-playbook.json). Use [response-snippets.md](response-snippets.md) for copy-paste replies after a report is classified. The snippet source is [response-snippets.json](response-snippets.json).
+The checked source is [triage-playbook.json](triage-playbook.json). Use [response-snippets.md](response-snippets.md) for copy-paste replies after a report is classified. The snippet source is [response-snippets.json](response-snippets.json). Use [closeout-checklist.md](closeout-checklist.md) to record what happened after the response. The closeout source is [closeout-checklist.json](closeout-checklist.json).
 
 | ID | Source | Classification | Follow-up |
 | --- | --- | --- | --- |
@@ -22,10 +22,11 @@ The checked source is [triage-playbook.json](triage-playbook.json). Use [respons
    - `rule-review-candidate`: collect repeated sanitized reports before changing guidance or matching.
 6. Close with the next command the user can run.
 7. Use the matching response snippet so replies stay public-safe and consistent.
+8. Record the closeout with the matching checklist entry: docs clarification shipped or queued, fixture backlog created, or rule-review candidate opened.
 
 ## Checks
 
-Run this after editing support docs, issue templates, the playbook, or response snippets:
+Run this after editing support docs, issue templates, the playbook, response snippets, or closeout checklist:
 
 ```powershell
 npm run support:check

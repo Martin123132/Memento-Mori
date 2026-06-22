@@ -94,6 +94,8 @@ for (const path of [
   "examples/reports/feedback-template.md",
   "examples/reports/report-gallery.json",
   "examples/support/README.md",
+  "examples/support/closeout-checklist.md",
+  "examples/support/closeout-checklist.json",
   "examples/support/response-snippets.md",
   "examples/support/response-snippets.json",
   "examples/support/triage-playbook.json",
@@ -127,6 +129,7 @@ requireText("README.md", /examples\/reports/, "report gallery link");
 requireText("README.md", /feedback-template\.md/, "report gallery feedback template link");
 requireText("README.md", /examples\/support/, "support triage playbook link");
 requireText("README.md", /response-snippets\.md/, "support response snippets link");
+requireText("README.md", /closeout-checklist\.md/, "support closeout checklist link");
 requireText("README.md", /report gallery feedback/i, "report gallery feedback guidance");
 requireText("README.md", /License: PolyForm Noncommercial/, "the noncommercial license badge");
 requireText("docs/PRODUCTION_READINESS.md", /npm package/i, "npm package readiness");
@@ -149,6 +152,7 @@ requireText("docs/PRODUCTION_READINESS.md", /reports:check/, "report gallery rea
 requireText("docs/PRODUCTION_READINESS.md", /support:check/, "support triage readiness");
 requireText("docs/PRODUCTION_READINESS.md", /examples\/support/, "support triage playbook readiness");
 requireText("docs/PRODUCTION_READINESS.md", /response snippets/i, "support response snippets readiness");
+requireText("docs/PRODUCTION_READINESS.md", /closeout checklist/i, "support closeout checklist readiness");
 requireText("docs/PRODUCTION_READINESS.md", /quiet-pass/, "quiet-pass fixture readiness");
 requireText("docs/CLI.md", /jester doctor --json/, "doctor JSON CLI docs");
 requireText("docs/CLI.md", /quiet-pass fixture/, "quiet-pass fixture CLI docs");
@@ -174,6 +178,7 @@ requireText("docs/MAINTAINER_TRIAGE.md", /feedback-template\.md/, "report galler
 requireText("docs/MAINTAINER_TRIAGE.md", /report_gallery_feedback\.yml/, "report gallery issue template link");
 requireText("docs/MAINTAINER_TRIAGE.md", /examples\/support/, "support triage playbook link");
 requireText("docs/MAINTAINER_TRIAGE.md", /response-snippets\.md/, "support response snippets link");
+requireText("docs/MAINTAINER_TRIAGE.md", /closeout-checklist\.md/, "support closeout checklist link");
 requireText("docs/MAINTAINER_TRIAGE.md", /docs-example/, "docs example triage outcome");
 requireText("docs/MAINTAINER_TRIAGE.md", /fixture-backlog/, "fixture backlog triage outcome");
 requireText("docs/MAINTAINER_TRIAGE.md", /rule-review-candidate/, "rule review triage outcome");
@@ -207,6 +212,7 @@ requireText("examples/reports/feedback-template.md", /Privacy Checklist/, "feedb
 requireText("examples/reports/feedback-template.md", /SECURITY\.md/, "feedback template security redirect");
 requireText("examples/support/README.md", /triage-playbook\.json/, "support triage playbook JSON link");
 requireText("examples/support/README.md", /response-snippets\.md/, "support response snippets link");
+requireText("examples/support/README.md", /closeout-checklist\.md/, "support closeout checklist link");
 requireText("examples/support/README.md", /docs-example/, "support triage docs outcome");
 requireText("examples/support/README.md", /fixture-backlog/, "support triage fixture outcome");
 requireText("examples/support/README.md", /rule-review-candidate/, "support triage rule-review outcome");
@@ -218,6 +224,14 @@ requireText("examples/support/response-snippets.md", /response-snippets\.json/, 
 requireText("examples/support/response-snippets.json", /docs-example-response/, "support docs response snippet");
 requireText("examples/support/response-snippets.json", /fixture-backlog-response/, "support fixture response snippet");
 requireText("examples/support/response-snippets.json", /rule-review-candidate-response/, "support rule-review response snippet");
+requireText("examples/support/closeout-checklist.md", /Support Closeout Checklist/, "support closeout checklist heading");
+requireText("examples/support/closeout-checklist.md", /closeout-checklist\.json/, "support closeout checklist JSON link");
+requireText("examples/support/closeout-checklist.md", /shipped-or-queued/, "support docs closeout status");
+requireText("examples/support/closeout-checklist.md", /backlog-created/, "support fixture closeout status");
+requireText("examples/support/closeout-checklist.md", /candidate-opened/, "support rule-review closeout status");
+requireText("examples/support/closeout-checklist.json", /docs-clarification-closeout/, "support docs closeout record");
+requireText("examples/support/closeout-checklist.json", /fixture-backlog-closeout/, "support fixture closeout record");
+requireText("examples/support/closeout-checklist.json", /rule-review-closeout/, "support rule-review closeout record");
 requireText("examples/tuning/README.md", /framework-tuning-cookbook\.json/, "framework tuning cookbook JSON link");
 requireText("examples/tuning/README.md", /framework:tuning:doctor/, "framework tuning doctor guidance");
 requireText("examples/tuning/README.md", /jester tune <rule-id> --json|jester tune [a-z0-9-]+ --json/, "framework tuning command guidance");
@@ -252,6 +266,7 @@ requireText("scripts/check-support-triage.mjs", /report_gallery_feedback\.yml/, 
 requireText("scripts/check-support-triage.mjs", /feedback-template\.md/, "support triage feedback template guard");
 requireText("scripts/check-support-triage.mjs", /triage-playbook\.json/, "support triage playbook guard");
 requireText("scripts/check-support-triage.mjs", /response-snippets\.json/, "support response snippets guard");
+requireText("scripts/check-support-triage.mjs", /closeout-checklist\.json/, "support closeout checklist guard");
 requireText("scripts/check-support-triage.mjs", /unsafeContentPatterns/, "support triage unsafe content checks");
 requireText("package.json", /"fixtures:check": "node scripts\/check-fixtures\.mjs"/, "fixture authoring check script");
 requireText("package.json", /"fixtures:report": "node scripts\/report-fixtures\.mjs"/, "fixture coverage report script");

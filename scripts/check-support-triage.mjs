@@ -25,6 +25,8 @@ const supportFiles = [
   ".github/ISSUE_TEMPLATE/config.yml",
   "examples/reports/feedback-template.md",
   "examples/reports/README.md",
+  "examples/support/closeout-checklist.md",
+  "examples/support/closeout-checklist.json",
   "examples/support/README.md",
   "examples/support/response-snippets.md",
   "examples/support/response-snippets.json",
@@ -78,6 +80,7 @@ requireText("examples/reports/README.md", /npm run support:check/, "support chec
 requireText("examples/reports/README.md", /examples\/support|Maintainer Triage Playbook/i, "maintainer triage playbook link");
 
 requireText("examples/support/README.md", /Maintainer Triage Playbook/, "maintainer playbook heading");
+requireText("examples/support/README.md", /closeout-checklist\.md/, "support closeout checklist link");
 requireText("examples/support/README.md", /triage-playbook\.json/, "maintainer playbook JSON link");
 requireText("examples/support/README.md", /response-snippets\.md/, "maintainer response snippets link");
 requireText("examples/support/README.md", /gallery-expected-block-docs/, "docs example playbook case");
@@ -90,6 +93,19 @@ requireText("examples/support/README.md", /fixture-backlog/, "fixture backlog ou
 requireText("examples/support/README.md", /rule-review-candidate/, "rule review outcome");
 requireText("examples/support/README.md", /SECURITY\.md/, "security redirect");
 requireText("examples/support/README.md", /npm run support:check/, "support checker command");
+requireText("examples/support/closeout-checklist.md", /Support Closeout Checklist/, "closeout checklist heading");
+requireText("examples/support/closeout-checklist.md", /closeout-checklist\.json/, "closeout checklist JSON link");
+requireText("examples/support/closeout-checklist.md", /docs-example/, "docs closeout outcome");
+requireText("examples/support/closeout-checklist.md", /fixture-backlog/, "fixture closeout outcome");
+requireText("examples/support/closeout-checklist.md", /rule-review-candidate/, "rule-review closeout outcome");
+requireText("examples/support/closeout-checklist.md", /shipped-or-queued/, "docs closeout status");
+requireText("examples/support/closeout-checklist.md", /backlog-created/, "fixture closeout status");
+requireText("examples/support/closeout-checklist.md", /candidate-opened/, "rule-review closeout status");
+requireText("examples/support/closeout-checklist.md", /npm run support:check/, "support checker closeout command");
+requireText("examples/support/closeout-checklist.md", /SECURITY\.md/, "closeout security redirect");
+requireText("examples/support/closeout-checklist.json", /docs-clarification-closeout/, "docs closeout record");
+requireText("examples/support/closeout-checklist.json", /fixture-backlog-closeout/, "fixture closeout record");
+requireText("examples/support/closeout-checklist.json", /rule-review-closeout/, "rule-review closeout record");
 requireText("examples/support/response-snippets.md", /Maintainer Response Snippets/, "response snippets heading");
 requireText("examples/support/response-snippets.md", /response-snippets\.json/, "response snippets JSON link");
 requireText("examples/support/response-snippets.md", /docs-example/, "docs response outcome");
@@ -105,6 +121,7 @@ requireText("examples/support/response-snippets.json", /rule-review-candidate-re
 requireText("docs/MAINTAINER_TRIAGE.md", /feedback-template\.md/, "feedback template triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /report_gallery_feedback\.yml/, "report gallery issue template triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /examples\/support/, "maintainer playbook triage link");
+requireText("docs/MAINTAINER_TRIAGE.md", /closeout-checklist\.md/, "support closeout checklist triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /response-snippets\.md/, "maintainer response snippets triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /docs-example/, "docs example triage outcome");
 requireText("docs/MAINTAINER_TRIAGE.md", /fixture-backlog/, "fixture backlog triage outcome");
@@ -112,6 +129,7 @@ requireText("docs/MAINTAINER_TRIAGE.md", /rule-review-candidate/, "rule review t
 requireText("docs/MAINTAINER_TRIAGE.md", /npm(?:\.cmd)? run support:check/, "support checker triage command");
 requireText("docs/PRODUCTION_READINESS.md", /support:check/, "support checker readiness");
 requireText("README.md", /feedback-template\.md/, "feedback template README link");
+requireText("README.md", /closeout-checklist\.md/, "support closeout checklist README link");
 requireText("README.md", /examples\/support/, "maintainer triage playbook README link");
 requireText("README.md", /response-snippets\.md/, "maintainer response snippets README link");
 requireText("README.md", /report gallery feedback/i, "report gallery feedback guidance");
@@ -121,6 +139,7 @@ requireText("package.json", /npm run support:check/, "support checker in npm tes
 
 checkTriagePlaybook();
 checkResponseSnippets();
+checkCloseoutChecklist();
 
 if (failures.length > 0) {
   console.error("Support triage check failed:");
@@ -319,6 +338,98 @@ function checkResponseSnippets() {
     for (const check of expectedSnippet.checks) {
       if (!snippet.requiredChecks.includes(check)) {
         failures.push(`${snippet.id}.requiredChecks should include ${check}.`);
+      }
+    }
+  }
+}
+
+function checkCloseoutChecklist() {
+  const path = "examples/support/closeout-checklist.json";
+  const closeouts = readJson(path);
+  if (!closeouts) {
+    return;
+  }
+
+  if (!Array.isArray(closeouts) || closeouts.length !== 3) {
+    failures.push(`${path} should contain exactly three support closeout records.`);
+    return;
+  }
+
+  const expected = [
+    {
+      id: "docs-clarification-closeout",
+      outcome: "docs-example",
+      status: "shipped-or-queued",
+      checks: ["npm run reports:check", "npm run support:check"]
+    },
+    {
+      id: "fixture-backlog-closeout",
+      outcome: "fixture-backlog",
+      status: "backlog-created",
+      checks: ["npm run fixtures:check", "npm run fixtures:report", "npm run support:check"]
+    },
+    {
+      id: "rule-review-closeout",
+      outcome: "rule-review-candidate",
+      status: "candidate-opened",
+      checks: ["npm run fixtures:report -- --markdown", "npm run support:check"]
+    }
+  ];
+  const seenIds = new Set();
+
+  for (const [index, closeout] of closeouts.entries()) {
+    const expectedCloseout = expected[index];
+    if (closeout?.id !== expectedCloseout.id) {
+      failures.push(`${path} entry ${index + 1} should have id ${expectedCloseout.id}.`);
+      continue;
+    }
+
+    if (seenIds.has(closeout.id)) {
+      failures.push(`${path} has duplicate id ${closeout.id}.`);
+    }
+    seenIds.add(closeout.id);
+
+    if (closeout.outcome !== expectedCloseout.outcome) {
+      failures.push(`${closeout.id}.outcome should be ${expectedCloseout.outcome}.`);
+    }
+
+    if (closeout.decisionRecord?.status !== expectedCloseout.status) {
+      failures.push(`${closeout.id}.decisionRecord.status should be ${expectedCloseout.status}.`);
+    }
+
+    if (typeof closeout.decisionRecord?.publicSummary !== "string" || closeout.decisionRecord.publicSummary.length < 30) {
+      failures.push(`${closeout.id}.decisionRecord.publicSummary should be a useful public summary.`);
+    }
+
+    if (typeof closeout.decisionRecord?.userReply !== "string" || closeout.decisionRecord.userReply.length < 30) {
+      failures.push(`${closeout.id}.decisionRecord.userReply should be a useful closeout reply.`);
+    }
+
+    if (typeof closeout.decisionRecord?.followUpLinkPlaceholder !== "string" || !closeout.decisionRecord.followUpLinkPlaceholder.startsWith("<")) {
+      failures.push(`${closeout.id}.decisionRecord.followUpLinkPlaceholder should be a placeholder.`);
+    }
+
+    if (typeof closeout.decisionRecord?.nextCommand !== "string" || closeout.decisionRecord.nextCommand.length < 8) {
+      failures.push(`${closeout.id}.decisionRecord.nextCommand should include a next command.`);
+    }
+
+    if (!Array.isArray(closeout.requiredEvidence) || closeout.requiredEvidence.length < 3) {
+      failures.push(`${closeout.id}.requiredEvidence should contain at least three evidence checks.`);
+    } else {
+      const evidenceText = closeout.requiredEvidence.join("\n");
+      if (!/secret|private|redacted|public-safe/i.test(evidenceText)) {
+        failures.push(`${closeout.id}.requiredEvidence should include privacy or redaction evidence.`);
+      }
+    }
+
+    if (!Array.isArray(closeout.requiredChecks)) {
+      failures.push(`${closeout.id}.requiredChecks should be an array.`);
+      continue;
+    }
+
+    for (const check of expectedCloseout.checks) {
+      if (!closeout.requiredChecks.includes(check)) {
+        failures.push(`${closeout.id}.requiredChecks should include ${check}.`);
       }
     }
   }

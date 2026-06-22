@@ -1,0 +1,53 @@
+[
+  {
+    "id": "docs-clarification-closeout",
+    "outcome": "docs-example",
+    "decisionRecord": {
+      "status": "shipped-or-queued",
+      "publicSummary": "Clarified the checked report-gallery wording so the expected block verdict is easier to understand.",
+      "userReply": "Thanks again. I have linked the docs clarification, and the checked gallery still passes.",
+      "followUpLinkPlaceholder": "<docs-pr-or-commit>",
+      "nextCommand": "npm run reports:check"
+    },
+    "requiredEvidence": [
+      "No private code, paths, tokens, full logs, or customer data are included.",
+      "The related report-gallery example still passes.",
+      "The issue links to the docs change or backlog item."
+    ],
+    "requiredChecks": ["npm run reports:check", "npm run support:check"]
+  },
+  {
+    "id": "fixture-backlog-closeout",
+    "outcome": "fixture-backlog",
+    "decisionRecord": {
+      "status": "backlog-created",
+      "publicSummary": "Created a redacted fixture backlog item for a plausible quiet-pass boundary.",
+      "userReply": "Thanks. This is now tracked as a fixture backlog item; behavior stays unchanged until a checked fixture proves the boundary.",
+      "followUpLinkPlaceholder": "<fixture-backlog-issue>",
+      "nextCommand": "npm run fixtures:report"
+    },
+    "requiredEvidence": [
+      "The reduced example is public-safe and minimal.",
+      "The backlog item names the candidate rule id and expected quiet-pass or pass boundary.",
+      "The report does not request a rule change before fixture coverage exists."
+    ],
+    "requiredChecks": ["npm run fixtures:check", "npm run fixtures:report", "npm run support:check"]
+  },
+  {
+    "id": "rule-review-closeout",
+    "outcome": "rule-review-candidate",
+    "decisionRecord": {
+      "status": "candidate-opened",
+      "publicSummary": "Opened a rule-review candidate after repeated sanitized reports suggested a possible guidance or matching boundary.",
+      "userReply": "Thanks. I have linked this to a rule-review candidate. The rule remains unchanged while maintainers compare fixture evidence.",
+      "followUpLinkPlaceholder": "<rule-review-issue>",
+      "nextCommand": "node .\\dist\\cli.js tune <rule-id> --json"
+    },
+    "requiredEvidence": [
+      "At least two sanitized reports are linked or summarized.",
+      "Fixture evidence or `jester tune <rule-id> --json` output is referenced.",
+      "The public record avoids secrets, private project details, full logs, and exploitable security details."
+    ],
+    "requiredChecks": ["npm run fixtures:report -- --markdown", "npm run support:check"]
+  }
+]

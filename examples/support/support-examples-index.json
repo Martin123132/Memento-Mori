@@ -71,6 +71,32 @@
     ],
     "publicSafe": true
   },
+  "postReleaseEvidenceLedger": {
+    "label": "Post-Release Evidence Ledger",
+    "file": "examples/support/post-release-evidence-ledger.md",
+    "source": "examples/support/post-release-evidence-ledger.json",
+    "useWhen": "Use after GitHub Release and npm Publish complete so maintainers can review the public-safe release evidence later without reopening workflow logs.",
+    "recordFields": [
+      "GitHub Release URL",
+      "npm registry version",
+      "CI workflow status",
+      "GitHub Release workflow status",
+      "npm Publish workflow status",
+      "public npx doctor result",
+      "public npx summary result",
+      "installed-package provenance command result",
+      "tarball file count",
+      "private-ish path exclusion summary"
+    ],
+    "requiredCommands": [
+      "npm view memento-mori-jester version --silent",
+      "npx -y memento-mori-jester@latest doctor",
+      "npx -y memento-mori-jester@latest summary --kind command \"git reset --hard\"",
+      "npm explore memento-mori-jester -- npm run pack:contents:check",
+      "npm pack memento-mori-jester@<version> --json --ignore-scripts"
+    ],
+    "publicSafe": true
+  },
   "artifacts": [
     {
       "id": "lifecycle-map",

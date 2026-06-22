@@ -2,7 +2,7 @@
 
 This public-safe index tells maintainers which checked support artifact to use during a report review. It keeps the compact map, blank worksheet, and filled synthetic example together so a support issue can move from first report to backlog review without guessing.
 
-The checked source is [support-examples-index.json](support-examples-index.json). For live handoffs, use the checked [support examples quickstart](support-examples-quickstart.md). For installed-package provenance, use [installed-package-support.md](installed-package-support.md). For release closeout, use [release-support-provenance.md](release-support-provenance.md). This index points at the [support lifecycle map](support-lifecycle-map.md), [support lifecycle worksheet](support-lifecycle-worksheet.md), and [filled lifecycle worksheet example](support-lifecycle-filled-example.md).
+The checked source is [support-examples-index.json](support-examples-index.json). For live handoffs, use the checked [support examples quickstart](support-examples-quickstart.md). For installed-package provenance, use [installed-package-support.md](installed-package-support.md). For release closeout, use [release-support-provenance.md](release-support-provenance.md), then record the final evidence in [post-release-evidence-ledger.md](post-release-evidence-ledger.md). This index points at the [support lifecycle map](support-lifecycle-map.md), [support lifecycle worksheet](support-lifecycle-worksheet.md), and [filled lifecycle worksheet example](support-lifecycle-filled-example.md).
 
 ## 60-Second Handoff
 
@@ -15,6 +15,10 @@ Use [installed-package-support.md](installed-package-support.md) when proving th
 ## Release Closeout Gate
 
 Use [release-support-provenance.md](release-support-provenance.md) after npm publish. It requires maintainers to record the registry version, GitHub Release URL, installed-package verification command, package-relative support artifacts, repo-only path exclusions, and privacy scan result.
+
+## Post-Release Evidence Ledger
+
+Use [post-release-evidence-ledger.md](post-release-evidence-ledger.md) after GitHub Release and npm Publish complete. It records the GitHub Release URL, npm version, CI/release/publish workflow statuses, public `npx` smokes, installed-package provenance command result, tarball file count, and private-ish path exclusion summary.
 
 ## Which Artifact To Use
 

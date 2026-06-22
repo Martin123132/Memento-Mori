@@ -18,6 +18,8 @@ const requiredPackageFiles = [
   `docs/RELEASE_NOTES_v${packageJson.version}.md`,
   "examples/support/installed-package-support.md",
   "examples/support/installed-package-support.json",
+  "examples/support/post-release-evidence-ledger.md",
+  "examples/support/post-release-evidence-ledger.json",
   "examples/support/release-support-provenance.md",
   "examples/support/release-support-provenance.json",
   "examples/support/support-examples-index.md",
@@ -40,6 +42,8 @@ const requiredPackageFiles = [
 const requiredSupportFiles = [
   "examples/support/installed-package-support.md",
   "examples/support/installed-package-support.json",
+  "examples/support/post-release-evidence-ledger.md",
+  "examples/support/post-release-evidence-ledger.json",
   "examples/support/release-support-provenance.md",
   "examples/support/release-support-provenance.json",
   "examples/support/support-examples-index.md",
@@ -116,6 +120,7 @@ for (const path of requiredSupportFiles) {
 }
 
 checkInstalledPackageSupport();
+checkPostReleaseEvidenceLedger();
 checkReleaseSupportProvenance();
 
 if (failures.length > 0) {
@@ -124,6 +129,64 @@ if (failures.length > 0) {
     console.error(`- ${failure}`);
   }
   process.exit(1);
+}
+
+function checkPostReleaseEvidenceLedger() {
+  const path = "examples/support/post-release-evidence-ledger.json";
+  if (!existsSync(join(root, path))) {
+    return;
+  }
+
+  const ledger = readJson(path);
+  const expectedRecordFields = [
+    "GitHub Release URL",
+    "npm registry version",
+    "CI workflow status",
+    "GitHub Release workflow status",
+    "npm Publish workflow status",
+    "public npx doctor result",
+    "public npx summary result",
+    "installed-package provenance command result",
+    "tarball file count",
+    "private-ish path exclusion summary"
+  ];
+  const expectedPrivateIshPaths = ["promo/", "site/", ".github/", "private/", "secrets/", "internal/"];
+
+  if (ledger.packageName !== packageJson.name) {
+    failures.push(`${path}.packageName should be ${packageJson.name}.`);
+  }
+
+  if (ledger.releaseCloseoutRequired !== true) {
+    failures.push(`${path}.releaseCloseoutRequired should be true.`);
+  }
+
+  if (ledger.sourceGate !== "examples/support/release-support-provenance.json") {
+    failures.push(`${path}.sourceGate should point at examples/support/release-support-provenance.json.`);
+  }
+
+  if (!Array.isArray(ledger.recordFields) || ledger.recordFields.join("|") !== expectedRecordFields.join("|")) {
+    failures.push(`${path}.recordFields should list post-release evidence fields in order.`);
+  }
+
+  if (!Array.isArray(ledger.evidenceCommands) || !ledger.evidenceCommands.some((command) => command?.command === "npm explore memento-mori-jester -- npm run pack:contents:check")) {
+    failures.push(`${path}.evidenceCommands should include the installed-package provenance command.`);
+  }
+
+  if (!Array.isArray(ledger.privateIshPathExclusions)) {
+    failures.push(`${path}.privateIshPathExclusions should be an array.`);
+  } else {
+    for (const privateIshPath of expectedPrivateIshPaths) {
+      if (!ledger.privateIshPathExclusions.includes(privateIshPath)) {
+        failures.push(`${path}.privateIshPathExclusions should include ${privateIshPath}.`);
+      }
+
+      for (const file of files) {
+        if (file.startsWith(privateIshPath)) {
+          failures.push(`${path}.privateIshPathExclusions lists ${privateIshPath}, but ${file} is present in the package dry run.`);
+        }
+      }
+    }
+  }
 }
 
 function checkReleaseSupportProvenance() {

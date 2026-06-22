@@ -1,0 +1,71 @@
+{
+  "title": "Post-Release Evidence Ledger",
+  "releaseCloseoutRequired": true,
+  "packageName": "memento-mori-jester",
+  "useWhen": "Use after GitHub Release and npm Publish complete so maintainers can review the public-safe release evidence without reopening workflow logs or local terminal history.",
+  "sourceGate": "examples/support/release-support-provenance.json",
+  "recordFields": [
+    "GitHub Release URL",
+    "npm registry version",
+    "CI workflow status",
+    "GitHub Release workflow status",
+    "npm Publish workflow status",
+    "public npx doctor result",
+    "public npx summary result",
+    "installed-package provenance command result",
+    "tarball file count",
+    "private-ish path exclusion summary"
+  ],
+  "evidenceCommands": [
+    {
+      "id": "registry-version",
+      "command": "npm view memento-mori-jester version --silent",
+      "record": "npm registry version"
+    },
+    {
+      "id": "public-npx-doctor",
+      "command": "npx -y memento-mori-jester@latest doctor",
+      "record": "public npx doctor result"
+    },
+    {
+      "id": "public-npx-summary",
+      "command": "npx -y memento-mori-jester@latest summary --kind command \"git reset --hard\"",
+      "record": "public npx summary result"
+    },
+    {
+      "id": "installed-package-provenance",
+      "command": "npm explore memento-mori-jester -- npm run pack:contents:check",
+      "record": "installed-package provenance command result"
+    },
+    {
+      "id": "registry-tarball-audit",
+      "command": "npm pack memento-mori-jester@<version> --json --ignore-scripts",
+      "record": "tarball file count"
+    }
+  ],
+  "workflowStatuses": [
+    "CI workflow status",
+    "GitHub Release workflow status",
+    "npm Publish workflow status"
+  ],
+  "privateIshPathExclusions": [
+    "promo/",
+    "site/",
+    ".github/",
+    "private/",
+    "secrets/",
+    "internal/",
+    "node_modules/",
+    "coverage/",
+    "tmp/",
+    "temp/",
+    ".env",
+    ".npmrc"
+  ],
+  "requiredChecks": [
+    "npm run support:check",
+    "npm run pack:contents:check",
+    "npm run production:check"
+  ],
+  "privacyGuardrail": "Post-release evidence must stay public-safe: record URLs, workflow names, statuses, package version, tarball file count, private-ish path exclusion summaries, and short command outcomes only. Do not include secrets, private code, private paths, customer data, full logs, unredacted SARIF, package publishing credentials, MCP data exposure, command execution risk details, or exploitable security details; route those through SECURITY.md."
+}

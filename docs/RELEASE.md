@@ -101,6 +101,8 @@ npm.cmd explore memento-mori-jester -- npm run pack:contents:check
 
 The release closeout must not depend on repo-only `promo/`, `site/`, `.github/`, private, secret, internal, cache, or credential-shaped files.
 
+Then fill the checked [post-release evidence ledger](../examples/support/post-release-evidence-ledger.md) so the final release record keeps the GitHub Release URL, npm registry version, CI/GitHub Release/npm Publish workflow statuses, public `npx` smoke results, installed-package provenance command result, registry tarball file count, and private-ish path exclusion summary in one public-safe place.
+
 ## 4. MCP Copy-Paste
 
 The lowest-friction config uses `npx`:

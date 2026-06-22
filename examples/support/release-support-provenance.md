@@ -2,7 +2,7 @@
 
 Use this public-safe gate after `npm Publish` succeeds. It makes the installed-package support verification part of the release closeout instead of an optional local habit.
 
-The checked source is [release-support-provenance.json](release-support-provenance.json). Pair it with [installed-package-support.md](installed-package-support.md), [support-examples-index.md](support-examples-index.md), [support-examples-quickstart.md](support-examples-quickstart.md), [support-lifecycle-map.md](support-lifecycle-map.md), [support-lifecycle-worksheet.md](support-lifecycle-worksheet.md), and [support-lifecycle-filled-example.md](support-lifecycle-filled-example.md).
+The checked source is [release-support-provenance.json](release-support-provenance.json). Pair it with [post-release-evidence-ledger.md](post-release-evidence-ledger.md), [installed-package-support.md](installed-package-support.md), [support-examples-index.md](support-examples-index.md), [support-examples-quickstart.md](support-examples-quickstart.md), [support-lifecycle-map.md](support-lifecycle-map.md), [support-lifecycle-worksheet.md](support-lifecycle-worksheet.md), and [support-lifecycle-filled-example.md](support-lifecycle-filled-example.md).
 
 ## Post-Publish Gate
 
@@ -38,6 +38,8 @@ Keep the release record boring and safe:
 - package-relative support artifacts checked,
 - repo-only paths confirmed absent or not required,
 - privacy scan result.
+
+After those checks pass, copy the final evidence into [post-release-evidence-ledger.md](post-release-evidence-ledger.md) so later maintainers can review the GitHub Release URL, workflow statuses, public `npx` smokes, tarball file count, and private-ish path exclusion summary without reopening logs.
 
 Do not paste secrets, private code, private paths, customer data, full logs, unredacted SARIF, package publishing credentials, MCP data exposure, command execution risk details, or exploitable security details. Route those through `SECURITY.md`.
 

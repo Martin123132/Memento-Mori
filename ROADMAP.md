@@ -6,6 +6,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Recently Shipped
 
+- Checked post-release evidence ledger in v0.1.106, keeping GitHub Release URL, npm version, workflow statuses, public smokes, installed-package provenance, tarball file count, and private-ish path exclusions reviewable after publish.
 - Checked release support provenance gate in v0.1.105, requiring post-publish installed-package support verification and package-relative artifact records during release closeout.
 - Checked installed-package support provenance in v0.1.104, showing maintainers how to verify and use support examples from the npm package with package-relative paths.
 - Checked package contents support manifest smoke in v0.1.103, proving dry-run packages include the support examples index, quickstart, lifecycle map, blank worksheet, and filled synthetic example while excluding repo-local/private-ish files.

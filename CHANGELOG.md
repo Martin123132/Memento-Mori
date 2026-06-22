@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.106
+
+- Added checked `post-release-evidence-ledger.md/json` so maintainers can keep GitHub Release URL, npm version, workflow statuses, public `npx` smokes, installed-package provenance result, tarball file count, and private-ish path exclusion summary reviewable after publish.
+- Extended the support examples index, `npm run support:check`, `npm run pack:contents:check`, and production-readiness checks so the ledger stays public-safe, package-shipped, and aligned with release closeout evidence.
+- Updated README, release docs, maintainer triage docs, production-readiness docs, roadmap, and release notes for the post-release evidence ledger.
+
 ## 0.1.105
 
 - Added a checked `release-support-provenance.md/json` gate so maintainers record installed-package support verification after npm publish.

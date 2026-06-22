@@ -103,6 +103,8 @@ for (const path of [
   "examples/support/closeout-checklist.json",
   "examples/support/installed-package-support.md",
   "examples/support/installed-package-support.json",
+  "examples/support/post-release-evidence-ledger.md",
+  "examples/support/post-release-evidence-ledger.json",
   "examples/support/release-support-provenance.md",
   "examples/support/release-support-provenance.json",
   "examples/support/outcome-prioritization.md",
@@ -154,6 +156,7 @@ requireText("README.md", /examples\/support/, "support triage playbook link");
 requireText("README.md", /support-examples-quickstart\.md/, "support examples quickstart link");
 requireText("README.md", /support-examples-index\.md/, "support examples index link");
 requireText("README.md", /installed-package-support\.md/, "installed package support link");
+requireText("README.md", /post-release-evidence-ledger\.md/, "post-release evidence ledger link");
 requireText("README.md", /release-support-provenance\.md/, "release support provenance link");
 requireText("README.md", /response-snippets\.md/, "support response snippets link");
 requireText("README.md", /closeout-checklist\.md/, "support closeout checklist link");
@@ -201,6 +204,7 @@ requireText("docs/PRODUCTION_READINESS.md", /backlog records/i, "support backlog
 requireText("docs/PRODUCTION_READINESS.md", /pack:contents:check/, "package contents check readiness");
 requireText("docs/PRODUCTION_READINESS.md", /support examples manifest/i, "support examples manifest package readiness");
 requireText("docs/PRODUCTION_READINESS.md", /release support provenance/i, "release support provenance readiness");
+requireText("docs/PRODUCTION_READINESS.md", /post-release evidence ledger/i, "post-release evidence ledger readiness");
 requireText("docs/PRODUCTION_READINESS.md", /quiet-pass/, "quiet-pass fixture readiness");
 requireText("docs/CLI.md", /jester doctor --json/, "doctor JSON CLI docs");
 requireText("docs/CLI.md", /quiet-pass fixture/, "quiet-pass fixture CLI docs");
@@ -228,6 +232,7 @@ requireText("docs/MAINTAINER_TRIAGE.md", /examples\/support/, "support triage pl
 requireText("docs/MAINTAINER_TRIAGE.md", /support-examples-quickstart\.md/, "support examples quickstart link");
 requireText("docs/MAINTAINER_TRIAGE.md", /support-examples-index\.md/, "support examples index link");
 requireText("docs/MAINTAINER_TRIAGE.md", /installed-package-support\.md/, "installed package support link");
+requireText("docs/MAINTAINER_TRIAGE.md", /post-release-evidence-ledger\.md/, "post-release evidence ledger link");
 requireText("docs/MAINTAINER_TRIAGE.md", /release-support-provenance\.md/, "release support provenance link");
 requireText("docs/MAINTAINER_TRIAGE.md", /response-snippets\.md/, "support response snippets link");
 requireText("docs/MAINTAINER_TRIAGE.md", /closeout-checklist\.md/, "support closeout checklist link");
@@ -274,6 +279,8 @@ requireText("examples/support/README.md", /response-snippets\.md/, "support resp
 requireText("examples/support/README.md", /closeout-checklist\.md/, "support closeout checklist link");
 requireText("examples/support/README.md", /installed-package-support\.md/, "installed package support link");
 requireText("examples/support/README.md", /installed-package-support\.json/, "installed package support JSON link");
+requireText("examples/support/README.md", /post-release-evidence-ledger\.md/, "post-release evidence ledger link");
+requireText("examples/support/README.md", /post-release-evidence-ledger\.json/, "post-release evidence ledger JSON link");
 requireText("examples/support/README.md", /release-support-provenance\.md/, "release support provenance link");
 requireText("examples/support/README.md", /release-support-provenance\.json/, "release support provenance JSON link");
 requireText("examples/support/README.md", /support-examples-quickstart\.md/, "support examples quickstart link");
@@ -465,6 +472,7 @@ requireText("scripts/check-consumer-quickstart.mjs", /memento-mori-jester@latest
 requireText("scripts/check-consumer-quickstart.mjs", /framework:tuning:doctor/, "consumer quickstart tuning doctor guard");
 requireText("scripts/check-package-contents.mjs", /support-examples-index\.md/, "package contents support examples index guard");
 requireText("scripts/check-package-contents.mjs", /installed-package-support\.md/, "package contents installed package support guard");
+requireText("scripts/check-package-contents.mjs", /post-release-evidence-ledger\.md/, "package contents post-release evidence ledger guard");
 requireText("scripts/check-package-contents.mjs", /release-support-provenance\.md/, "package contents release support provenance guard");
 requireText("scripts/check-package-contents.mjs", /npm explore memento-mori-jester -- npm run pack:contents:check/, "package contents installed package verify command");
 requireText("scripts/check-package-contents.mjs", /support-examples-quickstart\.md/, "package contents support examples quickstart guard");
@@ -481,6 +489,7 @@ requireText("scripts/check-support-triage.mjs", /triage-playbook\.json/, "suppor
 requireText("scripts/check-support-triage.mjs", /response-snippets\.json/, "support response snippets guard");
 requireText("scripts/check-support-triage.mjs", /closeout-checklist\.json/, "support closeout checklist guard");
 requireText("scripts/check-support-triage.mjs", /installed-package-support\.json/, "installed package support guard");
+requireText("scripts/check-support-triage.mjs", /post-release-evidence-ledger\.json/, "post-release evidence ledger guard");
 requireText("scripts/check-support-triage.mjs", /release-support-provenance\.json/, "release support provenance guard");
 requireText("scripts/check-support-triage.mjs", /support-examples-quickstart\.json/, "support examples quickstart guard");
 requireText("scripts/check-support-triage.mjs", /support-examples-index\.json/, "support examples index guard");

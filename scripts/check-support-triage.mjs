@@ -33,6 +33,8 @@ const supportFiles = [
   "examples/support/closeout-checklist.json",
   "examples/support/installed-package-support.md",
   "examples/support/installed-package-support.json",
+  "examples/support/post-release-evidence-ledger.md",
+  "examples/support/post-release-evidence-ledger.json",
   "examples/support/outcome-prioritization.md",
   "examples/support/outcome-prioritization.json",
   "examples/support/release-support-provenance.md",
@@ -106,6 +108,8 @@ requireText("examples/support/README.md", /backlog-review\.md/, "support backlog
 requireText("examples/support/README.md", /backlog-records\.md/, "support backlog records link");
 requireText("examples/support/README.md", /installed-package-support\.md/, "installed package support link");
 requireText("examples/support/README.md", /installed-package-support\.json/, "installed package support JSON link");
+requireText("examples/support/README.md", /post-release-evidence-ledger\.md/, "post-release evidence ledger link");
+requireText("examples/support/README.md", /post-release-evidence-ledger\.json/, "post-release evidence ledger JSON link");
 requireText("examples/support/README.md", /release-support-provenance\.md/, "release support provenance link");
 requireText("examples/support/README.md", /release-support-provenance\.json/, "release support provenance JSON link");
 requireText("examples/support/README.md", /support-examples-quickstart\.md/, "support examples quickstart link");
@@ -175,6 +179,21 @@ requireText("examples/support/release-support-provenance.json", /postPublishRequ
 requireText("examples/support/release-support-provenance.json", /registryVersionCommand/, "release support registry command JSON");
 requireText("examples/support/release-support-provenance.json", /packageRelativeArtifacts/, "release support package-relative artifacts JSON");
 requireText("examples/support/release-support-provenance.json", /repoOnlyPathsNotRequired/, "release support repo-only exclusions JSON");
+requireText("examples/support/post-release-evidence-ledger.md", /Post-Release Evidence Ledger/, "post-release evidence ledger heading");
+requireText("examples/support/post-release-evidence-ledger.md", /post-release-evidence-ledger\.json/, "post-release evidence ledger JSON link");
+requireText("examples/support/post-release-evidence-ledger.md", /release-support-provenance\.md/, "post-release evidence release provenance link");
+requireText("examples/support/post-release-evidence-ledger.md", /GitHub Release URL/, "post-release evidence GitHub Release URL field");
+requireText("examples/support/post-release-evidence-ledger.md", /npm view memento-mori-jester version --silent/, "post-release evidence npm version command");
+requireText("examples/support/post-release-evidence-ledger.md", /npx -y memento-mori-jester@latest doctor/, "post-release evidence npx doctor command");
+requireText("examples/support/post-release-evidence-ledger.md", /summary --kind command "git reset --hard"/, "post-release evidence npx summary command");
+requireText("examples/support/post-release-evidence-ledger.md", /npm explore memento-mori-jester -- npm run pack:contents:check/, "post-release evidence installed-package command");
+requireText("examples/support/post-release-evidence-ledger.md", /tarball file count/, "post-release evidence tarball file count");
+requireText("examples/support/post-release-evidence-ledger.md", /private-ish path exclusion summary/, "post-release evidence private-ish exclusion summary");
+requireText("examples/support/post-release-evidence-ledger.md", /SECURITY\.md/, "post-release evidence security redirect");
+requireText("examples/support/post-release-evidence-ledger.json", /Post-Release Evidence Ledger/, "post-release evidence JSON title");
+requireText("examples/support/post-release-evidence-ledger.json", /releaseCloseoutRequired/, "post-release evidence release closeout flag");
+requireText("examples/support/post-release-evidence-ledger.json", /workflowStatuses/, "post-release evidence workflow statuses JSON");
+requireText("examples/support/post-release-evidence-ledger.json", /privateIshPathExclusions/, "post-release evidence private-ish exclusions JSON");
 requireText("examples/support/support-examples-quickstart.md", /Support Examples Quickstart/, "support examples quickstart heading");
 requireText("examples/support/support-examples-quickstart.md", /support-examples-quickstart\.json/, "support examples quickstart JSON link");
 requireText("examples/support/support-examples-quickstart.md", /60-Second Path/, "support examples quickstart path");
@@ -201,6 +220,8 @@ requireText("examples/support/support-examples-index.md", /installed-package-sup
 requireText("examples/support/support-examples-index.md", /Installed Package Provenance/, "installed package provenance section");
 requireText("examples/support/support-examples-index.md", /release-support-provenance\.md/, "release support provenance link");
 requireText("examples/support/support-examples-index.md", /Release Closeout Gate/, "release support closeout section");
+requireText("examples/support/support-examples-index.md", /post-release-evidence-ledger\.md/, "post-release evidence ledger link");
+requireText("examples/support/support-examples-index.md", /Post-Release Evidence Ledger/, "post-release evidence ledger section");
 requireText("examples/support/support-examples-index.md", /60-Second Handoff/, "support examples index handoff section");
 requireText("examples/support/support-examples-index.md", /support-lifecycle-map\.md/, "support examples index map link");
 requireText("examples/support/support-examples-index.md", /support-lifecycle-worksheet\.md/, "support examples index worksheet link");
@@ -218,6 +239,8 @@ requireText("examples/support/support-examples-index.json", /installed-package-s
 requireText("examples/support/support-examples-index.json", /pack:contents:check/, "installed package support JSON verify command");
 requireText("examples/support/support-examples-index.json", /releaseProvenanceGate/, "release support provenance gate JSON");
 requireText("examples/support/support-examples-index.json", /release-support-provenance\.md/, "release support provenance JSON link");
+requireText("examples/support/support-examples-index.json", /postReleaseEvidenceLedger/, "post-release evidence ledger JSON");
+requireText("examples/support/support-examples-index.json", /post-release-evidence-ledger\.md/, "post-release evidence ledger JSON link");
 requireText("examples/support/support-examples-index.json", /support-lifecycle-map\.md/, "support examples index JSON map link");
 requireText("examples/support/support-examples-index.json", /support-lifecycle-worksheet\.md/, "support examples index JSON worksheet link");
 requireText("examples/support/support-examples-index.json", /support-lifecycle-filled-example\.md/, "support examples index JSON filled example link");
@@ -370,6 +393,7 @@ requireText("docs/MAINTAINER_TRIAGE.md", /report_gallery_feedback\.yml/, "report
 requireText("docs/MAINTAINER_TRIAGE.md", /examples\/support/, "maintainer playbook triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /support-examples-quickstart\.md/, "support examples quickstart triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /support-examples-index\.md/, "support examples index triage link");
+requireText("docs/MAINTAINER_TRIAGE.md", /post-release-evidence-ledger\.md/, "post-release evidence ledger triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /support-lifecycle-map\.md/, "support lifecycle map triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /support-lifecycle-worksheet\.md/, "support lifecycle worksheet triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /support-lifecycle-filled-example\.md/, "filled lifecycle worksheet example triage link");
@@ -387,6 +411,7 @@ requireText("docs/PRODUCTION_READINESS.md", /support:check/, "support checker re
 requireText("README.md", /feedback-template\.md/, "feedback template README link");
 requireText("README.md", /support-examples-quickstart\.md/, "support examples quickstart README link");
 requireText("README.md", /support-examples-index\.md/, "support examples index README link");
+requireText("README.md", /post-release-evidence-ledger\.md/, "post-release evidence ledger README link");
 requireText("README.md", /support-lifecycle-map\.md/, "support lifecycle map README link");
 requireText("README.md", /support-lifecycle-worksheet\.md/, "support lifecycle worksheet README link");
 requireText("README.md", /support-lifecycle-filled-example\.md/, "filled lifecycle worksheet example README link");
@@ -405,6 +430,7 @@ requireText("package.json", /npm run support:check/, "support checker in npm tes
 checkTriagePlaybook();
 checkResponseSnippets();
 checkCloseoutChecklist();
+checkPostReleaseEvidenceLedger();
 checkReleaseSupportProvenance();
 checkInstalledPackageSupport();
 checkSupportExamplesQuickstart();
@@ -1056,6 +1082,25 @@ function checkSupportExamplesIndex() {
     "examples/support/support-lifecycle-worksheet.md",
     "examples/support/support-lifecycle-filled-example.md"
   ];
+  const expectedPostReleaseRecordFields = [
+    "GitHub Release URL",
+    "npm registry version",
+    "CI workflow status",
+    "GitHub Release workflow status",
+    "npm Publish workflow status",
+    "public npx doctor result",
+    "public npx summary result",
+    "installed-package provenance command result",
+    "tarball file count",
+    "private-ish path exclusion summary"
+  ];
+  const expectedPostReleaseCommands = [
+    "npm view memento-mori-jester version --silent",
+    "npx -y memento-mori-jester@latest doctor",
+    "npx -y memento-mori-jester@latest summary --kind command \"git reset --hard\"",
+    "npm explore memento-mori-jester -- npm run pack:contents:check",
+    "npm pack memento-mori-jester@<version> --json --ignore-scripts"
+  ];
   const expectedArtifacts = [
     {
       id: "lifecycle-map",
@@ -1190,6 +1235,30 @@ function checkSupportExamplesIndex() {
 
   if (!Array.isArray(index.releaseProvenanceGate?.packageRelativeArtifacts) || index.releaseProvenanceGate.packageRelativeArtifacts.join("|") !== expectedReleaseArtifacts.join("|")) {
     failures.push(`${path}.releaseProvenanceGate.packageRelativeArtifacts should list the package support artifacts in order.`);
+  }
+
+  if (index.postReleaseEvidenceLedger?.file !== "examples/support/post-release-evidence-ledger.md") {
+    failures.push(`${path}.postReleaseEvidenceLedger.file should point at examples/support/post-release-evidence-ledger.md.`);
+  }
+
+  if (index.postReleaseEvidenceLedger?.source !== "examples/support/post-release-evidence-ledger.json") {
+    failures.push(`${path}.postReleaseEvidenceLedger.source should point at examples/support/post-release-evidence-ledger.json.`);
+  }
+
+  if (index.postReleaseEvidenceLedger?.publicSafe !== true) {
+    failures.push(`${path}.postReleaseEvidenceLedger should be publicSafe.`);
+  }
+
+  if (typeof index.postReleaseEvidenceLedger?.useWhen !== "string" || index.postReleaseEvidenceLedger.useWhen.length < 90) {
+    failures.push(`${path}.postReleaseEvidenceLedger.useWhen should explain post-release evidence review use.`);
+  }
+
+  if (!Array.isArray(index.postReleaseEvidenceLedger?.recordFields) || index.postReleaseEvidenceLedger.recordFields.join("|") !== expectedPostReleaseRecordFields.join("|")) {
+    failures.push(`${path}.postReleaseEvidenceLedger.recordFields should list the post-release evidence fields in order.`);
+  }
+
+  if (!Array.isArray(index.postReleaseEvidenceLedger?.requiredCommands) || index.postReleaseEvidenceLedger.requiredCommands.join("|") !== expectedPostReleaseCommands.join("|")) {
+    failures.push(`${path}.postReleaseEvidenceLedger.requiredCommands should list the evidence commands in order.`);
   }
 
   if (!Array.isArray(index.artifacts) || index.artifacts.length !== expectedArtifacts.length) {
@@ -1402,6 +1471,145 @@ function checkInstalledPackageSupport() {
 
   if (typeof note.privacyGuardrail !== "string" || !/package-relative|secrets|private|SECURITY\.md|MCP|exploitable/i.test(note.privacyGuardrail)) {
     failures.push(`${path}.privacyGuardrail should include installed-package public-safe guidance.`);
+  }
+}
+
+function checkPostReleaseEvidenceLedger() {
+  const path = "examples/support/post-release-evidence-ledger.json";
+  const ledger = readJson(path);
+  if (!ledger) {
+    return;
+  }
+
+  const expectedRecordFields = [
+    "GitHub Release URL",
+    "npm registry version",
+    "CI workflow status",
+    "GitHub Release workflow status",
+    "npm Publish workflow status",
+    "public npx doctor result",
+    "public npx summary result",
+    "installed-package provenance command result",
+    "tarball file count",
+    "private-ish path exclusion summary"
+  ];
+  const expectedCommands = [
+    {
+      id: "registry-version",
+      command: "npm view memento-mori-jester version --silent",
+      record: "npm registry version"
+    },
+    {
+      id: "public-npx-doctor",
+      command: "npx -y memento-mori-jester@latest doctor",
+      record: "public npx doctor result"
+    },
+    {
+      id: "public-npx-summary",
+      command: "npx -y memento-mori-jester@latest summary --kind command \"git reset --hard\"",
+      record: "public npx summary result"
+    },
+    {
+      id: "installed-package-provenance",
+      command: "npm explore memento-mori-jester -- npm run pack:contents:check",
+      record: "installed-package provenance command result"
+    },
+    {
+      id: "registry-tarball-audit",
+      command: "npm pack memento-mori-jester@<version> --json --ignore-scripts",
+      record: "tarball file count"
+    }
+  ];
+  const expectedWorkflowStatuses = [
+    "CI workflow status",
+    "GitHub Release workflow status",
+    "npm Publish workflow status"
+  ];
+  const expectedPrivateIshPaths = [
+    "promo/",
+    "site/",
+    ".github/",
+    "private/",
+    "secrets/",
+    "internal/",
+    "node_modules/",
+    "coverage/",
+    "tmp/",
+    "temp/",
+    ".env",
+    ".npmrc"
+  ];
+
+  if (ledger.title !== "Post-Release Evidence Ledger") {
+    failures.push(`${path}.title should be Post-Release Evidence Ledger.`);
+  }
+
+  if (ledger.releaseCloseoutRequired !== true) {
+    failures.push(`${path}.releaseCloseoutRequired should be true.`);
+  }
+
+  if (ledger.packageName !== "memento-mori-jester") {
+    failures.push(`${path}.packageName should be memento-mori-jester.`);
+  }
+
+  if (ledger.sourceGate !== "examples/support/release-support-provenance.json") {
+    failures.push(`${path}.sourceGate should point at examples/support/release-support-provenance.json.`);
+  }
+
+  if (typeof ledger.useWhen !== "string" || ledger.useWhen.length < 100) {
+    failures.push(`${path}.useWhen should explain post-release evidence review.`);
+  }
+
+  if (!Array.isArray(ledger.recordFields) || ledger.recordFields.join("|") !== expectedRecordFields.join("|")) {
+    failures.push(`${path}.recordFields should list post-release evidence fields in order.`);
+  }
+
+  if (!Array.isArray(ledger.evidenceCommands) || ledger.evidenceCommands.length !== expectedCommands.length) {
+    failures.push(`${path}.evidenceCommands should list five evidence commands.`);
+  } else {
+    for (const [index, command] of ledger.evidenceCommands.entries()) {
+      const expected = expectedCommands[index];
+      if (command?.id !== expected.id) {
+        failures.push(`${path}.evidenceCommands[${index}].id should be ${expected.id}.`);
+      }
+
+      if (command?.command !== expected.command) {
+        failures.push(`${path}.evidenceCommands[${index}].command should be ${expected.command}.`);
+      }
+
+      if (command?.record !== expected.record) {
+        failures.push(`${path}.evidenceCommands[${index}].record should be ${expected.record}.`);
+      }
+    }
+  }
+
+  if (!Array.isArray(ledger.workflowStatuses) || ledger.workflowStatuses.join("|") !== expectedWorkflowStatuses.join("|")) {
+    failures.push(`${path}.workflowStatuses should list the CI, GitHub Release, and npm Publish status fields.`);
+  }
+
+  if (!Array.isArray(ledger.privateIshPathExclusions)) {
+    failures.push(`${path}.privateIshPathExclusions should be an array.`);
+  } else {
+    for (const privateIshPath of expectedPrivateIshPaths) {
+      if (!ledger.privateIshPathExclusions.includes(privateIshPath)) {
+        failures.push(`${path}.privateIshPathExclusions should include ${privateIshPath}.`);
+      }
+    }
+  }
+
+  const requiredChecks = ["npm run support:check", "npm run pack:contents:check", "npm run production:check"];
+  if (!Array.isArray(ledger.requiredChecks)) {
+    failures.push(`${path}.requiredChecks should be an array.`);
+  } else {
+    for (const check of requiredChecks) {
+      if (!ledger.requiredChecks.includes(check)) {
+        failures.push(`${path}.requiredChecks should include ${check}.`);
+      }
+    }
+  }
+
+  if (typeof ledger.privacyGuardrail !== "string" || !/public-safe|workflow names|tarball file count|private-ish|secrets|private|SECURITY\.md|MCP|exploitable/i.test(ledger.privacyGuardrail)) {
+    failures.push(`${path}.privacyGuardrail should include public-safe post-release evidence guidance.`);
   }
 }
 

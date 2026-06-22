@@ -72,6 +72,7 @@ for (const path of [
   "scripts/doctor-framework-tuning.mjs",
   "scripts/check-ci-adoption.mjs",
   "scripts/check-consumer-quickstart.mjs",
+  "scripts/check-report-gallery.mjs",
   "scripts/check-fixtures.mjs",
   "scripts/report-fixtures.mjs",
   ".github/ISSUE_TEMPLATE/bug_report.yml",
@@ -87,6 +88,8 @@ for (const path of [
   "examples/ci/adoption-smoke.yml",
   "examples/consumer-quickstart/README.md",
   "examples/consumer-quickstart/package.json",
+  "examples/reports/README.md",
+  "examples/reports/report-gallery.json",
   "examples/presets/README.md",
   "examples/tuning/README.md",
   "examples/tuning/framework-tuning-cookbook.json",
@@ -113,6 +116,7 @@ requireText("README.md", /FRAMEWORK_TUNING\.md/, "framework tuning guide link");
 requireText("README.md", /examples\/tuning/, "framework tuning cookbook link");
 requireText("README.md", /adoption-smoke\.yml/, "adoption smoke CI link");
 requireText("README.md", /consumer-quickstart/, "consumer quickstart smoke link");
+requireText("README.md", /examples\/reports/, "report gallery link");
 requireText("README.md", /License: PolyForm Noncommercial/, "the noncommercial license badge");
 requireText("docs/PRODUCTION_READINESS.md", /npm package/i, "npm package readiness");
 requireText("docs/PRODUCTION_READINESS.md", /GitHub Action/i, "GitHub Action readiness");
@@ -130,6 +134,7 @@ requireText("docs/PRODUCTION_READINESS.md", /framework:tuning:check/, "framework
 requireText("docs/PRODUCTION_READINESS.md", /framework:tuning:doctor/, "framework tuning cookbook doctor readiness");
 requireText("docs/PRODUCTION_READINESS.md", /adoption-smoke\.yml/, "adoption smoke CI readiness");
 requireText("docs/PRODUCTION_READINESS.md", /consumer:quickstart:check/, "consumer quickstart smoke readiness");
+requireText("docs/PRODUCTION_READINESS.md", /reports:check/, "report gallery readiness");
 requireText("docs/PRODUCTION_READINESS.md", /quiet-pass/, "quiet-pass fixture readiness");
 requireText("docs/CLI.md", /jester doctor --json/, "doctor JSON CLI docs");
 requireText("docs/CLI.md", /quiet-pass fixture/, "quiet-pass fixture CLI docs");
@@ -164,6 +169,11 @@ requireText("examples/ci/adoption-smoke.yml", /framework:tuning:doctor/, "adopti
 requireText("examples/consumer-quickstart/README.md", /npm run consumer:quickstart:check/, "consumer quickstart check command");
 requireText("examples/consumer-quickstart/package.json", /jester:summary/, "consumer quickstart summary script");
 requireText("examples/consumer-quickstart/package.json", /framework:tuning:doctor/, "consumer quickstart tuning doctor script");
+requireText("examples/reports/README.md", /report-gallery\.json/, "report gallery JSON link");
+requireText("examples/reports/README.md", /npm run reports:check/, "report gallery check command");
+requireText("examples/reports/report-gallery.json", /fresh-install-doctor/, "fresh install doctor report");
+requireText("examples/reports/report-gallery.json", /destructive-command-summary/, "destructive command summary report");
+requireText("examples/reports/report-gallery.json", /blocked-command-review/, "blocked command review report");
 requireText("examples/tuning/README.md", /framework-tuning-cookbook\.json/, "framework tuning cookbook JSON link");
 requireText("examples/tuning/README.md", /framework:tuning:doctor/, "framework tuning doctor guidance");
 requireText("examples/tuning/README.md", /jester tune <rule-id> --json|jester tune [a-z0-9-]+ --json/, "framework tuning command guidance");
@@ -191,12 +201,16 @@ requireText("scripts/check-ci-adoption.mjs", /framework:tuning:doctor/, "adoptio
 requireText("scripts/check-consumer-quickstart.mjs", /consumer-quickstart/, "consumer quickstart checker target");
 requireText("scripts/check-consumer-quickstart.mjs", /memento-mori-jester@latest/, "consumer quickstart registry verification option");
 requireText("scripts/check-consumer-quickstart.mjs", /framework:tuning:doctor/, "consumer quickstart tuning doctor guard");
+requireText("scripts/check-report-gallery.mjs", /report-gallery\.json/, "report gallery checker target");
+requireText("scripts/check-report-gallery.mjs", /memento-mori-jester@latest/, "report gallery registry verification option");
+requireText("scripts/check-report-gallery.mjs", /destructive-command-summary/, "report gallery summary guard");
 requireText("package.json", /"fixtures:check": "node scripts\/check-fixtures\.mjs"/, "fixture authoring check script");
 requireText("package.json", /"fixtures:report": "node scripts\/report-fixtures\.mjs"/, "fixture coverage report script");
 requireText("package.json", /"framework:tuning:check": "node scripts\/check-framework-tuning\.mjs"/, "framework tuning cookbook check script");
 requireText("package.json", /"framework:tuning:doctor": "node scripts\/doctor-framework-tuning\.mjs"/, "framework tuning cookbook doctor script");
 requireText("package.json", /"ci:adoption:check": "node scripts\/check-ci-adoption\.mjs"/, "CI adoption check script");
 requireText("package.json", /"consumer:quickstart:check": "node scripts\/check-consumer-quickstart\.mjs"/, "consumer quickstart check script");
+requireText("package.json", /"reports:check": "node scripts\/check-report-gallery\.mjs"/, "report gallery check script");
 requireText("package.json", /"promo:card": "node scripts\/render-social-card\.mjs"/, "social card render script");
 requireText("package.json", /"promo:card:check": "node scripts\/render-social-card\.mjs --check"/, "social card stale check script");
 requireText("package.json", /"promo:check": "node scripts\/check-promo-freshness\.mjs"/, "promo freshness check script");
@@ -207,6 +221,7 @@ requireText("package.json", /npm run framework:tuning:check/, "framework tuning 
 requireText("package.json", /npm run framework:tuning:doctor/, "framework tuning cookbook doctor in npm test");
 requireText("package.json", /npm run ci:adoption:check/, "CI adoption check in npm test");
 requireText("package.json", /npm run consumer:quickstart:check/, "consumer quickstart check in npm test");
+requireText("package.json", /npm run reports:check/, "report gallery check in npm test");
 requireText("package.json", /npm run promo:check/, "promo freshness check in npm test");
 requireText("package.json", /npm run site:check/, "site check in npm test");
 requireText("scripts/check-promo-freshness.mjs", /--require-package-version/, "optional strict package-version promo check");

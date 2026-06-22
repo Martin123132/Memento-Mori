@@ -17,6 +17,8 @@ npx -y memento-mori-jester@latest summary --kind <command|plan|diff|final> "<min
 npx -y memento-mori-jester@latest tune <rule-id> --json
 ```
 
+For users who just need to understand what a healthy report looks like, point them at the checked [report gallery](../examples/reports). Maintainers can run `npm run reports:check` to prove those examples still match the current package output.
+
 Do not ask users to paste secrets, private code, customer data, live credentials, complete CI logs, or unredacted SARIF. If the report involves credential exposure, command execution, unexpected network access, private code disclosure, package publishing, or MCP data exposure, route it through [SECURITY.md](../SECURITY.md).
 
 ## Triage Labels

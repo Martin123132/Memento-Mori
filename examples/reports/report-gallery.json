@@ -1,0 +1,47 @@
+[
+  {
+    "id": "fresh-install-doctor",
+    "title": "Fresh install health check",
+    "scenario": "A new repo wants to confirm the package, Node runtime, MCP server file, review engine, config discovery, hooks, and generated workflow checks are visible.",
+    "command": "jester doctor",
+    "args": ["doctor"],
+    "expected": {
+      "includes": [
+        "Memento Mori Jester doctor",
+        "PASS package-version",
+        "PASS review-engine: Dangerous git command is blocked.",
+        "The fool is fit for court."
+      ]
+    }
+  },
+  {
+    "id": "destructive-command-summary",
+    "title": "Readable summary for a destructive command",
+    "scenario": "A team wants a compact CI-friendly report showing which rule fired before enabling stricter workflow failure behavior.",
+    "command": "jester summary --kind command \"git reset --hard\"",
+    "args": ["summary", "--kind", "command", "git reset --hard"],
+    "expected": {
+      "includes": [
+        "Memento Mori Jester summary",
+        "Verdict: BLOCK",
+        "destructive-git-history",
+        "Suggested next:"
+      ]
+    }
+  },
+  {
+    "id": "blocked-command-review",
+    "title": "Full blocked command review",
+    "scenario": "A developer or agent is about to run a destructive git command and needs the full review text before proceeding.",
+    "command": "jester command \"git reset --hard\"",
+    "args": ["command", "git reset --hard"],
+    "expected": {
+      "includes": [
+        "Jester verdict: BLOCK",
+        "Destructive git operation",
+        "git reset --hard",
+        "Inspect `git status`"
+      ]
+    }
+  }
+]

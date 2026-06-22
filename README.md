@@ -72,6 +72,8 @@ For a first read-only CI smoke, copy [examples/ci/adoption-smoke.yml](examples/c
 
 Maintainers can prove that fresh-project path with [examples/consumer-quickstart](examples/consumer-quickstart) and `npm run consumer:quickstart:check`, which installs the package into a temporary project and runs the same quickstart commands from there.
 
+For trust-building output examples, see [examples/reports](examples/reports). `npm run reports:check` installs the package into a temporary project and proves the gallery's `doctor`, `summary`, and blocked-command reports stay current.
+
 Expected vibe:
 
 ```text
@@ -442,6 +444,7 @@ More setup examples:
 - [Framework CI Examples](examples/ci)
 - [Adoption Smoke CI](examples/ci/adoption-smoke.yml)
 - [Consumer Quickstart Smoke](examples/consumer-quickstart)
+- [Real-World Report Gallery](examples/reports)
 - [Security Policy](SECURITY.md)
 - [Maintainer Triage](docs/MAINTAINER_TRIAGE.md)
 - [Changelog](CHANGELOG.md)
@@ -461,6 +464,7 @@ Framework CI examples:
 
 - [Adoption Smoke CI](examples/ci/adoption-smoke.yml)
 - [Consumer Quickstart Smoke](examples/consumer-quickstart)
+- [Real-World Report Gallery](examples/reports)
 - [Next.js CI](examples/ci/nextjs.yml)
 - [Vite React CI](examples/ci/vite-react.yml)
 - [Express API CI](examples/ci/express-api.yml)
@@ -516,6 +520,7 @@ Use the false-positive template for noisy cautions or blocks. Include `jester su
 Maintainers can use [docs/MAINTAINER_TRIAGE.md](docs/MAINTAINER_TRIAGE.md) to turn useful false-positive reports into redacted fixtures.
 Run `npm run fixtures:check` before merging fixture changes; it catches duplicate IDs, missing rule metadata, weak descriptions, unsafe-looking content, and duplicate content.
 Run `npm run fixtures:report` to see fixture coverage by rule, rule family, preset slice, kind, verdict, quiet-pass boundaries, feasible pass-case gaps, and curation-next guidance before choosing the next fixture. Use `npm run fixtures:report -- --markdown` when you want a paste-ready summary for release notes or GitHub issues.
+Run `npm run reports:check` after editing [examples/reports](examples/reports); it verifies the public report gallery against an installed package in a temporary consumer project.
 Run `npm run promo:card` to regenerate the repo-local social preview card after changing its copy or design.
 Run `npm run promo:check` after editing promo assets; it checks the current demo video, stills, docs, and fixture evidence numbers stay in sync.
 Run `npm run site:check` after editing the repo-local landing page; it verifies the start command, demo links, social card, repo, release, and npm links.
@@ -529,6 +534,7 @@ Release checklist:
 ```powershell
 npm.cmd test
 npm.cmd run consumer:quickstart:check
+npm.cmd run reports:check
 npm.cmd run promo:check
 npm.cmd run production:check
 npm.cmd run pack:dry

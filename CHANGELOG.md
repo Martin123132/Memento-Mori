@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.88
+
+- Added `examples/reports`, a small checked report gallery for fresh `doctor`, destructive-command `summary`, and full blocked-command review output.
+- Added `npm run reports:check`, which installs the package into a temporary consumer project and verifies every gallery command against stable output fragments.
+- Updated README, getting-started docs, maintainer triage docs, release docs, production-readiness docs, roadmap, and release notes for the report gallery.
+
 ## 0.1.87
 
 - Fixed `npm run consumer:quickstart:check -- --package memento-mori-jester@latest` so registry package specs install through `npm install --save-dev <spec>` in the temporary consumer project.

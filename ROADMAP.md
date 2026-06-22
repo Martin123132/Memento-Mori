@@ -6,6 +6,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Recently Shipped
 
+- Checked report gallery in v0.1.88, proving fresh `doctor`, destructive-command `summary`, and blocked-command reports from an installed consumer project.
 - Consumer quickstart registry-mode fix in v0.1.87, proving the same smoke against `memento-mori-jester@latest` after publish.
 - Consumer quickstart smoke in v0.1.86, proving the first installed-project commands from a minimal repo before release.
 - Adoption smoke CI example in v0.1.85, giving real repos a read-only workflow for `doctor`, `summary`, and packaged framework tuning checks.

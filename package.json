@@ -1,6 +1,6 @@
 {
   "name": "memento-mori-jester",
-  "version": "0.1.87",
+  "version": "0.1.88",
   "description": "A local court-jester sidecar for AI coding agents: review plans, commands, diffs, and final claims before they get too pleased with themselves.",
   "type": "module",
   "repository": {
@@ -40,7 +40,7 @@
     "build": "tsc -p tsconfig.json",
     "start": "node dist/server.js",
     "start:mcp": "node dist/server.js",
-    "test": "npm run build && node scripts/run-tests.mjs && npm run fixtures:check && npm run fixtures:report && npm run framework:tuning:check && npm run framework:tuning:doctor && npm run ci:adoption:check && npm run consumer:quickstart:check && npm run promo:check && npm run site:check && npm run production:check",
+    "test": "npm run build && node scripts/run-tests.mjs && npm run fixtures:check && npm run fixtures:report && npm run framework:tuning:check && npm run framework:tuning:doctor && npm run ci:adoption:check && npm run consumer:quickstart:check && npm run reports:check && npm run promo:check && npm run site:check && npm run production:check",
     "doctor": "node dist/cli.js doctor",
     "demo:svg": "node scripts/render-demo-svg.mjs",
     "demo:svg:check": "node scripts/render-demo-svg.mjs --check",
@@ -50,6 +50,7 @@
     "framework:tuning:doctor": "node scripts/doctor-framework-tuning.mjs",
     "ci:adoption:check": "node scripts/check-ci-adoption.mjs",
     "consumer:quickstart:check": "node scripts/check-consumer-quickstart.mjs",
+    "reports:check": "node scripts/check-report-gallery.mjs",
     "promo:card": "node scripts/render-social-card.mjs",
     "promo:card:check": "node scripts/render-social-card.mjs --check",
     "promo:check": "node scripts/check-promo-freshness.mjs",

@@ -74,6 +74,8 @@ Maintainers can prove that fresh-project path with [examples/consumer-quickstart
 
 For trust-building output examples, see [examples/reports](examples/reports). `npm run reports:check` installs the package into a temporary project and proves the gallery's `doctor`, `summary`, and blocked-command reports stay current.
 
+If one of those reports is confusing or stale, use the public-safe [report gallery feedback template](examples/reports/feedback-template.md). It asks for version, nearest gallery example, sanitized command/output summaries, and redacted diagnostics without private repo code or secrets.
+
 Expected vibe:
 
 ```text
@@ -445,6 +447,7 @@ More setup examples:
 - [Adoption Smoke CI](examples/ci/adoption-smoke.yml)
 - [Consumer Quickstart Smoke](examples/consumer-quickstart)
 - [Real-World Report Gallery](examples/reports)
+- [Report Gallery Feedback Template](examples/reports/feedback-template.md)
 - [Security Policy](SECURITY.md)
 - [Maintainer Triage](docs/MAINTAINER_TRIAGE.md)
 - [Changelog](CHANGELOG.md)
@@ -465,6 +468,7 @@ Framework CI examples:
 - [Adoption Smoke CI](examples/ci/adoption-smoke.yml)
 - [Consumer Quickstart Smoke](examples/consumer-quickstart)
 - [Real-World Report Gallery](examples/reports)
+- [Report Gallery Feedback Template](examples/reports/feedback-template.md)
 - [Next.js CI](examples/ci/nextjs.yml)
 - [Vite React CI](examples/ci/vite-react.yml)
 - [Express API CI](examples/ci/express-api.yml)
@@ -521,6 +525,7 @@ Maintainers can use [docs/MAINTAINER_TRIAGE.md](docs/MAINTAINER_TRIAGE.md) to tu
 Run `npm run fixtures:check` before merging fixture changes; it catches duplicate IDs, missing rule metadata, weak descriptions, unsafe-looking content, and duplicate content.
 Run `npm run fixtures:report` to see fixture coverage by rule, rule family, preset slice, kind, verdict, quiet-pass boundaries, feasible pass-case gaps, and curation-next guidance before choosing the next fixture. Use `npm run fixtures:report -- --markdown` when you want a paste-ready summary for release notes or GitHub issues.
 Run `npm run reports:check` after editing [examples/reports](examples/reports); it verifies the public report gallery against an installed package in a temporary consumer project.
+Run `npm run support:check` after editing issue templates, support docs, or the report gallery feedback path; it verifies the public report template asks for useful redacted context without inviting secrets or private code.
 Run `npm run promo:card` to regenerate the repo-local social preview card after changing its copy or design.
 Run `npm run promo:check` after editing promo assets; it checks the current demo video, stills, docs, and fixture evidence numbers stay in sync.
 Run `npm run site:check` after editing the repo-local landing page; it verifies the start command, demo links, social card, repo, release, and npm links.

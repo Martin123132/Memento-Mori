@@ -73,10 +73,12 @@ for (const path of [
   "scripts/check-ci-adoption.mjs",
   "scripts/check-consumer-quickstart.mjs",
   "scripts/check-report-gallery.mjs",
+  "scripts/check-support-triage.mjs",
   "scripts/check-fixtures.mjs",
   "scripts/report-fixtures.mjs",
   ".github/ISSUE_TEMPLATE/bug_report.yml",
   ".github/ISSUE_TEMPLATE/false_positive.yml",
+  ".github/ISSUE_TEMPLATE/report_gallery_feedback.yml",
   ".github/ISSUE_TEMPLATE/feature_request.yml",
   ".github/ISSUE_TEMPLATE/config.yml",
   ".github/workflows/ci.yml",
@@ -89,6 +91,7 @@ for (const path of [
   "examples/consumer-quickstart/README.md",
   "examples/consumer-quickstart/package.json",
   "examples/reports/README.md",
+  "examples/reports/feedback-template.md",
   "examples/reports/report-gallery.json",
   "examples/presets/README.md",
   "examples/tuning/README.md",
@@ -117,6 +120,8 @@ requireText("README.md", /examples\/tuning/, "framework tuning cookbook link");
 requireText("README.md", /adoption-smoke\.yml/, "adoption smoke CI link");
 requireText("README.md", /consumer-quickstart/, "consumer quickstart smoke link");
 requireText("README.md", /examples\/reports/, "report gallery link");
+requireText("README.md", /feedback-template\.md/, "report gallery feedback template link");
+requireText("README.md", /report gallery feedback/i, "report gallery feedback guidance");
 requireText("README.md", /License: PolyForm Noncommercial/, "the noncommercial license badge");
 requireText("docs/PRODUCTION_READINESS.md", /npm package/i, "npm package readiness");
 requireText("docs/PRODUCTION_READINESS.md", /GitHub Action/i, "GitHub Action readiness");
@@ -135,6 +140,7 @@ requireText("docs/PRODUCTION_READINESS.md", /framework:tuning:doctor/, "framewor
 requireText("docs/PRODUCTION_READINESS.md", /adoption-smoke\.yml/, "adoption smoke CI readiness");
 requireText("docs/PRODUCTION_READINESS.md", /consumer:quickstart:check/, "consumer quickstart smoke readiness");
 requireText("docs/PRODUCTION_READINESS.md", /reports:check/, "report gallery readiness");
+requireText("docs/PRODUCTION_READINESS.md", /support:check/, "support triage readiness");
 requireText("docs/PRODUCTION_READINESS.md", /quiet-pass/, "quiet-pass fixture readiness");
 requireText("docs/CLI.md", /jester doctor --json/, "doctor JSON CLI docs");
 requireText("docs/CLI.md", /quiet-pass fixture/, "quiet-pass fixture CLI docs");
@@ -156,6 +162,9 @@ requireText("docs/MAINTAINER_TRIAGE.md", /tune <rule-id> --json/, "tune JSON tri
 requireText("docs/MAINTAINER_TRIAGE.md", /preset-review-cases\.json/, "fixture suite link");
 requireText("docs/MAINTAINER_TRIAGE.md", /expectedRuleIds/, "fixture expected rule guidance");
 requireText("docs/MAINTAINER_TRIAGE.md", /absentRuleIds/, "fixture absent rule guidance");
+requireText("docs/MAINTAINER_TRIAGE.md", /feedback-template\.md/, "report gallery feedback template link");
+requireText("docs/MAINTAINER_TRIAGE.md", /report_gallery_feedback\.yml/, "report gallery issue template link");
+requireText("docs/MAINTAINER_TRIAGE.md", /support:check/, "support triage check guidance");
 requireText("examples/fixtures/README.md", /MAINTAINER_TRIAGE\.md/, "maintainer triage link");
 requireText("examples/fixtures/README.md", /Adding A Fixture From A Report/, "fixture report conversion guidance");
 requireText("examples/fixtures/README.md", /fixtures:check/, "fixture authoring check guidance");
@@ -170,10 +179,18 @@ requireText("examples/consumer-quickstart/README.md", /npm run consumer:quicksta
 requireText("examples/consumer-quickstart/package.json", /jester:summary/, "consumer quickstart summary script");
 requireText("examples/consumer-quickstart/package.json", /framework:tuning:doctor/, "consumer quickstart tuning doctor script");
 requireText("examples/reports/README.md", /report-gallery\.json/, "report gallery JSON link");
+requireText("examples/reports/README.md", /feedback-template\.md/, "report gallery feedback template link");
+requireText("examples/reports/README.md", /report_gallery_feedback\.yml/, "report gallery issue template link");
 requireText("examples/reports/README.md", /npm run reports:check/, "report gallery check command");
+requireText("examples/reports/README.md", /npm run support:check/, "support triage check command");
 requireText("examples/reports/report-gallery.json", /fresh-install-doctor/, "fresh install doctor report");
 requireText("examples/reports/report-gallery.json", /destructive-command-summary/, "destructive command summary report");
 requireText("examples/reports/report-gallery.json", /blocked-command-review/, "blocked command review report");
+requireText("examples/reports/feedback-template.md", /doctor --json/, "feedback template doctor diagnostics");
+requireText("examples/reports/feedback-template.md", /summary --kind command "git reset --hard"/, "feedback template summary diagnostics");
+requireText("examples/reports/feedback-template.md", /tune <rule-id> --json/, "feedback template tune diagnostics");
+requireText("examples/reports/feedback-template.md", /Privacy Checklist/, "feedback template privacy checklist");
+requireText("examples/reports/feedback-template.md", /SECURITY\.md/, "feedback template security redirect");
 requireText("examples/tuning/README.md", /framework-tuning-cookbook\.json/, "framework tuning cookbook JSON link");
 requireText("examples/tuning/README.md", /framework:tuning:doctor/, "framework tuning doctor guidance");
 requireText("examples/tuning/README.md", /jester tune <rule-id> --json|jester tune [a-z0-9-]+ --json/, "framework tuning command guidance");
@@ -204,6 +221,9 @@ requireText("scripts/check-consumer-quickstart.mjs", /framework:tuning:doctor/, 
 requireText("scripts/check-report-gallery.mjs", /report-gallery\.json/, "report gallery checker target");
 requireText("scripts/check-report-gallery.mjs", /memento-mori-jester@latest/, "report gallery registry verification option");
 requireText("scripts/check-report-gallery.mjs", /destructive-command-summary/, "report gallery summary guard");
+requireText("scripts/check-support-triage.mjs", /report_gallery_feedback\.yml/, "support triage issue template guard");
+requireText("scripts/check-support-triage.mjs", /feedback-template\.md/, "support triage feedback template guard");
+requireText("scripts/check-support-triage.mjs", /unsafeContentPatterns/, "support triage unsafe content checks");
 requireText("package.json", /"fixtures:check": "node scripts\/check-fixtures\.mjs"/, "fixture authoring check script");
 requireText("package.json", /"fixtures:report": "node scripts\/report-fixtures\.mjs"/, "fixture coverage report script");
 requireText("package.json", /"framework:tuning:check": "node scripts\/check-framework-tuning\.mjs"/, "framework tuning cookbook check script");
@@ -211,6 +231,7 @@ requireText("package.json", /"framework:tuning:doctor": "node scripts\/doctor-fr
 requireText("package.json", /"ci:adoption:check": "node scripts\/check-ci-adoption\.mjs"/, "CI adoption check script");
 requireText("package.json", /"consumer:quickstart:check": "node scripts\/check-consumer-quickstart\.mjs"/, "consumer quickstart check script");
 requireText("package.json", /"reports:check": "node scripts\/check-report-gallery\.mjs"/, "report gallery check script");
+requireText("package.json", /"support:check": "node scripts\/check-support-triage\.mjs"/, "support triage check script");
 requireText("package.json", /"promo:card": "node scripts\/render-social-card\.mjs"/, "social card render script");
 requireText("package.json", /"promo:card:check": "node scripts\/render-social-card\.mjs --check"/, "social card stale check script");
 requireText("package.json", /"promo:check": "node scripts\/check-promo-freshness\.mjs"/, "promo freshness check script");
@@ -222,6 +243,7 @@ requireText("package.json", /npm run framework:tuning:doctor/, "framework tuning
 requireText("package.json", /npm run ci:adoption:check/, "CI adoption check in npm test");
 requireText("package.json", /npm run consumer:quickstart:check/, "consumer quickstart check in npm test");
 requireText("package.json", /npm run reports:check/, "report gallery check in npm test");
+requireText("package.json", /npm run support:check/, "support triage check in npm test");
 requireText("package.json", /npm run promo:check/, "promo freshness check in npm test");
 requireText("package.json", /npm run site:check/, "site check in npm test");
 requireText("scripts/check-promo-freshness.mjs", /--require-package-version/, "optional strict package-version promo check");
@@ -235,6 +257,13 @@ requireText(".github/ISSUE_TEMPLATE/bug_report.yml", /doctor --json/, "doctor JS
 requireText(".github/ISSUE_TEMPLATE/bug_report.yml", /SECURITY\.md|security policy/i, "security redirect");
 requireText(".github/ISSUE_TEMPLATE/false_positive.yml", /jester tune <rule-id> --json/, "tune JSON prompt");
 requireText(".github/ISSUE_TEMPLATE/false_positive.yml", /false-positive|noisy rule/i, "false-positive scope");
+requireText(".github/ISSUE_TEMPLATE/false_positive.yml", /Jester version/, "false-positive version prompt");
+requireText(".github/ISSUE_TEMPLATE/false_positive.yml", /doctor --json/, "false-positive doctor diagnostics");
+requireText(".github/ISSUE_TEMPLATE/report_gallery_feedback.yml", /doctor --json/, "doctor JSON report gallery prompt");
+requireText(".github/ISSUE_TEMPLATE/report_gallery_feedback.yml", /summary --kind command "git reset --hard"/, "summary report gallery prompt");
+requireText(".github/ISSUE_TEMPLATE/report_gallery_feedback.yml", /Sanitized command summary/, "sanitized command report gallery prompt");
+requireText(".github/ISSUE_TEMPLATE/report_gallery_feedback.yml", /Sanitized output summary/, "sanitized output report gallery prompt");
+requireText(".github/ISSUE_TEMPLATE/report_gallery_feedback.yml", /SECURITY\.md/, "report gallery security redirect");
 requireText(".github/ISSUE_TEMPLATE/feature_request.yml", /local-first and deterministic/, "project constraint prompt");
 requireText(".github/ISSUE_TEMPLATE/config.yml", /security\/advisories\/new/, "security contact link");
 

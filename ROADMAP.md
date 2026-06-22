@@ -6,6 +6,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Recently Shipped
 
+- Checked adopter feedback path in v0.1.89, adding a report-gallery issue template, package-shipped feedback template, and support triage guard.
 - Checked report gallery in v0.1.88, proving fresh `doctor`, destructive-command `summary`, and blocked-command reports from an installed consumer project.
 - Consumer quickstart registry-mode fix in v0.1.87, proving the same smoke against `memento-mori-jester@latest` after publish.
 - Consumer quickstart smoke in v0.1.86, proving the first installed-project commands from a minimal repo before release.
@@ -78,7 +79,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 ## Product Ideas
 
 - Collect real-world reports and fold the strongest redacted cases into more framework tuning cookbook recipes.
-- Add a small fixture issue template checklist that asks for the nearest framework tuning cookbook recipe and redacted `jester tune <rule-id> --json` output.
+- Turn repeated report-gallery feedback into clearer gallery examples or redacted fixtures.
 - Add a hosted-page option or GitHub Pages instructions once the static page has settled.
 
 ## Quality And Safety

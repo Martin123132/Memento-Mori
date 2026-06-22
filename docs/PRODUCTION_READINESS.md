@@ -46,7 +46,7 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 
 - `README.md` leads with a no-write first run, project bootstrap, agent setup, and optional hooks/CI.
 - `docs/GETTING_STARTED.md`, `docs/CLI.md`, `docs/RELEASE.md`, and `docs/TRUSTED_PUBLISHING.md` cover the core adoption and release paths.
-- `examples/reports` provides checked, public-safe report examples for fresh install diagnostics, summary output, and blocked command reviews.
+- `examples/reports` provides checked, public-safe report examples for fresh install diagnostics, summary output, blocked command reviews, and report-gallery feedback.
 - `site/index.html` gives maintainers a static one-page share surface that reuses the demo, social card, start command, and public links.
 - Every public release has matching `CHANGELOG.md` notes and `docs/RELEASE_NOTES_vX.Y.Z.md`.
 
@@ -56,7 +56,7 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 - `jester doctor --json`, `jester config validate`, and `jester rules` are the first troubleshooting commands.
 - `jester tune`, `jester tune coverage`, and the fixture suite give maintainers a way to inspect noisy rules before changing defaults.
 - [FRAMEWORK_TUNING.md](FRAMEWORK_TUNING.md) maps common stack-specific false-positive reports to the relevant `jester tune <rule-id>` evidence and fixture IDs, while [examples/tuning](../examples/tuning) provides checked copy-paste recipes.
-- GitHub issue templates collect bug reports, false-positive reports, and feature requests with the diagnostic context maintainers need.
+- GitHub issue templates collect bug reports, false-positive reports, report-gallery feedback, and feature requests with the diagnostic context maintainers need.
 - `SECURITY.md` routes vulnerability reports away from public issues and asks for redacted diagnostics.
 - `docs/MAINTAINER_TRIAGE.md` explains how to turn useful false-positive reports into fixture coverage before changing rule logic.
 - `npm run fixtures:check` validates fixture IDs, metadata, unsafe-looking content, duplicate content, and explicit expected/absent rule intent.
@@ -65,6 +65,7 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 - `npm run framework:tuning:doctor` runs the cookbook tune commands through the built CLI with temporary preset configs, so package consumers do not inherit stale recipes.
 - `npm run consumer:quickstart:check` installs the package into a temporary minimal project and runs `doctor`, `summary`, and packaged framework tuning checks from that consumer side.
 - `npm run reports:check` installs the package into a temporary minimal project and runs the report gallery's `doctor`, `summary`, and blocked-command examples through that consumer side.
+- `npm run support:check` verifies issue templates, support docs, and the report gallery feedback template stay public-safe and ask for useful redacted context.
 - `npm run promo:card` regenerates the deterministic social preview card, and `npm run promo:check` verifies current repo-local promo assets against the current fixture evidence before maintainers post or refresh the demo.
 - `npm run site:check` verifies the static landing page before maintainers post or host it.
 - npm publish has a manual workflow fallback, but the normal release path is tag-driven trusted publishing.
@@ -87,6 +88,7 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 - CI adoption example checks are wired into `npm test`.
 - consumer quickstart smoke checks are wired into `npm test`.
 - report gallery checks are wired into `npm test`.
+- support triage checks are wired into `npm test`.
 - promo freshness checks are wired into `npm test`.
 - site checks are wired into `npm test`.
 
@@ -95,4 +97,4 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 ## Known Next Gaps
 
 - Continue expanding real-world preset fixtures and false-positive examples so tuning remains evidence-based.
-- Add more framework-specific false-positive examples as people report real noisy cases.
+- Fold the strongest redacted support reports into fixture or report-gallery updates.

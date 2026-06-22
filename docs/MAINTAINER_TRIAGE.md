@@ -19,6 +19,8 @@ npx -y memento-mori-jester@latest tune <rule-id> --json
 
 For users who just need to understand what a healthy report looks like, point them at the checked [report gallery](../examples/reports). Maintainers can run `npm run reports:check` to prove those examples still match the current package output.
 
+For users who say a gallery report is confusing, stale, or hard to compare with their local output, point them at [examples/reports/feedback-template.md](../examples/reports/feedback-template.md) or the GitHub [report gallery feedback issue template](../.github/ISSUE_TEMPLATE/report_gallery_feedback.yml). It asks for the nearest checked example, sanitized command and output summaries, version, and redacted diagnostics without asking for private code.
+
 Do not ask users to paste secrets, private code, customer data, live credentials, complete CI logs, or unredacted SARIF. If the report involves credential exposure, command execution, unexpected network access, private code disclosure, package publishing, or MCP data exposure, route it through [SECURITY.md](../SECURITY.md).
 
 ## Triage Labels
@@ -45,6 +47,22 @@ Use a small, boring label vocabulary:
    - or a preset mismatch.
 
 If the user has a safe example that should pass, prefer adding a pass or quiet-pass fixture before loosening a rule. If the example should still caution but the wording is confusing, update the rule guidance or docs instead of changing matching behavior.
+
+## Report Gallery Feedback
+
+Use report-gallery feedback when the issue is about understanding installed-package output, not changing a rule. Good outcomes are:
+
+- a clearer gallery explanation,
+- a new stable output fragment in `report-gallery.json`,
+- a small docs update,
+- or a redacted fixture only if the report exposes a reusable rule boundary.
+
+After editing report support docs or issue templates, run:
+
+```powershell
+npm.cmd run support:check
+npm.cmd run reports:check
+```
 
 ## Converting Reports Into Fixtures
 

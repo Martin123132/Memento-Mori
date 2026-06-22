@@ -28,6 +28,14 @@ body:
     validations:
       required: true
   - type: input
+    id: version
+    attributes:
+      label: Jester version
+      description: Paste the package version from `jester doctor`, or say `latest`.
+      placeholder: "0.1.89"
+    validations:
+      required: true
+  - type: input
     id: rule
     attributes:
       label: Rule id
@@ -65,6 +73,14 @@ body:
     attributes:
       label: tune output
       description: Paste redacted `jester tune <rule-id> --json` output when possible.
+      render: json
+    validations:
+      required: false
+  - type: textarea
+    id: doctor
+    attributes:
+      label: doctor --json output
+      description: Paste redacted `jester doctor --json` output if the package, config, hook, or workflow environment may matter.
       render: json
     validations:
       required: false

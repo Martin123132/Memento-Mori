@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.89
+
+- Added a report-gallery feedback issue template for public-safe reports about confusing or stale checked examples, and strengthened false-positive reports with version and redacted `doctor --json` prompts.
+- Added `examples/reports/feedback-template.md` and `npm run support:check` so adopter feedback requests stay redacted, useful, and aligned with the gallery.
+- Updated README, report docs, maintainer triage docs, release docs, production-readiness docs, roadmap, and release notes for the support path.
+
 ## 0.1.88
 
 - Added `examples/reports`, a small checked report gallery for fresh `doctor`, destructive-command `summary`, and full blocked-command review output.

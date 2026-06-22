@@ -36,6 +36,8 @@ const supportFiles = [
   "examples/support/README.md",
   "examples/support/response-snippets.md",
   "examples/support/response-snippets.json",
+  "examples/support/support-lifecycle-map.md",
+  "examples/support/support-lifecycle-map.json",
   "examples/support/support-lifecycle.md",
   "examples/support/support-lifecycle.json",
   "examples/support/triage-playbook.json",
@@ -90,7 +92,9 @@ requireText("examples/reports/README.md", /examples\/support|Maintainer Triage P
 requireText("examples/support/README.md", /Maintainer Triage Playbook/, "maintainer playbook heading");
 requireText("examples/support/README.md", /backlog-review\.md/, "support backlog review link");
 requireText("examples/support/README.md", /backlog-records\.md/, "support backlog records link");
+requireText("examples/support/README.md", /support-lifecycle-map\.md/, "support lifecycle map link");
 requireText("examples/support/README.md", /support-lifecycle\.md/, "support lifecycle overview link");
+requireText("examples/support/README.md", /support-lifecycle-map\.json/, "support lifecycle map JSON link");
 requireText("examples/support/README.md", /outcome-prioritization\.md/, "support outcome prioritization link");
 requireText("examples/support/README.md", /closeout-checklist\.md/, "support closeout checklist link");
 requireText("examples/support/README.md", /triage-playbook\.json/, "maintainer playbook JSON link");
@@ -118,7 +122,22 @@ requireText("examples/support/closeout-checklist.md", /SECURITY\.md/, "closeout 
 requireText("examples/support/closeout-checklist.json", /docs-clarification-closeout/, "docs closeout record");
 requireText("examples/support/closeout-checklist.json", /fixture-backlog-closeout/, "fixture closeout record");
 requireText("examples/support/closeout-checklist.json", /rule-review-closeout/, "rule-review closeout record");
+requireText("examples/support/support-lifecycle-map.md", /Support Lifecycle Map/, "support lifecycle map heading");
+requireText("examples/support/support-lifecycle-map.md", /support-lifecycle-map\.json/, "support lifecycle map JSON link");
+requireText("examples/support/support-lifecycle-map.md", /report\s*\n\s*-> triage\s*\n\s*-> response\s*\n\s*-> closeout\s*\n\s*-> prioritization\s*\n\s*-> backlog-record\s*\n\s*-> backlog-review/, "support lifecycle compact flow");
+requireText("examples/support/support-lifecycle-map.md", /Maintainer question/, "support lifecycle map scan questions");
+requireText("examples/support/support-lifecycle-map.md", /docs-clarification-backlog-record/, "docs backlog map record");
+requireText("examples/support/support-lifecycle-map.md", /fixture-backlog-record/, "fixture backlog map record");
+requireText("examples/support/support-lifecycle-map.md", /rule-review-candidate-backlog-record/, "rule-review backlog map record");
+requireText("examples/support/support-lifecycle-map.md", /closed-no-action/, "closed no-action map review");
+requireText("examples/support/support-lifecycle-map.md", /SECURITY\.md/, "map security redirect");
+requireText("examples/support/support-lifecycle-map.md", /npm run support:check/, "support checker map command");
+requireText("examples/support/support-lifecycle-map.json", /Support Lifecycle Map/, "support lifecycle map JSON title");
+requireText("examples/support/support-lifecycle-map.json", /backlog-record/, "support lifecycle map backlog-record stage");
+requireText("examples/support/support-lifecycle-map.json", /backlog-review/, "support lifecycle map backlog-review stage");
+requireText("examples/support/support-lifecycle-map.json", /closed-no-action/, "support lifecycle map closed no-action fallback");
 requireText("examples/support/support-lifecycle.md", /Support Lifecycle Overview/, "support lifecycle heading");
+requireText("examples/support/support-lifecycle.md", /support-lifecycle-map\.md/, "support lifecycle map link");
 requireText("examples/support/support-lifecycle.md", /support-lifecycle\.json/, "support lifecycle JSON link");
 requireText("examples/support/support-lifecycle.md", /report -> triage -> response -> closeout -> prioritization -> backlog-record -> backlog-review/, "support lifecycle flow");
 requireText("examples/support/support-lifecycle.md", /report gallery feedback template/, "report feedback lifecycle link");
@@ -200,6 +219,7 @@ requireText("examples/support/response-snippets.json", /rule-review-candidate-re
 requireText("docs/MAINTAINER_TRIAGE.md", /feedback-template\.md/, "feedback template triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /report_gallery_feedback\.yml/, "report gallery issue template triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /examples\/support/, "maintainer playbook triage link");
+requireText("docs/MAINTAINER_TRIAGE.md", /support-lifecycle-map\.md/, "support lifecycle map triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /support-lifecycle\.md/, "support lifecycle triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /outcome-prioritization\.md/, "support prioritization triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /backlog-review\.md/, "support backlog review triage link");
@@ -212,6 +232,7 @@ requireText("docs/MAINTAINER_TRIAGE.md", /rule-review-candidate/, "rule review t
 requireText("docs/MAINTAINER_TRIAGE.md", /npm(?:\.cmd)? run support:check/, "support checker triage command");
 requireText("docs/PRODUCTION_READINESS.md", /support:check/, "support checker readiness");
 requireText("README.md", /feedback-template\.md/, "feedback template README link");
+requireText("README.md", /support-lifecycle-map\.md/, "support lifecycle map README link");
 requireText("README.md", /support-lifecycle\.md/, "support lifecycle README link");
 requireText("README.md", /outcome-prioritization\.md/, "support prioritization README link");
 requireText("README.md", /backlog-review\.md/, "support backlog review README link");
@@ -227,6 +248,7 @@ requireText("package.json", /npm run support:check/, "support checker in npm tes
 checkTriagePlaybook();
 checkResponseSnippets();
 checkCloseoutChecklist();
+checkSupportLifecycleMap();
 checkSupportLifecycle();
 checkOutcomePrioritization();
 checkBacklogRecords();
@@ -638,6 +660,106 @@ function checkSupportLifecycle() {
     for (const check of expectedEntry.checks) {
       if (!entry.requiredChecks.includes(check)) {
         failures.push(`${entry.outcome}.requiredChecks should include ${check}.`);
+      }
+    }
+  }
+}
+
+function checkSupportLifecycleMap() {
+  const path = "examples/support/support-lifecycle-map.json";
+  const map = readJson(path);
+  if (!map) {
+    return;
+  }
+
+  const expectedStageIds = ["report", "triage", "response", "closeout", "prioritization", "backlog-record", "backlog-review"];
+  const expectedArtifacts = [
+    "examples/reports/feedback-template.md",
+    "examples/support/triage-playbook.json",
+    "examples/support/response-snippets.json",
+    "examples/support/closeout-checklist.json",
+    "examples/support/outcome-prioritization.json",
+    "examples/support/backlog-records.json",
+    "examples/support/backlog-review.json"
+  ];
+  const expectedOutcomes = [
+    {
+      outcome: "docs-example",
+      backlogRecord: "docs-clarification-backlog-record",
+      reviewDecision: "remains-docs-clarification"
+    },
+    {
+      outcome: "fixture-backlog",
+      backlogRecord: "fixture-backlog-record",
+      reviewDecision: "remains-fixture-backlog"
+    },
+    {
+      outcome: "rule-review-candidate",
+      backlogRecord: "rule-review-candidate-backlog-record",
+      reviewDecision: "remains-rule-review-candidate"
+    }
+  ];
+
+  if (map.title !== "Support Lifecycle Map") {
+    failures.push(`${path}.title should be Support Lifecycle Map.`);
+  }
+
+  if (!Array.isArray(map.flow) || map.flow.join("|") !== expectedStageIds.join("|")) {
+    failures.push(`${path}.flow should contain the compact support lifecycle order.`);
+  }
+
+  if (!Array.isArray(map.stages) || map.stages.length !== expectedStageIds.length) {
+    failures.push(`${path}.stages should contain seven lifecycle stages.`);
+  } else {
+    for (const [index, stage] of map.stages.entries()) {
+      if (stage?.id !== expectedStageIds[index]) {
+        failures.push(`${path}.stages[${index}].id should be ${expectedStageIds[index]}.`);
+      }
+
+      if (stage?.artifact !== expectedArtifacts[index]) {
+        failures.push(`${path}.stages[${index}].artifact should be ${expectedArtifacts[index]}.`);
+      }
+
+      if (typeof stage?.question !== "string" || stage.question.length < 40) {
+        failures.push(`${path}.stages[${index}].question should be a useful maintainer scan question.`);
+      }
+    }
+  }
+
+  if (!Array.isArray(map.outcomes) || map.outcomes.length !== expectedOutcomes.length) {
+    failures.push(`${path}.outcomes should contain three lifecycle outcome summaries.`);
+  } else {
+    for (const [index, outcome] of map.outcomes.entries()) {
+      const expectedOutcome = expectedOutcomes[index];
+      if (outcome?.outcome !== expectedOutcome.outcome) {
+        failures.push(`${path}.outcomes[${index}].outcome should be ${expectedOutcome.outcome}.`);
+      }
+
+      if (outcome?.backlogRecord !== expectedOutcome.backlogRecord) {
+        failures.push(`${path}.outcomes[${index}].backlogRecord should be ${expectedOutcome.backlogRecord}.`);
+      }
+
+      if (outcome?.reviewDecision !== expectedOutcome.reviewDecision) {
+        failures.push(`${path}.outcomes[${index}].reviewDecision should be ${expectedOutcome.reviewDecision}.`);
+      }
+
+      if (outcome?.fallbackReviewDecision !== "closed-no-action") {
+        failures.push(`${path}.outcomes[${index}].fallbackReviewDecision should be closed-no-action.`);
+      }
+    }
+  }
+
+  if (typeof map.privacyGuardrail !== "string" || !/SECURITY\.md|secrets|private|customer data/i.test(map.privacyGuardrail)) {
+    failures.push(`${path}.privacyGuardrail should include public-safe support routing guidance.`);
+  }
+
+  const requiredChecks = ["npm run support:check", "npm run production:check"];
+  if (!Array.isArray(map.requiredChecks)) {
+    failures.push(`${path}.requiredChecks should be an array.`);
+  } else {
+    for (const check of requiredChecks) {
+      if (!map.requiredChecks.includes(check)) {
+        failures.push(`${path}.requiredChecks should include ${check}.`);
       }
     }
   }

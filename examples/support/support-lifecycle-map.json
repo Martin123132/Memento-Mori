@@ -1,0 +1,74 @@
+{
+  "title": "Support Lifecycle Map",
+  "flow": [
+    "report",
+    "triage",
+    "response",
+    "closeout",
+    "prioritization",
+    "backlog-record",
+    "backlog-review"
+  ],
+  "stages": [
+    {
+      "id": "report",
+      "artifact": "examples/reports/feedback-template.md",
+      "question": "Is the report redacted, minimal, and safe to discuss publicly?"
+    },
+    {
+      "id": "triage",
+      "artifact": "examples/support/triage-playbook.json",
+      "question": "Is this a docs example, fixture backlog item, or rule-review candidate?"
+    },
+    {
+      "id": "response",
+      "artifact": "examples/support/response-snippets.json",
+      "question": "Which public-safe reply should go back to the reporter?"
+    },
+    {
+      "id": "closeout",
+      "artifact": "examples/support/closeout-checklist.json",
+      "question": "Was the immediate support decision recorded with a safe next link?"
+    },
+    {
+      "id": "prioritization",
+      "artifact": "examples/support/outcome-prioritization.json",
+      "question": "Is the follow-up low-priority docs, medium-priority fixture work, or high-priority rule review?"
+    },
+    {
+      "id": "backlog-record",
+      "artifact": "examples/support/backlog-records.json",
+      "question": "Is there a sanitized backlog artifact with evidence and checks?"
+    },
+    {
+      "id": "backlog-review",
+      "artifact": "examples/support/backlog-review.json",
+      "question": "Does the item remain active, or should it close as closed-no-action?"
+    }
+  ],
+  "outcomes": [
+    {
+      "outcome": "docs-example",
+      "backlogRecord": "docs-clarification-backlog-record",
+      "reviewDecision": "remains-docs-clarification",
+      "fallbackReviewDecision": "closed-no-action"
+    },
+    {
+      "outcome": "fixture-backlog",
+      "backlogRecord": "fixture-backlog-record",
+      "reviewDecision": "remains-fixture-backlog",
+      "fallbackReviewDecision": "closed-no-action"
+    },
+    {
+      "outcome": "rule-review-candidate",
+      "backlogRecord": "rule-review-candidate-backlog-record",
+      "reviewDecision": "remains-rule-review-candidate",
+      "fallbackReviewDecision": "closed-no-action"
+    }
+  ],
+  "privacyGuardrail": "Route secrets, private code, private paths, customer data, full logs, unredacted SARIF, package publishing credentials, MCP data exposure, or exploitable security details through SECURITY.md instead of the public lifecycle.",
+  "requiredChecks": [
+    "npm run support:check",
+    "npm run production:check"
+  ]
+}

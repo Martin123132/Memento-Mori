@@ -104,6 +104,8 @@ for (const path of [
   "examples/support/outcome-prioritization.json",
   "examples/support/response-snippets.md",
   "examples/support/response-snippets.json",
+  "examples/support/support-lifecycle-map.md",
+  "examples/support/support-lifecycle-map.json",
   "examples/support/support-lifecycle.md",
   "examples/support/support-lifecycle.json",
   "examples/support/triage-playbook.json",
@@ -138,6 +140,7 @@ requireText("README.md", /feedback-template\.md/, "report gallery feedback templ
 requireText("README.md", /examples\/support/, "support triage playbook link");
 requireText("README.md", /response-snippets\.md/, "support response snippets link");
 requireText("README.md", /closeout-checklist\.md/, "support closeout checklist link");
+requireText("README.md", /support-lifecycle-map\.md/, "support lifecycle map link");
 requireText("README.md", /support-lifecycle\.md/, "support lifecycle overview link");
 requireText("README.md", /outcome-prioritization\.md/, "support outcome prioritization link");
 requireText("README.md", /backlog-review\.md/, "support backlog review link");
@@ -166,6 +169,7 @@ requireText("docs/PRODUCTION_READINESS.md", /examples\/support/, "support triage
 requireText("docs/PRODUCTION_READINESS.md", /response snippets/i, "support response snippets readiness");
 requireText("docs/PRODUCTION_READINESS.md", /closeout checklist/i, "support closeout checklist readiness");
 requireText("docs/PRODUCTION_READINESS.md", /support lifecycle overview/i, "support lifecycle overview readiness");
+requireText("docs/PRODUCTION_READINESS.md", /support lifecycle map/i, "support lifecycle map readiness");
 requireText("docs/PRODUCTION_READINESS.md", /outcome prioritization guide/i, "support outcome prioritization readiness");
 requireText("docs/PRODUCTION_READINESS.md", /backlog review/i, "support backlog review readiness");
 requireText("docs/PRODUCTION_READINESS.md", /backlog records/i, "support backlog records readiness");
@@ -195,6 +199,7 @@ requireText("docs/MAINTAINER_TRIAGE.md", /report_gallery_feedback\.yml/, "report
 requireText("docs/MAINTAINER_TRIAGE.md", /examples\/support/, "support triage playbook link");
 requireText("docs/MAINTAINER_TRIAGE.md", /response-snippets\.md/, "support response snippets link");
 requireText("docs/MAINTAINER_TRIAGE.md", /closeout-checklist\.md/, "support closeout checklist link");
+requireText("docs/MAINTAINER_TRIAGE.md", /support-lifecycle-map\.md/, "support lifecycle map link");
 requireText("docs/MAINTAINER_TRIAGE.md", /support-lifecycle\.md/, "support lifecycle overview link");
 requireText("docs/MAINTAINER_TRIAGE.md", /outcome-prioritization\.md/, "support outcome prioritization link");
 requireText("docs/MAINTAINER_TRIAGE.md", /backlog-review\.md/, "support backlog review link");
@@ -233,6 +238,8 @@ requireText("examples/reports/feedback-template.md", /SECURITY\.md/, "feedback t
 requireText("examples/support/README.md", /triage-playbook\.json/, "support triage playbook JSON link");
 requireText("examples/support/README.md", /response-snippets\.md/, "support response snippets link");
 requireText("examples/support/README.md", /closeout-checklist\.md/, "support closeout checklist link");
+requireText("examples/support/README.md", /support-lifecycle-map\.md/, "support lifecycle map link");
+requireText("examples/support/README.md", /support-lifecycle-map\.json/, "support lifecycle map JSON link");
 requireText("examples/support/README.md", /support-lifecycle\.md/, "support lifecycle overview link");
 requireText("examples/support/README.md", /outcome-prioritization\.md/, "support outcome prioritization link");
 requireText("examples/support/README.md", /backlog-review\.md/, "support backlog review link");
@@ -256,7 +263,19 @@ requireText("examples/support/closeout-checklist.md", /candidate-opened/, "suppo
 requireText("examples/support/closeout-checklist.json", /docs-clarification-closeout/, "support docs closeout record");
 requireText("examples/support/closeout-checklist.json", /fixture-backlog-closeout/, "support fixture closeout record");
 requireText("examples/support/closeout-checklist.json", /rule-review-closeout/, "support rule-review closeout record");
+requireText("examples/support/support-lifecycle-map.md", /Support Lifecycle Map/, "support lifecycle map heading");
+requireText("examples/support/support-lifecycle-map.md", /support-lifecycle-map\.json/, "support lifecycle map JSON link");
+requireText("examples/support/support-lifecycle-map.md", /report\s*\n\s*-> triage\s*\n\s*-> response\s*\n\s*-> closeout\s*\n\s*-> prioritization\s*\n\s*-> backlog-record\s*\n\s*-> backlog-review/, "support lifecycle map compact flow");
+requireText("examples/support/support-lifecycle-map.md", /docs-clarification-backlog-record/, "support lifecycle map docs backlog record");
+requireText("examples/support/support-lifecycle-map.md", /fixture-backlog-record/, "support lifecycle map fixture backlog record");
+requireText("examples/support/support-lifecycle-map.md", /rule-review-candidate-backlog-record/, "support lifecycle map rule-review backlog record");
+requireText("examples/support/support-lifecycle-map.md", /closed-no-action/, "support lifecycle map closed no-action decision");
+requireText("examples/support/support-lifecycle-map.md", /SECURITY\.md/, "support lifecycle map security redirect");
+requireText("examples/support/support-lifecycle-map.json", /Support Lifecycle Map/, "support lifecycle map JSON title");
+requireText("examples/support/support-lifecycle-map.json", /backlog-record/, "support lifecycle map backlog-record stage");
+requireText("examples/support/support-lifecycle-map.json", /backlog-review/, "support lifecycle map backlog-review stage");
 requireText("examples/support/support-lifecycle.md", /Support Lifecycle Overview/, "support lifecycle heading");
+requireText("examples/support/support-lifecycle.md", /support-lifecycle-map\.md/, "support lifecycle map link");
 requireText("examples/support/support-lifecycle.md", /support-lifecycle\.json/, "support lifecycle JSON link");
 requireText("examples/support/support-lifecycle.md", /report -> triage -> response -> closeout -> prioritization -> backlog-record -> backlog-review/, "support lifecycle flow");
 requireText("examples/support/support-lifecycle.md", /docs-example/, "support lifecycle docs outcome");
@@ -336,6 +355,7 @@ requireText("scripts/check-support-triage.mjs", /triage-playbook\.json/, "suppor
 requireText("scripts/check-support-triage.mjs", /response-snippets\.json/, "support response snippets guard");
 requireText("scripts/check-support-triage.mjs", /closeout-checklist\.json/, "support closeout checklist guard");
 requireText("scripts/check-support-triage.mjs", /support-lifecycle\.json/, "support lifecycle overview guard");
+requireText("scripts/check-support-triage.mjs", /support-lifecycle-map\.json/, "support lifecycle map guard");
 requireText("scripts/check-support-triage.mjs", /outcome-prioritization\.json/, "support outcome prioritization guard");
 requireText("scripts/check-support-triage.mjs", /backlog-records\.json/, "support backlog records guard");
 requireText("scripts/check-support-triage.mjs", /backlog-review\.json/, "support backlog review guard");

@@ -6,7 +6,7 @@ This index shows the public-safe support path at a glance:
 report -> triage -> response -> closeout -> prioritization -> backlog-record -> backlog-review
 ```
 
-The checked source is [support-lifecycle.json](support-lifecycle.json). It ties together the [report gallery feedback template](../reports/feedback-template.md), [triage playbook](triage-playbook.json), [response snippets](response-snippets.md), [closeout checklist](closeout-checklist.md), [outcome prioritization guide](outcome-prioritization.md), [backlog records](backlog-records.md), and [backlog review checklist](backlog-review.md).
+The compact map is [support-lifecycle-map.md](support-lifecycle-map.md), backed by [support-lifecycle-map.json](support-lifecycle-map.json). The checked source for the full outcome table is [support-lifecycle.json](support-lifecycle.json). It ties together the [report gallery feedback template](../reports/feedback-template.md), [triage playbook](triage-playbook.json), [response snippets](response-snippets.md), [closeout checklist](closeout-checklist.md), [outcome prioritization guide](outcome-prioritization.md), [backlog records](backlog-records.md), and [backlog review checklist](backlog-review.md).
 
 ## Outcomes
 

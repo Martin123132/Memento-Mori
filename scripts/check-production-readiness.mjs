@@ -61,6 +61,7 @@ for (const path of [
   "docs/RELEASE.md",
   "docs/TRUSTED_PUBLISHING.md",
   "docs/PRODUCTION_READINESS.md",
+  "docs/FRAMEWORK_TUNING.md",
   "docs/MAINTAINER_TRIAGE.md",
   `docs/RELEASE_NOTES_${tag}.md`,
   "action.yml",
@@ -99,6 +100,7 @@ requireText("README.md", /MAINTAINER_TRIAGE\.md/, "maintainer triage guide link"
 requireText("README.md", /fixtures:check/, "fixture authoring check guidance");
 requireText("README.md", /fixtures:report/, "fixture coverage report guidance");
 requireText("README.md", /fixtures:report -- --markdown/, "Markdown fixture report guidance");
+requireText("README.md", /FRAMEWORK_TUNING\.md/, "framework tuning guide link");
 requireText("README.md", /License: PolyForm Noncommercial/, "the noncommercial license badge");
 requireText("docs/PRODUCTION_READINESS.md", /npm package/i, "npm package readiness");
 requireText("docs/PRODUCTION_READINESS.md", /GitHub Action/i, "GitHub Action readiness");
@@ -115,6 +117,11 @@ requireText("docs/PRODUCTION_READINESS.md", /fixtures:report -- --markdown/, "Ma
 requireText("docs/PRODUCTION_READINESS.md", /quiet-pass/, "quiet-pass fixture readiness");
 requireText("docs/CLI.md", /jester doctor --json/, "doctor JSON CLI docs");
 requireText("docs/CLI.md", /quiet-pass fixture/, "quiet-pass fixture CLI docs");
+requireText("docs/CLI.md", /FRAMEWORK_TUNING\.md/, "framework tuning CLI link");
+requireText("docs/FRAMEWORK_TUNING.md", /Next\.js/, "Next.js framework tuning example");
+requireText("docs/FRAMEWORK_TUNING.md", /FastAPI/, "FastAPI framework tuning example");
+requireText("docs/FRAMEWORK_TUNING.md", /Terraform/, "Terraform framework tuning example");
+requireText("docs/FRAMEWORK_TUNING.md", /jester tune <rule-id> --json/, "framework tuning command guidance");
 requireText("docs/MAINTAINER_TRIAGE.md", /doctor --json/, "doctor JSON triage prompt");
 requireText("docs/MAINTAINER_TRIAGE.md", /tune <rule-id> --json/, "tune JSON triage prompt");
 requireText("docs/MAINTAINER_TRIAGE.md", /preset-review-cases\.json/, "fixture suite link");

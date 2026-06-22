@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.82
+
+- Added six real-world quiet-pass fixtures for FastAPI dependency injection, frozen `uv` syncs, docs-only Terraform and Helm guidance, redacted Gitleaks scans, and Next.js workspace linting.
+- Added `docs/FRAMEWORK_TUNING.md` to map common framework-specific false-positive reports to useful `jester tune <rule>` commands and fixture IDs.
+- Refreshed demo, fixture docs, roadmap, and release notes for the 222-fixture corpus.
+
 ## 0.1.81
 
 - Added a lightweight repo-local landing page under `site/index.html` that reuses the social card, demo video, start command, and public project links.

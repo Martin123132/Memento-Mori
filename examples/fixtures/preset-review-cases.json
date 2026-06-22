@@ -2859,5 +2859,96 @@
       "custom-ai-user-controlled-tool-dispatch",
       "custom-ai-model-output-execution"
     ]
+  },
+  {
+    "id": "python-fastapi-dependency-diff-pass",
+    "preset": "python",
+    "kind": "diff",
+    "description": "FastAPI dependency injection should not look like Python dynamic execution or pickle loading.",
+    "content": "diff --git a/app/dependencies.py b/app/dependencies.py\n--- a/app/dependencies.py\n+++ b/app/dependencies.py\n@@ -1 +1,2 @@\n+current_user: User = Depends(get_current_user)\n",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "custom-python-eval-exec",
+      "custom-python-pickle-load"
+    ]
+  },
+  {
+    "id": "python-uv-sync-frozen-command-pass",
+    "preset": "python",
+    "kind": "command",
+    "description": "Frozen uv dependency sync for tests should not trip unsafe pip install or dynamic execution rules.",
+    "content": "uv sync --frozen --group test",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "blocked-command-pip-install-break-system-packages",
+      "custom-python-eval-exec",
+      "custom-python-pickle-load"
+    ]
+  },
+  {
+    "id": "infra-terraform-plan-docs-pass",
+    "preset": "infra",
+    "kind": "diff",
+    "description": "Docs-only Terraform plan review guidance should not trip infra sensitive-domain warnings.",
+    "content": "diff --git a/docs/TERRAFORM_PLAN.md b/docs/TERRAFORM_PLAN.md\n--- a/docs/TERRAFORM_PLAN.md\n+++ b/docs/TERRAFORM_PLAN.md\n@@ -1 +1,2 @@\n+Document how to review terraform plan output and attach rollback notes before apply.\n",
+    "expectedVerdict": "pass",
+    "edgeCase": true,
+    "weight": 1,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "configured-sensitive-domain-terraform",
+      "custom-infra-production-change",
+      "risky-domain"
+    ]
+  },
+  {
+    "id": "infra-helm-values-docs-pass",
+    "preset": "infra",
+    "kind": "diff",
+    "description": "Docs-only Helm values guidance should stay quiet around infra sensitive-domain warnings.",
+    "content": "diff --git a/docs/HELM_VALUES.md b/docs/HELM_VALUES.md\n--- a/docs/HELM_VALUES.md\n+++ b/docs/HELM_VALUES.md\n@@ -1 +1,2 @@\n+Record which helm values are environment labels and which require change approval.\n",
+    "expectedVerdict": "pass",
+    "edgeCase": true,
+    "weight": 1,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "configured-sensitive-domain-helm",
+      "custom-infra-production-change",
+      "risky-domain"
+    ]
+  },
+  {
+    "id": "sec-gitleaks-redacted-command-pass",
+    "preset": "security",
+    "kind": "command",
+    "description": "Redacted gitleaks scans should not be mistaken for leaked secret material.",
+    "content": "gitleaks detect --redact --no-git -r reports/gitleaks.json",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "secret-material",
+      "blocked-command-chmod-r-777",
+      "custom-insecure-tls-disabled"
+    ]
+  },
+  {
+    "id": "node-next-lint-command-pass",
+    "preset": "node",
+    "kind": "command",
+    "description": "Next.js workspace lint commands should stay quiet around node publish and install-script checks.",
+    "content": "npm run lint --workspace apps/next-web -- --max-warnings=0",
+    "expectedVerdict": "pass",
+    "weight": 2,
+    "expectedRuleIds": [],
+    "absentRuleIds": [
+      "blocked-command-npm-publish-force",
+      "custom-node-install-script-change",
+      "custom-node-env-production-change"
+    ]
   }
 ]

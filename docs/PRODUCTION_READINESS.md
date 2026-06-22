@@ -52,6 +52,7 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 - Package metadata points bug reports at the GitHub issues page.
 - `jester doctor --json`, `jester config validate`, and `jester rules` are the first troubleshooting commands.
 - `jester tune`, `jester tune coverage`, and the fixture suite give maintainers a way to inspect noisy rules before changing defaults.
+- [FRAMEWORK_TUNING.md](FRAMEWORK_TUNING.md) maps common stack-specific false-positive reports to the relevant `jester tune <rule-id>` evidence and fixture IDs.
 - GitHub issue templates collect bug reports, false-positive reports, and feature requests with the diagnostic context maintainers need.
 - `SECURITY.md` routes vulnerability reports away from public issues and asks for redacted diagnostics.
 - `docs/MAINTAINER_TRIAGE.md` explains how to turn useful false-positive reports into fixture coverage before changing rule logic.

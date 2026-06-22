@@ -158,6 +158,8 @@ Use `jester tune <id>` when the question is practical: should this noisy rule be
 
 When filing a false-positive issue, include redacted `jester summary` output and `jester tune <rule-id> --json` output when possible.
 
+For stack-shaped reports, see [Framework Tuning Examples](FRAMEWORK_TUNING.md). It points common Next.js, Vite React, FastAPI, Terraform/Kubernetes, security-scan, and AI/MCP noisy-rule reports at the relevant `jester tune <rule-id>` command and fixture IDs.
+
 Use `jester tune coverage` when maintaining the rule set. It ranks every rule by fixture support and confidence, shows expected vs unexpected fixture weight, and suggests the next maintenance action for each rule.
 
 `jester tune` now also includes fixture evidence:

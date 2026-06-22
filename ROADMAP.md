@@ -6,6 +6,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Recently Shipped
 
+- Framework tuning examples and quiet-pass fixture curation in v0.1.82, adding six safe real-world examples plus a guide for framework-shaped noisy-rule reports.
 - Repo-local landing page in v0.1.81, adding a static one-page share surface plus deterministic link checks.
 - Social preview card in v0.1.80, adding a deterministic 1200x630 promo card plus generation and freshness checks.
 - Promo freshness check in v0.1.79, verifying the current demo video, share-kit stills, docs, and fixture evidence numbers before public posting.
@@ -71,7 +72,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 ## Product Ideas
 
 - Collect real-world reports for the next lowest-count preset slices now highlighted by `fixtures:report`.
-- Add more framework-specific false-positive examples from real reports so tuning guidance keeps getting sharper.
+- Add a small fixture issue template checklist that asks for the nearest framework tuning example and redacted `jester tune <rule-id> --json` output.
 - Add a hosted-page option or GitHub Pages instructions once the static page has settled.
 
 ## Quality And Safety

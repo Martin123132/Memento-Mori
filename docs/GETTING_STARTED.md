@@ -106,7 +106,7 @@ npx -y memento-mori-jester@latest bootstrap --preset node
 
 Then tell them to open `MEMENTO_MORI.md`.
 
-For copy-paste agent and hook examples, see [examples](../examples). For stack-specific config examples, see [preset example packs](../examples/presets) for Next.js, Vite React, Express API, FastAPI, Terraform/Kubernetes, and AI MCP repos. For copy-paste CI workflows, see [framework CI examples](../examples/ci). For concrete pass, caution, and block cases, see [review fixtures](../examples/fixtures).
+For copy-paste agent and hook examples, see [examples](../examples). For stack-specific config examples, see [preset example packs](../examples/presets) for Next.js, Vite React, Express API, FastAPI, Terraform/Kubernetes, and AI MCP repos. For copy-paste CI workflows, see [framework CI examples](../examples/ci). For concrete pass, caution, and block cases, see [review fixtures](../examples/fixtures). For stack-shaped noisy-rule reports, see [framework tuning examples](FRAMEWORK_TUNING.md).
 
 ## Need Help?
 

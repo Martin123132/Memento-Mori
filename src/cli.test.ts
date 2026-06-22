@@ -430,7 +430,7 @@ test("tune explains safe muting for a noisy built-in rule", async () => {
   assert.ok(sampleLines.length >= 1 && sampleLines.length <= 5);
   assert.ok(sampleLines.every((line) => line.startsWith("  ") && line.includes(": ")));
   assert.match(stdout, /Quiet-pass fixture samples:/);
-  assert.match(stdout, /universal-risky-domain-docs-pass/);
+  assert.match(stdout, /infra-terraform-plan-docs-pass/);
   assert.match(stdout, /Before muting/);
   assert.match(stdout, /jester config disable-rule risky-domain/);
   assert.match(stdout, /jester config enable-rule risky-domain/);
@@ -611,7 +611,7 @@ test("tune --json for matched fixture evidence is deterministic", async () => {
     assert.ok(result.fixtureEvidence.quietPassFixtures.some((fixture) => sample === `${fixture.id}: ${fixture.description}`));
   }
   assert.ok(result.fixtureEvidence.samples.length <= 5);
-  assert.ok(result.fixtureEvidence.quietPassSamples.includes("universal-risky-domain-docs-pass: Documentation-only sensitive-domain vocabulary should stay quiet when no code behavior changes."));
+  assert.ok(result.fixtureEvidence.quietPassSamples.includes("infra-terraform-plan-docs-pass: Docs-only Terraform plan review guidance should not trip infra sensitive-domain warnings."));
 });
 
 test("tune support rewards expected fixture coverage without surprise matches", async () => {
@@ -709,7 +709,7 @@ test("fixture report surfaces quiet-pass rule coverage", async () => {
   assert.match(markdown.stdout, /## Curation Next/);
   assert.match(markdown.stdout, /npm run fixtures:report -- --markdown/);
   assert.equal(result.totalFixtures >= 125, true);
-  assert.equal(riskyDomain?.total, 6);
+  assert.equal(riskyDomain?.total, 8);
   assert.equal((riskyDomain?.samples.length ?? 0) > 0, true);
   assert.equal((builtInSlice?.ruleCount ?? 0) > 0, true);
   assert.equal((builtInSlice?.quietPassCases ?? 0) > 0, true);
@@ -720,7 +720,7 @@ test("fixture report surfaces quiet-pass rule coverage", async () => {
   assert.deepEqual(result.gaps.passEligibleRulesWithoutPassCases, []);
   assert.equal(result.curationNext.some((item) => item.area === "pass-case-coverage"), false);
   assert.ok(result.curationNext.some((item) => item.area === "preset-real-world-curation" && item.presets?.length));
-  assert.ok(result.gaps.quietPassRuleCoverage.some((rule) => rule.ruleId === "risky-domain" && rule.total === 6));
+  assert.ok(result.gaps.quietPassRuleCoverage.some((rule) => rule.ruleId === "risky-domain" && rule.total === 8));
   assert.deepEqual(result.gaps.rulesWithoutQuietPassCoverage, []);
   assert.deepEqual(result.gaps.presetKindGaps, []);
   assert.deepEqual(thinPresetRulesWithoutQuietPass, []);

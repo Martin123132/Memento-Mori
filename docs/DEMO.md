@@ -209,17 +209,17 @@ Before muting:
 Fixture tuning evidence:
 Support: limited
 Confidence: medium
-Total fixtures checked: 216
-Weighted fixtures checked: 412.5
+Total fixtures checked: 222
+Weighted fixtures checked: 421.8
 Matching fixtures: 11
 Weighted matches: 23
 Expected-match weight: 18
 Unexpected-match weight: 5
 Edge-case matches: 0
-Quiet-pass fixtures: 6
-Quiet-pass weight: 4.25
+Quiet-pass fixtures: 8
+Quiet-pass weight: 5.55
 By kind: command 0, plan 5, diff 5, final 1
-Fixture coverage: 11/216 (5.6% weighted)
+Fixture coverage: 11/222 (5.5% weighted)
 By verdict: pass 0, caution 3, block 8
 Matched fixture samples:
   infra-public-ingress-block: Public ingress should block in low-risk-tolerance infra repos.
@@ -230,9 +230,9 @@ Matched fixture samples:
 Quiet-pass fixture samples:
   ai-docs-only-transcript-pass: Docs-only AI setup notes should stay quiet when they do not include concrete dangerous patterns.
   api-docs-only-auth-pass: Docs-only API setup notes should not warn just because they mention auth and production.
+  infra-helm-values-docs-pass: Docs-only Helm values guidance should stay quiet around infra sensitive-domain warnings.
+  infra-terraform-plan-docs-pass: Docs-only Terraform plan review guidance should not trip infra sensitive-domain warnings.
   sec-final-dependency-notes-pass: A verified dependency-note final answer should give the security preset a quiet final case.
-  universal-risky-domain-docs-pass: Documentation-only sensitive-domain vocabulary should stay quiet when no code behavior changes.
-  web-docs-only-browser-storage-pass: Docs-only web guidance should not warn just because it mentions browser storage or redirects.
 
 Commands:
   jester rule risky-domain
@@ -367,7 +367,7 @@ Preset packs:
 
 ## 13. Review Fixtures
 
-The fixture suite in `examples/fixtures/preset-review-cases.json` captures small real-usage examples with expected `pass`, `caution`, or `block` verdicts. It also includes matched-pass examples for low-severity rules, quiet-pass `absentRuleIds` examples that prove noisy rules stay silent for safe near-misses, stack-specific coverage for every built-in preset, quiet-pass boundaries across built-in, structural, custom, and preset/config-derived rules, second firing examples for preset blocked-command rules, second examples for AI/API, framework custom, built-in, and configured sensitive-domain rules, AI tool-dispatch examples with safe allowlist/schema boundaries, and real-world low-count preset examples across node, python, web, infra, AI, and security slices. Recent quiet-pass examples cover typechecks, prebuild scripts, mypy, dataclass parsing, CodeQL, Dependabot limits, form validation, accessibility copy, read-only Kubernetes inspection, Docker disk usage, Terraform linting, public-IP hardening changes, npm audit/outdated/ci, development-mode Node commands, package export maps, workspace test scripts, Bandit, pip-audit, coverage/pytest, Trivy filesystem scans, npm audit, TLS verification-enabled diffs, safe text rendering, allowlisted target paths, public analytics IDs, model-check commands, tool allowlist checks, public model-name config, API schema parsing, query-builder filters, enabled rate limiting, read-only Prisma migration diffs, signed-webhook docs, OpenAPI schema docs, Pydantic parsing, Pyright checks, SBOM generation, vulnerability-report docs, escaped React rendering, session-cookie docs, model regression checks, and static action allowlists. These examples are run by `npm test`, so preset tuning changes stay visible.
+The fixture suite in `examples/fixtures/preset-review-cases.json` captures small real-usage examples with expected `pass`, `caution`, or `block` verdicts. It also includes matched-pass examples for low-severity rules, quiet-pass `absentRuleIds` examples that prove noisy rules stay silent for safe near-misses, stack-specific coverage for every built-in preset, quiet-pass boundaries across built-in, structural, custom, and preset/config-derived rules, second firing examples for preset blocked-command rules, second examples for AI/API, framework custom, built-in, and configured sensitive-domain rules, AI tool-dispatch examples with safe allowlist/schema boundaries, and real-world low-count preset examples across node, python, web, infra, AI, and security slices. Recent quiet-pass examples cover typechecks, prebuild scripts, mypy, dataclass parsing, CodeQL, Dependabot limits, form validation, accessibility copy, read-only Kubernetes inspection, Docker disk usage, Terraform linting, public-IP hardening changes, npm audit/outdated/ci, development-mode Node commands, package export maps, workspace test scripts, Bandit, pip-audit, coverage/pytest, Trivy filesystem scans, npm audit, TLS verification-enabled diffs, safe text rendering, allowlisted target paths, public analytics IDs, model-check commands, tool allowlist checks, public model-name config, API schema parsing, query-builder filters, enabled rate limiting, read-only Prisma migration diffs, signed-webhook docs, OpenAPI schema docs, Pydantic parsing, Pyright checks, SBOM generation, vulnerability-report docs, escaped React rendering, session-cookie docs, model regression checks, static action allowlists, FastAPI dependency injection, frozen `uv` syncs, docs-only Terraform and Helm guidance, redacted Gitleaks scans, and Next.js workspace linting. These examples are run by `npm test`, so preset tuning changes stay visible.
 
 Maintainers can run `npm run fixtures:report` to see coverage by verdict, kind, preset, rule family, and preset slice. The report also includes a `Curation next` section that points at the next useful fixture batch, such as thin rules, feasible pass-case evidence, rule-family gaps, or lower-count presets. Use `npm run fixtures:report -- --markdown` for a paste-ready version of the same snapshot.
 

@@ -16,6 +16,8 @@ const requiredPackageFiles = [
   "dist/core.js",
   "docs/RELEASE.md",
   `docs/RELEASE_NOTES_v${packageJson.version}.md`,
+  "examples/support/installed-package-support.md",
+  "examples/support/installed-package-support.json",
   "examples/support/support-examples-index.md",
   "examples/support/support-examples-index.json",
   "examples/support/support-examples-quickstart.md",
@@ -34,6 +36,8 @@ const requiredPackageFiles = [
 ];
 
 const requiredSupportFiles = [
+  "examples/support/installed-package-support.md",
+  "examples/support/installed-package-support.json",
   "examples/support/support-examples-index.md",
   "examples/support/support-examples-index.json",
   "examples/support/support-examples-quickstart.md",
@@ -107,6 +111,8 @@ for (const path of requiredSupportFiles) {
   }
 }
 
+checkInstalledPackageSupport();
+
 if (failures.length > 0) {
   console.error("Package contents check failed:");
   for (const failure of failures) {
@@ -119,6 +125,57 @@ console.log("Package contents check passed.");
 console.log(`PASS package ${pack.name}@${pack.version}`);
 console.log(`PASS support examples included: ${requiredSupportFiles.length} files`);
 console.log("PASS promo, site, GitHub workflow, cache, private, and credential-shaped files excluded");
+
+function checkInstalledPackageSupport() {
+  const path = "examples/support/installed-package-support.json";
+  if (!existsSync(join(root, path))) {
+    return;
+  }
+
+  const note = readJson(path);
+  const expectedArtifacts = [
+    "examples/support/support-examples-index.md",
+    "examples/support/support-examples-quickstart.md",
+    "examples/support/support-lifecycle-map.md",
+    "examples/support/support-lifecycle-worksheet.md",
+    "examples/support/support-lifecycle-filled-example.md"
+  ];
+  const expectedRepoOnlyPaths = ["promo/", "site/", ".github/", "private/", "secrets/", "internal/"];
+
+  if (note.packageName !== packageJson.name) {
+    failures.push(`${path}.packageName should be ${packageJson.name}.`);
+  }
+
+  if (note.verifyCommand !== "npm explore memento-mori-jester -- npm run pack:contents:check") {
+    failures.push(`${path}.verifyCommand should run the package contents check through npm explore.`);
+  }
+
+  if (!Array.isArray(note.packageRelativeArtifacts) || note.packageRelativeArtifacts.join("|") !== expectedArtifacts.join("|")) {
+    failures.push(`${path}.packageRelativeArtifacts should list the checked package support artifacts in order.`);
+  } else {
+    for (const artifact of note.packageRelativeArtifacts) {
+      if (!files.has(artifact)) {
+        failures.push(`${path}.packageRelativeArtifacts references ${artifact}, but it is not in the package dry run.`);
+      }
+    }
+  }
+
+  if (!Array.isArray(note.repoOnlyPathsNotRequired)) {
+    failures.push(`${path}.repoOnlyPathsNotRequired should be an array.`);
+  } else {
+    for (const repoOnlyPath of expectedRepoOnlyPaths) {
+      if (!note.repoOnlyPathsNotRequired.includes(repoOnlyPath)) {
+        failures.push(`${path}.repoOnlyPathsNotRequired should include ${repoOnlyPath}.`);
+      }
+
+      for (const file of files) {
+        if (file.startsWith(repoOnlyPath)) {
+          failures.push(`${path}.repoOnlyPathsNotRequired lists ${repoOnlyPath}, but ${file} is present in the package dry run.`);
+        }
+      }
+    }
+  }
+}
 
 function dryRunPack() {
   const output = runNpm(["pack", "--dry-run", "--json", "--ignore-scripts"]);

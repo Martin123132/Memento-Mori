@@ -101,6 +101,8 @@ for (const path of [
   "examples/support/backlog-records.json",
   "examples/support/closeout-checklist.md",
   "examples/support/closeout-checklist.json",
+  "examples/support/installed-package-support.md",
+  "examples/support/installed-package-support.json",
   "examples/support/outcome-prioritization.md",
   "examples/support/outcome-prioritization.json",
   "examples/support/response-snippets.md",
@@ -149,6 +151,7 @@ requireText("README.md", /feedback-template\.md/, "report gallery feedback templ
 requireText("README.md", /examples\/support/, "support triage playbook link");
 requireText("README.md", /support-examples-quickstart\.md/, "support examples quickstart link");
 requireText("README.md", /support-examples-index\.md/, "support examples index link");
+requireText("README.md", /installed-package-support\.md/, "installed package support link");
 requireText("README.md", /response-snippets\.md/, "support response snippets link");
 requireText("README.md", /closeout-checklist\.md/, "support closeout checklist link");
 requireText("README.md", /support-lifecycle-map\.md/, "support lifecycle map link");
@@ -182,6 +185,7 @@ requireText("docs/PRODUCTION_READINESS.md", /support:check/, "support triage rea
 requireText("docs/PRODUCTION_READINESS.md", /examples\/support/, "support triage playbook readiness");
 requireText("docs/PRODUCTION_READINESS.md", /support examples quickstart/i, "support examples quickstart readiness");
 requireText("docs/PRODUCTION_READINESS.md", /support examples index/i, "support examples index readiness");
+requireText("docs/PRODUCTION_READINESS.md", /installed-package support/i, "installed package support readiness");
 requireText("docs/PRODUCTION_READINESS.md", /response snippets/i, "support response snippets readiness");
 requireText("docs/PRODUCTION_READINESS.md", /closeout checklist/i, "support closeout checklist readiness");
 requireText("docs/PRODUCTION_READINESS.md", /support lifecycle overview/i, "support lifecycle overview readiness");
@@ -219,6 +223,7 @@ requireText("docs/MAINTAINER_TRIAGE.md", /report_gallery_feedback\.yml/, "report
 requireText("docs/MAINTAINER_TRIAGE.md", /examples\/support/, "support triage playbook link");
 requireText("docs/MAINTAINER_TRIAGE.md", /support-examples-quickstart\.md/, "support examples quickstart link");
 requireText("docs/MAINTAINER_TRIAGE.md", /support-examples-index\.md/, "support examples index link");
+requireText("docs/MAINTAINER_TRIAGE.md", /installed-package-support\.md/, "installed package support link");
 requireText("docs/MAINTAINER_TRIAGE.md", /response-snippets\.md/, "support response snippets link");
 requireText("docs/MAINTAINER_TRIAGE.md", /closeout-checklist\.md/, "support closeout checklist link");
 requireText("docs/MAINTAINER_TRIAGE.md", /support-lifecycle-map\.md/, "support lifecycle map link");
@@ -262,6 +267,8 @@ requireText("examples/reports/feedback-template.md", /SECURITY\.md/, "feedback t
 requireText("examples/support/README.md", /triage-playbook\.json/, "support triage playbook JSON link");
 requireText("examples/support/README.md", /response-snippets\.md/, "support response snippets link");
 requireText("examples/support/README.md", /closeout-checklist\.md/, "support closeout checklist link");
+requireText("examples/support/README.md", /installed-package-support\.md/, "installed package support link");
+requireText("examples/support/README.md", /installed-package-support\.json/, "installed package support JSON link");
 requireText("examples/support/README.md", /support-examples-quickstart\.md/, "support examples quickstart link");
 requireText("examples/support/README.md", /support-examples-quickstart\.json/, "support examples quickstart JSON link");
 requireText("examples/support/README.md", /support-examples-index\.md/, "support examples index link");
@@ -295,6 +302,13 @@ requireText("examples/support/closeout-checklist.md", /candidate-opened/, "suppo
 requireText("examples/support/closeout-checklist.json", /docs-clarification-closeout/, "support docs closeout record");
 requireText("examples/support/closeout-checklist.json", /fixture-backlog-closeout/, "support fixture closeout record");
 requireText("examples/support/closeout-checklist.json", /rule-review-closeout/, "support rule-review closeout record");
+requireText("examples/support/installed-package-support.md", /Installed Package Support Examples/, "installed package support heading");
+requireText("examples/support/installed-package-support.md", /npm explore memento-mori-jester -- npm run pack:contents:check/, "installed package support verify command");
+requireText("examples/support/installed-package-support.md", /support-examples-index\.md/, "installed package support index path");
+requireText("examples/support/installed-package-support.md", /repo-only `promo\/`, `site\/`, `\.github\/`/, "installed package support repo-only exclusions");
+requireText("examples/support/installed-package-support.json", /Installed Package Support Examples/, "installed package support JSON title");
+requireText("examples/support/installed-package-support.json", /packageRelativeArtifacts/, "installed package support package-relative artifacts");
+requireText("examples/support/installed-package-support.json", /repoOnlyPathsNotRequired/, "installed package support repo-only exclusions JSON");
 requireText("examples/support/support-examples-quickstart.md", /Support Examples Quickstart/, "support examples quickstart heading");
 requireText("examples/support/support-examples-quickstart.md", /support-examples-quickstart\.json/, "support examples quickstart JSON link");
 requireText("examples/support/support-examples-quickstart.md", /60-Second Path/, "support examples quickstart path");
@@ -313,6 +327,8 @@ requireText("examples/support/support-examples-quickstart.json", /npm run produc
 requireText("examples/support/support-examples-index.md", /Support Examples Index/, "support examples index heading");
 requireText("examples/support/support-examples-index.md", /support-examples-index\.json/, "support examples index JSON link");
 requireText("examples/support/support-examples-index.md", /support-examples-quickstart\.md/, "support examples quickstart link");
+requireText("examples/support/support-examples-index.md", /installed-package-support\.md/, "installed package support index link");
+requireText("examples/support/support-examples-index.md", /Installed Package Provenance/, "installed package support provenance section");
 requireText("examples/support/support-examples-index.md", /support-lifecycle-map\.md/, "support examples index map link");
 requireText("examples/support/support-examples-index.md", /support-lifecycle-worksheet\.md/, "support examples index worksheet link");
 requireText("examples/support/support-examples-index.md", /support-lifecycle-filled-example\.md/, "support examples index filled example link");
@@ -322,6 +338,8 @@ requireText("examples/support/support-examples-index.md", /SECURITY\.md/, "suppo
 requireText("examples/support/support-examples-index.json", /Support Examples Index/, "support examples index JSON title");
 requireText("examples/support/support-examples-index.json", /support-examples-quickstart\.md/, "support examples index JSON quickstart link");
 requireText("examples/support/support-examples-index.json", /support-examples-quickstart\.json/, "support examples index JSON quickstart source");
+requireText("examples/support/support-examples-index.json", /installedPackageProvenance/, "installed package support provenance JSON");
+requireText("examples/support/support-examples-index.json", /installed-package-support\.md/, "installed package support JSON link");
 requireText("examples/support/support-examples-index.json", /support-lifecycle-map\.md/, "support examples index JSON map link");
 requireText("examples/support/support-examples-index.json", /support-lifecycle-worksheet\.md/, "support examples index JSON worksheet link");
 requireText("examples/support/support-examples-index.json", /support-lifecycle-filled-example\.md/, "support examples index JSON filled example link");
@@ -439,6 +457,8 @@ requireText("scripts/check-consumer-quickstart.mjs", /consumer-quickstart/, "con
 requireText("scripts/check-consumer-quickstart.mjs", /memento-mori-jester@latest/, "consumer quickstart registry verification option");
 requireText("scripts/check-consumer-quickstart.mjs", /framework:tuning:doctor/, "consumer quickstart tuning doctor guard");
 requireText("scripts/check-package-contents.mjs", /support-examples-index\.md/, "package contents support examples index guard");
+requireText("scripts/check-package-contents.mjs", /installed-package-support\.md/, "package contents installed package support guard");
+requireText("scripts/check-package-contents.mjs", /npm explore memento-mori-jester -- npm run pack:contents:check/, "package contents installed package verify command");
 requireText("scripts/check-package-contents.mjs", /support-examples-quickstart\.md/, "package contents support examples quickstart guard");
 requireText("scripts/check-package-contents.mjs", /support-lifecycle-map\.md/, "package contents support lifecycle map guard");
 requireText("scripts/check-package-contents.mjs", /support-lifecycle-worksheet\.md/, "package contents support lifecycle worksheet guard");
@@ -452,6 +472,7 @@ requireText("scripts/check-support-triage.mjs", /feedback-template\.md/, "suppor
 requireText("scripts/check-support-triage.mjs", /triage-playbook\.json/, "support triage playbook guard");
 requireText("scripts/check-support-triage.mjs", /response-snippets\.json/, "support response snippets guard");
 requireText("scripts/check-support-triage.mjs", /closeout-checklist\.json/, "support closeout checklist guard");
+requireText("scripts/check-support-triage.mjs", /installed-package-support\.json/, "installed package support guard");
 requireText("scripts/check-support-triage.mjs", /support-examples-quickstart\.json/, "support examples quickstart guard");
 requireText("scripts/check-support-triage.mjs", /support-examples-index\.json/, "support examples index guard");
 requireText("scripts/check-support-triage.mjs", /support-lifecycle\.json/, "support lifecycle overview guard");

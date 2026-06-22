@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.104
+
+- Added checked `installed-package-support.md/json` notes so maintainers can verify and use support examples from the npm package rather than a repo checkout.
+- Extended the support examples index, `npm run support:check`, and `npm run pack:contents:check` so package-relative support paths and repo-only path exclusions stay aligned.
+- Updated README, maintainer triage docs, production-readiness docs, roadmap, and release notes for installed-package support provenance.
+
 ## 0.1.103
 
 - Added `npm run pack:contents:check` to verify dry-run package contents include the support examples index, quickstart, lifecycle map, blank worksheet, and filled synthetic example.

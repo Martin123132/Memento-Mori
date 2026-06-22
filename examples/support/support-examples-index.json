@@ -17,6 +17,35 @@
     "publicSafe": true,
     "synthetic": true
   },
+  "installedPackageProvenance": {
+    "label": "Installed Package Support Examples",
+    "file": "examples/support/installed-package-support.md",
+    "source": "examples/support/installed-package-support.json",
+    "useWhen": "Use when a maintainer needs to verify or open the support examples from an installed npm package instead of a repository checkout.",
+    "verifyCommand": "npm explore memento-mori-jester -- npm run pack:contents:check",
+    "packageRelativeArtifacts": [
+      "examples/support/support-examples-index.md",
+      "examples/support/support-examples-quickstart.md",
+      "examples/support/support-lifecycle-map.md",
+      "examples/support/support-lifecycle-worksheet.md",
+      "examples/support/support-lifecycle-filled-example.md"
+    ],
+    "repoOnlyPathsNotRequired": [
+      "promo/",
+      "site/",
+      ".github/",
+      "private/",
+      "secrets/",
+      "internal/",
+      "node_modules/",
+      "coverage/",
+      "tmp/",
+      "temp/",
+      ".env",
+      ".npmrc"
+    ],
+    "publicSafe": true
+  },
   "artifacts": [
     {
       "id": "lifecycle-map",

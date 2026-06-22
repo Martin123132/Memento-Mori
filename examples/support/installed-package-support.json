@@ -1,0 +1,51 @@
+{
+  "title": "Installed Package Support Examples",
+  "packageName": "memento-mori-jester",
+  "verifyCommand": "npm explore memento-mori-jester -- npm run pack:contents:check",
+  "packageRelativeRoot": "examples/support",
+  "packageRelativeArtifacts": [
+    "examples/support/support-examples-index.md",
+    "examples/support/support-examples-quickstart.md",
+    "examples/support/support-lifecycle-map.md",
+    "examples/support/support-lifecycle-worksheet.md",
+    "examples/support/support-lifecycle-filled-example.md"
+  ],
+  "useWhen": "Use when a maintainer needs to verify or open the support examples from an installed npm package instead of a repository checkout.",
+  "steps": [
+    {
+      "id": "install-package",
+      "command": "npm install --save-dev memento-mori-jester",
+      "purpose": "Install the public package into a local maintainer or consumer project without requiring a source checkout."
+    },
+    {
+      "id": "verify-package-contents",
+      "command": "npm explore memento-mori-jester -- npm run pack:contents:check",
+      "purpose": "Run the package's own contents smoke from inside the installed package."
+    },
+    {
+      "id": "open-support-index",
+      "artifact": "examples/support/support-examples-index.md",
+      "purpose": "Choose between the quickstart, map, blank worksheet, and filled synthetic example using package-relative paths."
+    }
+  ],
+  "repoOnlyPathsNotRequired": [
+    "promo/",
+    "site/",
+    ".github/",
+    "private/",
+    "secrets/",
+    "internal/",
+    "node_modules/",
+    "coverage/",
+    "tmp/",
+    "temp/",
+    ".env",
+    ".npmrc"
+  ],
+  "requiredChecks": [
+    "npm run support:check",
+    "npm run pack:contents:check",
+    "npm run production:check"
+  ],
+  "privacyGuardrail": "Installed-package support examples must stay public-safe: use package-relative paths, avoid secrets and private details, and route credential exposure, package publishing compromise, MCP data exposure, command execution risk, or exploitable security details through SECURITY.md."
+}

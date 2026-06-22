@@ -31,6 +31,8 @@ const supportFiles = [
   "examples/support/backlog-records.json",
   "examples/support/closeout-checklist.md",
   "examples/support/closeout-checklist.json",
+  "examples/support/installed-package-support.md",
+  "examples/support/installed-package-support.json",
   "examples/support/outcome-prioritization.md",
   "examples/support/outcome-prioritization.json",
   "examples/support/README.md",
@@ -100,6 +102,8 @@ requireText("examples/reports/README.md", /examples\/support|Maintainer Triage P
 requireText("examples/support/README.md", /Maintainer Triage Playbook/, "maintainer playbook heading");
 requireText("examples/support/README.md", /backlog-review\.md/, "support backlog review link");
 requireText("examples/support/README.md", /backlog-records\.md/, "support backlog records link");
+requireText("examples/support/README.md", /installed-package-support\.md/, "installed package support link");
+requireText("examples/support/README.md", /installed-package-support\.json/, "installed package support JSON link");
 requireText("examples/support/README.md", /support-examples-quickstart\.md/, "support examples quickstart link");
 requireText("examples/support/README.md", /support-examples-quickstart\.json/, "support examples quickstart JSON link");
 requireText("examples/support/README.md", /support-examples-index\.md/, "support examples index link");
@@ -138,6 +142,20 @@ requireText("examples/support/closeout-checklist.md", /SECURITY\.md/, "closeout 
 requireText("examples/support/closeout-checklist.json", /docs-clarification-closeout/, "docs closeout record");
 requireText("examples/support/closeout-checklist.json", /fixture-backlog-closeout/, "fixture closeout record");
 requireText("examples/support/closeout-checklist.json", /rule-review-closeout/, "rule-review closeout record");
+requireText("examples/support/installed-package-support.md", /Installed Package Support Examples/, "installed package support heading");
+requireText("examples/support/installed-package-support.md", /installed-package-support\.json/, "installed package support JSON link");
+requireText("examples/support/installed-package-support.md", /npm explore memento-mori-jester -- npm run pack:contents:check/, "installed package verify command");
+requireText("examples/support/installed-package-support.md", /examples\/support\/support-examples-index\.md/, "installed package support index path");
+requireText("examples/support/installed-package-support.md", /examples\/support\/support-examples-quickstart\.md/, "installed package support quickstart path");
+requireText("examples/support/installed-package-support.md", /examples\/support\/support-lifecycle-map\.md/, "installed package support map path");
+requireText("examples/support/installed-package-support.md", /examples\/support\/support-lifecycle-worksheet\.md/, "installed package support worksheet path");
+requireText("examples/support/installed-package-support.md", /examples\/support\/support-lifecycle-filled-example\.md/, "installed package filled example path");
+requireText("examples/support/installed-package-support.md", /promo\/|site\/|\.github\/|private|secret|credential-shaped/, "installed package repo-only exclusions");
+requireText("examples/support/installed-package-support.md", /SECURITY\.md/, "installed package security redirect");
+requireText("examples/support/installed-package-support.json", /Installed Package Support Examples/, "installed package support JSON title");
+requireText("examples/support/installed-package-support.json", /memento-mori-jester/, "installed package support package name");
+requireText("examples/support/installed-package-support.json", /pack:contents:check/, "installed package contents check");
+requireText("examples/support/installed-package-support.json", /support-examples-index\.md/, "installed package JSON support index path");
 requireText("examples/support/support-examples-quickstart.md", /Support Examples Quickstart/, "support examples quickstart heading");
 requireText("examples/support/support-examples-quickstart.md", /support-examples-quickstart\.json/, "support examples quickstart JSON link");
 requireText("examples/support/support-examples-quickstart.md", /60-Second Path/, "support examples quickstart path");
@@ -160,6 +178,8 @@ requireText("examples/support/support-examples-quickstart.json", /closed-no-acti
 requireText("examples/support/support-examples-index.md", /Support Examples Index/, "support examples index heading");
 requireText("examples/support/support-examples-index.md", /support-examples-index\.json/, "support examples index JSON link");
 requireText("examples/support/support-examples-index.md", /support-examples-quickstart\.md/, "support examples quickstart link");
+requireText("examples/support/support-examples-index.md", /installed-package-support\.md/, "installed package support link");
+requireText("examples/support/support-examples-index.md", /Installed Package Provenance/, "installed package provenance section");
 requireText("examples/support/support-examples-index.md", /60-Second Handoff/, "support examples index handoff section");
 requireText("examples/support/support-examples-index.md", /support-lifecycle-map\.md/, "support examples index map link");
 requireText("examples/support/support-examples-index.md", /support-lifecycle-worksheet\.md/, "support examples index worksheet link");
@@ -173,6 +193,8 @@ requireText("examples/support/support-examples-index.md", /npm run support:check
 requireText("examples/support/support-examples-index.json", /Support Examples Index/, "support examples index JSON title");
 requireText("examples/support/support-examples-index.json", /support-examples-quickstart\.md/, "support examples index JSON quickstart link");
 requireText("examples/support/support-examples-index.json", /support-examples-quickstart\.json/, "support examples index JSON quickstart source");
+requireText("examples/support/support-examples-index.json", /installed-package-support\.md/, "installed package support JSON link");
+requireText("examples/support/support-examples-index.json", /pack:contents:check/, "installed package support JSON verify command");
 requireText("examples/support/support-examples-index.json", /support-lifecycle-map\.md/, "support examples index JSON map link");
 requireText("examples/support/support-examples-index.json", /support-lifecycle-worksheet\.md/, "support examples index JSON worksheet link");
 requireText("examples/support/support-examples-index.json", /support-lifecycle-filled-example\.md/, "support examples index JSON filled example link");
@@ -360,6 +382,7 @@ requireText("package.json", /npm run support:check/, "support checker in npm tes
 checkTriagePlaybook();
 checkResponseSnippets();
 checkCloseoutChecklist();
+checkInstalledPackageSupport();
 checkSupportExamplesQuickstart();
 checkSupportExamplesIndex();
 checkSupportLifecycleWorksheet();
@@ -971,6 +994,27 @@ function checkSupportExamplesIndex() {
     return;
   }
 
+  const expectedPackageArtifacts = [
+    "examples/support/support-examples-index.md",
+    "examples/support/support-examples-quickstart.md",
+    "examples/support/support-lifecycle-map.md",
+    "examples/support/support-lifecycle-worksheet.md",
+    "examples/support/support-lifecycle-filled-example.md"
+  ];
+  const expectedRepoOnlyPaths = [
+    "promo/",
+    "site/",
+    ".github/",
+    "private/",
+    "secrets/",
+    "internal/",
+    "node_modules/",
+    "coverage/",
+    "tmp/",
+    "temp/",
+    ".env",
+    ".npmrc"
+  ];
   const expectedArtifacts = [
     {
       id: "lifecycle-map",
@@ -1041,6 +1085,40 @@ function checkSupportExamplesIndex() {
     for (const marker of expectedHandoffMarkers) {
       if (!markerText.includes(marker)) {
         failures.push(`${path}.handoffCard.requiredMarkers should include ${marker}.`);
+      }
+    }
+  }
+
+  if (index.installedPackageProvenance?.file !== "examples/support/installed-package-support.md") {
+    failures.push(`${path}.installedPackageProvenance.file should point at examples/support/installed-package-support.md.`);
+  }
+
+  if (index.installedPackageProvenance?.source !== "examples/support/installed-package-support.json") {
+    failures.push(`${path}.installedPackageProvenance.source should point at examples/support/installed-package-support.json.`);
+  }
+
+  if (index.installedPackageProvenance?.verifyCommand !== "npm explore memento-mori-jester -- npm run pack:contents:check") {
+    failures.push(`${path}.installedPackageProvenance.verifyCommand should run the package contents check through npm explore.`);
+  }
+
+  if (index.installedPackageProvenance?.publicSafe !== true) {
+    failures.push(`${path}.installedPackageProvenance should be publicSafe.`);
+  }
+
+  if (typeof index.installedPackageProvenance?.useWhen !== "string" || index.installedPackageProvenance.useWhen.length < 60) {
+    failures.push(`${path}.installedPackageProvenance.useWhen should explain installed-package use.`);
+  }
+
+  if (!Array.isArray(index.installedPackageProvenance?.packageRelativeArtifacts) || index.installedPackageProvenance.packageRelativeArtifacts.join("|") !== expectedPackageArtifacts.join("|")) {
+    failures.push(`${path}.installedPackageProvenance.packageRelativeArtifacts should list the package support artifacts in order.`);
+  }
+
+  if (!Array.isArray(index.installedPackageProvenance?.repoOnlyPathsNotRequired)) {
+    failures.push(`${path}.installedPackageProvenance.repoOnlyPathsNotRequired should be an array.`);
+  } else {
+    for (const repoOnlyPath of expectedRepoOnlyPaths) {
+      if (!index.installedPackageProvenance.repoOnlyPathsNotRequired.includes(repoOnlyPath)) {
+        failures.push(`${path}.installedPackageProvenance.repoOnlyPathsNotRequired should include ${repoOnlyPath}.`);
       }
     }
   }
@@ -1133,6 +1211,128 @@ function checkSupportExamplesIndex() {
 
   if (typeof index.privacyGuardrail !== "string" || !/synthetic|placeholder|secrets|private|SECURITY\.md|exploitable/i.test(index.privacyGuardrail)) {
     failures.push(`${path}.privacyGuardrail should include public-safe support guidance.`);
+  }
+}
+
+function checkInstalledPackageSupport() {
+  const path = "examples/support/installed-package-support.json";
+  const note = readJson(path);
+  if (!note) {
+    return;
+  }
+
+  const expectedArtifacts = [
+    "examples/support/support-examples-index.md",
+    "examples/support/support-examples-quickstart.md",
+    "examples/support/support-lifecycle-map.md",
+    "examples/support/support-lifecycle-worksheet.md",
+    "examples/support/support-lifecycle-filled-example.md"
+  ];
+  const expectedRepoOnlyPaths = [
+    "promo/",
+    "site/",
+    ".github/",
+    "private/",
+    "secrets/",
+    "internal/",
+    "node_modules/",
+    "coverage/",
+    "tmp/",
+    "temp/",
+    ".env",
+    ".npmrc"
+  ];
+  const expectedSteps = [
+    {
+      id: "install-package",
+      command: "npm install --save-dev memento-mori-jester"
+    },
+    {
+      id: "verify-package-contents",
+      command: "npm explore memento-mori-jester -- npm run pack:contents:check"
+    },
+    {
+      id: "open-support-index",
+      artifact: "examples/support/support-examples-index.md"
+    }
+  ];
+
+  if (note.title !== "Installed Package Support Examples") {
+    failures.push(`${path}.title should be Installed Package Support Examples.`);
+  }
+
+  if (note.packageName !== "memento-mori-jester") {
+    failures.push(`${path}.packageName should be memento-mori-jester.`);
+  }
+
+  if (note.verifyCommand !== "npm explore memento-mori-jester -- npm run pack:contents:check") {
+    failures.push(`${path}.verifyCommand should run the package contents check through npm explore.`);
+  }
+
+  if (note.packageRelativeRoot !== "examples/support") {
+    failures.push(`${path}.packageRelativeRoot should be examples/support.`);
+  }
+
+  if (typeof note.useWhen !== "string" || note.useWhen.length < 75) {
+    failures.push(`${path}.useWhen should explain installed-package support usage.`);
+  }
+
+  if (!Array.isArray(note.packageRelativeArtifacts) || note.packageRelativeArtifacts.join("|") !== expectedArtifacts.join("|")) {
+    failures.push(`${path}.packageRelativeArtifacts should list the checked package support artifacts in order.`);
+  } else {
+    for (const artifact of note.packageRelativeArtifacts) {
+      if (/^(?:promo|site|\.github|private|secrets?|internal)\//i.test(artifact)) {
+        failures.push(`${path}.packageRelativeArtifacts should not reference repo-only path ${artifact}.`);
+      }
+    }
+  }
+
+  if (!Array.isArray(note.steps) || note.steps.length !== expectedSteps.length) {
+    failures.push(`${path}.steps should contain exactly three installed-package steps.`);
+  } else {
+    for (const [index, step] of note.steps.entries()) {
+      const expected = expectedSteps[index];
+      if (step?.id !== expected.id) {
+        failures.push(`${path}.steps[${index}].id should be ${expected.id}.`);
+      }
+
+      if (expected.command && step?.command !== expected.command) {
+        failures.push(`${path}.steps[${index}].command should be ${expected.command}.`);
+      }
+
+      if (expected.artifact && step?.artifact !== expected.artifact) {
+        failures.push(`${path}.steps[${index}].artifact should be ${expected.artifact}.`);
+      }
+
+      if (typeof step?.purpose !== "string" || step.purpose.length < 50) {
+        failures.push(`${path}.steps[${index}].purpose should explain the installed-package step.`);
+      }
+    }
+  }
+
+  if (!Array.isArray(note.repoOnlyPathsNotRequired)) {
+    failures.push(`${path}.repoOnlyPathsNotRequired should be an array.`);
+  } else {
+    for (const repoOnlyPath of expectedRepoOnlyPaths) {
+      if (!note.repoOnlyPathsNotRequired.includes(repoOnlyPath)) {
+        failures.push(`${path}.repoOnlyPathsNotRequired should include ${repoOnlyPath}.`);
+      }
+    }
+  }
+
+  const requiredChecks = ["npm run support:check", "npm run pack:contents:check", "npm run production:check"];
+  if (!Array.isArray(note.requiredChecks)) {
+    failures.push(`${path}.requiredChecks should be an array.`);
+  } else {
+    for (const check of requiredChecks) {
+      if (!note.requiredChecks.includes(check)) {
+        failures.push(`${path}.requiredChecks should include ${check}.`);
+      }
+    }
+  }
+
+  if (typeof note.privacyGuardrail !== "string" || !/package-relative|secrets|private|SECURITY\.md|MCP|exploitable/i.test(note.privacyGuardrail)) {
+    failures.push(`${path}.privacyGuardrail should include installed-package public-safe guidance.`);
   }
 }
 

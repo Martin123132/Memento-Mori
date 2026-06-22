@@ -6,6 +6,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Recently Shipped
 
+- Checked support backlog records in v0.1.95, turning closed and prioritized support outcomes into public-safe docs clarification, fixture backlog, or rule-review candidate artifacts.
 - Checked support outcome prioritization in v0.1.94, helping maintainers turn closed support reports into docs, fixture backlog, or rule-review work based on public-safe evidence thresholds.
 - Checked support lifecycle overview in v0.1.93, tying report-gallery feedback, triage playbook entries, response snippets, and closeout records together by outcome.
 - Checked support closeout checklist in v0.1.92, recording whether docs clarifications shipped or queued, fixture backlogs were created, or rule-review candidates were opened.
@@ -84,6 +85,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 ## Product Ideas
 
 - Collect real-world reports and fold the strongest redacted cases into more framework tuning cookbook recipes.
+- Use support backlog record counts to choose the next docs, fixture, report-gallery, or rule-guidance batch.
 - Use repeated prioritized support outcomes to choose the next redacted fixture, report-gallery update, or rule-guidance review.
 - Add a hosted-page option or GitHub Pages instructions once the static page has settled.
 

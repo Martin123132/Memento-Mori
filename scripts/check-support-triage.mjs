@@ -25,6 +25,8 @@ const supportFiles = [
   ".github/ISSUE_TEMPLATE/config.yml",
   "examples/reports/feedback-template.md",
   "examples/reports/README.md",
+  "examples/support/backlog-records.md",
+  "examples/support/backlog-records.json",
   "examples/support/closeout-checklist.md",
   "examples/support/closeout-checklist.json",
   "examples/support/outcome-prioritization.md",
@@ -84,6 +86,7 @@ requireText("examples/reports/README.md", /npm run support:check/, "support chec
 requireText("examples/reports/README.md", /examples\/support|Maintainer Triage Playbook/i, "maintainer triage playbook link");
 
 requireText("examples/support/README.md", /Maintainer Triage Playbook/, "maintainer playbook heading");
+requireText("examples/support/README.md", /backlog-records\.md/, "support backlog records link");
 requireText("examples/support/README.md", /support-lifecycle\.md/, "support lifecycle overview link");
 requireText("examples/support/README.md", /outcome-prioritization\.md/, "support outcome prioritization link");
 requireText("examples/support/README.md", /closeout-checklist\.md/, "support closeout checklist link");
@@ -139,6 +142,23 @@ requireText("examples/support/outcome-prioritization.md", /SECURITY\.md/, "prior
 requireText("examples/support/outcome-prioritization.json", /docs-clarification-closeout/, "docs prioritization closeout");
 requireText("examples/support/outcome-prioritization.json", /fixture-backlog-closeout/, "fixture prioritization closeout");
 requireText("examples/support/outcome-prioritization.json", /rule-review-closeout/, "rule-review prioritization closeout");
+requireText("examples/support/backlog-records.md", /Support Backlog Records/, "support backlog records heading");
+requireText("examples/support/backlog-records.md", /backlog-records\.json/, "support backlog records JSON link");
+requireText("examples/support/backlog-records.md", /support lifecycle overview/, "support lifecycle backlog link");
+requireText("examples/support/backlog-records.md", /outcome prioritization guide/, "support prioritization backlog link");
+requireText("examples/support/backlog-records.md", /closeout checklist/, "support closeout backlog link");
+requireText("examples/support/backlog-records.md", /docs-clarification-backlog-record/, "docs backlog record");
+requireText("examples/support/backlog-records.md", /fixture-backlog-record/, "fixture backlog record");
+requireText("examples/support/backlog-records.md", /rule-review-candidate-backlog-record/, "rule-review backlog record");
+requireText("examples/support/backlog-records.md", /docs-example/, "docs backlog outcome");
+requireText("examples/support/backlog-records.md", /fixture-backlog/, "fixture backlog outcome");
+requireText("examples/support/backlog-records.md", /rule-review-candidate/, "rule-review backlog outcome");
+requireText("examples/support/backlog-records.md", /jester tune <rule-id> --json/, "tune JSON backlog evidence");
+requireText("examples/support/backlog-records.md", /SECURITY\.md/, "backlog security redirect");
+requireText("examples/support/backlog-records.md", /npm run support:check/, "support checker backlog command");
+requireText("examples/support/backlog-records.json", /docs-clarification-backlog-record/, "docs backlog record JSON");
+requireText("examples/support/backlog-records.json", /fixture-backlog-record/, "fixture backlog record JSON");
+requireText("examples/support/backlog-records.json", /rule-review-candidate-backlog-record/, "rule-review backlog record JSON");
 requireText("examples/support/response-snippets.md", /Maintainer Response Snippets/, "response snippets heading");
 requireText("examples/support/response-snippets.md", /response-snippets\.json/, "response snippets JSON link");
 requireText("examples/support/response-snippets.md", /docs-example/, "docs response outcome");
@@ -156,6 +176,7 @@ requireText("docs/MAINTAINER_TRIAGE.md", /report_gallery_feedback\.yml/, "report
 requireText("docs/MAINTAINER_TRIAGE.md", /examples\/support/, "maintainer playbook triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /support-lifecycle\.md/, "support lifecycle triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /outcome-prioritization\.md/, "support prioritization triage link");
+requireText("docs/MAINTAINER_TRIAGE.md", /backlog-records\.md/, "support backlog records triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /closeout-checklist\.md/, "support closeout checklist triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /response-snippets\.md/, "maintainer response snippets triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /docs-example/, "docs example triage outcome");
@@ -166,6 +187,7 @@ requireText("docs/PRODUCTION_READINESS.md", /support:check/, "support checker re
 requireText("README.md", /feedback-template\.md/, "feedback template README link");
 requireText("README.md", /support-lifecycle\.md/, "support lifecycle README link");
 requireText("README.md", /outcome-prioritization\.md/, "support prioritization README link");
+requireText("README.md", /backlog-records\.md/, "support backlog records README link");
 requireText("README.md", /closeout-checklist\.md/, "support closeout checklist README link");
 requireText("README.md", /examples\/support/, "maintainer triage playbook README link");
 requireText("README.md", /response-snippets\.md/, "maintainer response snippets README link");
@@ -179,6 +201,7 @@ checkResponseSnippets();
 checkCloseoutChecklist();
 checkSupportLifecycle();
 checkOutcomePrioritization();
+checkBacklogRecords();
 
 if (failures.length > 0) {
   console.error("Support triage check failed:");
@@ -661,6 +684,126 @@ function checkOutcomePrioritization() {
     for (const check of expectedEntry.checks) {
       if (!entry.requiredChecks.includes(check)) {
         failures.push(`${entry.outcome}.requiredChecks should include ${check}.`);
+      }
+    }
+  }
+}
+
+function checkBacklogRecords() {
+  const path = "examples/support/backlog-records.json";
+  const records = readJson(path);
+  if (!records) {
+    return;
+  }
+
+  if (!Array.isArray(records) || records.length !== 3) {
+    failures.push(`${path} should contain exactly three support backlog records.`);
+    return;
+  }
+
+  const expected = [
+    {
+      id: "docs-clarification-backlog-record",
+      outcome: "docs-example",
+      priority: "low",
+      sourceCloseout: "docs-clarification-closeout",
+      backlogType: "docs clarification",
+      checks: ["npm run reports:check", "npm run support:check"],
+      evidence: ["Nearest checked report", "Observed output", "No rule behavior change"]
+    },
+    {
+      id: "fixture-backlog-record",
+      outcome: "fixture-backlog",
+      priority: "medium",
+      sourceCloseout: "fixture-backlog-closeout",
+      backlogType: "pass or quiet-pass fixture",
+      checks: ["npm run fixtures:check", "npm run fixtures:report", "npm run support:check"],
+      evidence: ["Smallest sanitized", "jester tune <rule-id> --json", "existing pass or quiet-pass fixture"]
+    },
+    {
+      id: "rule-review-candidate-backlog-record",
+      outcome: "rule-review-candidate",
+      priority: "high",
+      sourceCloseout: "rule-review-closeout",
+      backlogType: "rule-review candidate",
+      checks: ["npm run fixtures:report -- --markdown", "npm run support:check"],
+      evidence: ["At least two sanitized", "fixture report evidence", "single fixture backlog item is not enough"]
+    }
+  ];
+  const seenIds = new Set();
+
+  for (const [index, record] of records.entries()) {
+    const expectedRecord = expected[index];
+    if (record?.id !== expectedRecord.id) {
+      failures.push(`${path} entry ${index + 1} should have id ${expectedRecord.id}.`);
+      continue;
+    }
+
+    if (seenIds.has(record.id)) {
+      failures.push(`${path} has duplicate id ${record.id}.`);
+    }
+    seenIds.add(record.id);
+
+    if (record.outcome !== expectedRecord.outcome) {
+      failures.push(`${record.id}.outcome should be ${expectedRecord.outcome}.`);
+    }
+
+    if (record.priority !== expectedRecord.priority) {
+      failures.push(`${record.id}.priority should be ${expectedRecord.priority}.`);
+    }
+
+    if (record.sourceCloseout !== expectedRecord.sourceCloseout) {
+      failures.push(`${record.id}.sourceCloseout should be ${expectedRecord.sourceCloseout}.`);
+    }
+
+    if (record.prioritizationSource !== "outcome-prioritization.json") {
+      failures.push(`${record.id}.prioritizationSource should be outcome-prioritization.json.`);
+    }
+
+    if (record.backlogType !== expectedRecord.backlogType) {
+      failures.push(`${record.id}.backlogType should be ${expectedRecord.backlogType}.`);
+    }
+
+    if (typeof record.publicTitle !== "string" || record.publicTitle.length < 20) {
+      failures.push(`${record.id}.publicTitle should be a useful public title.`);
+    }
+
+    if (typeof record.publicSummary !== "string" || record.publicSummary.length < 50) {
+      failures.push(`${record.id}.publicSummary should be a useful public summary.`);
+    }
+
+    if (typeof record.nextAction !== "string" || record.nextAction.length < 40) {
+      failures.push(`${record.id}.nextAction should describe the backlog action.`);
+    }
+
+    if (!Array.isArray(record.evidence) || record.evidence.length !== 3) {
+      failures.push(`${record.id}.evidence should contain exactly three evidence items.`);
+    } else {
+      const evidenceText = record.evidence.join("\n");
+      for (const expectedEvidence of expectedRecord.evidence) {
+        if (!evidenceText.includes(expectedEvidence)) {
+          failures.push(`${record.id}.evidence should include ${expectedEvidence}.`);
+        }
+      }
+    }
+
+    if (!Array.isArray(record.privacyReview) || record.privacyReview.length !== 3) {
+      failures.push(`${record.id}.privacyReview should contain exactly three privacy checks.`);
+    } else {
+      const privacyText = record.privacyReview.join("\n");
+      if (!/secret|private|SECURITY\.md|redacted|placeholder/i.test(privacyText)) {
+        failures.push(`${record.id}.privacyReview should include privacy and security routing guidance.`);
+      }
+    }
+
+    if (!Array.isArray(record.requiredChecks)) {
+      failures.push(`${record.id}.requiredChecks should be an array.`);
+      continue;
+    }
+
+    for (const check of expectedRecord.checks) {
+      if (!record.requiredChecks.includes(check)) {
+        failures.push(`${record.id}.requiredChecks should include ${check}.`);
       }
     }
   }

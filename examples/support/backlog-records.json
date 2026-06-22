@@ -1,0 +1,78 @@
+[
+  {
+    "id": "docs-clarification-backlog-record",
+    "outcome": "docs-example",
+    "priority": "low",
+    "sourceCloseout": "docs-clarification-closeout",
+    "prioritizationSource": "outcome-prioritization.json",
+    "backlogType": "docs clarification",
+    "publicTitle": "Clarify checked report-gallery wording",
+    "publicSummary": "Update docs or report-gallery wording so expected behavior is easier to compare with local output.",
+    "evidence": [
+      "Nearest checked report or docs page is identified.",
+      "Observed output matches current behavior or differs only in wording/context.",
+      "No rule behavior change is requested before a clearer explanation is tried."
+    ],
+    "nextAction": "Open or update a docs issue with the public-safe wording change and link the matching checked report.",
+    "privacyReview": [
+      "No secrets, private code, private paths, customer data, full logs, or unredacted SARIF are included.",
+      "Any private project names are replaced with placeholders.",
+      "Sensitive reports are routed to SECURITY.md instead of a public backlog item."
+    ],
+    "requiredChecks": [
+      "npm run reports:check",
+      "npm run support:check"
+    ]
+  },
+  {
+    "id": "fixture-backlog-record",
+    "outcome": "fixture-backlog",
+    "priority": "medium",
+    "sourceCloseout": "fixture-backlog-closeout",
+    "prioritizationSource": "outcome-prioritization.json",
+    "backlogType": "pass or quiet-pass fixture",
+    "publicTitle": "Add a quiet-pass fixture for a minimized false-positive boundary",
+    "publicSummary": "Track a redacted fixture candidate before changing matching, scoring, or verdict behavior.",
+    "evidence": [
+      "Smallest sanitized command, plan, diff, or final-answer text is available.",
+      "Rule id and redacted `jester tune <rule-id> --json` evidence are available.",
+      "The safe boundary is not already covered by an existing pass or quiet-pass fixture."
+    ],
+    "nextAction": "Open a fixture backlog item with the candidate rule id, expected verdict, and absentRuleIds or expectedRuleIds.",
+    "privacyReview": [
+      "No secrets, private code, private paths, customer data, full logs, or unredacted SARIF are included.",
+      "The reduced reproduction uses placeholders such as <repo>, <path>, or <redacted>.",
+      "Sensitive reports are routed to SECURITY.md instead of a public backlog item."
+    ],
+    "requiredChecks": [
+      "npm run fixtures:check",
+      "npm run fixtures:report",
+      "npm run support:check"
+    ]
+  },
+  {
+    "id": "rule-review-candidate-backlog-record",
+    "outcome": "rule-review-candidate",
+    "priority": "high",
+    "sourceCloseout": "rule-review-closeout",
+    "prioritizationSource": "outcome-prioritization.json",
+    "backlogType": "rule-review candidate",
+    "publicTitle": "Compare repeated sanitized reports for a rule boundary",
+    "publicSummary": "Track repeated public-safe reports so maintainers can compare fixture evidence before changing guidance or matching.",
+    "evidence": [
+      "At least two sanitized reports or checked examples point at the same rule boundary.",
+      "Redacted `jester tune <rule-id> --json` or fixture report evidence is referenced.",
+      "The candidate explains why docs clarification or a single fixture backlog item is not enough."
+    ],
+    "nextAction": "Open a rule-review candidate issue linking the sanitized examples, fixture evidence, and current guidance.",
+    "privacyReview": [
+      "No secrets, private code, private paths, customer data, full logs, or unredacted SARIF are included.",
+      "Repeated examples are summarized without exposing private project details.",
+      "Sensitive reports are routed to SECURITY.md instead of a public backlog item."
+    ],
+    "requiredChecks": [
+      "npm run fixtures:report -- --markdown",
+      "npm run support:check"
+    ]
+  }
+]

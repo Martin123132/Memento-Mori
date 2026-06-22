@@ -27,6 +27,7 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 - SARIF output and GitHub step summaries remain separate so users can enable readable summaries without new GitHub write permissions.
 - Example workflows in `examples/` and `examples/ci/` stay aligned with the action shape.
 - `examples/ci/adoption-smoke.yml` gives new repos a read-only smoke workflow for `doctor`, `summary`, and packaged framework tuning checks before code scanning is enabled.
+- `examples/consumer-quickstart` gives maintainers a minimal installed-project fixture for proving those same first commands from a clean consumer project.
 
 ## MCP And Agent Setup
 
@@ -61,6 +62,7 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 - `npm run fixtures:report` shows fixture coverage by rule, rule family, preset slice, kind, verdict, quiet-pass rule boundaries, and feasible pass-case gaps so maintainers can pick the next fixture target; `npm run fixtures:report -- --markdown` produces a paste-ready maintainer snapshot.
 - `npm run framework:tuning:check` keeps the framework tuning guide, cookbook JSON, cookbook README, and fixture IDs aligned.
 - `npm run framework:tuning:doctor` runs the cookbook tune commands through the built CLI with temporary preset configs, so package consumers do not inherit stale recipes.
+- `npm run consumer:quickstart:check` installs the package into a temporary minimal project and runs `doctor`, `summary`, and packaged framework tuning checks from that consumer side.
 - `npm run promo:card` regenerates the deterministic social preview card, and `npm run promo:check` verifies current repo-local promo assets against the current fixture evidence before maintainers post or refresh the demo.
 - `npm run site:check` verifies the static landing page before maintainers post or host it.
 - npm publish has a manual workflow fallback, but the normal release path is tag-driven trusted publishing.
@@ -81,6 +83,7 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 - framework tuning cookbook checks are wired into `npm test`.
 - framework tuning cookbook doctor checks are wired into `npm test`.
 - CI adoption example checks are wired into `npm test`.
+- consumer quickstart smoke checks are wired into `npm test`.
 - promo freshness checks are wired into `npm test`.
 - site checks are wired into `npm test`.
 

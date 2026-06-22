@@ -70,6 +70,8 @@ The generated workflow uploads SARIF for code scanning and adds a readable Jeste
 
 For a first read-only CI smoke, copy [examples/ci/adoption-smoke.yml](examples/ci/adoption-smoke.yml). It runs `doctor`, `summary --kind command "git reset --hard"`, and the published package's `framework:tuning:doctor` without requiring code-scanning permissions.
 
+Maintainers can prove that fresh-project path with [examples/consumer-quickstart](examples/consumer-quickstart) and `npm run consumer:quickstart:check`, which installs the package into a temporary project and runs the same quickstart commands from there.
+
 Expected vibe:
 
 ```text
@@ -439,6 +441,7 @@ More setup examples:
 - [Review Fixtures](examples/fixtures)
 - [Framework CI Examples](examples/ci)
 - [Adoption Smoke CI](examples/ci/adoption-smoke.yml)
+- [Consumer Quickstart Smoke](examples/consumer-quickstart)
 - [Security Policy](SECURITY.md)
 - [Maintainer Triage](docs/MAINTAINER_TRIAGE.md)
 - [Changelog](CHANGELOG.md)
@@ -457,6 +460,7 @@ Preset example packs:
 Framework CI examples:
 
 - [Adoption Smoke CI](examples/ci/adoption-smoke.yml)
+- [Consumer Quickstart Smoke](examples/consumer-quickstart)
 - [Next.js CI](examples/ci/nextjs.yml)
 - [Vite React CI](examples/ci/vite-react.yml)
 - [Express API CI](examples/ci/express-api.yml)
@@ -524,6 +528,7 @@ Release checklist:
 
 ```powershell
 npm.cmd test
+npm.cmd run consumer:quickstart:check
 npm.cmd run promo:check
 npm.cmd run production:check
 npm.cmd run pack:dry

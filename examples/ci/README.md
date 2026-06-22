@@ -19,9 +19,12 @@ If you want a first CI smoke before enabling code scanning, copy [Adoption Smoke
 - `npx -y memento-mori-jester@latest summary --kind command "git reset --hard"`
 - `npm run framework:tuning:check` and `npm run framework:tuning:doctor` from the published package tarball
 
+Maintainers can prove those commands from a minimal installed project with [Consumer Quickstart Smoke](../consumer-quickstart) and `npm run consumer:quickstart:check`.
+
 ## Workflows
 
 - [Adoption Smoke](adoption-smoke.yml): read-only setup check for doctor, summary, and framework tuning cookbook commands.
+- [Consumer Quickstart Smoke](../consumer-quickstart): minimal installed-project fixture for the adoption commands.
 - [Next.js](nextjs.yml): app-router, middleware, redirects, public env, and browser-rendered UI.
 - [Vite React](vite-react.yml): browser storage, public config, redirects, and unsafe HTML surfaces.
 - [Express API](express-api.yml): CORS, auth bypasses, raw SQL, webhooks, and migrations.

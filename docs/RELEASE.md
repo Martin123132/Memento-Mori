@@ -15,6 +15,7 @@ npm.cmd run fixtures:report -- --markdown
 npm.cmd run framework:tuning:check
 npm.cmd run framework:tuning:doctor
 npm.cmd run ci:adoption:check
+npm.cmd run consumer:quickstart:check
 npm.cmd run promo:card:check
 npm.cmd run promo:check
 npm.cmd run site:check
@@ -27,7 +28,7 @@ Move the current changelog bullets into a matching version section and add `docs
 ## 2. Tag And Push
 
 ```powershell
-git add package.json package-lock.json CHANGELOG.md docs/RELEASE_NOTES_v0.1.x.md docs/PRODUCTION_READINESS.md docs/MAINTAINER_TRIAGE.md docs/FRAMEWORK_TUNING.md docs/GITHUB_ACTIONS.md examples/ci examples/tuning scripts/check-ci-adoption.mjs scripts/check-framework-tuning.mjs scripts/doctor-framework-tuning.mjs SECURITY.md .github/ISSUE_TEMPLATE
+git add package.json package-lock.json CHANGELOG.md docs/RELEASE_NOTES_v0.1.x.md docs/PRODUCTION_READINESS.md docs/MAINTAINER_TRIAGE.md docs/FRAMEWORK_TUNING.md docs/GITHUB_ACTIONS.md examples/ci examples/consumer-quickstart examples/tuning scripts/check-ci-adoption.mjs scripts/check-consumer-quickstart.mjs scripts/check-framework-tuning.mjs scripts/doctor-framework-tuning.mjs SECURITY.md .github/ISSUE_TEMPLATE
 git commit -m "Release v0.1.x"
 git tag -a v0.1.x -m "Memento Mori Jester v0.1.x"
 git push origin main
@@ -83,6 +84,7 @@ npx.cmd -y memento-mori-jester@latest config init --preset ai --path jester-ai.c
 npx.cmd -y memento-mori-jester@latest config validate --config jester-ai.config.json
 npx.cmd -y memento-mori-jester@latest config init --preset security --path jester-security.config.json
 npx.cmd -y memento-mori-jester@latest config validate --config jester-security.config.json
+npm.cmd run consumer:quickstart:check -- --package memento-mori-jester@latest
 ```
 
 ## 4. MCP Copy-Paste

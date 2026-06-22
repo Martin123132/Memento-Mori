@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.86
+
+- Added `examples/consumer-quickstart`, a minimal installed-project fixture for proving the first `doctor`, `summary`, and framework tuning commands from a consumer repo.
+- Added `npm run consumer:quickstart:check`, which installs the package into a temporary project and runs the quickstart/adoption commands from that project.
+- Updated README, GitHub Actions docs, CI examples, release docs, production-readiness docs, roadmap, and release notes for the consumer quickstart smoke path.
+
 ## 0.1.85
 
 - Added `examples/ci/adoption-smoke.yml`, a read-only GitHub Actions recipe for checking `doctor`, `summary`, and packaged framework tuning cookbook commands in real repos.

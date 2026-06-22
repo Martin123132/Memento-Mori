@@ -35,6 +35,8 @@ npm run framework:tuning:doctor
 
 The workflow downloads the published npm tarball into a temporary directory before running the framework tuning checks, so it verifies package contents rather than relying on this repository checkout.
 
+Maintainers can run `npm run consumer:quickstart:check` to prove the same commands from a minimal installed project fixture in [examples/consumer-quickstart](../examples/consumer-quickstart). After a release, `npm run consumer:quickstart:check -- --package memento-mori-jester@latest` verifies the public registry package through that fixture.
+
 ## Composite Action
 
 This repo can be used directly as a GitHub Action:

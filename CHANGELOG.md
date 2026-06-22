@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.94
+
+- Added a checked public-safe support outcome prioritization guide for deciding whether closed support reports become docs clarifications, fixture backlog items, or rule-review candidates.
+- Extended `npm run support:check` and production-readiness checks so prioritization thresholds, backlog destinations, and required evidence stay aligned with the support lifecycle.
+- Updated README, maintainer triage docs, support examples, production-readiness docs, roadmap, and release notes for evidence-based follow-up prioritization.
+
 ## 0.1.93
 
 - Added a checked support lifecycle overview that ties report-gallery feedback, triage playbook entries, response snippets, and closeout records together by support outcome.

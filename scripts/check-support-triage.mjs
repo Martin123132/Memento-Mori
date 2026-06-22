@@ -27,6 +27,8 @@ const supportFiles = [
   "examples/reports/README.md",
   "examples/support/closeout-checklist.md",
   "examples/support/closeout-checklist.json",
+  "examples/support/outcome-prioritization.md",
+  "examples/support/outcome-prioritization.json",
   "examples/support/README.md",
   "examples/support/response-snippets.md",
   "examples/support/response-snippets.json",
@@ -83,6 +85,7 @@ requireText("examples/reports/README.md", /examples\/support|Maintainer Triage P
 
 requireText("examples/support/README.md", /Maintainer Triage Playbook/, "maintainer playbook heading");
 requireText("examples/support/README.md", /support-lifecycle\.md/, "support lifecycle overview link");
+requireText("examples/support/README.md", /outcome-prioritization\.md/, "support outcome prioritization link");
 requireText("examples/support/README.md", /closeout-checklist\.md/, "support closeout checklist link");
 requireText("examples/support/README.md", /triage-playbook\.json/, "maintainer playbook JSON link");
 requireText("examples/support/README.md", /response-snippets\.md/, "maintainer response snippets link");
@@ -124,6 +127,18 @@ requireText("examples/support/support-lifecycle.md", /SECURITY\.md/, "lifecycle 
 requireText("examples/support/support-lifecycle.json", /docs-example-response/, "docs lifecycle response");
 requireText("examples/support/support-lifecycle.json", /fixture-backlog-response/, "fixture lifecycle response");
 requireText("examples/support/support-lifecycle.json", /rule-review-candidate-response/, "rule-review lifecycle response");
+requireText("examples/support/outcome-prioritization.md", /Support Outcome Prioritization/, "support outcome prioritization heading");
+requireText("examples/support/outcome-prioritization.md", /outcome-prioritization\.json/, "support prioritization JSON link");
+requireText("examples/support/outcome-prioritization.md", /support lifecycle overview/, "support lifecycle prioritization link");
+requireText("examples/support/outcome-prioritization.md", /docs-example/, "docs prioritization outcome");
+requireText("examples/support/outcome-prioritization.md", /fixture-backlog/, "fixture prioritization outcome");
+requireText("examples/support/outcome-prioritization.md", /rule-review-candidate/, "rule-review prioritization outcome");
+requireText("examples/support/outcome-prioritization.md", /jester tune <rule-id> --json/, "tune JSON prioritization evidence");
+requireText("examples/support/outcome-prioritization.md", /at least two sanitized reports/, "rule-review evidence threshold");
+requireText("examples/support/outcome-prioritization.md", /SECURITY\.md/, "prioritization security redirect");
+requireText("examples/support/outcome-prioritization.json", /docs-clarification-closeout/, "docs prioritization closeout");
+requireText("examples/support/outcome-prioritization.json", /fixture-backlog-closeout/, "fixture prioritization closeout");
+requireText("examples/support/outcome-prioritization.json", /rule-review-closeout/, "rule-review prioritization closeout");
 requireText("examples/support/response-snippets.md", /Maintainer Response Snippets/, "response snippets heading");
 requireText("examples/support/response-snippets.md", /response-snippets\.json/, "response snippets JSON link");
 requireText("examples/support/response-snippets.md", /docs-example/, "docs response outcome");
@@ -140,6 +155,7 @@ requireText("docs/MAINTAINER_TRIAGE.md", /feedback-template\.md/, "feedback temp
 requireText("docs/MAINTAINER_TRIAGE.md", /report_gallery_feedback\.yml/, "report gallery issue template triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /examples\/support/, "maintainer playbook triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /support-lifecycle\.md/, "support lifecycle triage link");
+requireText("docs/MAINTAINER_TRIAGE.md", /outcome-prioritization\.md/, "support prioritization triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /closeout-checklist\.md/, "support closeout checklist triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /response-snippets\.md/, "maintainer response snippets triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /docs-example/, "docs example triage outcome");
@@ -149,6 +165,7 @@ requireText("docs/MAINTAINER_TRIAGE.md", /npm(?:\.cmd)? run support:check/, "sup
 requireText("docs/PRODUCTION_READINESS.md", /support:check/, "support checker readiness");
 requireText("README.md", /feedback-template\.md/, "feedback template README link");
 requireText("README.md", /support-lifecycle\.md/, "support lifecycle README link");
+requireText("README.md", /outcome-prioritization\.md/, "support prioritization README link");
 requireText("README.md", /closeout-checklist\.md/, "support closeout checklist README link");
 requireText("README.md", /examples\/support/, "maintainer triage playbook README link");
 requireText("README.md", /response-snippets\.md/, "maintainer response snippets README link");
@@ -161,6 +178,7 @@ checkTriagePlaybook();
 checkResponseSnippets();
 checkCloseoutChecklist();
 checkSupportLifecycle();
+checkOutcomePrioritization();
 
 if (failures.length > 0) {
   console.error("Support triage check failed:");
@@ -530,6 +548,108 @@ function checkSupportLifecycle() {
 
       if (typeof stage?.purpose !== "string" || stage.purpose.length < 30) {
         failures.push(`${entry.outcome}.stages[${stageIndex}].purpose should explain what the stage records.`);
+      }
+    }
+
+    if (!Array.isArray(entry.requiredChecks)) {
+      failures.push(`${entry.outcome}.requiredChecks should be an array.`);
+      continue;
+    }
+
+    for (const check of expectedEntry.checks) {
+      if (!entry.requiredChecks.includes(check)) {
+        failures.push(`${entry.outcome}.requiredChecks should include ${check}.`);
+      }
+    }
+  }
+}
+
+function checkOutcomePrioritization() {
+  const path = "examples/support/outcome-prioritization.json";
+  const priorities = readJson(path);
+  if (!priorities) {
+    return;
+  }
+
+  if (!Array.isArray(priorities) || priorities.length !== 3) {
+    failures.push(`${path} should contain exactly three support outcome priorities.`);
+    return;
+  }
+
+  const expected = [
+    {
+      outcome: "docs-example",
+      priority: "low",
+      nextArtifact: "docs-clarification-closeout",
+      checks: ["npm run reports:check", "npm run support:check"],
+      evidence: ["Nearest checked report", "Observed output", "No rule behavior change"]
+    },
+    {
+      outcome: "fixture-backlog",
+      priority: "medium",
+      nextArtifact: "fixture-backlog-closeout",
+      checks: ["npm run fixtures:check", "npm run fixtures:report", "npm run support:check"],
+      evidence: ["Smallest sanitized", "jester tune <rule-id> --json", "existing pass or quiet-pass fixture"]
+    },
+    {
+      outcome: "rule-review-candidate",
+      priority: "high",
+      nextArtifact: "rule-review-closeout",
+      checks: ["npm run fixtures:report -- --markdown", "npm run support:check"],
+      evidence: ["At least two sanitized", "fixture report evidence", "single fixture backlog item is not enough"]
+    }
+  ];
+  const seenOutcomes = new Set();
+
+  for (const [index, entry] of priorities.entries()) {
+    const expectedEntry = expected[index];
+    if (entry?.outcome !== expectedEntry.outcome) {
+      failures.push(`${path} entry ${index + 1} should have outcome ${expectedEntry.outcome}.`);
+      continue;
+    }
+
+    if (seenOutcomes.has(entry.outcome)) {
+      failures.push(`${path} has duplicate outcome ${entry.outcome}.`);
+    }
+    seenOutcomes.add(entry.outcome);
+
+    if (entry.priority !== expectedEntry.priority) {
+      failures.push(`${entry.outcome}.priority should be ${expectedEntry.priority}.`);
+    }
+
+    if (typeof entry.title !== "string" || entry.title.length < 20) {
+      failures.push(`${entry.outcome}.title should explain the prioritization decision.`);
+    }
+
+    if (typeof entry.useWhen !== "string" || entry.useWhen.length < 60) {
+      failures.push(`${entry.outcome}.useWhen should explain when to choose this outcome.`);
+    }
+
+    if (typeof entry.backlogDestination !== "string" || entry.backlogDestination.length < 15) {
+      failures.push(`${entry.outcome}.backlogDestination should describe the follow-up destination.`);
+    }
+
+    if (entry.nextArtifact !== expectedEntry.nextArtifact) {
+      failures.push(`${entry.outcome}.nextArtifact should be ${expectedEntry.nextArtifact}.`);
+    }
+
+    if (!Array.isArray(entry.minimumEvidence) || entry.minimumEvidence.length !== 3) {
+      failures.push(`${entry.outcome}.minimumEvidence should contain exactly three evidence thresholds.`);
+    } else {
+      const evidenceText = entry.minimumEvidence.join("\n");
+      for (const expectedEvidence of expectedEntry.evidence) {
+        if (!evidenceText.includes(expectedEvidence)) {
+          failures.push(`${entry.outcome}.minimumEvidence should include ${expectedEvidence}.`);
+        }
+      }
+    }
+
+    if (!Array.isArray(entry.notEnoughEvidence) || entry.notEnoughEvidence.length !== 3) {
+      failures.push(`${entry.outcome}.notEnoughEvidence should contain exactly three guardrails.`);
+    } else {
+      const notEnoughText = entry.notEnoughEvidence.join("\n");
+      if (!/private|secret|SECURITY\.md|reproduction|rule/i.test(notEnoughText)) {
+        failures.push(`${entry.outcome}.notEnoughEvidence should include privacy, reproduction, or rule-change guardrails.`);
       }
     }
 

@@ -47,7 +47,7 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 - `README.md` leads with a no-write first run, project bootstrap, agent setup, and optional hooks/CI.
 - `docs/GETTING_STARTED.md`, `docs/CLI.md`, `docs/RELEASE.md`, and `docs/TRUSTED_PUBLISHING.md` cover the core adoption and release paths.
 - `examples/reports` provides checked, public-safe report examples for fresh install diagnostics, summary output, blocked command reviews, and report-gallery feedback.
-- `examples/support` provides a checked support lifecycle overview, maintainer triage playbook, response snippets, and closeout checklist for first response, classification, follow-up outcomes, and public-safe decision records from sanitized support reports.
+- `examples/support` provides a checked support lifecycle overview, outcome prioritization guide, maintainer triage playbook, response snippets, and closeout checklist for first response, classification, follow-up outcomes, public-safe decision records, and backlog prioritization from sanitized support reports.
 - `site/index.html` gives maintainers a static one-page share surface that reuses the demo, social card, start command, and public links.
 - Every public release has matching `CHANGELOG.md` notes and `docs/RELEASE_NOTES_vX.Y.Z.md`.
 
@@ -60,14 +60,14 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 - GitHub issue templates collect bug reports, false-positive reports, report-gallery feedback, and feature requests with the diagnostic context maintainers need.
 - `SECURITY.md` routes vulnerability reports away from public issues and asks for redacted diagnostics.
 - `docs/MAINTAINER_TRIAGE.md` explains how to turn useful false-positive reports into fixture coverage before changing rule logic.
-- `examples/support` shows maintainers how to audit the support lifecycle, classify sanitized reports as a docs example, fixture backlog item, or rule-review candidate before changing behavior, then reply with public-safe response snippets and record the closeout.
+- `examples/support` shows maintainers how to audit the support lifecycle, classify sanitized reports as a docs example, fixture backlog item, or rule-review candidate before changing behavior, then reply with public-safe response snippets, record the closeout, and prioritize follow-up work.
 - `npm run fixtures:check` validates fixture IDs, metadata, unsafe-looking content, duplicate content, and explicit expected/absent rule intent.
 - `npm run fixtures:report` shows fixture coverage by rule, rule family, preset slice, kind, verdict, quiet-pass rule boundaries, and feasible pass-case gaps so maintainers can pick the next fixture target; `npm run fixtures:report -- --markdown` produces a paste-ready maintainer snapshot.
 - `npm run framework:tuning:check` keeps the framework tuning guide, cookbook JSON, cookbook README, and fixture IDs aligned.
 - `npm run framework:tuning:doctor` runs the cookbook tune commands through the built CLI with temporary preset configs, so package consumers do not inherit stale recipes.
 - `npm run consumer:quickstart:check` installs the package into a temporary minimal project and runs `doctor`, `summary`, and packaged framework tuning checks from that consumer side.
 - `npm run reports:check` installs the package into a temporary minimal project and runs the report gallery's `doctor`, `summary`, and blocked-command examples through that consumer side.
-- `npm run support:check` verifies issue templates, support docs, the report gallery feedback template, the support lifecycle overview, maintainer triage playbook, response snippets, and closeout checklist stay public-safe and ask for useful redacted context.
+- `npm run support:check` verifies issue templates, support docs, the report gallery feedback template, the support lifecycle overview, outcome prioritization guide, maintainer triage playbook, response snippets, and closeout checklist stay public-safe and ask for useful redacted context.
 - `npm run promo:card` regenerates the deterministic social preview card, and `npm run promo:check` verifies current repo-local promo assets against the current fixture evidence before maintainers post or refresh the demo.
 - `npm run site:check` verifies the static landing page before maintainers post or host it.
 - npm publish has a manual workflow fallback, but the normal release path is tag-driven trusted publishing.

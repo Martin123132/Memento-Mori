@@ -1,0 +1,59 @@
+[
+  {
+    "outcome": "docs-example",
+    "priority": "low",
+    "title": "Clarify expected behavior in docs or checked examples",
+    "useWhen": "The report is public-safe, matches current checked behavior, and mainly shows confusing wording, missing context, or surprising severity in docs or report examples.",
+    "minimumEvidence": [
+      "Nearest checked report or docs page is identified.",
+      "Observed output matches current behavior or differs only in wording/context.",
+      "No rule behavior change is requested before a clearer explanation is tried."
+    ],
+    "backlogDestination": "docs clarification or report-gallery wording",
+    "notEnoughEvidence": [
+      "The report includes private details that belong in SECURITY.md.",
+      "The report asks to loosen a rule without a minimal reproduction.",
+      "The reported output cannot be compared with a checked example."
+    ],
+    "nextArtifact": "docs-clarification-closeout",
+    "requiredChecks": ["npm run reports:check", "npm run support:check"]
+  },
+  {
+    "outcome": "fixture-backlog",
+    "priority": "medium",
+    "title": "Capture a plausible safe boundary before changing behavior",
+    "useWhen": "A minimized public-safe report suggests the rule may be noisy, but the safer next move is fixture evidence rather than changing matching or severity.",
+    "minimumEvidence": [
+      "Smallest sanitized command, plan, diff, or final-answer text is available.",
+      "Rule id and redacted `jester tune <rule-id> --json` evidence are available.",
+      "The safe boundary is not already covered by an existing pass or quiet-pass fixture."
+    ],
+    "backlogDestination": "pass or quiet-pass fixture backlog item",
+    "notEnoughEvidence": [
+      "Only a broad complaint is available without a reduced reproduction.",
+      "The example still contains secrets, private code, private paths, or full logs.",
+      "The behavior is already clearly documented as expected."
+    ],
+    "nextArtifact": "fixture-backlog-closeout",
+    "requiredChecks": ["npm run fixtures:check", "npm run fixtures:report", "npm run support:check"]
+  },
+  {
+    "outcome": "rule-review-candidate",
+    "priority": "high",
+    "title": "Open a rule-review candidate for repeated sanitized surprises",
+    "useWhen": "Multiple public-safe reports point at the same guidance or matching boundary and fixture evidence suggests maintainers should compare the rule more deliberately.",
+    "minimumEvidence": [
+      "At least two sanitized reports or checked examples point at the same rule boundary.",
+      "Redacted `jester tune <rule-id> --json` or fixture report evidence is referenced.",
+      "The candidate explains why docs clarification or a single fixture backlog item is not enough."
+    ],
+    "backlogDestination": "rule-review candidate issue",
+    "notEnoughEvidence": [
+      "Only one report is available.",
+      "The rule id, review kind, or reproduction shape is unclear.",
+      "The candidate would require immediate behavior changes without fixture evidence."
+    ],
+    "nextArtifact": "rule-review-closeout",
+    "requiredChecks": ["npm run fixtures:report -- --markdown", "npm run support:check"]
+  }
+]

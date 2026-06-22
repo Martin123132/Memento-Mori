@@ -2,7 +2,7 @@
 
 Use this public-safe worksheet while reviewing one support report. It turns the [support lifecycle map](support-lifecycle-map.md) into a stage-by-stage checklist.
 
-The checked source is [support-lifecycle-worksheet.json](support-lifecycle-worksheet.json). Use [support-lifecycle.md](support-lifecycle.md) for the outcome table after the worksheet identifies the right path.
+The checked source is [support-lifecycle-worksheet.json](support-lifecycle-worksheet.json). Use [support-lifecycle-filled-example.md](support-lifecycle-filled-example.md) for a synthetic completed example, and use [support-lifecycle.md](support-lifecycle.md) for the outcome table after the worksheet identifies the right path.
 
 ## Report
 

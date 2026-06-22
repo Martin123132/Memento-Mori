@@ -40,6 +40,8 @@ const supportFiles = [
   "examples/support/support-lifecycle-map.json",
   "examples/support/support-lifecycle-worksheet.md",
   "examples/support/support-lifecycle-worksheet.json",
+  "examples/support/support-lifecycle-filled-example.md",
+  "examples/support/support-lifecycle-filled-example.json",
   "examples/support/support-lifecycle.md",
   "examples/support/support-lifecycle.json",
   "examples/support/triage-playbook.json",
@@ -96,9 +98,11 @@ requireText("examples/support/README.md", /backlog-review\.md/, "support backlog
 requireText("examples/support/README.md", /backlog-records\.md/, "support backlog records link");
 requireText("examples/support/README.md", /support-lifecycle-map\.md/, "support lifecycle map link");
 requireText("examples/support/README.md", /support-lifecycle-worksheet\.md/, "support lifecycle worksheet link");
+requireText("examples/support/README.md", /support-lifecycle-filled-example\.md/, "filled lifecycle worksheet example link");
 requireText("examples/support/README.md", /support-lifecycle\.md/, "support lifecycle overview link");
 requireText("examples/support/README.md", /support-lifecycle-map\.json/, "support lifecycle map JSON link");
 requireText("examples/support/README.md", /support-lifecycle-worksheet\.json/, "support lifecycle worksheet JSON link");
+requireText("examples/support/README.md", /support-lifecycle-filled-example\.json/, "filled lifecycle worksheet example JSON link");
 requireText("examples/support/README.md", /outcome-prioritization\.md/, "support outcome prioritization link");
 requireText("examples/support/README.md", /closeout-checklist\.md/, "support closeout checklist link");
 requireText("examples/support/README.md", /triage-playbook\.json/, "maintainer playbook JSON link");
@@ -129,6 +133,7 @@ requireText("examples/support/closeout-checklist.json", /rule-review-closeout/, 
 requireText("examples/support/support-lifecycle-map.md", /Support Lifecycle Map/, "support lifecycle map heading");
 requireText("examples/support/support-lifecycle-map.md", /support-lifecycle-map\.json/, "support lifecycle map JSON link");
 requireText("examples/support/support-lifecycle-map.md", /support-lifecycle-worksheet\.md/, "support lifecycle worksheet link");
+requireText("examples/support/support-lifecycle-map.md", /support-lifecycle-filled-example\.md/, "filled lifecycle worksheet example link");
 requireText("examples/support/support-lifecycle-map.md", /report\s*\n\s*-> triage\s*\n\s*-> response\s*\n\s*-> closeout\s*\n\s*-> prioritization\s*\n\s*-> backlog-record\s*\n\s*-> backlog-review/, "support lifecycle compact flow");
 requireText("examples/support/support-lifecycle-map.md", /Maintainer question/, "support lifecycle map scan questions");
 requireText("examples/support/support-lifecycle-map.md", /docs-clarification-backlog-record/, "docs backlog map record");
@@ -143,6 +148,7 @@ requireText("examples/support/support-lifecycle-map.json", /backlog-review/, "su
 requireText("examples/support/support-lifecycle-map.json", /closed-no-action/, "support lifecycle map closed no-action fallback");
 requireText("examples/support/support-lifecycle-worksheet.md", /Support Lifecycle Worksheet/, "support lifecycle worksheet heading");
 requireText("examples/support/support-lifecycle-worksheet.md", /support-lifecycle-worksheet\.json/, "support lifecycle worksheet JSON link");
+requireText("examples/support/support-lifecycle-worksheet.md", /support-lifecycle-filled-example\.md/, "filled lifecycle worksheet example link");
 requireText("examples/support/support-lifecycle-worksheet.md", /support lifecycle map/, "support lifecycle worksheet map link");
 requireText("examples/support/support-lifecycle-worksheet.md", /## Report/, "worksheet report stage");
 requireText("examples/support/support-lifecycle-worksheet.md", /## Triage/, "worksheet triage stage");
@@ -159,10 +165,32 @@ requireText("examples/support/support-lifecycle-worksheet.json", /Support Lifecy
 requireText("examples/support/support-lifecycle-worksheet.json", /support-lifecycle-map\.json/, "worksheet source map");
 requireText("examples/support/support-lifecycle-worksheet.json", /docs-example/, "worksheet docs outcome");
 requireText("examples/support/support-lifecycle-worksheet.json", /closed-no-action/, "worksheet closed no-action outcome");
+requireText("examples/support/support-lifecycle-filled-example.md", /Filled Support Lifecycle Worksheet Example/, "filled lifecycle worksheet heading");
+requireText("examples/support/support-lifecycle-filled-example.md", /support-lifecycle-filled-example\.json/, "filled lifecycle worksheet JSON link");
+requireText("examples/support/support-lifecycle-filled-example.md", /support-lifecycle-worksheet\.md/, "source worksheet link");
+requireText("examples/support/support-lifecycle-filled-example.md", /synthetic-report-gallery-docs-example/, "synthetic filled worksheet case id");
+requireText("examples/support/support-lifecycle-filled-example.md", /## Report/, "filled worksheet report stage");
+requireText("examples/support/support-lifecycle-filled-example.md", /## Triage/, "filled worksheet triage stage");
+requireText("examples/support/support-lifecycle-filled-example.md", /## Response/, "filled worksheet response stage");
+requireText("examples/support/support-lifecycle-filled-example.md", /## Closeout/, "filled worksheet closeout stage");
+requireText("examples/support/support-lifecycle-filled-example.md", /## Prioritization/, "filled worksheet prioritization stage");
+requireText("examples/support/support-lifecycle-filled-example.md", /## Backlog Record/, "filled worksheet backlog record stage");
+requireText("examples/support/support-lifecycle-filled-example.md", /## Backlog Review/, "filled worksheet backlog review stage");
+requireText("examples/support/support-lifecycle-filled-example.md", /docs-clarification-backlog-record/, "filled worksheet docs backlog record");
+requireText("examples/support/support-lifecycle-filled-example.md", /remains-docs-clarification/, "filled worksheet docs review decision");
+requireText("examples/support/support-lifecycle-filled-example.md", /npm run support:check/, "filled worksheet support check");
+requireText("examples/support/support-lifecycle-filled-example.md", /SECURITY\.md/, "filled worksheet security redirect");
+requireText("examples/support/support-lifecycle-filled-example.json", /Filled Support Lifecycle Worksheet Example/, "filled lifecycle worksheet JSON title");
+requireText("examples/support/support-lifecycle-filled-example.json", /support-lifecycle-worksheet\.json/, "filled worksheet source worksheet");
+requireText("examples/support/support-lifecycle-filled-example.json", /synthetic-report-gallery-docs-example/, "filled worksheet synthetic case id");
+requireText("examples/support/support-lifecycle-filled-example.json", /docs-example/, "filled worksheet docs outcome");
+requireText("examples/support/support-lifecycle-filled-example.json", /remains-docs-clarification/, "filled worksheet review decision");
 requireText("examples/support/support-lifecycle.md", /Support Lifecycle Overview/, "support lifecycle heading");
 requireText("examples/support/support-lifecycle.md", /support-lifecycle-map\.md/, "support lifecycle map link");
 requireText("examples/support/support-lifecycle.md", /support-lifecycle-worksheet\.md/, "support lifecycle worksheet link");
 requireText("examples/support/support-lifecycle.md", /support-lifecycle-worksheet\.json/, "support lifecycle worksheet JSON link");
+requireText("examples/support/support-lifecycle.md", /support-lifecycle-filled-example\.md/, "filled lifecycle worksheet example link");
+requireText("examples/support/support-lifecycle.md", /support-lifecycle-filled-example\.json/, "filled lifecycle worksheet example JSON link");
 requireText("examples/support/support-lifecycle.md", /support-lifecycle\.json/, "support lifecycle JSON link");
 requireText("examples/support/support-lifecycle.md", /report -> triage -> response -> closeout -> prioritization -> backlog-record -> backlog-review/, "support lifecycle flow");
 requireText("examples/support/support-lifecycle.md", /report gallery feedback template/, "report feedback lifecycle link");
@@ -246,6 +274,7 @@ requireText("docs/MAINTAINER_TRIAGE.md", /report_gallery_feedback\.yml/, "report
 requireText("docs/MAINTAINER_TRIAGE.md", /examples\/support/, "maintainer playbook triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /support-lifecycle-map\.md/, "support lifecycle map triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /support-lifecycle-worksheet\.md/, "support lifecycle worksheet triage link");
+requireText("docs/MAINTAINER_TRIAGE.md", /support-lifecycle-filled-example\.md/, "filled lifecycle worksheet example triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /support-lifecycle\.md/, "support lifecycle triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /outcome-prioritization\.md/, "support prioritization triage link");
 requireText("docs/MAINTAINER_TRIAGE.md", /backlog-review\.md/, "support backlog review triage link");
@@ -260,6 +289,7 @@ requireText("docs/PRODUCTION_READINESS.md", /support:check/, "support checker re
 requireText("README.md", /feedback-template\.md/, "feedback template README link");
 requireText("README.md", /support-lifecycle-map\.md/, "support lifecycle map README link");
 requireText("README.md", /support-lifecycle-worksheet\.md/, "support lifecycle worksheet README link");
+requireText("README.md", /support-lifecycle-filled-example\.md/, "filled lifecycle worksheet example README link");
 requireText("README.md", /support-lifecycle\.md/, "support lifecycle README link");
 requireText("README.md", /outcome-prioritization\.md/, "support prioritization README link");
 requireText("README.md", /backlog-review\.md/, "support backlog review README link");
@@ -276,6 +306,7 @@ checkTriagePlaybook();
 checkResponseSnippets();
 checkCloseoutChecklist();
 checkSupportLifecycleWorksheet();
+checkSupportLifecycleFilledExample();
 checkSupportLifecycleMap();
 checkSupportLifecycle();
 checkOutcomePrioritization();
@@ -873,6 +904,101 @@ function checkSupportLifecycleWorksheet() {
         failures.push(`${path}.requiredChecks should include ${check}.`);
       }
     }
+  }
+}
+
+function checkSupportLifecycleFilledExample() {
+  const path = "examples/support/support-lifecycle-filled-example.json";
+  const example = readJson(path);
+  if (!example) {
+    return;
+  }
+
+  const expectedStageIds = ["report", "triage", "response", "closeout", "prioritization", "backlog-record", "backlog-review"];
+  const expectedArtifacts = [
+    "examples/reports/feedback-template.md",
+    "examples/support/triage-playbook.json",
+    "examples/support/response-snippets.json",
+    "examples/support/closeout-checklist.json",
+    "examples/support/outcome-prioritization.json",
+    "examples/support/backlog-records.json",
+    "examples/support/backlog-review.json"
+  ];
+  const requiredChecks = ["npm run reports:check", "npm run support:check", "npm run production:check"];
+
+  if (example.title !== "Filled Support Lifecycle Worksheet Example") {
+    failures.push(`${path}.title should be Filled Support Lifecycle Worksheet Example.`);
+  }
+
+  if (example.sourceWorksheet !== "examples/support/support-lifecycle-worksheet.json") {
+    failures.push(`${path}.sourceWorksheet should point at examples/support/support-lifecycle-worksheet.json.`);
+  }
+
+  if (example.synthetic !== true) {
+    failures.push(`${path}.synthetic should be true.`);
+  }
+
+  if (example.caseId !== "synthetic-report-gallery-docs-example") {
+    failures.push(`${path}.caseId should be synthetic-report-gallery-docs-example.`);
+  }
+
+  if (example.outcome !== "docs-example") {
+    failures.push(`${path}.outcome should be docs-example.`);
+  }
+
+  if (!Array.isArray(example.flow) || example.flow.join("|") !== expectedStageIds.join("|")) {
+    failures.push(`${path}.flow should contain the support lifecycle order.`);
+  }
+
+  if (!Array.isArray(example.stages) || example.stages.length !== expectedStageIds.length) {
+    failures.push(`${path}.stages should contain seven completed lifecycle stages.`);
+  } else {
+    for (const [index, stage] of example.stages.entries()) {
+      if (stage?.id !== expectedStageIds[index]) {
+        failures.push(`${path}.stages[${index}].id should be ${expectedStageIds[index]}.`);
+      }
+
+      if (stage?.artifact !== expectedArtifacts[index]) {
+        failures.push(`${path}.stages[${index}].artifact should be ${expectedArtifacts[index]}.`);
+      }
+
+      if (!stage?.fields || typeof stage.fields !== "object" || Array.isArray(stage.fields) || Object.keys(stage.fields).length < 3) {
+        failures.push(`${path}.stages[${index}].fields should record at least three completed fields.`);
+      }
+
+      if (!Array.isArray(stage?.checks) || stage.checks.length !== 3) {
+        failures.push(`${path}.stages[${index}].checks should contain exactly three completed checks.`);
+      } else {
+        for (const [itemIndex, item] of stage.checks.entries()) {
+          if (typeof item !== "string" || item.length < 35) {
+            failures.push(`${path}.stages[${index}].checks[${itemIndex}] should be a useful completed check.`);
+          }
+        }
+      }
+
+      if (!Array.isArray(stage?.privacyReview) || stage.privacyReview.length !== 3) {
+        failures.push(`${path}.stages[${index}].privacyReview should contain exactly three privacy review notes.`);
+      } else {
+        const privacyText = stage.privacyReview.join("\n");
+        if (!/synthetic|placeholder|redacted|private|secret|SECURITY\.md|public/i.test(privacyText)) {
+          failures.push(`${path}.stages[${index}].privacyReview should include public-safe or security routing guidance.`);
+        }
+      }
+    }
+  }
+
+  if (!Array.isArray(example.requiredChecks)) {
+    failures.push(`${path}.requiredChecks should be an array.`);
+  } else {
+    for (const check of requiredChecks) {
+      if (!example.requiredChecks.includes(check)) {
+        failures.push(`${path}.requiredChecks should include ${check}.`);
+      }
+    }
+  }
+
+  if (typeof example.privacyGuardrail !== "string" || !/synthetic|secrets|private|customer data|SECURITY\.md|exploitable/i.test(example.privacyGuardrail)) {
+    failures.push(`${path}.privacyGuardrail should include synthetic, public-safe support guidance.`);
   }
 }
 

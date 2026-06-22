@@ -6,6 +6,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Recently Shipped
 
+- Checked filled support lifecycle worksheet example in v0.1.100, showing a synthetic `docs-example` report through report, triage, response, closeout, prioritization, backlog record, and backlog review.
 - Checked support lifecycle worksheet in v0.1.99, turning the compact map into an active-review checklist with stage checks, record fields, and stop conditions.
 - Compact checked support lifecycle map in v0.1.98, giving maintainers a quick scan of report, triage, response, closeout, prioritization, backlog record, and backlog review.
 - Full checked support lifecycle overview in v0.1.97, extending the index from report, triage, response, and closeout through prioritization, backlog records, and backlog review.
@@ -91,7 +92,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 - Collect real-world reports and fold the strongest redacted cases into more framework tuning cookbook recipes.
 - Add a small checked maintainer dashboard or report that summarizes open support backlog review states from public-safe JSON.
 - Add a generated support lifecycle status summary if backlog review records grow beyond the compact map.
-- Add a checked anonymized example of a completed lifecycle worksheet once support reports accumulate.
+- Add synthetic filled worksheet examples for `fixture-backlog` and `rule-review-candidate` if maintainers need more public-safe training cases.
 - Use support backlog record counts to choose the next docs, fixture, report-gallery, or rule-guidance batch.
 - Use repeated prioritized support outcomes to choose the next redacted fixture, report-gallery update, or rule-guidance review.
 - Add a hosted-page option or GitHub Pages instructions once the static page has settled.

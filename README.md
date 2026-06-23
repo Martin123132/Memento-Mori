@@ -8,6 +8,16 @@ A local court-jester sidecar for AI coding agents. It reviews plans, shell comma
 
 It roasts the reasoning, not the human.
 
+## Names You'll See
+
+- **Memento Mori Jester** is the product name.
+- **`memento-mori-jester`** is the npm package and long CLI binary.
+- **`jester`** is the short CLI command installed by the package.
+- **`Memento-Mori`** is the GitHub repository slug kept for stable links, releases, and GitHub Action usage.
+- **MCP** means Model Context Protocol: the way Codex, Claude Code, and other clients can call the Jester as a local tool.
+
+The normal user path is local-first: commands, plans, diffs, and final-answer text are reviewed on your machine. `start`, `doctor`, `config recommend`, `summary`, `tune`, and `playground` do not publish anything. Maintainer checks such as `npm run audit:high`, `npm test`, and `npm run pack:dry` are release safeguards, not release commands. Publishing only happens from the trusted GitHub workflow when maintainers push an annotated `v*` tag.
+
 ## Demo
 
 [![Memento Mori Jester terminal demo](docs/demo-terminal.svg)](docs/DEMO.md)

@@ -8,7 +8,7 @@ Examples that require a commercial license:
 
 - adding Memento-Mori features to a paid coding assistant or AI agent product;
 - running Memento-Mori as part of a SaaS, API, hosted MCP server, or managed repository-analysis service;
-- embedding Memento-Mori code, schemas, tests, pack format, or derived implementation details into a commercial tool;
+- embedding Memento-Mori code, schemas, tests, formats, or derived implementation details into a commercial tool;
 - using Memento-Mori materials to train, fine-tune, distill, evaluate, benchmark, or improve a commercial AI model or commercial AI system;
 - distributing a modified commercial version of Memento-Mori.
 

@@ -12,7 +12,7 @@ Commercial use requires a separate written license from the licensor. Commercial
 - offering Memento-Mori functionality through a hosted, managed, SaaS, cloud, API, or agent service;
 - using Memento-Mori in an enterprise product or commercial developer tool;
 - using Memento-Mori or derived code as part of a commercial AI coding, agent, memory, context, retrieval, or repository-analysis product;
-- training, fine-tuning, distilling, evaluating, or improving a commercial AI model or commercial AI system using Memento-Mori source code, documentation, pack format, tests, or derived materials;
+- training, fine-tuning, distilling, evaluating, or improving a commercial AI model or commercial AI system using Memento-Mori source code, documentation, tests, data formats, or derived materials;
 - removing or obscuring copyright, license, attribution, or required notices.
 
 Memento-Mori was created by Martin Ollett and is owned/licensed by TWO HANDS NETWORK LTD.

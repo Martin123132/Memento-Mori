@@ -42,5 +42,5 @@ git diff | node .\dist\cli.js diff --fail-on block --subject "v0.1.107 naming an
 npm.cmd view memento-mori-jester version --silent
 npx.cmd -y memento-mori-jester@latest doctor
 npx.cmd -y memento-mori-jester@latest start
-npm.cmd explore memento-mori-jester -- npm run audit:high
+npm.cmd pack memento-mori-jester@0.1.107 --json --ignore-scripts
 ```

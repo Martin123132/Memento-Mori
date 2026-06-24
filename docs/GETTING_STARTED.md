@@ -9,7 +9,7 @@ This is the shortest path for a normal project.
 - **`Memento-Mori`** is the GitHub repository slug used in links and GitHub Action examples.
 - **MCP** is the local tool protocol used by Codex, Claude Code, and other agent clients.
 
-The first-run commands below are local-first. They review text you provide and do not publish packages, create releases, push git changes, or change repository privacy. Maintainer commands such as `npm run audit:high` are safety gates for CI and releases; they are not publish commands.
+The first-run commands below are local-first. They review text you provide and do not publish packages, create releases, push git changes, or change repository privacy. Maintainer commands run from a repo checkout, such as `npm run audit:high`, are safety gates for CI and releases; they are not publish commands.
 
 ## 1. Try It Without Writing Files
 

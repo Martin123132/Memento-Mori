@@ -4,6 +4,11 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.108
+
+- Corrected post-publish smoke guidance so installed-package checks do not ask npm to run the repo-only audit gate without a lockfile.
+- Clarified that `npm run audit:high` is a maintainer check for repo checkouts, not an installed-package command.
+
 ## 0.1.107
 
 - Added a checked high-severity npm audit gate so CI and publish workflows fail before dependency advisories reach a release.

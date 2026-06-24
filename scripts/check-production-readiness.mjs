@@ -55,7 +55,9 @@ if (packageLock.version !== version || packageLock.packages?.[""]?.version !== v
 for (const path of [
   "README.md",
   "CHANGELOG.md",
+  "COMMERCIAL-LICENSE.md",
   "ROADMAP.md",
+  "NOTICE.md",
   "LICENSE",
   "SECURITY.md",
   "docs/RELEASE.md",
@@ -170,6 +172,8 @@ requireText("README.md", /backlog-records\.md/, "support backlog records link");
 requireText("README.md", /pack:contents:check/, "package contents check guidance");
 requireText("README.md", /report gallery feedback/i, "report gallery feedback guidance");
 requireText("README.md", /License: PolyForm Noncommercial/, "the noncommercial license badge");
+requireText("README.md", /COMMERCIAL-LICENSE\.md/, "commercial license guidance");
+requireText("README.md", /NOTICE\.md/, "notice guidance");
 requireText("docs/PRODUCTION_READINESS.md", /npm package/i, "npm package readiness");
 requireText("docs/PRODUCTION_READINESS.md", /GitHub Action/i, "GitHub Action readiness");
 requireText("docs/PRODUCTION_READINESS.md", /MCP/i, "MCP readiness");
@@ -550,7 +554,7 @@ requireText(".github/ISSUE_TEMPLATE/report_gallery_feedback.yml", /SECURITY\.md/
 requireText(".github/ISSUE_TEMPLATE/feature_request.yml", /local-first and deterministic/, "project constraint prompt");
 requireText(".github/ISSUE_TEMPLATE/config.yml", /security\/advisories\/new/, "security contact link");
 
-for (const publicFile of ["dist", "docs", "examples", "scripts", "CHANGELOG.md", "LICENSE", "SECURITY.md", "README.md", "ROADMAP.md"]) {
+for (const publicFile of ["dist", "docs", "examples", "scripts", "CHANGELOG.md", "COMMERCIAL-LICENSE.md", "LICENSE", "NOTICE.md", "SECURITY.md", "README.md", "ROADMAP.md"]) {
   requirePackageFile(packageJson, publicFile);
 }
 

@@ -34,8 +34,10 @@ const requiredPackageFiles = [
   "examples/support/support-lifecycle-filled-example.json",
   "README.md",
   "CHANGELOG.md",
+  "COMMERCIAL-LICENSE.md",
   "ROADMAP.md",
   "SECURITY.md",
+  "NOTICE.md",
   "LICENSE"
 ];
 

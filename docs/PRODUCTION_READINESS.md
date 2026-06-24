@@ -17,7 +17,7 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 
 - `package.json` includes repository, homepage, bugs, binaries, exports, public package files, and public publish access.
 - `package-lock.json` version matches `package.json`.
-- `npm run pack:dry` confirms the package includes `dist`, `docs`, `examples`, `scripts`, `README.md`, `CHANGELOG.md`, `ROADMAP.md`, and `LICENSE`, then runs `npm run pack:contents:check`.
+- `npm run pack:dry` confirms the package includes `dist`, `docs`, `examples`, `scripts`, `README.md`, `CHANGELOG.md`, `ROADMAP.md`, `LICENSE`, `COMMERCIAL-LICENSE.md`, and `NOTICE.md`, then runs `npm run pack:contents:check`.
 - `npm run pack:contents:check` verifies the dry-run package includes the installed-package support note, release support provenance gate, post-release evidence ledger, support examples index, quickstart, lifecycle map, blank worksheet, and filled synthetic example, and excludes repo-local promo, site, private, cache, GitHub workflow, and credential-shaped files.
 - `npm run audit:high` fails CI and publish attempts when npm reports high or critical dependency advisories.
 - `SECURITY.md` ships with the package so vulnerability reporting guidance is visible from the repository and npm tarball.

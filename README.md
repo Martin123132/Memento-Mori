@@ -8,6 +8,8 @@ A local court-jester sidecar for AI coding agents. It reviews plans, shell comma
 
 It roasts the reasoning, not the human.
 
+Personal and non-commercial use is covered by [LICENSE](LICENSE). Commercial use requires a separate written licence; see [COMMERCIAL-LICENSE.md](COMMERCIAL-LICENSE.md) and [NOTICE.md](NOTICE.md).
+
 ## Names You'll See
 
 - **Memento Mori Jester** is the product name.

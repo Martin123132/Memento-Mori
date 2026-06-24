@@ -4,8 +4,11 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.107
+
 - Added a checked high-severity npm audit gate so CI and publish workflows fail before dependency advisories reach a release.
 - Added first-reader naming and safety notes so users can distinguish the product name, npm package, GitHub repo slug, MCP setup, local checks, and release/publish steps.
+- Included `COMMERCIAL-LICENSE.md` and `NOTICE.md` in package contents checks so the npm package carries the company non-commercial licence context.
 
 ## 0.1.106
 

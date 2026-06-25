@@ -2,6 +2,8 @@
 
 This is the shortest path for a normal project.
 
+For the wider docs map, including CI, tuning, support, release, and licence references, see [Documentation Index](INDEX.md).
+
 ## Names And Safety Notes
 
 - **Memento Mori Jester** is the product name.

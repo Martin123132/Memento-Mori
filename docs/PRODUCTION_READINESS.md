@@ -48,6 +48,7 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 ## Documentation
 
 - `README.md` leads with a no-write first run, project bootstrap, agent setup, and optional hooks/CI.
+- `docs/INDEX.md` gives readers an audience-based map for onboarding, agent setup, tuning, CI, support, release, package, and licence references.
 - `docs/GETTING_STARTED.md`, `docs/CLI.md`, `docs/RELEASE.md`, and `docs/TRUSTED_PUBLISHING.md` cover the core adoption and release paths.
 - `examples/reports` provides checked, public-safe report examples for fresh install diagnostics, summary output, blocked command reviews, and report-gallery feedback.
 - `examples/support` provides a checked support examples quickstart, support examples index, installed-package support note, release support provenance gate, post-release evidence ledger, compact support lifecycle map, active-review worksheet, synthetic filled worksheet example, and full support lifecycle overview covering report, triage, response, closeout, prioritization, backlog record, and backlog review, plus the supporting outcome prioritization guide, backlog records, backlog review checklist, maintainer triage playbook, response snippets, and closeout checklist.
@@ -86,6 +87,7 @@ This checklist defines what "production grade" means for Memento Mori Jester rig
 - CI, release, publish, and composite action workflows use the expected runtime and steps,
 - high-severity npm audit checks are wired into CI, publish, and local prepublish attempts,
 - onboarding docs mention the important adoption paths,
+- the docs index keeps onboarding, tuning, CI, support, release, package, and licence references discoverable outside the first README screen.
 - production readiness documentation covers package, GitHub Action, MCP, git hooks, docs, and support,
 - `SECURITY.md` and GitHub issue templates exist and ask for the right diagnostics.
 - maintainer triage docs exist and link noisy-rule reports back to fixture coverage.

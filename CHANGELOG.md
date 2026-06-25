@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.109
+
+- Added `docs/INDEX.md` as a checked audience-based map for onboarding, agent setup, tuning, CI, support, release, package, and licence references.
+- Simplified the README Start Here path so first readers see the core local workflow before deeper maintainer/support links.
+- Extended production-readiness checks so the documentation index stays aligned with support, fixture, report-gallery, package, and licensing references.
+
 ## 0.1.108
 
 - Corrected post-publish smoke guidance so installed-package checks do not ask npm to run the repo-only audit gate without a lockfile.

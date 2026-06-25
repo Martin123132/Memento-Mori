@@ -80,15 +80,12 @@ npx -y memento-mori-jester@latest github-action --write
 
 The generated workflow uploads SARIF for code scanning and adds a readable Jester summary to the GitHub Actions run.
 
-For a first read-only CI smoke, copy [examples/ci/adoption-smoke.yml](examples/ci/adoption-smoke.yml). It runs `doctor`, `summary --kind command "git reset --hard"`, and the published package's `framework:tuning:doctor` without requiring code-scanning permissions.
+More paths:
 
-Maintainers can prove that fresh-project path with [examples/consumer-quickstart](examples/consumer-quickstart) and `npm run consumer:quickstart:check`, which installs the package into a temporary project and runs the same quickstart commands from there.
-
-For trust-building output examples, see [examples/reports](examples/reports). `npm run reports:check` installs the package into a temporary project and proves the gallery's `doctor`, `summary`, and blocked-command reports stay current.
-
-If one of those reports is confusing or stale, use the public-safe [report gallery feedback template](examples/reports/feedback-template.md). It asks for version, nearest gallery example, sanitized command/output summaries, and redacted diagnostics without private repo code or secrets.
-
-Maintainers can use the checked [support examples quickstart](examples/support/support-examples-quickstart.md), [support examples index](examples/support/support-examples-index.md), [installed-package support note](examples/support/installed-package-support.md), [release support provenance gate](examples/support/release-support-provenance.md), [post-release evidence ledger](examples/support/post-release-evidence-ledger.md), [support lifecycle map](examples/support/support-lifecycle-map.md), [support lifecycle worksheet](examples/support/support-lifecycle-worksheet.md), synthetic [filled worksheet example](examples/support/support-lifecycle-filled-example.md), [support lifecycle overview](examples/support/support-lifecycle.md), [outcome prioritization guide](examples/support/outcome-prioritization.md), [support backlog records](examples/support/backlog-records.md), [support backlog review](examples/support/backlog-review.md), [support triage playbook](examples/support), [response snippets](examples/support/response-snippets.md), and [support closeout checklist](examples/support/closeout-checklist.md) to turn sanitized reports into a docs example, fixture backlog item, or rule-review candidate without changing behavior first.
+- For a first read-only CI smoke, copy [examples/ci/adoption-smoke.yml](examples/ci/adoption-smoke.yml).
+- For fresh-project confidence, see [examples/consumer-quickstart](examples/consumer-quickstart) and [examples/reports](examples/reports).
+- For stack-specific false-positive work, see [docs/FRAMEWORK_TUNING.md](docs/FRAMEWORK_TUNING.md) and [examples/tuning](examples/tuning).
+- For the full docs map, including support, release, and maintainer paths, see [docs/INDEX.md](docs/INDEX.md).
 
 Expected vibe:
 

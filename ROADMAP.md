@@ -6,6 +6,9 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Recently Shipped
 
+- Checked documentation index in v0.1.109, giving first readers a calmer README path and maintainers a guarded map for onboarding, tuning, CI, support, release, package, and licence references.
+- Audit smoke guidance hotfix in v0.1.108, clarifying that `npm run audit:high` is a repo-checkout maintainer gate and not an installed-package smoke command.
+- Naming, local safety, and high-severity npm audit gate polish in v0.1.107, including package-shipped licence and notice context.
 - Checked post-release evidence ledger in v0.1.106, keeping GitHub Release URL, npm version, workflow statuses, public smokes, installed-package provenance, tarball file count, and private-ish path exclusions reviewable after publish.
 - Checked release support provenance gate in v0.1.105, requiring post-publish installed-package support verification and package-relative artifact records during release closeout.
 - Checked installed-package support provenance in v0.1.104, showing maintainers how to verify and use support examples from the npm package with package-relative paths.

@@ -60,6 +60,7 @@ for (const path of [
   "NOTICE.md",
   "LICENSE",
   "SECURITY.md",
+  "docs/INDEX.md",
   "docs/RELEASE.md",
   "docs/TRUSTED_PUBLISHING.md",
   "docs/PRODUCTION_READINESS.md",
@@ -143,6 +144,7 @@ requireText("README.md", /config recommend/, "preset recommendation onboarding")
 requireText("README.md", /setup --agent codex/, "Codex setup onboarding");
 requireText("README.md", /github-action --write/, "GitHub Action onboarding");
 requireText("README.md", /SECURITY\.md/, "security policy link");
+requireText("README.md", /docs\/INDEX\.md/, "documentation index link");
 requireText("README.md", /false-positive/i, "false-positive support guidance");
 requireText("README.md", /MAINTAINER_TRIAGE\.md/, "maintainer triage guide link");
 requireText("README.md", /fixtures:check/, "fixture authoring check guidance");
@@ -174,11 +176,49 @@ requireText("README.md", /report gallery feedback/i, "report gallery feedback gu
 requireText("README.md", /License: PolyForm Noncommercial/, "the noncommercial license badge");
 requireText("README.md", /COMMERCIAL-LICENSE\.md/, "commercial license guidance");
 requireText("README.md", /NOTICE\.md/, "notice guidance");
+requireText("docs/INDEX.md", /Documentation Index/, "documentation index heading");
+requireText("docs/INDEX.md", /GETTING_STARTED\.md/, "getting started index link");
+requireText("docs/INDEX.md", /doctor --json/, "doctor JSON index guidance");
+requireText("docs/INDEX.md", /config recommend/, "preset recommendation index guidance");
+requireText("docs/INDEX.md", /setup --agent codex/, "Codex setup index guidance");
+requireText("docs/INDEX.md", /github-action --write/, "GitHub Action index guidance");
+requireText("docs/INDEX.md", /SECURITY\.md/, "security policy index link");
+requireText("docs/INDEX.md", /false-positive/i, "false-positive support index guidance");
+requireText("docs/INDEX.md", /MAINTAINER_TRIAGE\.md/, "maintainer triage index link");
+requireText("docs/INDEX.md", /fixtures:check/, "fixture authoring check index guidance");
+requireText("docs/INDEX.md", /fixtures:report/, "fixture coverage report index guidance");
+requireText("docs/INDEX.md", /fixtures:report -- --markdown/, "Markdown fixture report index guidance");
+requireText("docs/INDEX.md", /FRAMEWORK_TUNING\.md/, "framework tuning guide index link");
+requireText("docs/INDEX.md", /examples\/tuning/, "framework tuning cookbook index link");
+requireText("docs/INDEX.md", /adoption-smoke\.yml/, "adoption smoke CI index link");
+requireText("docs/INDEX.md", /consumer-quickstart/, "consumer quickstart smoke index link");
+requireText("docs/INDEX.md", /examples\/reports/, "report gallery index link");
+requireText("docs/INDEX.md", /feedback-template\.md/, "report gallery feedback template index link");
+requireText("docs/INDEX.md", /examples\/support/, "support examples index link");
+requireText("docs/INDEX.md", /support-examples-quickstart\.md/, "support examples quickstart index link");
+requireText("docs/INDEX.md", /support-examples-index\.md/, "support examples manifest index link");
+requireText("docs/INDEX.md", /installed-package-support\.md/, "installed package support index link");
+requireText("docs/INDEX.md", /post-release-evidence-ledger\.md/, "post-release evidence ledger index link");
+requireText("docs/INDEX.md", /release-support-provenance\.md/, "release support provenance index link");
+requireText("docs/INDEX.md", /response-snippets\.md/, "support response snippets index link");
+requireText("docs/INDEX.md", /closeout-checklist\.md/, "support closeout checklist index link");
+requireText("docs/INDEX.md", /support-lifecycle-map\.md/, "support lifecycle map index link");
+requireText("docs/INDEX.md", /support-lifecycle-worksheet\.md/, "support lifecycle worksheet index link");
+requireText("docs/INDEX.md", /support-lifecycle-filled-example\.md/, "filled lifecycle worksheet example index link");
+requireText("docs/INDEX.md", /support-lifecycle\.md/, "support lifecycle overview index link");
+requireText("docs/INDEX.md", /outcome-prioritization\.md/, "support outcome prioritization index link");
+requireText("docs/INDEX.md", /backlog-review\.md/, "support backlog review index link");
+requireText("docs/INDEX.md", /backlog-records\.md/, "support backlog records index link");
+requireText("docs/INDEX.md", /pack:contents:check/, "package contents check index guidance");
+requireText("docs/INDEX.md", /report gallery feedback/i, "report gallery feedback index guidance");
+requireText("docs/INDEX.md", /COMMERCIAL-LICENSE\.md/, "commercial license index guidance");
+requireText("docs/INDEX.md", /NOTICE\.md/, "notice index guidance");
 requireText("docs/PRODUCTION_READINESS.md", /npm package/i, "npm package readiness");
 requireText("docs/PRODUCTION_READINESS.md", /GitHub Action/i, "GitHub Action readiness");
 requireText("docs/PRODUCTION_READINESS.md", /MCP/i, "MCP readiness");
 requireText("docs/PRODUCTION_READINESS.md", /git hooks/i, "git hook readiness");
 requireText("docs/PRODUCTION_READINESS.md", /support/i, "support readiness");
+requireText("docs/PRODUCTION_READINESS.md", /docs\/INDEX\.md/, "documentation index readiness");
 requireText("docs/PRODUCTION_READINESS.md", /doctor --json/, "doctor JSON support diagnostics");
 requireText("docs/PRODUCTION_READINESS.md", /SECURITY\.md/, "security policy readiness");
 requireText("docs/PRODUCTION_READINESS.md", /issue templates/i, "issue template readiness");

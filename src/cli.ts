@@ -186,7 +186,7 @@ type StartOptions = {
 };
 
 type StartStep = {
-  id: "doctor" | "playground" | "agent-setup" | "bootstrap" | "validate" | "sample-review";
+  id: "doctor" | "playground" | "recommend" | "agent-setup" | "bootstrap" | "validate" | "sample-review";
   title: string;
   command: string;
   description: string;
@@ -1095,6 +1095,12 @@ function startSteps(options: StartOptions): StartStep[] {
       title: "Try the local playground",
       command: `${cliCommand} playground`,
       description: "Open a local paste-in UI for commands, plans, diffs, and final answers."
+    },
+    {
+      id: "recommend",
+      title: "Choose a preset",
+      command: `${cliCommand} config recommend`,
+      description: "Read local repo markers and confirm the best preset before writing starter files."
     },
     {
       id: "agent-setup",

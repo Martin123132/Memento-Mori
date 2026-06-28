@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.110
+
+- Added a read-only preset recommendation step to `jester start` so the guided first-run path now matches README and Getting Started guidance.
+- Updated `jester start --json` with a stable `recommend` step before agent setup and bootstrap.
+- Refreshed README, CLI docs, Getting Started, and demo transcript so first users see one consistent sequence: check, playground, recommend, setup, bootstrap, validate, and sample review.
+
 ## 0.1.109
 
 - Added `docs/INDEX.md` as a checked audience-based map for onboarding, agent setup, tuning, CI, support, release, package, and licence references.

@@ -212,6 +212,7 @@ test("start prints the guided first-run checklist", async () => {
   assert.match(stdout, /Memento Mori Jester start/);
   assert.match(stdout, /npx -y memento-mori-jester@latest doctor/);
   assert.match(stdout, /npx -y memento-mori-jester@latest playground/);
+  assert.match(stdout, /npx -y memento-mori-jester@latest config recommend/);
   assert.match(stdout, /npx -y memento-mori-jester@latest setup/);
   assert.match(stdout, /npx -y memento-mori-jester@latest bootstrap --preset node/);
   assert.match(stdout, /npx -y memento-mori-jester@latest config validate/);
@@ -293,6 +294,7 @@ test("start json returns stable steps", async () => {
   assert.deepEqual(result.steps.map((step) => step.id), [
     "doctor",
     "playground",
+    "recommend",
     "agent-setup",
     "bootstrap",
     "validate",

@@ -341,7 +341,13 @@ Run these in order:
 1. Check the package
    npx -y memento-mori-jester@latest doctor
 
-4. Write starter files
+3. Choose a preset
+   npx -y memento-mori-jester@latest config recommend
+
+4. Print agent setup
+   npx -y memento-mori-jester@latest setup --agent codex
+
+5. Write starter files
    npx -y memento-mori-jester@latest bootstrap --preset web --hook pre-commit
 ```
 

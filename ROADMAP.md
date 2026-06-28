@@ -6,6 +6,7 @@ Memento Mori Jester is usable today as a CLI, MCP server, GitHub Action, and git
 
 ## Recently Shipped
 
+- First-user start flow polish in v0.1.110, adding a read-only `config recommend` step to `jester start` so onboarding moves cleanly from health check to playground to preset choice before setup and bootstrap.
 - Checked documentation index in v0.1.109, giving first readers a calmer README path and maintainers a guarded map for onboarding, tuning, CI, support, release, package, and licence references.
 - Audit smoke guidance hotfix in v0.1.108, clarifying that `npm run audit:high` is a repo-checkout maintainer gate and not an installed-package smoke command.
 - Naming, local safety, and high-severity npm audit gate polish in v0.1.107, including package-shipped licence and notice context.

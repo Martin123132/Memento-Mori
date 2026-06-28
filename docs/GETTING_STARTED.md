@@ -21,6 +21,8 @@ For a guided checklist:
 npx -y memento-mori-jester@latest start
 ```
 
+The checklist is read-only until you choose to run `bootstrap`; it includes `doctor`, `playground`, `config recommend`, agent setup, config validation, and a safe sample block.
+
 Or run the first check directly:
 
 ```powershell

@@ -179,10 +179,17 @@ type BootstrapOptions = SetupOptions & {
 type StartOptions = {
   mode: SetupMode;
   packageSpec: string;
-  preset: ConfigPreset;
+  preset?: ConfigPreset;
+  presetExplicit: boolean;
   agent?: AgentTarget;
   hooks: HookName[];
   json: boolean;
+};
+
+type ResolvedStartOptions = Omit<StartOptions, "preset"> & {
+  preset: ConfigPreset;
+  presetSource: "recommended" | "explicit";
+  recommendation: PresetRecommendation;
 };
 
 type StartStep = {
@@ -333,7 +340,7 @@ async function main(argv: string[]): Promise<void> {
 
   if (argv[0] === "start") {
     const startOptions = parseStartOptions(argv.slice(1));
-    output.write(renderStart(startOptions));
+    output.write(await renderStart(startOptions));
     return;
   }
 
@@ -729,7 +736,8 @@ function parsePlaygroundOptions(argv: string[]): PlaygroundCommandOptions {
 function parseStartOptions(argv: string[]): StartOptions {
   let mode: SetupMode = "npx";
   let packageSpec = packageSpecDefault;
-  let preset: ConfigPreset = "node";
+  let preset: ConfigPreset | undefined;
+  let presetExplicit = false;
   let agent: AgentTarget | undefined;
   const hooks: HookName[] = [];
   let json = false;
@@ -748,6 +756,7 @@ function parseStartOptions(argv: string[]): StartOptions {
       index += 1;
     } else if (arg === "--preset") {
       preset = parseConfigPreset(requireValue(arg, next));
+      presetExplicit = true;
       index += 1;
     } else if (arg === "--agent") {
       agent = parseAgent(requireValue(arg, next));
@@ -766,6 +775,7 @@ function parseStartOptions(argv: string[]): StartOptions {
         agent = arg;
       } else if (configPresetNames.includes(arg as ConfigPreset)) {
         preset = arg as ConfigPreset;
+        presetExplicit = true;
       }
     }
   }
@@ -774,6 +784,7 @@ function parseStartOptions(argv: string[]): StartOptions {
     mode,
     packageSpec,
     preset,
+    presetExplicit,
     agent,
     hooks: [...new Set(hooks)],
     json
@@ -1037,27 +1048,49 @@ function cliPath(): string {
   return fileURLToPath(import.meta.url);
 }
 
-function renderStart(options: StartOptions): string {
-  const steps = startSteps(options);
+async function renderStart(options: StartOptions): Promise<string> {
+  const resolved = await resolveStartOptions(options);
+  const steps = startSteps(resolved);
   const result = {
-    mode: options.mode,
-    preset: options.preset,
-    agent: options.agent ?? null,
-    hooks: options.hooks,
+    mode: resolved.mode,
+    preset: resolved.preset,
+    presetSource: resolved.presetSource,
+    recommendation: {
+      recommendedPreset: resolved.recommendation.recommendedPreset,
+      confidence: resolved.recommendation.confidence,
+      reasons: resolved.recommendation.reasons,
+      detectedStacks: resolved.recommendation.detectedStacks,
+      configPath: resolved.recommendation.configPath
+    },
+    agent: resolved.agent ?? null,
+    hooks: resolved.hooks,
     steps
   };
 
-  if (options.json) {
+  if (resolved.json) {
     return `${JSON.stringify(result, null, 2)}\n`;
   }
+
+  const detectedStack = resolved.recommendation.detectedStacks.length > 0
+    ? resolved.recommendation.detectedStacks.join(" + ")
+    : "No specific framework markers";
+  const presetSource = resolved.presetSource === "explicit"
+    ? "explicit --preset override"
+    : `local recommendation (${resolved.recommendation.confidence} confidence)`;
+  const recommendationLine = resolved.presetSource === "explicit"
+    ? `Recommended preset: ${resolved.recommendation.recommendedPreset} (${resolved.recommendation.confidence} confidence)`
+    : `Recommended preset: ${resolved.recommendation.recommendedPreset}`;
 
   const lines = [
     "Memento Mori Jester start",
     "",
-    `Mode: ${options.mode}`,
-    `Preset: ${options.preset}`,
-    `Agent: ${options.agent ?? "choose later"}`,
-    `Hooks: ${options.hooks.length > 0 ? options.hooks.join(", ") : "none"}`,
+    `Mode: ${resolved.mode}`,
+    `Preset: ${resolved.preset}`,
+    `Preset source: ${presetSource}`,
+    recommendationLine,
+    `Detected stack: ${detectedStack}`,
+    `Agent: ${resolved.agent ?? "choose later"}`,
+    `Hooks: ${resolved.hooks.length > 0 ? resolved.hooks.join(", ") : "none"}`,
     "",
     "Run these in order:"
   ];
@@ -1075,7 +1108,21 @@ function renderStart(options: StartOptions): string {
   return `${lines.join("\n")}\n`;
 }
 
-function startSteps(options: StartOptions): StartStep[] {
+async function resolveStartOptions(options: StartOptions): Promise<ResolvedStartOptions> {
+  const recommendation = await recommendConfigPreset();
+  const preset = options.presetExplicit
+    ? options.preset ?? recommendation.recommendedPreset
+    : recommendation.recommendedPreset;
+
+  return {
+    ...options,
+    preset,
+    presetSource: options.presetExplicit ? "explicit" : "recommended",
+    recommendation
+  };
+}
+
+function startSteps(options: ResolvedStartOptions): StartStep[] {
   const cliCommand = renderCliCommand(startSetupOptions(options.agent ?? "generic", options));
   const modeFlag = options.mode === "npx" ? "" : ` --mode ${options.mode}`;
   const agentSetupCommand = options.agent
@@ -1100,7 +1147,9 @@ function startSteps(options: StartOptions): StartStep[] {
       id: "recommend",
       title: "Choose a preset",
       command: `${cliCommand} config recommend`,
-      description: "Read local repo markers and confirm the best preset before writing starter files."
+      description: options.presetSource === "explicit"
+        ? "Compare the explicit preset with local repo markers before writing starter files."
+        : `Review why ${options.preset} was recommended before writing starter files.`
     },
     {
       id: "agent-setup",

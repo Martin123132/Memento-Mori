@@ -78,7 +78,7 @@ jester start --preset infra --agent claude --hook pre-commit
 jester start --json
 ```
 
-`start` does not write files or install hooks. It prints the commands for `doctor`, `playground`, read-only preset recommendation, agent setup, `bootstrap`, config validation, and a sample destructive-command review.
+`start` does not write files or install hooks. When `--preset` is omitted, it uses the same local repo detection as `jester config recommend` and puts that preset into the later `bootstrap` command. Pass `--preset <name>` to override the recommendation while still seeing the recommendation evidence.
 
 ## Agent Setup
 

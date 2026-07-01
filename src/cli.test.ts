@@ -204,12 +204,19 @@ test("doctor json reports config hooks and generated action", async () => {
 });
 
 test("start prints the guided first-run checklist", async () => {
+  const cwd = await mkdtemp(join(tmpdir(), "jester-start-node-"));
+  await writeFile(join(cwd, "package.json"), "{}\n", "utf8");
+  await writeFile(join(cwd, "package-lock.json"), "{}\n", "utf8");
+
   const { stdout } = await execFileAsync(process.execPath, [
     cliPath,
     "start"
-  ]);
+  ], { cwd });
 
   assert.match(stdout, /Memento Mori Jester start/);
+  assert.match(stdout, /Preset: node/);
+  assert.match(stdout, /Preset source: local recommendation \(high confidence\)/);
+  assert.match(stdout, /Recommended preset: node/);
   assert.match(stdout, /npx -y memento-mori-jester@latest doctor/);
   assert.match(stdout, /npx -y memento-mori-jester@latest playground/);
   assert.match(stdout, /npx -y memento-mori-jester@latest config recommend/);
@@ -217,6 +224,30 @@ test("start prints the guided first-run checklist", async () => {
   assert.match(stdout, /npx -y memento-mori-jester@latest bootstrap --preset node/);
   assert.match(stdout, /npx -y memento-mori-jester@latest config validate/);
   assert.match(stdout, /npx -y memento-mori-jester@latest command "git reset --hard"/);
+});
+
+test("start uses the local preset recommendation by default", async () => {
+  const cwd = await mkdtemp(join(tmpdir(), "jester-start-web-"));
+  await writeFile(join(cwd, "package.json"), JSON.stringify({
+    dependencies: {
+      "@vitejs/plugin-react": "latest",
+      react: "latest",
+      vite: "latest"
+    }
+  }), "utf8");
+  await writeFile(join(cwd, "vite.config.ts"), "export default {};\n", "utf8");
+
+  const { stdout } = await execFileAsync(process.execPath, [
+    cliPath,
+    "start"
+  ], { cwd });
+
+  assert.match(stdout, /Preset: web/);
+  assert.match(stdout, /Preset source: local recommendation \(high confidence\)/);
+  assert.match(stdout, /Recommended preset: web/);
+  assert.match(stdout, /Detected stack: Vite/);
+  assert.match(stdout, /Review why web was recommended/);
+  assert.match(stdout, /bootstrap --preset web/);
 });
 
 test("start supports preset agent and hook options", async () => {
@@ -232,6 +263,8 @@ test("start supports preset agent and hook options", async () => {
   ]);
 
   assert.match(stdout, /Preset: web/);
+  assert.match(stdout, /Preset source: explicit --preset override/);
+  assert.match(stdout, /Recommended preset:/);
   assert.match(stdout, /Agent: codex/);
   assert.match(stdout, /Hooks: pre-commit/);
   assert.match(stdout, /setup --agent codex/);
@@ -269,14 +302,25 @@ test("start supports the api preset", async () => {
 });
 
 test("start json returns stable steps", async () => {
+  const cwd = await mkdtemp(join(tmpdir(), "jester-start-json-"));
+  await writeFile(join(cwd, "openapi.yaml"), "openapi: 3.1.0\n", "utf8");
+
   const { stdout } = await execFileAsync(process.execPath, [
     cliPath,
     "start",
     "--json"
-  ]);
+  ], { cwd });
   const result = JSON.parse(stdout) as {
     mode: string;
     preset: string;
+    presetSource: string;
+    recommendation: {
+      recommendedPreset: string;
+      confidence: string;
+      reasons: string[];
+      detectedStacks: string[];
+      configPath: string | null;
+    };
     agent: string | null;
     hooks: string[];
     steps: Array<{
@@ -288,7 +332,11 @@ test("start json returns stable steps", async () => {
   };
 
   assert.equal(result.mode, "npx");
-  assert.equal(result.preset, "node");
+  assert.equal(result.preset, "api");
+  assert.equal(result.presetSource, "recommended");
+  assert.equal(result.recommendation.recommendedPreset, "api");
+  assert.equal(result.recommendation.confidence, "high");
+  assert.ok(result.recommendation.detectedStacks.includes("OpenAPI"));
   assert.equal(result.agent, null);
   assert.deepEqual(result.hooks, []);
   assert.deepEqual(result.steps.map((step) => step.id), [

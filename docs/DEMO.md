@@ -333,6 +333,9 @@ Memento Mori Jester start
 
 Mode: npx
 Preset: web
+Preset source: explicit --preset override
+Recommended preset: web (high confidence)
+Detected stack: Vite + React
 Agent: codex
 Hooks: pre-commit
 

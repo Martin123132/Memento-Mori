@@ -4,6 +4,12 @@ All notable changes to Memento Mori Jester are tracked here.
 
 ## Unreleased
 
+## 0.1.111
+
+- Made `jester start` use the same local repo detection as `jester config recommend` when no `--preset` is supplied.
+- Added `presetSource` and compact recommendation metadata to `jester start --json` so tools can tell whether the preset was recommended or explicitly overridden.
+- Updated first-user docs and demo transcript so the guided start path shows the recommended preset, confidence, detected stack, and matching bootstrap command.
+
 ## 0.1.110
 
 - Added a read-only preset recommendation step to `jester start` so the guided first-run path now matches README and Getting Started guidance.

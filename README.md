@@ -38,7 +38,7 @@ npx -y memento-mori-jester@latest command "git reset --hard"
 npx -y memento-mori-jester@latest playground
 ```
 
-`start` prints the guided checklist, including the read-only preset recommendation step. `playground` opens the local browser UI with sample buttons for commands, plans, diffs, and final answers.
+`start` prints the guided checklist and uses local repo markers to choose a recommended preset before any files are written. `playground` opens the local browser UI with sample buttons for commands, plans, diffs, and final answers.
 
 ### 2. Add It To A Project
 
@@ -104,7 +104,7 @@ A dazzling command, if the desired outcome is court-sponsored regret.
 | Final answers | `jester final --file final.txt` | done/fixed claims without evidence |
 | Explanations | `jester explain command "git reset --hard"` | plain-language teaching notes for verdicts |
 | Summary | `git diff \| jester summary` | rule hit counts and next tuning commands |
-| Start | `jester start` | guided first-run checklist for doctor, playground, preset recommendation, setup, bootstrap, validation, and smoke checks |
+| Start | `jester start` | guided first-run checklist that recommends a preset, then shows setup, bootstrap, validation, and smoke checks |
 | Playground | `jester playground` | local paste-in checks for commands, plans, diffs, and final answers |
 | Examples | `jester examples` | copy-paste commands and links for new users |
 | Config Recommend | `jester config recommend` | local preset and stack recommendation from repo files |
